@@ -1,0 +1,22 @@
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Java derleme çıktıları — lab kaynak kodu depoya girer, derlenmişi girmez
+target/
+build/
+*.class
+*.jar
+
+# Yerel ortam
+.env
+.env.local
+*.log
+
+# Kurs klasörünün eski git geçmişi (bkz. README) — devre dışı bırakıldı, izlenmez
+.git-devredisi/

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-2",
+  code: "Broker & Depolama · 1.2",
+  title: "Replikasyon: ISR, High Watermark ve ELR",
+  back: "1.2-replikasyon-isr-hw.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "acks × min.insync.replicas",
+      q: "replication.factor=3, min.insync.replicas=2 olan bir topic'te acks=all ile yazıyorsun. Kaç broker kaybına kadar <b>yazma devam eder</b>?",
+      opts: ["1", "2", "0", "3"],
+      a: [0],
+      why: "Kural: <b>replication.factor − min.insync.replicas = yazmaya devam ederek tolere edilen broker kaybı.</b> 3−2=1. İkinci broker kaybında ISR 1'e düşer, <code>NotEnoughReplicasException</code> ile yazma reddedilir — ama <i>okuma devam eder ve veri kaybolmaz</i>. Kaybı tolere etmekle veriyi korumak farklı sorulardır."
+    },
+    {
+      topic: "acks × min.insync.replicas",
+      q: "Bir ekip acks=all, replication.factor=3 kullanıyor ama bir broker çöktüğünde kayıt kaybetti. En olası sebep nedir?",
+      opts: [
+        "min.insync.replicas=1 bırakılmış; ISR tek kopyaya düşünce yazma o tek kopyaya kabul edildi",
+        "acks=all yalnızca 2 replikayı bekler, üçüncüsü asenkron yazılır",
+        "replication.factor 3 olsa da Kafka en fazla 2 kopya tutar",
+        "Broker çökünce page cache'teki veri fsync edilmediği için kayboldu, replikasyonun etkisi yok"
+      ],
+      a: [0],
+      why: "<code>acks=all</code>, \"tüm replikalar\" değil <b>ISR'deki tüm replikalar</b> demektir. Broker varsayılanı <code>min.insync.replicas=1</code> olduğundan, kimse değiştirmezse ISR tek kişiye düştüğünde yazma tek kopyaya gider ve o kopya ölürse veri gider. \"Sahte güvenlik\" tuzağı budur. fsync şıkkı yanıltıcıdır: veri <i>birden fazla</i> broker'a gitseydi bir broker'ın page cache kaybı sorun olmazdı."
+    },
+    {
+      topic: "LEO ve High Watermark",
+      q: "Lider LEO=5, follower A LEO=4, follower B LEO=3 (üçü de ISR'de). Consumer hangi offsetleri okuyabilir?",
+      opts: ["0, 1, 2", "0, 1, 2, 3", "0'dan 4'e kadar hepsini", "Yalnızca 0"],
+      a: [0],
+      why: "High Watermark = <b>ISR'deki tüm replikaların ulaştığı</b> en yüksek offset. En yavaş replika B, LEO=3 → yani 0,1,2'yi yazmış. HW=3 olur ve consumer <b>HW'nin altındaki</b> offsetleri, yani 0,1,2'yi görür. 3 ve 4 diskte vardır ama commit edilmemiştir; lider değişirse kaybolabilecekleri için gösterilmezler."
+    },
+    {
+      topic: "ISR üyeliği",
+      q: "Bir follower'ın ISR'de kalmasının kriteri nedir?",
+      opts: [
+        "replica.lag.time.max.ms (varsayılan 30000 ms) içinde liderin log sonuna yetişmiş olmak",
+        "Liderden en fazla replica.lag.max.messages kadar geride olmak",
+        "Liderle aynı rack'te bulunmak",
+        "Son fetch isteğini son 500 ms içinde göndermiş olmak"
+      ],
+      a: [0],
+      why: "Bugün <b>tek kriter süredir</b>: <code>replica.lag.time.max.ms</code> (varsayılan 30 s) boyunca liderin LEO'suna hiç değmemişse replika ISR'den düşer. Mesaj sayısına dayalı <code>replica.lag.max.messages</code> eski Kafka'da vardı ve <b>kaldırıldı</b> — ani trafik artışlarında sağlıklı replikaları da düşürdüğü için. Rack bilgisi yerleşimi etkiler, ISR üyeliğini değil."
+    },
+    {
+      topic: "Hata teşhisi",
+      q: "Lab'da min.insync.replicas şartı sağlanmadığında producer'ın aldığı hata neden çoğu zaman NotEnoughReplicasException değil TimeoutException olur?",
+      opts: [
+        "NotEnoughReplicas yeniden denenebilir bir hatadır; retry'lar sürerken delivery.timeout.ms dolar ve hata timeout'a dönüşür",
+        "Broker bu durumda hiç cevap vermez, client'ta yalnızca timeout oluşur",
+        "TimeoutException NotEnoughReplicasException'ın yeni adıdır (Kafka 4.0)",
+        "Client hatayı görür ama serileştiremediği için genel timeout'a çevirir"
+      ],
+      a: [0],
+      why: "Broker gerçek hatayı döner ama bu hata <b>retriable</b>'dır. Producer yeniden dener; <code>delivery.timeout.ms</code> (varsayılan 120 s) dolunca kayıt <code>TimeoutException</code> ile expire edilir. Bu yüzden client log'una bakıp \"ağ sorunu\" demek klasik yanlış teşhistir — <b>broker log'una ve UnderMinIsr metriğine</b> bak. <code>retries=0</code> ile ham hatayı görebilirsin."
+    },
+    {
+      topic: "Lider seçimi",
+      q: "unclean.leader.election.enable ayarı hakkında hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Varsayılan değeri false'tur",
+        "true yapılırsa ISR dışı, geride kalmış bir replika lider olabilir ve commit edilmiş veri kaybolabilir",
+        "true yapılması yalnızca performansı etkiler, veri kaybına yol açmaz",
+        "false ise ISR boşaldığında Kafka otomatik olarak en son yazan replikayı lider yapar"
+      ],
+      a: [0, 1],
+      why: "Varsayılan <b>false</b>'tur: ISR boşalırsa partition offline kalır — Kafka tutarlılığı kullanılabilirliğe tercih eder. <code>true</code> partition'ı açar ama ISR dışı replika, commit edilmiş kayıtları içermeyebilir → <b>kesin veri kaybı</b>. \"Yalnızca performans\" ve \"otomatik en son yazanı seçer\" ifadelerinin ikisi de yanlıştır."
+    },
+    {
+      topic: "ELR",
+      q: "Kafka 4.x'teki Eligible Leader Replicas (ELR) özelliği neyi çözer?",
+      opts: [
+        "ISR boşaldığında, verisi güvenilir olan replikaları bilerek veri kaybı olmadan lider seçebilmeyi",
+        "Follower'ların liderden daha hızlı fetch etmesini",
+        "Consumer'ların follower'dan okuyabilmesini",
+        "Partition sayısını otomatik artırmayı"
+      ],
+      a: [0],
+      why: "ELR, \"last replica standing\" problemini hedefler: ISR daralıp boşaldığında eskiden ya sonsuz offline ya unclean seçim (veri kaybı) vardı. Controller artık ISR'den düşen ama <b>verisi güvenilir</b> replikaları ELR listesinde tutar. Temiz olmayan kapanış yapan broker hem ISR'den hem ELR'den çıkarılır. Follower'dan okuma ayrı bir özelliktir (rack-aware fetch), ELR değil."
+    },
+    {
+      topic: "ELR",
+      q: "ELR hakkında aşağıdakilerden hangisi <b>yanlıştır</b>?",
+      opts: [
+        "ELR fazladan bir veri kopyası oluşturarak dayanıklılığı artırır",
+        "Kafka 4.1'den itibaren varsayılan olarak etkindir ve yalnızca KRaft modunda çalışır",
+        "kafka-topics --describe çıktısında Elr ve LastKnownElr kolonları olarak görünür",
+        "Temiz olmayan kapanış yapan bir broker ELR'den çıkarılır"
+      ],
+      a: [0],
+      why: "ELR <b>yeni kopya oluşturmaz</b>; sadece \"kim güvenle lider olabilir\" muhasebesidir — yanlış olan ifade budur. Diğer üçü doğrudur: 4.0'da deneysel, <b>4.1'den beri varsayılan</b>, sadece KRaft; describe çıktısında iki yeni kolon; unclean shutdown sonrası broker listeden düşer çünkü diskindeki veriye güvenilemez."
+    },
+    {
+      topic: "Replikasyon mekaniği",
+      q: "Kafka'da follower replikalar veriyi nasıl alır?",
+      opts: [
+        "Liderden fetch ederek — bir consumer gibi, replica fetcher thread'leriyle",
+        "Lider veriyi follower'lara push eder",
+        "Controller veriyi tüm replikalara dağıtır",
+        "Follower'lar birbirinden gossip protokolüyle senkronize olur"
+      ],
+      a: [0],
+      why: "Replikasyon <b>pull</b> temellidir: follower, lidere tıpkı bir consumer gibi fetch isteği atar (<code>num.replica.fetchers</code> thread'i, istek başına <code>replica.fetch.max.bytes</code>). Ayrı bir replikasyon protokolü yoktur — Kafka'nın sadeliğinin önemli bir parçası. Controller yalnızca <i>kimin lider olduğuna</i> karar verir, veri taşımaz."
+    },
+    {
+      topic: "ISR üyeliği",
+      q: "UnderReplicatedPartitions metriği sürekli alarm veriyor. replica.lag.time.max.ms'i 30 saniyeden 5 dakikaya çıkarmak neden kötü bir çözümdür?",
+      opts: [
+        "Geride kalmış replikalar daha uzun süre 'senkron' sayılır; acks=all garantisi zayıflar",
+        "Bu ayar yalnızca consumer tarafını etkiler, alarmı zaten değiştirmez",
+        "Değeri artırmak ISR'i tamamen devre dışı bırakır",
+        "Değeri 60 saniyeden büyük yapmak broker'ın başlamasını engeller"
+      ],
+      a: [0],
+      why: "Ayarı büyütmek <b>alarmı susturur, riski büyütür</b>: 5 dakika geride kalmış bir replika hâlâ ISR sayılır ve <code>acks=all</code> onun onayını \"güncel\" kabul eder. Gerçek sebep genelde yavaş disk, doygun ağ, yetersiz <code>num.replica.fetchers</code> ya da GC duraklamasıdır — semptomu değil sebebi düzelt."
+    },
+    {
+      topic: "Lider seçimi",
+      q: "Bir broker'ı restart ettin. Yaklaşık 5 dakika sonra liderliklerin kendiliğinden yeniden dağıldığını görüyorsun. Bunun sebebi nedir?",
+      opts: [
+        "auto.leader.rebalance.enable=true ve leader.imbalance.check.interval.seconds=300 varsayılanları",
+        "Consumer group rebalance'ı liderliği de yeniden dağıtır",
+        "ISR genişlemesi otomatik olarak lider değiştirir",
+        "Controller her 5 dakikada bir yeniden seçilir"
+      ],
+      a: [0],
+      why: "Controller, <code>auto.leader.rebalance.enable</code> (varsayılan <b>true</b>) ile <code>leader.imbalance.check.interval.seconds</code> (varsayılan <b>300</b>) periyodunda liderliği <i>preferred leader</i>'a (replika listesindeki ilk broker) geri taşır. Consumer rebalance'ının broker liderliğiyle ilgisi yoktur; ISR genişlemesi tek başına lider değiştirmez."
+    },
+    {
+      topic: "Leader epoch",
+      q: "Leader epoch mekanizması hangi problemi çözer?",
+      opts: [
+        "Lider değişiminde follower'ın log'unu yanlış noktadan kesmesi (truncate) sonucu oluşan veri kaybı/ıraksama",
+        "Aynı anda iki controller seçilmesi",
+        "Consumer'ların aynı offset'i iki kez işlemesi",
+        "Producer'ın duplicate batch göndermesi"
+      ],
+      a: [0],
+      why: "Eskiden follower, lider değiştiğinde log'unu HW'ye göre keserdi ve bazı sıralamalarda veri kaybı/ıraksama oluşurdu. Leader epoch ile her lider dönemi numaralanır (<code>leader-epoch-checkpoint</code>) ve follower yeni liderden epoch'un başlangıç offset'ini sorup doğru noktadan keser. Duplicate batch idempotence'ın (2.2), tekrarlı işleme commit stratejisinin (3.3) konusudur."
+    },
+    {
+      topic: "acks × min.insync.replicas",
+      q: "replication.factor=2 ve min.insync.replicas=2 yapılandırması neden üretimde önerilmez?",
+      opts: [
+        "Tek broker bakıma alındığında bile yazma tamamen durur; kayıp toleransı sıfırdır",
+        "Kafka replication.factor=2 yapılandırmasını reddeder",
+        "min.insync.replicas replication.factor'ten küçük olmak zorundadır",
+        "replication.factor=2'de ISR kavramı çalışmaz"
+      ],
+      a: [0],
+      why: "replication.factor−min.insync.replicas = 2−2 = <b>0</b>: tek bir broker'ın restart'ı bile yazmayı durdurur. Üretim standardı <b>replication.factor=3 + min.insync.replicas=2</b>'dir; bir broker kaybını yazmaya devam ederek karşılar. Kafka replication.factor=2'yi reddetmez ve min.insync.replicas replication.factor'e eşit olabilir — sadece işletilebilir değildir."
+    },
+    {
+      topic: "Replikasyon mekaniği",
+      q: "3 node'lu combined mod (broker+controller) bir cluster'da iki node'u durdurdun. Topic oluşturma denemesi neden tamamen başarısız oluyor?",
+      opts: [
+        "Controller quorum'u kaybolduğu için metadata yazma işlemleri yapılamaz",
+        "Kalan broker read-only moda geçer ve hiçbir isteği kabul etmez",
+        "Topic oluşturma her zaman tüm broker'ların onayını ister",
+        "min.insync.replicas metadata topic'i için de geçerlidir ve 2 şart koşar"
+      ],
+      a: [0],
+      why: "KRaft'ta metadata bir Raft quorum'unda tutulur: 3 voter, çoğunluk 2. İki node ölünce çoğunluk kaybolur ve <b>metadata yazan</b> işlemler (createTopics, config değişikliği, lider seçimi) duraklar. İlginç ayrıntı: kalan broker <i>okuma</i> isteklerini önbelleğinden yanıtlamaya devam edebilir — bu yüzden \"read-only moda geçer, hiçbir isteği kabul etmez\" ifadesi yanlıştır."
+    },
+    {
+      topic: "LEO ve High Watermark",
+      q: "HW ile LEO arasındaki kayıtların consumer'a gösterilmemesinin sebebi nedir?",
+      opts: [
+        "Bu kayıtlar henüz commit edilmemiştir; lider değişirse kaybolabilirler ve consumer 'geri alınan' veriyi görmüş olurdu",
+        "Bu kayıtlar henüz diske yazılmamış, sadece bellektedir",
+        "Bu kayıtlar sıkıştırılmayı beklediği için okunamaz",
+        "Consumer'ın offset'i HW'nin ötesine geçemez çünkü index oraya kadar üretilmiştir"
+      ],
+      a: [0],
+      why: "HW üstü kayıtlar <b>diskte vardır</b> ama yalnızca bazı replikalarda. Lider çöker ve o kayıtları almamış bir replika lider olursa kayıtlar yok olur; consumer daha önce onları okumuşsa \"var olmayan veriyi görmüş\" olur. Kafka bu tutarsızlığı en baştan engeller. Index veya sıkıştırma ile ilgisi yoktur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

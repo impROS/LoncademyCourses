@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.4 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-4",
+  code: "Streams · 6.4",
+  title: "Streams'te EOS, hata yönetimi ve test",
+  back: "6.4-eos-hata-ve-test.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Hata katmanları",
+      q: "Kafka Streams'te bozuk bir mesaj tüm uygulamayı durdurdu. Varsayılan davranış nedir ve nasıl değiştirilir?",
+      opts: [
+        "Varsayılan fail-fast'tir (LogAndFail); LogAndContinue + DLQ ile değiştirilir",
+        "Varsayılan olarak kayıt atlanır; bu bir yapılandırma hatasıdır",
+        "Streams bozuk mesajları otomatik DLQ'ya yazar",
+        "Varsayılan olarak thread değiştirilir"
+      ],
+      a: [0],
+      why: "Hem <code>deserialization.exception.handler</code> hem <code>processing.exception.handler</code> varsayılanı <b>LogAndFail</b>'dir: sessiz veri bozulması yerine <b>durmak</b> tercih edilmiştir. Üretimde genellikle <code>LogAndContinue</code> + <b>DLQ</b> ikilisi kullanılır — biri olmadan diğeri eksiktir."
+    },
+    {
+      topic: "DLQ",
+      q: "LogAndContinue handler'ını DLQ olmadan kullanmanın riski nedir?",
+      opts: [
+        "Bozuk kayıtlar sessizce kaybolur; kimse fark etmez",
+        "Uygulama yine durur",
+        "Kayıtlar sonsuza kadar yeniden denenir",
+        "State store bozulur"
+      ],
+      a: [0],
+      why: "<code>LogAndContinue</code> kaydı atlar ve devam eder — yani <b>veri kaybı</b> üretir; tek izi bir log satırıdır. Bu, 2.3'teki \"callback'te sadece log yazmak\" hatasının Streams'teki karşılığıdır. <code>errors.dead.letter.queue.topic.name</code> ile bozuk kayıtlar saklanır ve sonradan incelenebilir."
+    },
+    {
+      topic: "DLQ",
+      q: "errors.dead.letter.queue.topic.name ayarı hakkında hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Varsayılanı null'dır, yani DLQ kapalıdır",
+        "Kayıt, alt topoloji girişindeki hâliyle (orijinal key, value, header) yazılır",
+        "Streams DLQ topic'ini otomatik oluşturur ve izler",
+        "Yalnızca deserialization hatalarında çalışır"
+      ],
+      a: [0, 1],
+      why: "KIP-1034 ile gelen bu ayar varsayılan olarak <b>kapalıdır</b> ve açıldığında yerleşik <b>tüm</b> exception handler'ları kapsar (deserialization + processing). Kayıt dönüştürülmeden önceki hâliyle yazılır. Topic'i <b>sen oluşturursun</b> ve <b>izlemeyi de sen kurarsın</b> — izlenmeyen DLQ bir çöp kutusudur."
+    },
+    {
+      topic: "Uncaught handler",
+      q: "setUncaughtExceptionHandler içinde REPLACE_THREAD döndürmek hangi durumda tehlikelidir?",
+      opts: [
+        "Kalıcı bir hatada — thread sürekli yeniden oluşur, sonsuz döngü ve CPU tüketimi olur",
+        "Geçici ağ hatalarında",
+        "Tek instance'lı uygulamalarda",
+        "EOS modunda"
+      ],
+      a: [0],
+      why: "<code>REPLACE_THREAD</code> \"bu geçiciydi, tekrar dene\" demektir; kod hatası ya da bozuk veri gibi <b>kalıcı</b> bir sebep varsa yeni thread de aynı noktada ölür ve döngü başlar. Hata sınıfına bakarak karar ver ve bir deneme sayacı ekle; kalıcı hatalarda <code>SHUTDOWN_CLIENT</code> ya da <code>SHUTDOWN_APPLICATION</code> doğrudur."
+    },
+    {
+      topic: "EOS",
+      q: "processing.guarantee=exactly_once_v2 seçildiğinde commit.interval.ms varsayılanı neden 100 ms olur?",
+      opts: [
+        "Her commit bir transaction sınırıdır; uzun aralık uçtan uca gecikmeyi doğrudan artırır",
+        "EOS daha az CPU kullandığı için sık commit edilebilir",
+        "Changelog yazımı hızlandığı için",
+        "Rebalance sıklığını azaltmak için"
+      ],
+      a: [0],
+      why: "EOS'ta çıktı kayıtları ancak transaction commit edilince <b>read_committed</b> tüketicilere görünür (4.1); 30 saniyelik commit aralığı 30 saniyelik gecikme demektir. Bu yüzden varsayılan 100 ms'e çekilmiştir — kısa aralık daha çok transaction, yani daha çok koordinasyon maliyeti anlamına gelir. Takas budur."
+    },
+    {
+      topic: "EOS",
+      q: "exactly_once_v2'nin eski exactly_once'a göre farkı nedir?",
+      opts: [
+        "Task başına ayrı producer yerine instance başına tek producer kullanır; çok daha az kaynak tüketir",
+        "Daha güçlü bir garanti sağlar",
+        "Dış sistemleri de kapsar",
+        "State store kullanmaz"
+      ],
+      a: [0],
+      why: "Eski <code>exactly_once</code> her task için ayrı bir transactional producer açıyordu; yüzlerce task'lı uygulamalarda bu ölçeklenmiyordu. <b>v2</b>, instance başına tek producer ile aynı garantiyi verir. Garanti aynıdır ve <b>hâlâ yalnızca Kafka içidir</b> — dış sistemler için idempotent yazma gerekir (4.2)."
+    },
+    {
+      topic: "Test",
+      q: "TopologyTestDriver testinde beklenen çıktı gelmiyor. İlk kontrol edilecek ayar nedir?",
+      opts: [
+        "statestore.cache.max.bytes = 0 verilmemiş; önbellek ara sonuçları birleştiriyor",
+        "bootstrap.servers gerçek bir broker'a işaret etmiyor",
+        "application.id benzersiz değil",
+        "num.stream.threads 1 bırakılmış"
+      ],
+      a: [0],
+      why: "Streams önbelleği aynı key'e ardışık güncellemeleri birleştirir (6.1); test beklediği ara çıktıları göremez. Testlerde <b>her zaman</b> <code>statestore.cache.max.bytes=0</code> verilir. TopologyTestDriver'da <code>bootstrap.servers</code> kullanılmaz (dummy değer yeterlidir) ve thread sayısı önemsizdir."
+    },
+    {
+      topic: "Test",
+      q: "TopologyTestDriver hangi yetenekleri sağlar? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "State store'u doğrudan sorgulama (driver.getKeyValueStore)",
+        "Kayıt zaman damgalarını vererek event time'ı kontrol etme",
+        "Gerçek broker davranışını (replikasyon, ISR) simüle etme",
+        "Rebalance senaryolarını test etme"
+      ],
+      a: [0, 1],
+      why: "TopologyTestDriver <b>bellek içinde</b> topolojiyi çalıştırır: girdi verir, çıktı okur, store'u sorgular ve zamanı sen belirlersin — deterministik ve çok hızlı. Broker davranışı (replikasyon, ISR, rebalance) <b>simüle edilmez</b>; bunlar için Testcontainers ile gerçek bir broker gerekir."
+    },
+    {
+      topic: "Hata katmanları",
+      q: "Kafka Streams'te processing.exception.handler hangi KIP ile geldi ve neyi ele alır?",
+      opts: [
+        "KIP-1033 — processor içinde fırlatılan (işleme aşamasındaki) istisnaları",
+        "KIP-1034 — deserialization hatalarını",
+        "KIP-848 — rebalance hatalarını",
+        "KIP-890 — transaction hatalarını"
+      ],
+      a: [0],
+      why: "KIP-1033, <b>deserialization</b> ve <b>production</b> arasında kalan boşluğu doldurdu: kendi <code>mapValues</code>/<code>process</code> kodunda fırlayan istisnalar için ayrı bir handler. KIP-1034 DLQ'dur, KIP-848 consumer grup protokolü (3.2), KIP-890 transaction protokolüdür (4.1)."
+    },
+    {
+      topic: "EOS",
+      q: "exactly_once_v2 açıldı ama aşağı akış tüketiciler hâlâ duplicate görüyor. Eksik nedir?",
+      opts: [
+        "Aşağı akış tüketicide isolation.level=read_committed ayarlanmamış",
+        "processing.guarantee tüm instance'larda ayarlanmamış",
+        "commit.interval.ms çok yüksek",
+        "Changelog topic'i compact değil"
+      ],
+      a: [0],
+      why: "EOS zinciri iki uçludur: yazan taraf transaction kullanır, <b>okuyan taraf</b> abort edilmiş kayıtları filtrelemek için <code>read_committed</code> olmalıdır (4.1). Varsayılan <code>read_uncommitted</code>'tır — bu yüzden tüketici transaction'ın geri aldığı kayıtları bile görür."
+    },
+    {
+      topic: "Üretim listesi",
+      q: "Streams uygulamasının iç topic'leri (repartition/changelog) için replication.factor varsayılanı nedir?",
+      opts: [
+        "-1 — broker'ın default.replication.factor değeri kullanılır",
+        "1 — üretimde mutlaka artırılmalıdır",
+        "3",
+        "Ayarlanamaz, her zaman giriş topic'i ile aynıdır"
+      ],
+      a: [0],
+      why: "Streams'in <code>replication.factor</code> varsayılanı <b>-1</b>'dir: broker'ın <code>default.replication.factor</code> ayarını kullanır. Broker varsayılanı 1 ise iç topic'lerin (ve dolayısıyla <b>tüm state'in</b>) tek kopyası olur — bir broker kaybında state kaybolur. Üretim kontrol listesinde bu madde vardır."
+    },
+    {
+      topic: "Uncaught handler",
+      q: "Bir Streams instance'ında yerel bir sorun (bozuk disk) tespit ettin. Hangi yanıt uygundur?",
+      opts: [
+        "SHUTDOWN_CLIENT — bu instance kapanır, task'ları diğer instance'lar devralır",
+        "REPLACE_THREAD — thread yenilenir",
+        "SHUTDOWN_APPLICATION — tüm grup kapanır",
+        "Hiçbiri; hata yok sayılmalıdır"
+      ],
+      a: [0],
+      why: "Sorun <b>bu makineye özgü</b> olduğunda doğru davranış o instance'ı kapatmaktır: task'lar sağlıklı instance'lara geçer ve uygulama çalışmaya devam eder. <code>SHUTDOWN_APPLICATION</code> veri bozulması gibi <b>tüm grubu ilgilendiren</b> durumlar içindir; <code>REPLACE_THREAD</code> aynı bozuk diskte yeniden başarısız olur."
+    },
+    {
+      topic: "Hata katmanları",
+      q: "Production exception handler ne zaman devreye girer?",
+      opts: [
+        "Streams çıktı topic'ine yazarken hata aldığında (örneğin RecordTooLarge)",
+        "Giriş kaydı deserialize edilemediğinde",
+        "Processor kodunda istisna fırlatıldığında",
+        "State store'a yazma başarısız olduğunda"
+      ],
+      a: [0],
+      why: "Üç katman sırayla: <b>okuyamadım</b> (deserialization), <b>işleyemedim</b> (processing), <b>yazamadım</b> (production). Production handler çıktı üretme aşamasındaki hataları ele alır — örneğin kayıt broker sınırından büyükse (2.1). Doğru handler'ı seçmek için önce <b>hangi katmanda</b> olduğunu belirlemek gerekir."
+    },
+    {
+      topic: "EOS",
+      q: "Tek broker'lı bir geliştirme ortamında exactly_once_v2 açıldığında uygulama başlamıyor. En olası sebep nedir?",
+      opts: [
+        "transaction.state.log.replication.factor broker sayısından büyük (varsayılan 3)",
+        "exactly_once_v2 yalnızca 5+ broker ile çalışır",
+        "State store EOS'ta desteklenmez",
+        "TopologyTestDriver EOS'u desteklemez"
+      ],
+      a: [0],
+      why: "EOS transaction coordinator'a ve <code>__transaction_state</code> topic'ine ihtiyaç duyar (4.1); bu topic'in replikasyon faktörü broker sayısından büyükse oluşturulamaz ve uygulama başlayamaz. Geliştirme ortamlarında bu ayar 1'e düşürülür. Broker sayısı için sabit bir alt sınır yoktur ve TopologyTestDriver EOS ile de çalışır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

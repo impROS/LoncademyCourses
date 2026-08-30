@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.5 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-5",
+  code: "Operasyon · 5.5",
+  title: "Kapasite planlama ve partition tasarımı",
+  back: "5.5-kapasite-ve-partition-tasarimi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Depolama hesabı",
+      q: "8.000 mesaj/sn × 500 bayt, sıkıştırma oranı 0,4, replication.factor=3, 10 gün saklama. Yaklaşık disk ihtiyacı nedir (pay hariç)?",
+      opts: [
+        "Yaklaşık 4,1 TB",
+        "Yaklaşık 1,4 TB",
+        "Yaklaşık 12 TB",
+        "Yaklaşık 350 GB"
+      ],
+      a: [0],
+      why: "8.000 × 500 B = 4 MB/s → günlük 4 × 86.400 ≈ 346 GB ham → sıkıştırılmış 346 × 0,4 ≈ 138 GB → replication.factor=3 ile 415 GB/gün → 10 gün ≈ <b>4,1 TB</b>. 1,4 TB replikasyonu, 12 TB sıkıştırmayı atlayan hesaplardır. Üstüne ayrıca <b>%30 pay</b> eklenir ve disk %75'i geçmemelidir."
+    },
+    {
+      topic: "Partition artırma",
+      q: "Key kullanan bir topic'te partition sayısını 10'dan 20'ye çıkardın. Ne olur?",
+      opts: [
+        "hash(key) % N değiştiği için aynı key farklı partition'a düşer; o key için sıra garantisi kırılır ve geri alınamaz",
+        "Kafka mevcut verileri yeni partition'lara yeniden dağıtır",
+        "Yalnızca throughput artar, başka etkisi olmaz",
+        "Partition sayısını sonra 10'a düşürerek geri alınabilir"
+      ],
+      a: [0],
+      why: "Eski kayıtlar eski partition'da kalır (Kafka veriyi <b>yeniden dağıtmaz</b>), yeni kayıtlar başka partition'a gider → aynı key iki partition'a bölünür ve sıra bozulur. <b>Partition sayısı azaltılamaz</b>, dolayısıyla geri alınamaz. Düzeltme yolu yeni topic + yeniden yazmadır."
+    },
+    {
+      topic: "Partition sayısı",
+      q: "Partition sayısı belirlenirken hangi kısıtlar dikkate alınır? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "İhtiyaç duyulacak maksimum paralel tüketici sayısı",
+        "Hedef throughput / partition başına güvenli throughput",
+        "Topic'in retention süresi",
+        "Consumer group sayısı"
+      ],
+      a: [0, 1],
+      why: "Formül: <code>max(kapasite, paralellik, broker sayısı)</code> + güvenlik payı. Retention depolamayı etkiler, partition sayısını değil. Consumer group <b>sayısı</b> da bir kısıt değildir — her grup partition'ların tamamını bağımsız okur; kısıt <b>grup içindeki</b> tüketici sayısıdır (3.2)."
+    },
+    {
+      topic: "Sıcak partition",
+      q: "Bir broker'ın trafiği diğerlerinin 3 katı ve partition sayıları eşit. En olası sebep nedir?",
+      opts: [
+        "Key skew — düşük kardinaliteli bir key trafiğin çoğunu tek partition'a yığıyor",
+        "Disk yavaş",
+        "Retention ayarı farklı",
+        "O broker daha fazla consumer group barındırıyor"
+      ],
+      a: [0],
+      why: "Partition sayısı eşitse ama trafik değilse, dağılım <b>key üzerinden</b> bozulmuştur: örneğin <code>ulke</code> key'i ile trafiğin %70'i \"TR\" partition'ına gider. Teşhis: partition başına <code>BytesInPerSec</code> ya da offset artışı. Çözüm bileşik key (<code>ulke-musteri_id</code>) veya özel partitioner. İkinci ihtimal lider dengesizliğidir (5.3)."
+    },
+    {
+      topic: "Reassignment",
+      q: "Partition reassignment sırasında --throttle vermezsen ne olur?",
+      opts: [
+        "Replikasyon tüm ağ/disk bant genişliğini kullanır ve canlı trafiği ezer",
+        "Reassignment başlamaz",
+        "Kafka otomatik olarak varsayılan bir throttle uygular",
+        "Yalnızca reassignment yavaşlar"
+      ],
+      a: [0],
+      why: "Yeniden dağıtım, terabaytlarca veriyi broker'lar arasında kopyalar; sınırlanmazsa üretim trafiğiyle aynı kaynakları tüketir ve kesinti yaratır. Kafka <b>otomatik throttle uygulamaz</b> — bu, üretimde yapılan en pahalı operasyon hatalarından biridir."
+    },
+    {
+      topic: "Reassignment",
+      q: "Reassignment tamamlandıktan sonra --verify çalıştırmayı unutursan ne olur?",
+      opts: [
+        "Throttle aktif kalır ve cluster kalıcı olarak yavaşlar",
+        "Reassignment geri alınır",
+        "Partition'lar iki broker'da birden kalır",
+        "Hiçbir şey; --verify yalnızca raporlama yapar"
+      ],
+      a: [0],
+      why: "<code>--verify</code> yalnızca durum raporlamaz; tamamlanan reassignment'ın <b>broker ve topic seviyesindeki throttle ayarlarını temizler</b>. Aracın kendi çıktısı bu uyarıyı açıkça verir: \"You must run --verify periodically ... to ensure the throttle is removed.\" Unutulursa replikasyon kalıcı olarak sınırlı kalır."
+    },
+    {
+      topic: "Broker sayısı",
+      q: "Broker sayısı belirlenirken 'n-1 bakım payı' ne anlama gelir?",
+      opts: [
+        "Bir broker bakımdayken kalan broker'lar tüm yükü taşıyabilmelidir",
+        "Broker sayısı her zaman tek olmalıdır",
+        "Bir broker her zaman yedek olarak boş bırakılmalıdır",
+        "Replication factor broker sayısından bir eksik olmalıdır"
+      ],
+      a: [0],
+      why: "Kapasiteyi tam doluluğa göre planlarsan <b>planlı bir bakım bile</b> kesinti üretir. n-1 kuralı, bir broker devre dışıyken kalanların throughput ve depolamayı karşılayabilmesini şart koşar. Bu, replication.factor ile karıştırılmamalıdır — farklı bir boyuttur."
+    },
+    {
+      topic: "Rack farkındalığı",
+      q: "broker.rack ile client.rack arasındaki fark nedir?",
+      opts: [
+        "İlki replikaları farklı rack/AZ'lere dağıtır; ikincisi tüketicinin kendi bölgesindeki follower'dan okumasını sağlar",
+        "İlki client, ikincisi broker ayarıdır",
+        "İkisi de aynı işi yapar, biri eski adıdır",
+        "İlki ACL'leri, ikincisi kotaları etkiler"
+      ],
+      a: [0],
+      why: "<code>broker.rack</code> <b>yerleşim</b> ayarıdır: Kafka replikaları farklı rack'lere dağıtarak bir AZ kaybını tolere eder. <code>client.rack</code> <b>okuma</b> ayarıdır: tüketici lider yerine kendi bölgesindeki follower'dan okuyabilir, bulutta AZ'ler arası veri transfer maliyetini ciddi biçimde düşürür. Bulut kurulumunda ikisi de erken yapılandırılmalıdır."
+    },
+    {
+      topic: "Partition maliyeti",
+      q: "Aşırı partition sayısının bedeli nedir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Broker açılış süresi uzar (her index açılıp doğrulanır)",
+        "Producer'da partition × batch.size kadar bellek gerekir",
+        "Retention süresi kısalır",
+        "Replication factor otomatik düşer"
+      ],
+      a: [0, 1],
+      why: "Her partition dosya tanıtıcısı, bellek (mmap'lenmiş index), controller metadata girdisi ve replikasyon fetch işi demektir; broker restart'ında tüm index'ler doğrulanır (1.1) ve producer her partition için ayrı batch tamponu tutar (2.1). Retention ve replication.factor partition sayısından bağımsızdır."
+    },
+    {
+      topic: "Key tasarımı",
+      q: "Sıra garantisi gerekmiyorsa key için en iyi tercih nedir?",
+      opts: [
+        "null bırakmak — sticky partitioning dengeli dağılım ve dolu batch'ler sağlar",
+        "Rastgele UUID kullanmak",
+        "Sabit bir string kullanmak",
+        "Timestamp kullanmak"
+      ],
+      a: [0],
+      why: "Key <code>null</code> ise producer <b>sticky partitioning</b> uygular: batch dolana kadar aynı partition'a yazar, sonra değişir — hem dengeli dağılım hem yüksek batch verimi (2.1). Rastgele UUID de dağıtır ama her kayıt için hash hesaplanır ve batch'ler bölünür. Sabit string tek partition'a yığar; timestamp ise zaman içinde kayan bir skew üretir."
+    },
+    {
+      topic: "Depolama hesabı",
+      q: "12 partition'lı bir topic'e retention.bytes=5 GB verdin. Bu topic cluster'da en fazla ne kadar disk kullanır (replication.factor=3)?",
+      opts: [
+        "Yaklaşık 180 GB",
+        "5 GB",
+        "60 GB",
+        "15 GB"
+      ],
+      a: [0],
+      why: "<code>retention.bytes</code> <b>partition başınadır ve replika başına uygulanır</b>: 12 partition × 5 GB = 60 GB (tek kopya), replication.factor=3 ile cluster genelinde <b>180 GB</b>. 60 GB replikasyonu, 5 GB ve 15 GB ise partition çarpanını atlayan yaygın hatalardır."
+    },
+    {
+      topic: "Broker ekleme",
+      q: "Cluster'a iki yeni broker eklendi ama boş duruyorlar. Neden?",
+      opts: [
+        "Mevcut partition'lar otomatik taşınmaz; kafka-reassign-partitions.sh ile yeniden dağıtılmalıdır",
+        "Yeni broker'lar controller tarafından henüz tanınmamıştır",
+        "auto.leader.rebalance.enable kapalıdır",
+        "Yeni broker'lar yalnızca yeni topic'ler için kullanılır ve bu değiştirilemez"
+      ],
+      a: [0],
+      why: "Kafka mevcut partition'ları kendiliğinden dengelemez — bu bilinçli bir tasarım (otomatik taşıma büyük veri hareketi demektir). Yeni broker'lar <b>yeni</b> topic/partition'lara aday olur; eskiler için elle reassignment gerekir. <code>auto.leader.rebalance</code> yalnızca <i>liderliği</i> tercih edilen replikaya taşır, replikayı taşımaz."
+    },
+    {
+      topic: "Partition sayısı",
+      q: "Bugünkü throughput 1 partition'la karşılanabiliyor ama gelecekte 40 paralel tüketici hedefleniyor. Kaç partition seçilmeli?",
+      opts: [
+        "En az 40, tercihen güvenlik payıyla daha fazla — paralellik belirleyici kısıttır",
+        "1 — bugünkü ihtiyaç budur, sonra artırılır",
+        "3 — broker sayısı kadar",
+        "40'tan az, çünkü fazla partition her zaman zararlıdır"
+      ],
+      a: [0],
+      why: "Klasik consumer group'ta tüketici tavanı partition sayısıdır ve <b>sonradan artırmak sıra garantisini kırar</b> — bu yüzden partition sayısı bugünün değil <b>geleceğin paralelliğine</b> göre seçilir. \"Sonra artırırız\" en pahalı varsayımdır. (Share group kullanılacaksa bu kısıt kalkar, 3.4.)"
+    },
+    {
+      topic: "Sıcak partition",
+      q: "Key skew'i çözmek için 'salt' (tuz) eklemenin bedeli nedir?",
+      opts: [
+        "Aynı key farklı partition'lara dağılır; o key için sıra garantisi kaybolur",
+        "Mesaj boyutu ciddi ölçüde artar",
+        "Compaction çalışmaz hâle gelir",
+        "Consumer group sayısı sınırlanır"
+      ],
+      a: [0],
+      why: "<code>key + \"-\" + (i % 10)</code> gibi bir tuz yükü dağıtır ama artık aynı mantıksal varlığın olayları farklı partition'lara gider → <b>sıra garantisi kaybolur</b>. Bu yüzden yalnızca sıranın gerekmediği yüklerde kullanılır. Sıra gerekiyorsa doğru çözüm <b>bileşik key</b>'dir (daha dar bir sıra birimi seçmek)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

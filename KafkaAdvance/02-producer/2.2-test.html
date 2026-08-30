@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-2",
+  code: "Producer · 2.2",
+  title: "Idempotence ve sıralama garantisi",
+  back: "2.2-idempotence-ve-siralama.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Mekanizma",
+      q: "Broker, idempotent bir producer'dan <code>sequence = son + 3</code> olan bir batch aldı. Ne yapar?",
+      opts: [
+        "OutOfOrderSequenceException döner — arada kayıp batch var demektir",
+        "Batch'i kabul eder ve aradaki offsetleri boş bırakır",
+        "Batch'i duplicate sayıp sessizce atar",
+        "Producer'dan eksik batch'leri yeniden göndermesini ister"
+      ],
+      a: [0],
+      why: "Kural üçlüdür: <code>== son+1</code> → yaz · <code>&lt;= son</code> → duplicate, sessizce at · <code>&gt; son+1</code> → <b>boşluk var</b> → <code>OutOfOrderSequenceException</code>. Boşluk kabul edilseydi idempotence'ın sıra garantisi anlamsızlaşırdı. Bu hata <b>ölümcüldür</b>: producer yeniden oluşturulmalı ve veri kaybı ihtimali araştırılmalıdır."
+    },
+    {
+      topic: "Oturum sınırı",
+      q: "Idempotent producer kullanan bir uygulama çöktü, yeniden başladı ve gönderildiği belirsiz kalan kaydı tekrar gönderdi. Duplicate olur mu?",
+      opts: [
+        "Evet — yeni oturum yeni bir producerId alır, broker'ın 'bunu gördüm' bağı kopar",
+        "Hayır — broker aynı içeriği tanır ve eler",
+        "Hayır — producerId uygulamanın client.id'sinden türetildiği için aynı kalır",
+        "Evet ama yalnızca acks=1 kullanılıyorsa"
+      ],
+      a: [0],
+      why: "Idempotence garantisi <b>oturum başınadır</b>. Lab'da iki oturumun <code>producerId</code>'leri farklıydı (5005 ve 4004) ve her ikisinde <code>baseSequence: 0</code> ile başlandı. Restart'a dayanıklı tekilleştirme için <b>transactional.id</b> gerekir (4.1). Broker içerik karşılaştırması <i>hiç</i> yapmaz."
+    },
+    {
+      topic: "max.in.flight",
+      q: "Idempotence açıkken sıra garantisi için max.in.flight.requests.per.connection kaç olmalıdır?",
+      opts: [
+        "5'e kadar herhangi bir değer — broker sequence'a göre sırayı düzeltir",
+        "Mutlaka 1",
+        "Sınır yok, istenen değer verilebilir",
+        "En az 6 olmalı, aksi hâlde idempotence devre dışı kalır"
+      ],
+      a: [0],
+      why: "Broker <code>(PID, partition)</code> için son <b>5</b> batch'in durumunu tutar; bu yüzden idempotence açıkken 5'e kadar in-flight istekle bile sıra korunur. \"Sıra istiyorsan 1 yap\" tavsiyesi <b>Kafka 3.0 öncesine</b> aittir ve bugün throughput'u gereksiz yere beşte birine düşürür. 6 ve üzeri client tarafında reddedilir."
+    },
+    {
+      topic: "Yapılandırma çakışmaları",
+      q: "Kafka 3.x'ten 4.x'e geçen bir uygulama 'Must set acks to all in order to use the idempotent producer' hatasıyla başlamıyor. Sebep nedir?",
+      opts: [
+        "enable.idempotence varsayılan true ve kodda acks=1 kalmış",
+        "Kafka 4.x'te acks ayarı kaldırıldı",
+        "Broker min.insync.replicas=2 istiyor",
+        "Client sürümü broker'dan eski"
+      ],
+      a: [0],
+      why: "<code>enable.idempotence=true</code> <b>3.0'dan beri varsayılandır</b> ve <code>acks=all</code>, <code>retries&gt;0</code>, <code>max.in.flight&le;5</code> şartlarını dayatır. Eski kodda kalan <code>acks=1</code> artık <b>başlangıçta</b> reddedilir — çalışma anında sessizce garanti kaybetmektense erken patlamak bilinçli bir tasarım tercihidir."
+    },
+    {
+      topic: "Kapsam",
+      q: "Idempotent producer aşağıdakilerden hangisini <b>garanti etmez</b>? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Uygulama restart'ından sonra duplicate olmamasını",
+        "Aynı kaydı bilerek iki kez send() edersen birinin elenmesini",
+        "Tek oturumda retry kaynaklı duplicate olmamasını",
+        "Tek partition içinde sıranın korunmasını"
+      ],
+      a: [0, 1],
+      why: "Gerçek garanti: <b>tek oturum, tek partition</b>, retry kaynaklı duplicate yok ve sıra korunur. Restart yeni PID demektir (garanti kopar); iki kez bilerek gönderilen kayıtlar <b>farklı sequence</b> taşır ve ikisi de yazılır — idempotence içerik tekilleştirmesi değildir."
+    },
+    {
+      topic: "Hata sınıfları",
+      q: "Producer'da hızlı hata almak istiyorsun. Doğru ayar hangisidir?",
+      opts: [
+        "delivery.timeout.ms değerini düşürmek",
+        "retries=0 yapmak",
+        "request.timeout.ms'i 1000'e düşürmek ve retries'i sınırsız bırakmak",
+        "max.block.ms'i 0 yapmak"
+      ],
+      a: [0],
+      why: "Asıl teslimat bütçesi <b><code>delivery.timeout.ms</code></b>'tir (varsayılan 120 s); <code>retries</code> varsayılanı zaten <code>Integer.MAX_VALUE</code> olduğu için anlamsızlaşmıştır. <code>retries=0</code> hem idempotence ile uyumsuzdur hem de geçici hataları kalıcı gibi gösterir. <code>max.block.ms=0</code> tampon doluluğunu etkiler, teslimatı değil."
+    },
+    {
+      topic: "Hata sınıfları",
+      q: "Aşağıdaki hatalardan hangisi <b>yeniden denenebilir</b> (retriable) değildir?",
+      opts: [
+        "RecordTooLargeException",
+        "NotEnoughReplicasException",
+        "NotLeaderOrFollowerException",
+        "TimeoutException"
+      ],
+      a: [0],
+      why: "<code>RecordTooLargeException</code> <b>kalıcıdır</b>: aynı kayıt kaç kez denense de sınırı aşmaya devam eder. Diğer üçü geçicidir — lider değişimi, ISR daralması ve zaman aşımı zamanla düzelebilir; client bunları <code>delivery.timeout.ms</code> bitene kadar kendisi dener."
+    },
+    {
+      topic: "Mekanizma",
+      q: "Broker, idempotence için producer durumunu nerede kalıcı hâle getirir?",
+      opts: [
+        "Partition dizinindeki .snapshot dosyalarında",
+        "__consumer_offsets topic'inde",
+        "__cluster_metadata log'unda",
+        "Yalnızca bellekte; restart'ta kaybolur"
+      ],
+      a: [0],
+      why: "1.1'de gördüğün <code>.snapshot</code> dosyaları producer state'i (PID → son sequence) tutar; broker restart'ından sonra da duplicate tespiti çalışsın diye. <code>__consumer_offsets</code> tüketici offsetleri, <code>__cluster_metadata</code> cluster metadata'sı içindir — farklı dünyalar."
+    },
+    {
+      topic: "Kapsam",
+      q: "Idempotence ile exactly-once semantics (EOS) arasındaki fark nedir?",
+      opts: [
+        "Idempotence retry duplicate'ini önler; EOS ayrıca tüketme-işleme-yazma döngüsünü atomik yapar",
+        "Aynı şeyin iki adıdır",
+        "EOS yalnızca consumer tarafını, idempotence yalnızca producer tarafını kapsar",
+        "Idempotence EOS'un daha güçlü hâlidir"
+      ],
+      a: [0],
+      why: "Idempotence <b>tek producer oturumunda, tek partition için</b> retry duplicate'ini önler. EOS ise <code>transactional.id</code>, transaction'lar ve tüketici tarafında <code>isolation.level=read_committed</code> ile <i>tüket-işle-yaz</i> döngüsünü atomik hâle getirir (4.1). EOS idempotence'ın <b>üzerine</b> kurulur, tersi değil."
+    },
+    {
+      topic: "Yapılandırma çakışmaları",
+      q: "enable.idempotence=true iken hangi ayarlar client tarafında <b>reddedilir</b>? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "retries = 0",
+        "max.in.flight.requests.per.connection = 6",
+        "linger.ms = 100",
+        "compression.type = zstd"
+      ],
+      a: [0, 1],
+      why: "Idempotence üç şart dayatır: <code>acks=all</code>, <code>retries&gt;0</code>, <code>max.in.flight&le;5</code>. <code>retries=0</code> ve <code>max.in.flight=6</code> bu şartları ihlal eder ve producer <b>hiç oluşturulamaz</b>. <code>linger.ms</code> ve <code>compression.type</code> idempotence'tan tamamen bağımsızdır."
+    },
+    {
+      topic: "Sıralama",
+      q: "Idempotence <b>kapalıyken</b> max.in.flight=5 ve retry etkinken sıra neden bozulabilir?",
+      opts: [
+        "Başarısız olan batch yeniden denenirken, sonraki batch'ler başarıyla yazılmış olabilir",
+        "Broker batch'leri rastgele sıraya koyar",
+        "Partitioner her retry'da farklı partition seçer",
+        "Sıkıştırma batch sırasını değiştirir"
+      ],
+      a: [0],
+      why: "Beş istek aynı anda yoldadır; #1 geçici bir hatayla dönüp yeniden denenirken #2 ve #3 başarıyla yazılabilir → log'da 2, 3, 1 sırası oluşur. Idempotence açıkken broker <b>sequence</b> sayesinde sıra dışı geleni doğru yere koyar ya da reddeder. Partitioner retry'da partition değiştirmez; sıkıştırma sıraya dokunmaz."
+    },
+    {
+      topic: "Zaman bütçesi",
+      q: "delivery.timeout.ms için doğru ilişki nedir?",
+      opts: [
+        "delivery.timeout.ms ≥ linger.ms + request.timeout.ms olmalıdır",
+        "delivery.timeout.ms ≤ request.timeout.ms olmalıdır",
+        "delivery.timeout.ms yalnızca retries=0 iken geçerlidir",
+        "delivery.timeout.ms broker tarafında ayarlanır"
+      ],
+      a: [0],
+      why: "<code>delivery.timeout.ms</code> (varsayılan 120 s) kaydın tampona girmesinden nihai sonuca kadar geçen <b>toplam bütçedir</b> ve bileşenlerinden küçük olamaz — client bu kısıtı doğrular. Bu, <b>client</b> tarafı bir ayardır; broker'da karşılığı yoktur."
+    },
+    {
+      topic: "Oturum sınırı",
+      q: "Restart'a dayanıklı duplicate koruması için ne gerekir?",
+      opts: [
+        "transactional.id ayarlayıp transaction API'sini kullanmak",
+        "client.id'yi sabit tutmak",
+        "enable.idempotence=true bırakmak yeterlidir",
+        "acks=all ve min.insync.replicas=2"
+      ],
+      a: [0],
+      why: "<code>transactional.id</code> <b>kalıcı bir kimliktir</b>: yeni oturum aynı id ile başlayınca coordinator eski PID'yi bulur, epoch'u artırır ve yarım kalan transaction'ları temizler. <code>client.id</code> yalnızca izleme/log etiketidir, PID'yi etkilemez. <code>acks</code>/<code>min.insync</code> dayanıklılıkla ilgilidir, tekillikle değil."
+    },
+    {
+      topic: "Hata sınıfları",
+      q: "UnknownProducerIdException hatası ne anlama gelir?",
+      opts: [
+        "Broker, o producer'ın durumunu artık tutmuyor (uzun süre yazım olmaması / retention nedeniyle düşmüş)",
+        "Producer henüz init edilmemiş",
+        "ACL yetersiz",
+        "Transaction coordinator bulunamadı"
+      ],
+      a: [0],
+      why: "Broker, producer state'i sonsuza kadar tutmaz. Bir producer uzun süre yazmazsa (ya da ilgili segmentler temizlenirse) PID kaydı düşebilir ve sonraki batch <code>UnknownProducerIdException</code> alır. Bu <b>ölümcül</b> sınıftadır: producer yeniden oluşturulmalıdır. Yetkilendirme ve coordinator hataları ayrı istisna tipleriyle gelir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

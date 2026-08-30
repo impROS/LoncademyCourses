@@ -1,0 +1,82 @@
+name: kafkaadv
+
+# Kafka Advanced çalışma seti — 3 broker'lı KRaft cluster (controller + broker birleşik mod).
+# Apache Kafka'nın resmî docker/examples dosyasından uyarlandı; iç topic'lerin RF'i 3'e çekildi
+# ki replikasyon ve ISR davranışını gerçekten gözlemleyebilesin.
+#
+#   Başlat : docker compose -f lab/docker/docker-compose.yml up -d
+#   Durdur : docker compose -f lab/docker/docker-compose.yml down          (veri kalır)
+#   Sil    : docker compose -f lab/docker/docker-compose.yml down -v       (veri de gider)
+#
+# Host'tan bağlanma adresi: localhost:29092,localhost:39092,localhost:49092
+
+x-kafka-common: &kafka-common
+  image: apache/kafka:4.3.1
+  environment: &kafka-env
+    KAFKA_PROCESS_ROLES: 'broker,controller'
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,HOST:PLAINTEXT'
+    KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+    KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+    KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+    CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+    KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+    # --- iç topic'ler: 3 broker olduğu için gerçekçi ayar ---
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR: 3
+    KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR: 2
+    # --- lab kolaylıkları ---
+    KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+    KAFKA_NUM_PARTITIONS: 3
+    KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+    KAFKA_MIN_INSYNC_REPLICAS: 2
+    # --- JMX: 5.2 Metrikler konusunda kullanacağız ---
+    KAFKA_JMX_PORT: 9999
+    KAFKA_OPTS: '-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false'
+
+services:
+  kafka-1:
+    <<: *kafka-common
+    hostname: kafka-1
+    container_name: kafka-1
+    ports: [ "29092:9092", "19991:9999" ]
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: 'INTERNAL://:19092,CONTROLLER://:9093,HOST://:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka-1:19092,HOST://localhost:29092'
+      KAFKA_JMX_HOSTNAME: localhost
+    volumes: [ "kafka1-data:/var/lib/kafka/data" ]
+
+  kafka-2:
+    <<: *kafka-common
+    hostname: kafka-2
+    container_name: kafka-2
+    ports: [ "39092:9092", "29991:9999" ]
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: 'INTERNAL://:19092,CONTROLLER://:9093,HOST://:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka-2:19092,HOST://localhost:39092'
+      KAFKA_JMX_HOSTNAME: localhost
+    volumes: [ "kafka2-data:/var/lib/kafka/data" ]
+
+  kafka-3:
+    <<: *kafka-common
+    hostname: kafka-3
+    container_name: kafka-3
+    ports: [ "49092:9092", "39991:9999" ]
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: 'INTERNAL://:19092,CONTROLLER://:9093,HOST://:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka-3:19092,HOST://localhost:49092'
+      KAFKA_JMX_HOSTNAME: localhost
+    volumes: [ "kafka3-data:/var/lib/kafka/data" ]
+
+volumes:
+  kafka1-data:
+  kafka2-data:
+  kafka3-data:

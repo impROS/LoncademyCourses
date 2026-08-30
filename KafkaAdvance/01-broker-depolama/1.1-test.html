@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-1",
+  code: "Broker & Depolama · 1.1",
+  title: "Log segment, index ve sıfır kopya",
+  back: "1.1-log-segment-ve-index.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Partition dizini",
+      q: "Bir partition dizininde <code>00000000000000004711.log</code> dosyasını görüyorsun. Bu isim ne anlama gelir?",
+      opts: [
+        "Segmentin ilk kaydının offset'i 4711'dir",
+        "Segment 4711 kayıt içerir",
+        "Segment 4711 bayt büyüklüğündedir",
+        "Segment 4711 numaralı partition'a aittir"
+      ],
+      a: [0],
+      why: "Segment dosyası adı <b>base offset</b>'tir: o dosyadaki ilk kaydın offset'i. Kafka bir offset ararken önce dosya adları üzerinde ikili arama yapar — isim bu yüzden 20 haneye sıfırla doldurulur, sözlük sırası sayı sırasıyla aynı olsun diye. Kayıt sayısı ve dosya boyutu isimden okunmaz."
+    },
+    {
+      topic: "Seyrek index",
+      q: "Kafka'nın <code>.index</code> dosyası neden her kaydı içermez?",
+      opts: [
+        "Index seyrektir; index.interval.bytes kadar veride bir girdi düşülür, gerisi log'da ileri taranır",
+        "Yalnızca key'i olan kayıtlar indekslenir",
+        "Yalnızca batch'lerin ilk kaydı indekslenir, batch içi kayıtlar indekslenemez",
+        "Sıkıştırılmış kayıtlar indekslenemediği için index eksik kalır"
+      ],
+      a: [0],
+      why: "Index <b>seyrektir</b> (sparse): varsayılan <code>index.interval.bytes=4096</code> kadar veri biriktiğinde bir girdi eklenir. Arama = index'te ikili arama + log'da kısa ileri tarama. Tam index RAM/mmap maliyetini katlar ve kazancı küçüktür. Key'in ya da sıkıştırmanın indekslemeyle ilgisi yoktur."
+    },
+    {
+      topic: "Segment roll",
+      q: "<code>segment.bytes=1073741824</code> (1 GiB) ayarlı bir topic'te segmentler sürekli ~150 MB'de dönüyor. En olası sebep nedir?",
+      opts: [
+        "segment.index.bytes doluyor — özellikle 12 baytlık time index girdileri",
+        "retention.ms segmenti erken kapatıyor",
+        "Kafka segment.bytes'ı üst sınır değil hedef olarak kullanır, %15 civarında döndürür",
+        "min.insync.replicas sayısı segment boyutunu böler"
+      ],
+      a: [0],
+      why: "Segment <b>dört limitten ilk dolanla</b> döner: <code>segment.bytes</code>, <code>segment.ms</code>, offset index ve time index. Time index girdisi <b>12 bayt</b>, offset index girdisi 8 bayttır; küçük kayıtlarda time index önce dolar ve roll'ü o tetikler. <code>retention.ms</code> silmeyle ilgilidir, roll ile değil. \"%15 hedef\" diye bir davranış yok."
+    },
+    {
+      topic: "Segment roll",
+      q: "Günde sadece birkaç mesaj alan bir topic'te <code>retention.ms=3600000</code> (1 saat) ayarlı olmasına rağmen haftalarca eski veri diskte duruyor. Sebebi ve çözümü nedir?",
+      opts: [
+        "Veri aktif segmentte; aktif segment silinmez. segment.ms düşürülerek segment döndürülmeli",
+        "retention.ms yalnızca compaction'lı topic'lerde çalışır; cleanup.policy=delete yapılmalı",
+        "Retention thread'i varsayılan olarak kapalıdır; log.cleaner.enable=true yapılmalı",
+        "Consumer offset'i geride olduğu için Kafka silmeyi erteler; offset ilerletilmeli"
+      ],
+      a: [0],
+      why: "Retention <b>segment düzeyinde</b> çalışır ve <b>aktif segment asla silinmez</b>. Trafik azsa segment hiç dolmaz, hiç dönmez, dolayısıyla hiç silinmez. Çözüm <code>segment.ms</code>'i düşürmektir (KIP-1030 sonrası min. 1 dakika). Kafka silmeyi consumer offset'ine göre <i>ertelemez</i> — bu Kafka'nın hiç yapmadığı bir şey, klasik yanlış inanış."
+    },
+    {
+      topic: "Record batch",
+      q: "802 baytlık bir değer, dump çıktısında <code>size: 877</code> olarak görünüyor. Aradaki fark nedir?",
+      opts: [
+        "Record batch başlığı ve kayıt metadata'sı (key, timestamp, sequence, CRC vb.)",
+        "Replikasyon için eklenen kontrol toplamı; her replika kendi kopyasında farklı boyut görür",
+        "Sıkıştırma sözlüğü; compresscodec=none olsa da sözlük yazılır",
+        "Page cache hizalaması için eklenen dolgu (padding)"
+      ],
+      a: [0],
+      why: "Fark <b>batch başlığı + kayıt metadata'sıdır</b>: baseOffset, producerId, producerEpoch, sequence, CRC, timestamp, key boyutu... Küçük mesajlarda bu sabit maliyet oransal olarak büyür — 100 baytlık mesajlarda %50'yi geçebilir. Bu yüzden batch'lemek yalnızca hız değil <b>yer</b> kazandırır. Padding ve replika-başına-farklı-boyut diye bir mekanizma yok."
+    },
+    {
+      topic: "Record batch",
+      q: "Kafka'da sıkıştırma hangi seviyede uygulanır ve bunun pratik sonucu nedir?",
+      opts: [
+        "Record batch seviyesinde; büyük batch daha iyi sıkıştırma oranı verir",
+        "Tek kayıt seviyesinde; batch boyutunun sıkıştırma oranına etkisi yoktur",
+        "Segment seviyesinde; broker segmenti kapatırken sıkıştırır",
+        "Partition seviyesinde; broker tüm partition'ı periyodik sıkıştırır"
+      ],
+      a: [0],
+      why: "Sıkıştırma <b>batch'in tamamına</b> uygulanır ve broker batch'i açmadan diske yazar. Bu yüzden <code>linger.ms</code> / <code>batch.size</code> artırmak sıkıştırma oranını iyileştirir; disk ve ağ maliyeti düşer. Broker'ın segment ya da partition'ı kendi başına sıkıştırması diye bir mekanizma yoktur (compaction farklı bir şeydir)."
+    },
+    {
+      topic: "Page cache ve fsync",
+      q: "Kafka varsayılan olarak her yazmada fsync çağırmaz. Dayanıklılığı nereden alır?",
+      opts: [
+        "Replikasyondan — veri birden fazla broker'ın page cache/diskine yazılır",
+        "Page cache'in kalıcı olmasından — OS çökse bile page cache korunur",
+        "Her segment kapanışında yapılan tek bir fsync'ten",
+        "Batch CRC'sinden — bozulan veri otomatik yeniden üretilir"
+      ],
+      a: [0],
+      why: "Kafka'nın dayanıklılık modeli <b>replikasyon temellidir</b>: aynı veri N broker'da vardır, birinin çökmesi veriyi yok etmez. Her yazmada fsync yapmak throughput'u onda birine indirir ve kazanç replikasyona kıyasla küçüktür. Page cache <b>kalıcı değildir</b> — OS/makine çökerse gider; bu tam da replikasyonun kapattığı risktir. CRC bozulmayı <i>tespit</i> eder, onarmaz."
+    },
+    {
+      topic: "Sıfır kopya",
+      q: "Bir ekip TLS'i etkinleştirdikten sonra broker CPU kullanımının trafik değişmeden ikiye katlandığını görüyor. Teknik açıklaması nedir?",
+      opts: [
+        "sendfile ile sıfır kopya devre dışı kalır; veri kullanıcı alanına kopyalanıp şifrelenir",
+        "TLS handshake'leri her fetch isteğinde yeniden yapılır",
+        "TLS, sıkıştırmayı devre dışı bıraktığı için veri hacmi artar",
+        "TLS açıldığında Kafka page cache yerine heap kullanmaya başlar"
+      ],
+      a: [0],
+      why: "Sıfır kopya (<code>sendfile</code>) verinin çekirdek alanından doğrudan sokete gitmesidir; şifreleme veriye dokunmayı gerektirdiğinden bu yol kapanır. Aynı şey eski client'lar için format dönüşümünde de olur. Handshake'ler bağlantı başına yapılır, fetch başına değil; TLS sıkıştırmayı kapatmaz ve Kafka'yı heap kullanmaya zorlamaz."
+    },
+    {
+      topic: "Page cache ve fsync",
+      q: "Broker JVM heap'i hakkında hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Heap küçük tutulmalı; kalan RAM page cache'e bırakılmalı",
+        "Kayıt verisi heap'te önbelleklenmez, page cache'te durur",
+        "Heap ne kadar büyükse okuma o kadar hızlanır çünkü segmentler heap'e yüklenir",
+        "Heap boyutu replikasyon gecikmesini doğrudan belirler"
+      ],
+      a: [0, 1],
+      why: "Kafka veriyi <b>heap'te önbelleklemez</b>; OS page cache'ini kullanır ve okumada sıfır kopya ile doğrudan sokete gönderir. Bu yüzden büyük heap fayda getirmez, GC duraklamaları getirir; pratikte 6 GB civarı yeterlidir. \"Segmentler heap'e yüklenir\" iddiası Kafka'nın tasarımının tam tersidir."
+    },
+    {
+      topic: "Partition dizini",
+      q: "Partition dizinindeki <code>leader-epoch-checkpoint</code> dosyası ne işe yarar?",
+      opts: [
+        "Lider dönemlerini (epoch → başlangıç offset) tutar; lider değişiminde doğru truncate için kullanılır",
+        "Hangi broker'ın lider olacağını belirleyen seçim oylarını tutar",
+        "Consumer group'ların offset'lerini tutar",
+        "Idempotent producer'ların sequence durumunu tutar"
+      ],
+      a: [0],
+      why: "<code>leader-epoch-checkpoint</code>, her lider döneminin hangi offset'te başladığını kaydeder. Lider değiştiğinde follower, hangi noktadan sonrasını atması gerektiğini bu bilgiyle belirler — eski \"high watermark ile truncate\" yönteminin veri kaybı açıklarını kapatır (1.2). Producer sequence durumu <code>.snapshot</code> dosyalarında, consumer offset'leri <code>__consumer_offsets</code> topic'inde tutulur."
+    },
+    {
+      topic: "Seyrek index",
+      q: "<code>index.interval.bytes</code> değerini varsayılan 4096'dan 512'ye düşürürsen ne olur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Index dosyaları büyür, mmap ve bellek kullanımı artar",
+        "Bir offset bulunurken yapılan ileri tarama kısalır",
+        "Log dosyalarının boyutu küçülür",
+        "Segment roll'ü artık yalnızca segment.bytes ile tetiklenir"
+      ],
+      a: [0, 1],
+      why: "Daha sık index girdisi = daha büyük index dosyası (daha çok mmap, daha çok bellek) ama hedefe daha yakın başlangıç noktası (daha kısa tarama). Log dosyası boyutu değişmez — index ayrı dosyadır. Aksine index daha hızlı dolacağı için <b>index kaynaklı roll daha sık</b> olur, tersi değil."
+    },
+    {
+      topic: "Segment roll",
+      q: "Kafka 4.0 ile (KIP-1030) segment ayarlarının alt sınırları değişti. Aşağıdakilerden hangisi doğrudur?",
+      opts: [
+        "segment.bytes en az 1 MiB, segment.ms en az 1 dakika olabilir",
+        "segment.bytes en az 14 bayt, segment.ms en az 1 ms olabilir",
+        "segment.bytes'ın alt sınırı kaldırıldı, istenen değer verilebilir",
+        "segment.ms artık ayarlanamaz, sabit 7 gündür"
+      ],
+      a: [0],
+      why: "KIP-1030 saçma küçük değerleri yasakladı: <code>segment.bytes</code> min <b>1 MiB</b> (eskiden 14 bayt), <code>segment.ms</code> min <b>1 dakika</b> (eskiden 1 ms), <code>segment.index.bytes</code> min 1 KiB. Sebep: aşırı küçük segmentler broker açılışını ve bellek kullanımını felç ediyordu. Değerler hâlâ ayarlanabilir, sadece tabanları yükseldi."
+    },
+    {
+      topic: "Broker işletimi",
+      q: "Bir broker'ın yeniden başlaması 20 dakika sürüyor. Log dizininde on binlerce segment dosyası var. En olası sebep nedir?",
+      opts: [
+        "Açılışta her segmentin index'i açılıp doğrulanıyor; segment sayısı çok fazla",
+        "Broker açılışta tüm veriyi diğer broker'lardan yeniden çekiyor",
+        "Page cache ısınana kadar broker istek kabul etmiyor",
+        "Consumer offset'leri her açılışta yeniden hesaplanıyor"
+      ],
+      a: [0],
+      why: "Açılışta broker her partition'ın segmentlerini tarar, index'leri mmap'ler ve gerekirse yeniden kurar. Segment sayısı arttıkça bu süre doğrusal büyür — sebebi genelde çok küçük <code>segment.bytes</code>/<code>segment.index.bytes</code> ya da aşırı partition sayısıdır (5.5). Broker temiz kapanışta veriyi yeniden çekmez, page cache ısınması istek kabulünü engellemez."
+    },
+    {
+      topic: "Record batch",
+      q: "Dump çıktısındaki <code>producerId</code>, <code>producerEpoch</code> ve <code>baseSequence</code> alanları hangi özelliğin çalışması için vardır?",
+      opts: [
+        "Idempotent producer — broker'ın duplicate batch'leri tespit edip atması için",
+        "Consumer group offset takibi için",
+        "Compaction'ın hangi kaydın daha yeni olduğunu bulması için",
+        "Tiered storage'ın segmenti uzak depoya taşırken kullanması için"
+      ],
+      a: [0],
+      why: "Bu üçlü <b>idempotence</b>'ın temelidir (2.2): broker her producer id + partition için son sequence'i hatırlar; aynı sequence tekrar gelirse batch'i sessizce atar. <code>.snapshot</code> dosyaları bu durumu restart sonrasına taşır. Compaction offset sırasına bakar, consumer offset'leri ayrı topic'te tutulur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

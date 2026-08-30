@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.5 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-5",
+  code: "Broker & Depolama · 1.5",
+  title: "Tiered storage",
+  back: "1.5-tiered-storage.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İki katmanlı retention",
+      q: "Bir topic'te <code>retention.ms=30 gün</code> ve <code>local.retention.ms=2 gün</code>. Bu ne anlama gelir?",
+      opts: [
+        "Toplam 30 gün saklanır; son 2 gün broker diskinde, gerisi uzak depoda",
+        "Toplam 32 gün saklanır; 30 gün uzakta, 2 gün yerelde",
+        "Veri 2 gün yerelde tutulur, 30 gün sonra uzak depoya taşınır",
+        "Yerel 2 gün doldukça uzak depoya 30 günlük kopya alınır"
+      ],
+      a: [0],
+      why: "<code>retention.*</code> <b>toplam</b> saklamadır; <code>local.retention.*</code> onun <b>alt kümesidir</b>. Süreler toplanmaz. Taşıma segment kapandıktan hemen sonra başlar; <code>local.retention</code> yalnızca <i>yerel kopyanın ne zaman silinebileceğini</i> belirler — yani \"30 gün sonra taşınır\" ifadesi de yanlıştır."
+    },
+    {
+      topic: "Sınırlar",
+      q: "Tiered storage aşağıdakilerden hangisiyle birlikte <b>kullanılamaz</b>?",
+      opts: [
+        "cleanup.policy=compact olan topic'ler",
+        "replication.factor=3 olan topic'ler",
+        "acks=all ile yazan producer'lar",
+        "Birden fazla partition'ı olan topic'ler"
+      ],
+      a: [0],
+      why: "Compaction segmentleri <b>yeniden yazar</b>; uzak depodaki segment ise değiştirilemez (immutable) kabul edilir. Bu yüzden tiered storage compacted topic'lerde desteklenmez — <code>__consumer_offsets</code> gibi iç topic'ler de bu yüzden kapsam dışıdır. Replikasyon, acks ve partition sayısıyla bir çakışma yoktur."
+    },
+    {
+      topic: "Yapılandırma",
+      q: "Bir topic'e <code>remote.storage.enable=true</code> vermeye çalıştın ve 'Tiered Storage functionality is disabled in the broker' hatası aldın. Sebebi nedir?",
+      opts: [
+        "Broker'da remote.log.storage.system.enable=false",
+        "Topic'in replication.factor'ü yetersiz",
+        "local.retention.ms ayarlanmamış",
+        "Kafka sürümü 3.9'dan eski"
+      ],
+      a: [0],
+      why: "Broker seviyesindeki ana anahtar <code>remote.log.storage.system.enable</code> varsayılan olarak <b>false</b>'tur ve topic seviyesi ayar bunu aşamaz. Hiyerarşi nettir: önce broker açılır, sonra topic. Sürüm 4.3 olsa bile broker anahtarı kapalıysa aynı hata alınır."
+    },
+    {
+      topic: "Performans",
+      q: "Uzak depodan geriye dönük ağır bir replay başlattın ve canlı tüketiciler geride kalmaya başladı. Teknik sebebi nedir?",
+      opts: [
+        "Uzak segment okumada sıfır kopya kullanılamaz; broker veriyi indirip CPU/ağ harcar",
+        "Uzak okuma partition liderini değiştirir ve rebalance tetiklenir",
+        "Uzak depodan okuma sırasında yerel segmentler kilitlenir",
+        "Replay sırasında ISR daralır ve yazma yavaşlar"
+      ],
+      a: [0],
+      why: "Yerel segmentler <code>sendfile</code> ile doğrudan sokete gider (1.1); <b>uzak segmentler için bu mümkün değildir</b> — broker nesne depodan indirir, belleğe alır, gönderir. Bu CPU ve ağ tüketir ve canlı trafiği etkiler. Çözüm: KIP-956 kotaları ve replay'i düşük trafikli saate almak. Kilitlenme, rebalance ve ISR daralması diye mekanizmalar burada yoktur."
+    },
+    {
+      topic: "Amaç",
+      q: "Tiered storage'ın çözdüğü asıl problem nedir?",
+      opts: [
+        "Saklama ihtiyacının hesaplama ihtiyacından bağımsız ölçeklenebilmesi",
+        "Partition sayısı sınırının kalkması",
+        "Consumer lag'inin azalması",
+        "Replikasyonun gereksiz hâle gelmesi"
+      ],
+      a: [0],
+      why: "Klasik Kafka'da uzun saklama = daha çok disk = daha çok broker, oysa <b>CPU ihtiyacın artmaz</b>. Tiered storage bu bağı koparır. Partition sınırları ayrı bir konudur (5.5); lag <i>azalmaz</i>, geriden okuma aksine yavaşlar; replikasyon yerel katmanda aynen sürer."
+    },
+    {
+      topic: "Mekanizma",
+      q: "Tiered storage'da hangi segmentler uzak depoya taşınır?",
+      opts: [
+        "Yalnızca kapanmış (rolled) segmentler; aktif segment asla",
+        "Tüm segmentler, aktif olan dahil",
+        "Yalnızca retention.ms süresini doldurmuş segmentler",
+        "Yalnızca compaction'dan geçmiş segmentler"
+      ],
+      a: [0],
+      why: "Aktif segment yazılmaya devam ettiği için taşınamaz — bu, 1.1'deki \"aktif segment silinmez/temizlenmez\" kuralının kardeşidir. Segment <b>kapanır kapanmaz</b> kopyalanmaya aday olur; <code>retention.ms</code> dolmasını beklemez (o zaten silme eşiğidir). Compaction ile birlikte kullanılamaz."
+    },
+    {
+      topic: "Mekanizma",
+      q: "Tiered storage'da 'hangi segment nerede' bilgisi varsayılan olarak nerede tutulur?",
+      opts: [
+        "__remote_log_metadata iç topic'inde (TopicBasedRemoteLogMetadataManager)",
+        "Uzak depodaki bir manifest dosyasında",
+        "__cluster_metadata log'unda",
+        "Her broker'ın yerel diskindeki bir SQLite veritabanında"
+      ],
+      a: [0],
+      why: "Varsayılan <code>remote.log.metadata.manager.class.name</code> değeri <code>TopicBasedRemoteLogMetadataManager</code>'dır: metadata yine <b>bir Kafka topic'inde</b> tutulur. Bu, Kafka'nın kendi mekanizmalarını kendine uygulama alışkanlığının bir örneğidir. <code>__cluster_metadata</code> cluster metadata'sı içindir (1.3), segment yerleşimi için değil."
+    },
+    {
+      topic: "Kapasite hesabı",
+      q: "Saniyede 5.000 mesaj × 1 KB, replication.factor=3, 90 gün saklama. Uzak depo dahil toplam ham veri yaklaşık ne kadardır?",
+      opts: [
+        "Yaklaşık 117 TB",
+        "Yaklaşık 39 TB",
+        "Yaklaşık 13 TB",
+        "Yaklaşık 400 GB"
+      ],
+      a: [0],
+      why: "5.000 × 1 KB = 5 MB/s → günlük ≈ 432 GB → 90 gün ≈ <b>38,9 TB</b> (tek kopya). replication.factor=3 ile ≈ <b>117 TB</b>. Kapasite sorularında en sık atlanan çarpan replikasyondur; 39 TB şıkkı tam olarak bu hatayı ölçüyor."
+    },
+    {
+      topic: "Kavram ayrımı",
+      q: "Tiered storage bir yedekleme (backup) çözümü müdür?",
+      opts: [
+        "Hayır — saklama katmanıdır; yanlışlıkla silinen/bozulan veri uzak katmanda da kaybolur",
+        "Evet — uzak kopya yedek görevi görür",
+        "Evet — nesne depolamanın sürüm kontrolü sayesinde geri alınabilir",
+        "Hayır — çünkü uzak katman yalnızca index tutar, veri tutmaz"
+      ],
+      a: [0],
+      why: "Tiered storage <b>aynı verinin başka bir katmanıdır</b>, ikinci bir kopyası değil: retention dolduğunda uzak segmentler de silinir, yanlış bir silme kararı her iki katmanı da etkiler. Yedekleme için ayrı bir strateji (örneğin başka cluster'a MirrorMaker replikasyonu, 7.2) gerekir. Uzak katman index'i değil <i>segmentin kendisini</i> tutar."
+    },
+    {
+      topic: "Yapılandırma",
+      q: "Tiered storage ile ilgili aşağıdaki ifadelerden hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Kafka 3.6'da erken erişim olarak geldi, 3.9'da üretime hazır ilan edildi",
+        "local.retention.* varsayılan değeri -2'dir ve 'toplam retention'ı kullan' anlamına gelir",
+        "Tiered storage etkinleştirilen bir topic'te sıfır kopya tüm okumalarda çalışmaya devam eder",
+        "Tiered storage yalnızca ZooKeeper modunda desteklenir"
+      ],
+      a: [0, 1],
+      why: "KIP-405 <b>3.6</b>'da erken erişim, <b>3.9</b>'da production-ready oldu (3.9 ayrıca KIP-950 disablement, KIP-956 kota, KIP-1005 tiered offset metriklerini getirdi). <code>-2</code>, \"ayrı bir yerel sınır yok, toplamı kullan\" demektir. Sıfır kopya yalnızca yerel segmentlerde çalışır ve ZooKeeper Kafka 4.x'te zaten yoktur."
+    },
+    {
+      topic: "Kullanım kararı",
+      q: "Aşağıdaki senaryolardan hangisi tiered storage için <b>uygun değildir</b>?",
+      opts: [
+        "Sürekli baştan okunan, tüketicilerin düzenli olarak log başına döndüğü bir topic",
+        "90 günlük denetim arşivi, nadiren geri okunuyor",
+        "Uyum gereği 1 yıl saklanması gereken olay akışı",
+        "Ayda birkaç kez tarihsel replay yapılan ML eğitim verisi"
+      ],
+      a: [0],
+      why: "Sürekli baştan okuma, her seferinde uzak depodan indirme demektir: yavaş, CPU yoğun ve nesne depolama <b>istek maliyeti</b> yüksek. Tiered storage'ın mantığı \"nadiren okunan soğuk veri\"dir. Diğer üçü klasik uygun senaryolardır (ML replay'i için kota önerilir)."
+    },
+    {
+      topic: "Kapasite hesabı",
+      q: "Tiered bir topic'te <code>segment.bytes</code> değerini çok küçük yapmanın uzak depoda yarattığı asıl maliyet nedir?",
+      opts: [
+        "Çok sayıda küçük nesne = çok sayıda PUT/GET isteği; nesne depolarda istek başına ücretlendirme",
+        "Uzak depoda toplam veri boyutu artar",
+        "Metadata topic'i compaction'a girer",
+        "Uzak segmentler sıkıştırılamaz hâle gelir"
+      ],
+      a: [0],
+      why: "Nesne depolama maliyeti iki kalemdir: <b>depolanan bayt</b> ve <b>istek sayısı</b>. Küçük segmentler bayt toplamını değiştirmez ama istek sayısını katlar; ayrıca broker'da tutulan uzak metadata ve index önbelleği de şişer. Sıkıştırma segment boyutundan bağımsızdır (batch seviyesindedir, 1.1)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

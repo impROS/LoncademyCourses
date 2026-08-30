@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-1",
+  code: "Producer · 2.1",
+  title: "RecordAccumulator, batching ve partitioner",
+  back: "2.1-accumulator-ve-batching.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "send() yaşam döngüsü",
+      q: "Bir ekip saniyede yalnızca ~500 mesaj gönderebiliyor. Kodda <code>producer.send(record).get()</code> var. Sorun ve çözüm nedir?",
+      opts: [
+        "Her kayıt için broker cevabı bekleniyor, batching oluşamıyor; callback ile asenkron gönderilmeli",
+        "get() metodu deprecated; send(record, callback).get() kullanılmalı",
+        "Sorun broker tarafındadır, get() istemciyi etkilemez",
+        "acks=all olduğu için yavaş; acks=1 yapılmalı"
+      ],
+      a: [0],
+      why: "<code>get()</code> Future'ı bloklar: bir sonraki kayıt ancak öncekinin broker onayından sonra tampona girer, dolayısıyla <b>batch hiç dolmaz</b>. Doğrusu callback'li asenkron gönderim; sıra garantisi gerekiyorsa idempotence + <code>max.in.flight ≤ 5</code> zaten yeterlidir (2.2). <code>acks</code>'i düşürmek gerçek sorunu (senkronizasyon) çözmez."
+    },
+    {
+      topic: "Batch tetikleyicileri",
+      q: "Bir batch broker'a ne zaman gönderilir?",
+      opts: [
+        "batch.size dolduğunda VEYA linger.ms süresi dolduğunda (flush/close da zorlar)",
+        "batch.size dolduğunda VE linger.ms süresi dolduğunda",
+        "Yalnızca linger.ms dolduğunda",
+        "buffer.memory'nin yarısı dolduğunda"
+      ],
+      a: [0],
+      why: "Koşullar <b>VEYA</b> ile bağlıdır: hangisi önce gerçekleşirse batch gider. <code>flush()</code> ve <code>close()</code> bekleyen her şeyi zorlar. \"VE\" olsaydı seyrek trafikte batch hiç gitmezdi — bu klasik bir yanlış okumadır."
+    },
+    {
+      topic: "Bellek yönetimi",
+      q: "200 partition'lı bir topic'e yazıyorsun ve <code>batch.size=65536</code> (64 KiB). buffer.memory için asgari makul değer nedir?",
+      opts: [
+        "Yaklaşık 200 × 64 KiB ≈ 13 MiB'ın üzerinde, tercihen belirgin şekilde fazlası",
+        "64 KiB yeterlidir, tampon paylaşılır",
+        "Partition sayısının etkisi yoktur, 32 MiB varsayılanı her durumda yeterlidir",
+        "200 × 16 KiB — batch.size ne olursa olsun hesapta 16 KiB kullanılır"
+      ],
+      a: [0],
+      why: "<code>batch.size</code> <b>partition başınadır</b>: producer her partition için ayrı bir batch kuyruğu tutar. 200 partition × 64 KiB ≈ 13 MiB yalnızca <i>aktif batch'ler</i> içindir; gönderilmeyi bekleyenlerle birlikte gerçek ihtiyaç daha yüksektir. Tampon yetersizse <code>send()</code> bloklar (backpressure)."
+    },
+    {
+      topic: "Ölçüm yorumlama",
+      q: "Lab ölçümünde sıkıştırma açıldığında <code>batch-size-avg</code> 65.017'den 8.745'e <b>düştü</b> ama throughput 2,8 kat arttı. Bunun açıklaması nedir?",
+      opts: [
+        "batch-size-avg sıkıştırılmış boyutu ölçer; aynı batch'e çok daha fazla kayıt sığdı (records-per-request-avg 562 → 1923)",
+        "Sıkıştırma batch'leri böler, bu yüzden batch küçülür ama sayısı artar",
+        "Metrik hatalıdır; sıkıştırmayla birlikte anlamını yitirir",
+        "Sıkıştırma linger.ms'i devre dışı bırakır"
+      ],
+      a: [0],
+      why: "<code>batch-size-avg</code> ağa giden <b>sıkıştırılmış</b> baytı ölçer. Aynı 64 KiB'lık batch kapasitesine sıkıştırılmış hâlde çok daha fazla kayıt sığar; asıl kazancı gösteren metrik <code>records-per-request-avg</code>'dir (562 → 1923). İki metriği birlikte okumak gerekir — tek başına batch-size-avg yanıltır."
+    },
+    {
+      topic: "Sıkıştırma seçimi",
+      q: "Lab ölçümünde lz4 961.538 kayıt/sn ve 0.043 oran, zstd 526.316 kayıt/sn ve 0.020 oran verdi. Bu ne anlama gelir?",
+      opts: [
+        "zstd daha çok sıkıştırır ama daha çok CPU harcar; lz4 hız için, zstd bant genişliği/depolama için tercih edilir",
+        "zstd hatalı yapılandırılmıştır, normalde her zaman lz4'ten hızlıdır",
+        "Oran ne kadar düşükse throughput o kadar yüksek olmalıdır; sonuç tutarsızdır",
+        "zstd yalnızca broker tarafında çalıştığı için client'ta yavaştır"
+      ],
+      a: [0],
+      why: "Klasik takas: <b>zstd baytı, lz4 CPU'yu</b> optimize eder. Daha iyi oran (0.020 < 0.043) daha fazla CPU demektir ve producer CPU'ya bağlıysa throughput düşer. Ağın darboğaz olduğu (WAN, bulut) ortamlarda zstd kazanır; CPU'nun darboğaz olduğu yerde lz4. \"Düşük oran = yüksek hız\" varsayımı tam da bu tuzağı ölçüyor."
+    },
+    {
+      topic: "Partitioner",
+      q: "Key'i null olan kayıtlar Kafka 4.x'te hangi partition'a gider?",
+      opts: [
+        "Sticky partitioning: bir partition seçilir ve batch dolana kadar oraya yazılır, sonra değişir",
+        "Round-robin: her kayıt sırayla bir sonraki partition'a gider",
+        "Her zaman partition 0'a",
+        "Rastgele, kayıt başına yeniden seçilerek"
+      ],
+      a: [0],
+      why: "<b>Sticky partitioning</b>, eski round-robin'in yarattığı \"her batch 1 kayıtlık\" problemini çözer: aynı partition'da kalıp batch'i doldurur, sonra başka partition'a geçer. Sonuçta dağılım yine dengelenir ama batch'ler dolu gider. Kayıt başına round-robin/rastgele seçim batching'i öldürürdü."
+    },
+    {
+      topic: "Partitioner",
+      q: "Key'i olan bir topic'te partition sayısını 6'dan 12'ye çıkardın. Ne olur?",
+      opts: [
+        "murmur2(key) % N değiştiği için aynı key farklı partition'a düşmeye başlar; o key için sıra garantisi kırılır",
+        "Kafka mevcut key'leri yeni partition'lara otomatik yeniden dağıtır",
+        "Hiçbir şey — key→partition eşlemesi topic id'ye bağlıdır, partition sayısına değil",
+        "Eski partition'lar salt okunur olur, yeni yazımlar yalnızca yeni partition'lara gider"
+      ],
+      a: [0],
+      why: "Varsayılan partitioner <code>murmur2(key) % partition_sayısı</code> kullanır; <b>N değişince eşleme değişir</b>. Eski olaylar eski partition'da kalır (Kafka veriyi <i>yeniden dağıtmaz</i>), yeni olaylar başka partition'a gider → aynı key'in olayları iki partition'a bölünür ve sıra garantisi kaybolur. Geri dönüşü yoktur; yeni topic + yeniden yazma gerekir (5.5)."
+    },
+    {
+      topic: "Backpressure",
+      q: "Trafik artınca uygulama thread'leri <code>send()</code> içinde bekliyor. Ne oluyor ve doğru refleks nedir?",
+      opts: [
+        "buffer.memory dolmuş, max.block.ms boyunca bekleniyor — bu backpressure'dır; broker/partition tarafı incelenmeli",
+        "Producer thread-safe olmadığı için kilitleniyor; her thread'e ayrı producer verilmeli",
+        "linger.ms çok düşük; artırılmalı",
+        "Bir bug; producer yeniden oluşturulmalı"
+      ],
+      a: [0],
+      why: "Tampon dolduğunda <code>send()</code> <code>max.block.ms</code> (60 s) kadar bekler — bu <b>tasarlanmış backpressure</b>'dır: broker yetişemiyorsa uygulama da yavaşlar. <code>buffer.memory</code>/<code>max.block.ms</code> büyütmek semptomu erteler. KafkaProducer <b>thread-safe'tir</b> ve paylaşılması önerilir; her thread'e ayrı producer batching'i böler."
+    },
+    {
+      topic: "Boyut sınırları",
+      q: "5 MB'lık mesaj göndermek için hangi ayarların birlikte değiştirilmesi gerekir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Producer'da max.request.size",
+        "Broker'da message.max.bytes (ve topic'te max.message.bytes)",
+        "Producer'da buffer.memory",
+        "Broker'da num.network.threads"
+      ],
+      a: [0, 1],
+      why: "Sınır <b>iki tarafta birden</b> vardır: client <code>max.request.size</code> (varsayılan 1 MiB) ve broker <code>message.max.bytes</code> (varsayılan 1.048.588) — ayrıca tüketici tarafında <code>max.partition.fetch.bytes</code>. Yalnızca birini büyütmek hatayı diğer tarafa taşır. <code>buffer.memory</code> toplam tampondur, tekil mesaj sınırı değil. <b>Asıl soru:</b> 5 MB'lık veri gerçekten Kafka'ya mı ait? Claim-check deseni çoğu zaman daha doğrudur."
+    },
+    {
+      topic: "Varsayılanlar",
+      q: "Kafka 4.x producer varsayılanlarından hangisi <b>yanlıştır</b>?",
+      opts: [
+        "linger.ms = 0",
+        "acks = all",
+        "enable.idempotence = true",
+        "batch.size = 16384"
+      ],
+      a: [0],
+      why: "<code>linger.ms</code> varsayılanı Kafka 4.0'da <b>KIP-1030 ile 0'dan 5'e çıkarıldı</b> — yanlış olan ifade budur. <code>acks=all</code> ve <code>enable.idempotence=true</code> 3.0'dan beri varsayılandır; <code>batch.size</code> hâlâ 16384'tür. Sürüm/varsayılan eşleştirmesi bu setin en sık test edilen ayrıntısıdır."
+    },
+    {
+      topic: "Metrikler",
+      q: "<code>records-per-request-avg</code> değeri 1,2 çıkıyor. Bu neyi gösterir?",
+      opts: [
+        "Batching neredeyse hiç çalışmıyor; her istek tek kayıt taşıyor",
+        "Sıkıştırma oranı çok iyi",
+        "Broker isteği reddediyor ve yeniden deneniyor",
+        "Partition sayısı çok az"
+      ],
+      a: [0],
+      why: "İstek başına ~1 kayıt, batch'lerin boş gittiği anlamına gelir: ya <code>linger.ms=0</code> ve trafik seyrek, ya <code>send().get()</code> ile senkronize edilmiş, ya da çok fazla partition'a çok az kayıt dağılıyor. Bilinçli bir düşük-gecikme tercihiyse normaldir — o zaman throughput beklentisi de düşük olmalıdır."
+    },
+    {
+      topic: "send() yaşam döngüsü",
+      q: "<code>send()</code> çağrısında hangi işlem <b>uygulama thread'inde</b> yapılır?",
+      opts: [
+        "Serileştirme ve partition seçimi",
+        "Broker'a TCP isteği gönderme",
+        "acks cevabının beklenmesi",
+        "Batch'lerin broker'a göre gruplanması"
+      ],
+      a: [0],
+      why: "Uygulama thread'i: metadata bekle → <b>serialize et</b> → <b>partitioner ile partition seç</b> → interceptor'lar → accumulator'a koy → dön. İstek gönderme, broker'a göre gruplama ve cevap bekleme <b>Sender thread</b>'in işidir. Bu ayrım, pahalı bir serializer'ın (örneğin yavaş şema doğrulaması) neden uygulama thread'ini yavaşlattığını da açıklar."
+    },
+    {
+      topic: "Partitioner",
+      q: "<code>partitioner.ignore.keys=true</code> ayarı ne yapar ve riski nedir?",
+      opts: [
+        "Key olsa bile sticky partitioning uygulanır; aynı key'in sıra garantisi kaybolur",
+        "Key'i olmayan kayıtları reddeder",
+        "Key'i hash'lemek yerine string olarak sıralar",
+        "Partition sayısı değiştiğinde eşlemeyi sabit tutar"
+      ],
+      a: [0],
+      why: "Bu ayar throughput için key tabanlı yönlendirmeyi <b>bilinçli olarak feda eder</b>: kayıtlar batch verimliliğine göre dağıtılır. Aynı key'in olayları farklı partition'lara düşebileceği için <b>sıra garantisi ortadan kalkar</b>. Yalnızca sıranın gerçekten önemsiz olduğu yüklerde kullanılır."
+    },
+    {
+      topic: "Ölçüm yorumlama",
+      q: "Lab'da elde edilen 0.043'lük sıkıştırma oranı gerçek üretim verisi için neden temsili değildir?",
+      opts: [
+        "Lab değeri tekrarlı bir dolgu metnidir ('x' tekrarı); gerçek JSON'da oran tipik olarak 0.2–0.5 civarındadır",
+        "Lokal cluster'da sıkıştırma farklı algoritma kullanır",
+        "Küçük mesajlarda sıkıştırma oranı her zaman abartılı ölçülür",
+        "Oran yalnızca acks=all ile doğru hesaplanır"
+      ],
+      a: [0],
+      why: "Yöntem doğru, <b>veri iyimser</b>: tamamen tekrarlı bir dizgi neredeyse tamamen sıkışır. Gerçek JSON/Avro yüklerinde 2–5 kat (oran 0.2–0.5) beklenir. Bir benchmark'ı okurken ilk sorulacak soru her zaman \"hangi veriyle?\" olmalıdır — bu yüzden kendi verinle ölçmek şarttır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

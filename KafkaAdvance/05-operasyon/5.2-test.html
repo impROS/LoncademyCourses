@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-2",
+  code: "Operasyon · 5.2",
+  title: "Metrikler ve izleme",
+  back: "5.2-metrikler-ve-izleme.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Kritik metrikler",
+      q: "UnderReplicatedPartitions ile UnderMinIsrPartitionCount arasındaki aciliyet farkı nedir?",
+      opts: [
+        "UnderMinIsr > 0 ise acks=all yazmalar reddediliyordur — bu çok daha kritiktir",
+        "İkisi de aynı şeyi ölçer, biri eski adıdır",
+        "UnderReplicated daha kritiktir çünkü veri kaybı anlamına gelir",
+        "UnderMinIsr yalnızca compacted topic'lerde anlamlıdır"
+      ],
+      a: [0],
+      why: "<b>UnderReplicated</b>: ISR eksik, dayanıklılık düştü ama yazma sürüyor olabilir. <b>UnderMinIsr</b>: ISR <code>min.insync.replicas</code>'ın altına düştü → <code>acks=all</code> yazmalar <code>NotEnoughReplicas</code> ile <b>reddediliyor</b> (1.2), yani üretim durdu. İkincisi doğrudan kesinti demektir."
+    },
+    {
+      topic: "Controller metriği",
+      q: "ActiveControllerCount üç broker'da sırasıyla 0, 1, 0 dönüyor. Durum nedir?",
+      opts: [
+        "Sağlıklı — cluster genelinde toplam tam olarak 1 olmalıdır",
+        "Sorunlu — her broker 1 döndürmelidir",
+        "Sorunlu — controller seçimi tamamlanmamış",
+        "Metrik yalnızca controller node'unda okunabilir, diğerleri hata vermeliydi"
+      ],
+      a: [0],
+      why: "Metrik <b>broker başına</b> okunur ve yalnızca aktif controller olan node 1 döner; diğerleri 0. Alarm kuralı <b>cluster genelindeki toplamın 1 olmasıdır</b>: 0 = controller yok, >1 = split-brain. Lab'da kafka-1 için 0 gördük ve bu normaldi."
+    },
+    {
+      topic: "Lag izleme",
+      q: "Bir consumer group'un toplam lag'i 50.000. Bu sayının tek başına yetersiz olmasının sebebi nedir?",
+      opts: [
+        "Lag partition başına dağılabilir; tek bir boğulmuş partition ortalamada gizlenir",
+        "Lag her zaman 0 olmalıdır",
+        "Toplam lag broker sayısına bölünmelidir",
+        "Lag yalnızca compacted topic'lerde anlamlıdır"
+      ],
+      a: [0],
+      why: "50.000'in tamamı tek bir partition'da olabilir (diğerleri 5-10). İzlenecek doğru metrik <b>partition başına maksimum lag</b> ve tercihen <b>zaman cinsinden</b> lag'dir — \"50.000 kayıt\" bazen 2 saniye, bazen 2 saattir. Ayrıca lag'in <i>türevi</i> (artıyor mu) mutlak değerinden önemlidir."
+    },
+    {
+      topic: "Doygunluk",
+      q: "RequestHandlerAvgIdlePercent değeri 0.05'e düştü. Ne anlama gelir ve hangi ayar adaydır?",
+      opts: [
+        "İstek işleyici thread'leri doygun; num.io.threads artırılabilir",
+        "Broker boşta; num.io.threads azaltılabilir",
+        "Ağ thread'leri doygun; num.network.threads artırılmalı",
+        "Disk dolmuş"
+      ],
+      a: [0],
+      why: "Idle yüzdesi <b>boşta geçen zamanı</b> ölçer: yüksek iyidir. 0.05 = thread'ler zamanın %95'inde meşgul → doygunluk. İstek işleyici (disk/istek) tarafı <code>num.io.threads</code> ile, ağ tarafı <code>NetworkProcessorAvgIdlePercent</code> ve <code>num.network.threads</code> ile ilişkilidir. Metrik adı hangi havuza ait olduğunu söyler."
+    },
+    {
+      topic: "Gecikme teşhisi",
+      q: "Produce isteklerinde TotalTimeMs yüksek ve büyük kısmı RemoteTimeMs'ten geliyor. Sorun nerede?",
+      opts: [
+        "Follower'larda — acks=all replikasyon onayı bekleniyor",
+        "Diskte — segment yazma yavaş",
+        "İstek kuyruğunda — num.io.threads yetersiz",
+        "Producer'da — batch çok büyük"
+      ],
+      a: [0],
+      why: "<code>RemoteTimeMs</code> tam olarak \"diğer replikaların onayını bekleme\" süresidir; <code>acks=all</code>'da baskın bileşen olması ISR üyelerinin yavaş olduğunu gösterir (yavaş disk, ağ, GC — 1.2). <code>LocalTimeMs</code> yerel diski, <code>RequestQueueTimeMs</code> kuyruğu işaret ederdi. Bu ayrım teşhisi dakikalar yerine saniyeler alır."
+    },
+    {
+      topic: "Client metrikleri",
+      q: "Rebalance fırtınasından <b>önce</b> uyarı veren consumer metriği hangisidir?",
+      opts: [
+        "last-poll-seconds-ago",
+        "records-consumed-rate",
+        "fetch-latency-avg",
+        "commit-latency-avg"
+      ],
+      a: [0],
+      why: "<code>last-poll-seconds-ago</code>, son <code>poll()</code>'dan bu yana geçen süredir; <code>max.poll.interval.ms</code>'e yaklaşması, üye atılmadan <b>önce</b> görülebilen tek sinyaldir (örneğin %70 eşiğinde uyarı). Diğer metrikler sorun <i>oluştuktan sonra</i> tepki verir."
+    },
+    {
+      topic: "Alarm tasarımı",
+      q: "UnderReplicatedPartitions için hangi alarm kuralı doğrudur?",
+      opts: [
+        "Değer 5 dakikadır sıfırdan büyükse alarm ver",
+        "Değer bir kez sıfırdan büyük olduğunda hemen alarm ver",
+        "Değerin ortalaması günlük 1'i geçerse alarm ver",
+        "Bu metrik için alarm kurulmaz"
+      ],
+      a: [0],
+      why: "ISR daralması <b>normal ve geçici</b> olabilir: bir broker restart'ı, kısa bir GC duraklaması. Anlık alarm gürültü üretir ve ekip alarmları görmezden gelmeye başlar. Kafka'da neredeyse tüm alarmlar <b>sürekliliğe</b> bağlanır. Günlük ortalama ise kısa ama ciddi kesintileri gizler."
+    },
+    {
+      topic: "Kritik metrikler",
+      q: "OfflinePartitionsCount > 0 ne anlama gelir?",
+      opts: [
+        "Bazı partition'ların lideri yok; o partition'lara ne yazılabilir ne okunabilir",
+        "Bazı partition'lar ISR eksik ama çalışıyor",
+        "Bazı partition'lar boş",
+        "Bazı partition'lar compaction bekliyor"
+      ],
+      a: [0],
+      why: "Lider olmayan partition <b>tamamen erişilemezdir</b> — okuma da yazma da durur. Genelde ISR boşaldığında ve <code>unclean.leader.election.enable=false</code> (varsayılan) olduğunda görülür (1.2). Bu, en yüksek öncelikli alarmlardan biridir. ISR eksikliği ayrı bir metriktir (UnderReplicated)."
+    },
+    {
+      topic: "Client metrikleri",
+      q: "Uygulamadan mutlaka dışa vurulması gereken producer metriği hangisidir ve neden?",
+      opts: [
+        "record-error-rate — kalıcı gönderim hataları doğrudan veri kaybı demektir",
+        "batch-size-avg — batching verimliliğini gösterir",
+        "compression-rate-avg — disk tasarrufunu gösterir",
+        "request-latency-avg — broker sağlığını gösterir"
+      ],
+      a: [0],
+      why: "Diğerleri performans metrikleridir; <code>record-error-rate</code> ise <b>kaybedilen kayıtları</b> sayar. Callback'te hata yakalanıp yalnızca loglanıyorsa (2.3) bu metrik tek görünür kanıttır. Sıfırdan büyük olması her zaman incelenmelidir."
+    },
+    {
+      topic: "JMX",
+      q: "JmxTool ile bir metriği 2 saniyede bir izlemek için hangi parametre kullanılır?",
+      opts: [
+        "--reporting-interval 2000",
+        "--one-time 2000",
+        "--interval 2s",
+        "--refresh 2000"
+      ],
+      a: [0],
+      why: "<code>--one-time</code> tek seferlik ölçüm alır; sürekli izleme için <code>--reporting-interval &lt;ms&gt;</code> kullanılır. Üretimde bu araç yerine JMX Exporter + Prometheus tercih edilir, ama arıza anında konteynerin içinden hızlı bakış için JmxTool paha biçilmezdir."
+    },
+    {
+      topic: "Alarm tasarımı",
+      q: "İyi bir Kafka panosu hangi üç soruyu cevaplamalıdır? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Veri kayboluyor mu? (replikasyon/ISR metrikleri)",
+        "Cluster sağlıklı mı? (controller, offline partition)",
+        "Hangi topic en çok disk kullanıyor? (kapasite raporu)",
+        "Hangi client sürümleri bağlı? (envanter)"
+      ],
+      a: [0, 1],
+      why: "Operasyonel pano üç soruya odaklanır: <b>veri kayboluyor mu</b> (ISR, UnderMinIsr), <b>sistem yetişiyor mu</b> (lag, doygunluk kuyrukları), <b>cluster sağlıklı mı</b> (controller, offline partition). Disk raporu ve client envanteri faydalıdır ama <i>kapasite planlama</i> ve <i>envanter</i> panolarına aittir, arıza panosuna değil."
+    },
+    {
+      topic: "Lag izleme",
+      q: "Zaman cinsinden lag ölçmenin kayıt sayısına göre avantajı nedir?",
+      opts: [
+        "Aynı kayıt sayısı farklı hızlarda çok farklı gecikmeler demektir; iş etkisi zamanla ifade edilir",
+        "Zaman cinsinden lag her zaman daha küçük çıkar",
+        "Kafka yalnızca zaman cinsinden lag yayınlar",
+        "Kayıt sayısı partition'lar arasında karşılaştırılamaz"
+      ],
+      a: [0],
+      why: "50.000 kayıt, saniyede 25.000 işleyen bir tüketicide 2 saniye; saniyede 100 işleyende ~8 dakikadır. İş biriminin anlayacağı ve SLA'ya bağlanabilecek ölçü <b>zamandır</b>. Kafka bunu doğrudan yayınlamaz; kayıt lag'i ile tüketim hızından hesaplanır ya da kayıt zaman damgasından türetilir."
+    },
+    {
+      topic: "Sürüm değişiklikleri",
+      q: "Kafka 4.2 (KIP-1100) metrikler açısından ne getirdi?",
+      opts: [
+        "Metrik adlandırmasını kafka.COMPONENT konvansiyonuna uydurdu; bazı client metrik adları deprecate edildi",
+        "JMX desteğini kaldırdı",
+        "Tüm metrikleri Prometheus formatında yayınlamaya başladı",
+        "Metrik toplamayı varsayılan olarak kapattı"
+      ],
+      a: [0],
+      why: "KIP-1100 adlandırma tutarsızlıklarını düzeltti; ayrıca topic adındaki noktaların alt çizgiye çevrildiği eski client metrik varyantları deprecate edildi (5.0'da kaldırılacak). <b>Yükseltmede panoların kırılabilir</b> — sürüm notlarını okumadan yükseltme yapma. JMX yerinde durur; Prometheus formatı hâlâ exporter işidir."
+    },
+    {
+      topic: "Doygunluk",
+      q: "Idle percent metrikleri için sağlıklı kabul edilen eşik nedir?",
+      opts: [
+        "0.3'ün üzerinde — yani thread'ler zamanın en az %30'unda boşta",
+        "0.05'in altında — thread'ler tam kapasite çalışmalı",
+        "Tam olarak 0.5",
+        "1.0 dışındaki her değer sorunludur"
+      ],
+      a: [0],
+      why: "Idle yüzdesi bir <b>kapasite yastığıdır</b>: %30 boşluk, ani trafik artışını karşılayacak alan bırakır. Sıfıra yakın değerler kuyruk oluşmaya başladığını gösterir. \"Tam kapasite iyi\" sezgisi burada yanlıştır — doygun bir sistem gecikmeyi kuyrukla öder (5.1'de ölçtük). 1.0 ise sadece sistemin boş olduğunu söyler, sorun değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

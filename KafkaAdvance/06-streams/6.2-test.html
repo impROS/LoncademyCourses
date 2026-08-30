@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-2",
+  code: "Streams · 6.2",
+  title: "State store, changelog ve standby",
+  back: "6.2-state-store-ve-changelog.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Changelog",
+      q: "Lab'da 5000 olay işlendi ama state dizini silindikten sonra restore edilen kayıt sayısı yalnızca 50 oldu. Neden?",
+      opts: [
+        "Changelog compact'tır; her key için yalnızca son değer saklanır (50 benzersiz key)",
+        "Restore yalnızca son 1 dakikalık veriyi okur",
+        "Diğer 4950 kayıt kaybolmuştur",
+        "Restore paralel yapıldığı için sayaç eksik raporlar"
+      ],
+      a: [0],
+      why: "Changelog <code>cleanup.policy=compact</code> ile yönetilir (1.4): her key'in yalnızca <b>son değeri</b> gerekir çünkü store'un o anki hâlini kurmak için yeterlidir. Bu, restore'u dramatik biçimde hızlandırır — 5000 olay yerine 50 kayıt okunur. Veri kaybı yoktur; sonuçlar birebir aynı geldi (key-0 = 100)."
+    },
+    {
+      topic: "state.dir",
+      q: "Kafka Streams'te state.dir varsayılanı nedir ve neden üretimde değiştirilmelidir?",
+      opts: [
+        "/tmp/kafka-streams — bazı sistemler /tmp'i temizler, bu da her restart'ta tam restore demektir",
+        "/var/lib/kafka — izinler yetersiz olabilir",
+        "Uygulama dizini — disk dolabilir",
+        "Bellek — kalıcı değildir"
+      ],
+      a: [0],
+      why: "Varsayılan <code>/tmp/kafka-streams</code>'tir. <code>/tmp</code>'i restart'ta temizleyen sistemlerde (ya da Kubernetes'te <code>emptyDir</code> ile) yerel durum her seferinde kaybolur ve uygulama <b>tam restore</b> yapar — büyük store'larda dakikalarca kesinti. İlk yapılacak ayarlardan biridir."
+    },
+    {
+      topic: "Standby replica",
+      q: "num.standby.replicas=1 neyi sağlar?",
+      opts: [
+        "Bir instance kaybında yeni sahibin restore beklemeden devralmasını — failover süresini kısaltır",
+        "Veri kaybına karşı ek dayanıklılık",
+        "Daha yüksek throughput",
+        "Interactive query'lerin tüm key'lere erişebilmesini"
+      ],
+      a: [0],
+      why: "Dayanıklılık zaten <b>changelog</b> tarafından sağlanır; standby replica bir <b>hız</b> optimizasyonudur: başka bir instance store'u sürekli güncel tutar ve devralma saniyeler sürer. Bedeli 2× disk ve sürekli changelog okuma trafiğidir. Throughput'u artırmaz."
+    },
+    {
+      topic: "Interactive Queries",
+      q: "streams.store(...) çağrısı InvalidStateStoreException fırlattı. En olası sebep nedir?",
+      opts: [
+        "Uygulama henüz RUNNING durumunda değil (STARTING/REBALANCING)",
+        "Store adı yanlış yazılmış olmalı",
+        "Store in-memory olarak tanımlanmış",
+        "Changelog topic'i silinmiş"
+      ],
+      a: [0],
+      why: "Store yalnızca uygulama <b>RUNNING</b> iken sorgulanabilir; restore ya da rebalance sırasında erişilemez. Lab'da tam olarak bu hatayı aldık: <i>\"Cannot get state store ... because the stream thread is STARTING, not RUNNING\"</i>. Üretim kodunda durum kontrolü + yeniden deneme şarttır."
+    },
+    {
+      topic: "Store türleri",
+      q: "In-memory state store ile RocksDB store arasındaki en önemli operasyonel fark nedir?",
+      opts: [
+        "In-memory her restart'ta tam restore ister; RocksDB yerel dosya varsa restore'u atlar",
+        "In-memory changelog kullanmaz",
+        "RocksDB yalnızca windowed store'larda kullanılabilir",
+        "In-memory store interactive query desteklemez"
+      ],
+      a: [0],
+      why: "In-memory store JVM belleğindedir: süreç ölünce durum gider ve <b>her açılışta</b> changelog'dan tam restore yapılır. RocksDB yerel diskte kaldığı sürece restore atlanır — bu yüzden \"in-memory daha hızlı\" sezgisi açılış süresinde tersine döner. İkisi de changelog kullanır ve ikisi de sorgulanabilir."
+    },
+    {
+      topic: "RocksDB",
+      q: "Konteyner OOMKilled oluyor ama JVM heap kullanımı düşük. Sebep nedir?",
+      opts: [
+        "RocksDB off-heap (heap dışı) bellek kullanır; konteyner limiti heap + RocksDB + JVM ek yükü olarak hesaplanmalıdır",
+        "Kafka client'ları heap dışı bellek kullanmaz, bu bir bug'dır",
+        "Changelog topic'i belleğe yükleniyor",
+        "Interactive query iterator'ları heap'te birikiyor"
+      ],
+      a: [0],
+      why: "RocksDB yerel bir C++ kütüphanesidir: block cache, write buffer ve index'ler <b>heap dışında</b> tutulur. Yalnızca <code>-Xmx</code>'e bakarak konteyner limiti belirlemek klasik hatadır. <code>RocksDBConfigSetter</code> ile bu bellek sınırlanabilir. (Kapatılmayan iterator'lar da kaynak sızdırır ama tipik OOM sebebi off-heap hesabının atlanmasıdır.)"
+    },
+    {
+      topic: "Changelog",
+      q: "Windowed store'ların changelog cleanup.policy değeri neden compact,delete'tir?",
+      opts: [
+        "Pencereler zamanla anlamsızlaşır; hem key başına son değer korunur hem eski pencereler silinir",
+        "Windowed store'lar compaction desteklemez",
+        "Delete politikası performans içindir",
+        "Windowed store changelog kullanmaz"
+      ],
+      a: [0],
+      why: "Key-value store'da her key kalıcıdır → saf <code>compact</code>. Pencereli store'da ise pencere kapandıktan ve saklama süresi geçtikten sonra veri <b>hiçbir işe yaramaz</b> → ayrıca <code>delete</code> ile yaş bazlı temizlik yapılır. Aksi hâlde changelog sonsuza kadar büyürdü."
+    },
+    {
+      topic: "Restore",
+      q: "Deploy sonrası Streams uygulaması 20 dakika iş yapmıyor. Hangi çözümler doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Kalıcı disk (PVC) kullanıp state.dir'i oraya almak",
+        "num.standby.replicas=1 ile yedek durum tutmak",
+        "commit.interval.ms'i düşürmek",
+        "Changelog topic'inin partition sayısını artırmak"
+      ],
+      a: [0, 1],
+      why: "Uzun açılış <b>restore</b> demektir. İki gerçek çözüm: yerel durumu kalıcı diskte tutup restore'u tamamen atlamak, ya da standby replica ile devralmayı anlık hâle getirmek. Commit aralığı restore süresini etkilemez; changelog partition sayısı store'un task sayısına bağlıdır ve <b>değiştirilemez</b>."
+    },
+    {
+      topic: "Interactive Queries",
+      q: "Interactive query bir key'i bulamadı ama veri kesinlikle var. En olası sebep nedir?",
+      opts: [
+        "O key başka bir instance'ın task'ında; queryMetadataForKey ile doğru instance bulunmalı",
+        "Store bozulmuş, reset gerekiyor",
+        "Changelog compaction key'i silmiş",
+        "Serde uyumsuzluğu"
+      ],
+      a: [0],
+      why: "Her instance yalnızca <b>kendi task'larının</b> durumunu tutar; key başka partition'a düşüyorsa o veri başka instance'tadır. Dağıtık sorgu için <code>streams.queryMetadataForKey(...)</code> ile sahip instance bulunur ve genelde bir HTTP çağrısıyla sorulur. Compaction <b>son değeri asla silmez</b> (1.4)."
+    },
+    {
+      topic: "Reset",
+      q: "kafka-streams-application-reset.sh çalıştırdın ama uygulama yine eski durumla açıldı. Ne eksik?",
+      opts: [
+        "Yerel state.dir dizinini de silmek gerekir; reset aracı yalnızca Kafka tarafını temizler",
+        "application.id değiştirilmeliydi",
+        "Reset aracı --execute parametresi ister",
+        "Broker yeniden başlatılmalıydı"
+      ],
+      a: [0],
+      why: "Reset aracı offsetleri sıfırlar ve iç topic'leri temizler; <b>yerel RocksDB dizinine dokunamaz</b> (o, uygulamanın çalıştığı makinededir). Eksik adım <code>rm -rf &lt;state.dir&gt;/&lt;application.id&gt;</code>'dir. Bu iki adım her zaman birlikte yapılır."
+    },
+    {
+      topic: "Changelog",
+      q: "Streams, state güncellemesi ile offset commit'ini hangi sırayla yapar ve bu neden önemlidir?",
+      opts: [
+        "Önce changelog'a yazar, sonra offset commit eder — çöküşte durum ve offset tutarlı kalır",
+        "Önce offset commit eder, sonra changelog'a yazar — daha hızlıdır",
+        "İkisini paralel yapar",
+        "Changelog'a yalnızca kapanışta yazar"
+      ],
+      a: [0],
+      why: "Sıra 3.3'teki \"önce commit = kayıp\" kuralının Streams'teki karşılığıdır: durum kalıcılaştırılmadan offset ilerletilirse, çöküşte o güncellemeler <b>hem state'te hem log'da kaybolur</b>. Streams önce changelog'a yazıp sonra commit ederek en kötü durumda <i>tekrar işleme</i> (at-least-once) bırakır, kayıp değil."
+    },
+    {
+      topic: "Store türleri",
+      q: "Global store'un normal state store'dan farkı nedir?",
+      opts: [
+        "Her instance'ta verinin tam kopyası bulunur; partition'lara bölünmez",
+        "Diskte değil bellekte tutulur",
+        "Changelog kullanmaz",
+        "Yalnızca windowed veriler için kullanılır"
+      ],
+      a: [0],
+      why: "Global store, giriş topic'inin <b>tüm partition'larını</b> her instance'ta okur ve tam kopya tutar; bu yüzden key'in nerede olduğunu düşünmeden okuyabilirsin (küçük referans/lookup tabloları için idealdir). Bedeli: her instance'ta tam veri ve açılışta <b>tüm topic'in okunması</b> — büyük veriler için uygun değildir."
+    },
+    {
+      topic: "Restore",
+      q: "İlk çalıştırmada restore 0 kayıt olmasına rağmen ~400 ms sürdü. Bunun anlamı nedir?",
+      opts: [
+        "Boş store'lar için bile changelog konumu kontrol edilir; restore süresi sabit bir maliyet içerir",
+        "Ölçüm hatalıdır",
+        "İlk çalıştırmada da veri restore edilmiştir",
+        "Bu süre RocksDB dosyalarının oluşturulmasıdır"
+      ],
+      a: [0],
+      why: "Streams her task için changelog partition'ının başlangıç/bitiş offsetlerini sorgular ve gerekirse konumlanır — okunacak kayıt olmasa bile bu koordinasyon zaman alır. Pratik sonuç: <b>çok sayıda task</b> olan uygulamalarda bu sabit maliyet toplanır ve açılışı uzatır."
+    },
+    {
+      topic: "Kubernetes",
+      q: "Kubernetes'te büyük state'li bir Streams uygulaması için doğru kombinasyon hangisidir?",
+      opts: [
+        "StatefulSet + PVC (kalıcı disk) + kararlı group.instance.id",
+        "Deployment + emptyDir + rastgele group.instance.id",
+        "Deployment + emptyDir + num.standby.replicas=0",
+        "StatefulSet + emptyDir + otomatik ölçekleme"
+      ],
+      a: [0],
+      why: "Üç mekanizma birlikte çalışır: <b>PVC</b> yerel durumu restart'lar arasında korur (restore yok), <b>kararlı <code>group.instance.id</code></b> restart'ta rebalance'ı önler (3.2), <b>StatefulSet</b> ikisini de mümkün kılan kararlı kimliği sağlar. <code>emptyDir</code> her restart'ta tam restore demektir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.3 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-3",
+  code: "Consumer · 3.3",
+  title: "Offset yönetimi ve commit stratejileri",
+  back: "3.3-offset-ve-commit.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Commit semantiği",
+      q: "Offset 0'dan 9'a kadar olan kayıtları işledin. Commit edilecek değer nedir?",
+      opts: ["10", "9", "0", "İşlenen kayıt sayısı, yani 10 ama offset olarak 9"],
+      a: [0],
+      why: "Commit edilen offset <b>bir sonraki okunacak</b> offset'tir, son işlenen değil. Elle commit'te <code>record.offset() + 1</code> yazılır. <code>+1</code> unutulursa her yeniden başlatmada <b>son kayıt tekrar işlenir</b> — klasik off-by-one hatası."
+    },
+    {
+      topic: "Commit sırası",
+      q: "Lab'da 'önce commit' senaryosunda 5, 6, 7, 8, 9 numaralı kayıtlar hiç işlenmedi. Bu hangi semantiktir ve neden oluştu?",
+      opts: [
+        "At-most-once — kayıtlar işlenmeden commit edildi, çöküşten sonra bir daha okunmadılar",
+        "At-least-once — kayıtlar iki kez işlendi",
+        "Exactly-once — Kafka duplicate'i engelledi",
+        "Bir hata; Kafka kayıtları silmiş"
+      ],
+      a: [0],
+      why: "Commit \"buradan devam et\" demektir. İşlemeden önce commit edilince 10 kaydın tamamı \"geçildi\" sayıldı; çöküşten sonra tüketici offset 10'dan başladı ve 5-9 arası <b>hiç görülmedi</b> → <b>veri kaybı</b> (at-most-once). Kafka veriyi silmedi; log'da hâlâ duruyorlar, sadece o grup onları atladı."
+    },
+    {
+      topic: "Otomatik commit",
+      q: "Bir uygulama kayıtları thread pool'a atıp hemen bir sonraki poll()'a geçiyor ve enable.auto.commit=true. Risk nedir?",
+      opts: [
+        "Kafka kayıtları işlenmiş sayar; işleme sırasında çöküş olursa o kayıtlar kaybolur",
+        "Thread pool dolduğunda rebalance tetiklenir",
+        "Otomatik commit thread-safe olmadığı için exception fırlar",
+        "Risk yok; otomatik commit her durumda güvenlidir"
+      ],
+      a: [0],
+      why: "Otomatik commit <b>poll() çağrısında</b> yapılır ve \"önceki poll'un kayıtları\" için commit eder — işin gerçekten bitip bitmediğini bilmez. İş asenkronsa bu tam olarak <b>önce commit</b> desenidir ve kayıp üretir. Otomatik commit yalnızca işleme <b>poll döngüsünde senkronsa</b> kabul edilebilir."
+    },
+    {
+      topic: "commitSync vs commitAsync",
+      q: "commitAsync() neden otomatik retry yapmaz?",
+      opts: [
+        "Geç gelen bir retry, daha yeni bir commit'i eski offset'le ezebilirdi",
+        "Asenkron çağrılar teknik olarak retry edilemez",
+        "Retry yalnızca commitSync'te desteklenen bir Kafka özelliğidir",
+        "Retry yapsaydı rebalance tetiklenirdi"
+      ],
+      a: [0],
+      why: "Sıra sorunu: offset 100 için yapılan commit başarısız olup yeniden denenirken offset 200 commit edilmiş olabilir; geç gelen retry offset'i <b>geriye</b> alır ve kayıtlar yeniden işlenir. Bu yüzden async commit \"bir sonraki commit zaten daha ileriyi kaydeder\" mantığıyla retry'sizdir. Kritik noktalarda (kapanış, revoke) <code>commitSync</code> kullanılır."
+    },
+    {
+      topic: "Rebalance ve commit",
+      q: "ConsumerRebalanceListener'ın onPartitionsLost metodunda ne yapılmalıdır?",
+      opts: [
+        "Commit denenmemeli; yalnızca yerel durum temizlenmeli",
+        "Mutlaka commitSync çağrılmalı",
+        "Partition'lar yeniden assign edilmeli",
+        "Consumer kapatılmalı"
+      ],
+      a: [0],
+      why: "<code>onPartitionsLost</code>, partition'ın <b>zaten kaybedildiği</b> (üye gruptan atıldı) durumda çağrılır: commit denemesi <code>CommitFailedException</code> ile sonuçlanır çünkü o partition artık başkasınındır. Commit yeri <code>onPartitionsRevoked</code>'dur — orada partition hâlâ senindir."
+    },
+    {
+      topic: "Offset saklama",
+      q: "__consumer_offsets topic'i hakkında hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "cleanup.policy=compact ile yönetilir",
+        "Varsayılan olarak 50 partition'a sahiptir",
+        "Her consumer group için ayrı bir topic oluşturulur",
+        "Offsetler yalnızca bellekte tutulur, restart'ta kaybolur"
+      ],
+      a: [0, 1],
+      why: "Tek bir <code>__consumer_offsets</code> topic'i vardır, varsayılan <b>50 partition</b> ve <b>compacted</b>'dır: key <code>(group, topic, partition)</code> olduğu için her anahtarın son değeri korunur (1.4). Grup başına topic açılmaz; offsetler kalıcıdır ve <code>offsets.retention.minutes</code> (7 gün) ile yaşlanır."
+    },
+    {
+      topic: "Offset saklama",
+      q: "10 gün kapalı kalan bir tüketici açıldığında tüm veriyi baştan işledi. En olası açıklama nedir?",
+      opts: [
+        "offsets.retention.minutes (7 gün) dolduğu için offsetler silindi ve auto.offset.reset=earliest devreye girdi",
+        "Kafka retention süresi dolduğu için offsetleri sıfırladı ama veriyi sakladı — bu bir bug",
+        "Rebalance sırasında offsetler sıfırlanır",
+        "Compaction offsetleri sildi"
+      ],
+      a: [0],
+      why: "Commit edilmeyen grup offsetleri <code>offsets.retention.minutes</code> (varsayılan <b>10080 dk = 7 gün</b>) sonunda temizlenir. Offset kalmayınca <code>auto.offset.reset</code> devreye girer: <code>earliest</code> ise baştan, <code>latest</code> ise <b>aradaki veriyi atlayarak</b> — ikisi de sürprizdir. Uzun bakımlarda bu süre bilinerek planlanmalıdır."
+    },
+    {
+      topic: "Üretim kalıbı",
+      q: "Aşağıdaki üretim kalıbında finally bloğundaki commitSync() ne işe yarar?<pre>while(running) { poll(); process(); commitAsync(); }\nfinally { commitSync(); close(); }</pre>",
+      opts: [
+        "Döngüdeki son async commit başarısız olmuşsa ilerlemeyi garantiye alır",
+        "Rebalance'ı hızlandırır",
+        "Otomatik commit'i devre dışı bırakır",
+        "Duplicate'leri engeller"
+      ],
+      a: [0],
+      why: "<code>commitAsync</code> retry yapmadığı için döngünün son commit'i sessizce başarısız olabilir; <code>finally</code>'deki <b>bloklayan ve retry yapan</b> <code>commitSync</code> bu deliği kapatır. Rebalance'ı hızlandıran şey ayrıca <code>close()</code>'dur — üye gruptan düzgün ayrıldığı için session timeout beklenmez."
+    },
+    {
+      topic: "Offset sıfırlama",
+      q: "kafka-consumer-groups --reset-offsets --execute komutu çalışmıyor. En olası sebep nedir?",
+      opts: [
+        "Grubun aktif üyeleri var; reset yalnızca grup boşken yapılabilir",
+        "Komut yalnızca ZooKeeper modunda çalışır",
+        "--to-earliest belirtilmemiş",
+        "Topic compacted olduğu için reset desteklenmez"
+      ],
+      a: [0],
+      why: "Offset reset, grubun <b>aktif üyesi olmadığında</b> yapılabilir — aksi hâlde çalışan tüketiciler kendi offsetlerini yazmaya devam eder ve sonuç belirsiz olurdu. Üretim sırası: <b>tüketiciyi durdur → reset → başlat</b>. Ayrıca <code>--execute</code> denmezse komut yalnızca önizleme yapar."
+    },
+    {
+      topic: "Commit sırası",
+      q: "'Sonra commit' stratejisi hangi semantiği verir ve uygulamadan ne beklenir?",
+      opts: [
+        "At-least-once — uygulama işlemenin idempotent olmasını sağlamalıdır",
+        "Exactly-once — ek bir önlem gerekmez",
+        "At-most-once — kayıp kabul edilmelidir",
+        "Semantik commit stratejisinden bağımsızdır"
+      ],
+      a: [0],
+      why: "İşle-sonra-commit, çöküşte aynı kayıtların yeniden okunmasına yol açar → <b>at-least-once</b>. Kafka'nın varsayılan ve önerilen tarafı budur; tekrarların zararsız olması için işlemenin <b>idempotent</b> olması gerekir (ör. upsert, benzersiz anahtar) — 4.2'nin konusu."
+    },
+    {
+      topic: "Dış offset saklama",
+      q: "Offset'i iş verisiyle aynı veritabanı transaction'ında saklamanın avantajı ve bedeli nedir?",
+      opts: [
+        "Avantaj: tek atomik karar noktası (efektif exactly-once). Bedel: Kafka araçları artık gerçek offset'i göstermez",
+        "Avantaj: daha hızlı commit. Bedel: rebalance devre dışı kalır",
+        "Avantaj: Kafka'da offset topic'i gerekmez. Bedel: partition sayısı sınırlanır",
+        "Avantaj yok; bu desen artık kullanılmıyor"
+      ],
+      a: [0],
+      why: "İş verisi ve offset aynı transaction'da yazılınca \"yazdım ama commit edemedim\" penceresi kapanır — Kafka→DB akışlarında <b>efektif exactly-once</b>'ın klasik yolu. Bedeli operasyoneldir: <code>kafka-consumer-groups --describe</code> artık gerçeği göstermez, offset DB'dedir; başlangıçta <code>onPartitionsAssigned</code> içinde okunup <code>seek()</code> yapılmalıdır."
+    },
+    {
+      topic: "Otomatik commit",
+      q: "auto.commit.interval.ms=5000 iken otomatik commit tam olarak ne zaman gerçekleşir?",
+      opts: [
+        "poll() çağrısı sırasında, üzerinden 5 saniye geçmişse",
+        "Arka plan thread'i tarafından tam olarak her 5 saniyede bir",
+        "Her poll() çağrısında",
+        "İşleme kodu bittiğinde"
+      ],
+      a: [0],
+      why: "Otomatik commit <b>poll() içinde</b> yapılır: consumer, aradan yeterli süre geçtiyse <i>önceki</i> poll'un döndürdüğü kayıtları commit eder. Kafka senin işleme kodunun ne zaman bittiğini <b>bilemez</b> — bu yüzden \"işleme bitince commit eder\" beklentisi yanlıştır ve kayıp riskinin kaynağıdır."
+    },
+    {
+      topic: "Rebalance ve commit",
+      q: "Her rebalance'ta bir miktar kaydın yeniden işlendiği görülüyor. En olası eksik nedir?",
+      opts: [
+        "onPartitionsRevoked içinde commit yapılmıyor",
+        "max.poll.records çok yüksek",
+        "auto.offset.reset yanlış ayarlanmış",
+        "Partition sayısı consumer sayısından fazla"
+      ],
+      a: [0],
+      why: "Partition elinden alınmadan önce commit edilmezse, son işlenen kayıtların ilerlemesi kaydedilmemiş olur ve partition'ın yeni sahibi o kayıtları <b>yeniden</b> işler. <code>onPartitionsRevoked</code> bu iş için vardır — cooperative protokolde de aynı kural geçerlidir."
+    },
+    {
+      topic: "Commit semantiği",
+      q: "Kafka'da 'kayıpsız ve tekrarsız' tüketim yalnızca commit sırasıyla elde edilebilir mi?",
+      opts: [
+        "Hayır — commit sırası ya kayıp ya tekrar verir; tekrarsızlık için transaction ya da idempotent yazma gerekir",
+        "Evet — commit'i işlemenin tam ortasına koymak yeterlidir",
+        "Evet — commitSync kullanmak yeterlidir",
+        "Hayır — Kafka'da tekrarsız tüketim hiçbir şekilde mümkün değildir"
+      ],
+      a: [0],
+      why: "İki seçenek vardır: önce commit (kayıp) ya da sonra commit (tekrar); arada bir nokta yoktur çünkü işleme ile commit iki ayrı işlemdir. Tekrarsızlık ancak ikisini <b>atomik</b> hâle getirmekle olur: Kafka içinde transaction (4.1) veya dış sistemde idempotent yazma / offset'in iş verisiyle birlikte saklanması (4.2)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

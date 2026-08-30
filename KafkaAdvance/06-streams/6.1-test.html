@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-1",
+  code: "Streams · 6.1",
+  title: "Topoloji, task ve thread modeli",
+  back: "6.1-topoloji-ve-task-modeli.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Task modeli",
+      q: "4 partition'lı bir giriş topic'i okuyan ve <code>selectKey</code> + <code>groupByKey</code> içeren bir topoloji kaç task üretir?",
+      opts: [
+        "8 — iki alt topoloji × 4 partition",
+        "4 — partition sayısı kadar",
+        "2 — alt topoloji sayısı kadar",
+        "1 — topoloji tek bir birimdir"
+      ],
+      a: [0],
+      why: "Yeniden anahtarlama bir <b>alt topoloji sınırı</b> yaratır; her alt topoloji kendi kaynak topic'inin partition'ları kadar task üretir. Lab'da tam olarak bunu gördük: <code>0_0..0_3</code> ve <code>1_0..1_3</code> = 8 task. <code>taskId</code> formatı <b>altTopolojiIndeksi_partition</b>'dır."
+    },
+    {
+      topic: "Alt topoloji",
+      q: "Bir topolojide alt topoloji sınırı ne zaman oluşur?",
+      opts: [
+        "Key değiştikten sonra key'e bağlı bir işlem geldiğinde (yeniden anahtarlama)",
+        "Her stateful işlemde",
+        "Her filter işleminde",
+        "Topic sayısı ikiyi geçtiğinde"
+      ],
+      a: [0],
+      why: "Key değişince (<code>selectKey</code>, <code>map</code>, <code>groupBy</code>) veriyi yeni key'e göre <b>yeniden dağıtmak</b> gerekir; Kafka bunu ancak bir topic üzerinden yapabilir → repartition topic'i ve yeni alt topoloji. Stateful olmak tek başına sınır yaratmaz (mevcut key'le <code>groupByKey</code> repartition gerektirmez); <code>filter</code> stateless'tır."
+    },
+    {
+      topic: "İç topic'ler",
+      q: "Repartition ve changelog topic'lerinin cleanup.policy değerleri neden farklıdır?",
+      opts: [
+        "Repartition geçici taşımadır (delete); changelog state store'un kalıcı yedeğidir (compact)",
+        "Repartition compact, changelog delete olmalıdır",
+        "İkisi de compact'tır, lab çıktısı istisnadır",
+        "Politikalar rastgele atanır"
+      ],
+      a: [0],
+      why: "Repartition topic'i yalnızca veriyi yeni key'e taşır; işlendikten sonra gereksizdir → <code>delete</code> (ve <code>retention.ms=-1</code> ile Streams'in kendisi budar). Changelog ise state store'un <b>her key için son değerini</b> saklamalıdır → <code>compact</code> (1.4). Lab'da tam olarak bu yapılandırmaları gördük."
+    },
+    {
+      topic: "Ölçekleme",
+      q: "8 task üreten bir uygulamada num.stream.threads=16 yaparsan ne olur?",
+      opts: [
+        "8 thread task alır, 8'i atıl kalır — task sayısı paralellik tavanıdır",
+        "Task sayısı 16'ya çıkar",
+        "Uygulama hata verir",
+        "Her task iki thread tarafından paylaşılır"
+      ],
+      a: [0],
+      why: "Task <b>atomik</b> bir iş birimidir ve bölünemez; task sayısından fazla thread boş oturur — klasik consumer group'taki \"partition'dan fazla consumer\" durumunun aynısı (3.2). Tavanı yükseltmenin tek yolu <b>giriş topic'inin partition sayısını</b> artırmaktır (5.5'teki uyarılarla)."
+    },
+    {
+      topic: "Streams ve consumer group",
+      q: "application.id ayarının Kafka tarafındaki karşılığı nedir?",
+      opts: [
+        "Consumer group id — Streams uygulaması bir consumer group'tur",
+        "Client id",
+        "Transactional id",
+        "Topic ön eki dışında bir işlevi yoktur"
+      ],
+      a: [0],
+      why: "<code>application.id</code> hem <b>group.id</b> olarak kullanılır hem de iç topic adlarına ön ek olur. Bunun iki sonucu var: (1) 3.2'deki tüm rebalance kuralları Streams'te de geçerlidir, (2) <code>application.id</code>'yi değiştirmek <b>yeni bir grup</b> demektir — uygulama tüm veriyi baştan işler."
+    },
+    {
+      topic: "İç topic'ler",
+      q: "Repartition topic'inde <code>retention.ms=-1</code> görülmesi ne anlama gelir?",
+      opts: [
+        "Zamana bağlı silme yok; Streams işlediği kayıtları açıkça budar (purge)",
+        "Topic hiç silinmez ve sonsuza kadar büyür",
+        "Retention ayarı hatalıdır, düzeltilmelidir",
+        "Topic compaction ile yönetilir"
+      ],
+      a: [0],
+      why: "Streams, repartition topic'indeki işlenmiş kayıtları <b>kendisi budar</b>; zamana bağlı retention kullanmaz çünkü veri kaybı tam da işlenmemiş kayıtları öldürürdü. Pratik sonuç: <b>durdurulmuş ya da çok geride kalmış</b> bir uygulamanın repartition topic'i büyümeye devam eder — kullanılmayan uygulamaların iç topic'leri temizlenmelidir."
+    },
+    {
+      topic: "Önbellek",
+      q: "Bir aggregate'in her ara güncellemesi çıktı topic'inde görünmüyor. Sebep nedir?",
+      opts: [
+        "Streams önbelleği aynı key'e ardışık güncellemeleri birleştirir",
+        "Changelog topic'i compact olduğu için ara değerler siliniyor",
+        "Çıktı topic'inin retention süresi kısa",
+        "Aggregate yalnızca commit anında hesaplanır"
+      ],
+      a: [0],
+      why: "<code>cache.max.bytes.buffering</code> (varsayılan ~10 MiB) ile Streams ara sonuçları bellekte birleştirir ve aşağı akışa yalnızca özet gönderir; bu, downstream trafiğini ciddi biçimde azaltır. Test/hata ayıklama için <b>0</b> yapılabilir ama üretimde maliyetlidir. Changelog compaction'ı <i>store</i> içindir, çıktı akışını etkilemez."
+    },
+    {
+      topic: "Topoloji okuma",
+      q: "describe() çıktısında <code>Processor: X (stores: [musteri-toplam-store])</code> satırı ne anlatır?",
+      opts: [
+        "Bu düğüm stateful'dur ve adı geçen state store'u kullanır",
+        "Bu düğüm bir topic'e yazar",
+        "Bu düğüm repartition yapar",
+        "Bu düğüm yalnızca hata ayıklama içindir"
+      ],
+      a: [0],
+      why: "<code>stores: [...]</code> listesi dolu olan her processor <b>stateful</b>'dur ve arkasında bir changelog topic'i oluşur (6.2). Liste boşsa (<code>stores: []</code>) düğüm stateless'tır. Topic'e yazan düğümler <code>Sink</code> olarak görünür."
+    },
+    {
+      topic: "Ölçekleme",
+      q: "Kafka Streams uygulamasını ölçeklemenin yolları hangileridir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Aynı application.id ile yeni instance başlatmak",
+        "num.stream.threads değerini artırmak (task tavanına kadar)",
+        "Broker sayısını artırmak",
+        "commit.interval.ms değerini düşürmek"
+      ],
+      a: [0, 1],
+      why: "Streams bir kütüphanedir: yatay ölçekleme <b>yeni instance</b> (aynı <code>application.id</code>) ile, dikey ölçekleme <b>thread sayısıyla</b> yapılır. İkisi de <b>task sayısı</b> tavanına kadar işe yarar. Broker eklemek Kafka kapasitesini artırır ama Streams paralelliğini değiştirmez; commit aralığı bir performans/garanti ayarıdır."
+    },
+    {
+      topic: "Temizlik",
+      q: "Bir Streams uygulamasının iç topic'lerini ve offsetlerini temizlemenin doğru yolu nedir?",
+      opts: [
+        "kafka-streams-application-reset.sh kullanmak",
+        "İç topic'leri kafka-topics --delete ile silmek",
+        "application.id'yi değiştirmek",
+        "State dizinini elle silmek"
+      ],
+      a: [0],
+      why: "Reset aracı offsetleri sıfırlar, iç topic'leri (repartition/changelog) tutarlı biçimde temizler ve gerekli adımları birlikte yapar. İç topic'leri elle silmek çalışan uygulamayı bozar; <code>application.id</code> değiştirmek eski topic'leri <b>çöp olarak bırakır</b>; state dizinini silmek yalnızca yerel kopyayı kaldırır (changelog'dan geri yüklenir, 6.2)."
+    },
+    {
+      topic: "Thread modeli",
+      q: "StreamThread ile task arasındaki ilişki nedir?",
+      opts: [
+        "Bir StreamThread bir veya daha fazla task'ı sırayla çalıştırır; task bölünmez",
+        "Her task kendi thread'inde çalışır, sayıları eşittir",
+        "Task'lar thread havuzunda paralel parçalara bölünür",
+        "StreamThread yalnızca ağ I/O yapar, işlemeyi ayrı thread'ler yürütür"
+      ],
+      a: [0],
+      why: "Task atomik iş birimidir; bir thread birden çok task'ı <b>sırayla</b> işler. Lab'da StreamThread-2'nin dört task (1_3, 1_1, 0_3, 0_1) çalıştırdığını gördük. Bu yüzden bir task'taki yavaş işleme, aynı thread'deki diğer task'ları da geciktirir."
+    },
+    {
+      topic: "Alt topoloji",
+      q: "Bir topolojiden <code>selectKey</code> çağrısını kaldırıp mevcut key ile <code>groupByKey</code> yaparsan ne değişir?",
+      opts: [
+        "Repartition gerekmez; alt topoloji sayısı ve dolayısıyla task sayısı azalır",
+        "Hiçbir şey değişmez",
+        "Changelog topic'i de ortadan kalkar",
+        "Uygulama stateless hâle gelir"
+      ],
+      a: [0],
+      why: "Veri zaten doğru key'e göre partition'lanmışsa yeniden dağıtıma gerek yoktur: repartition topic'i ve ikinci alt topoloji oluşmaz, task sayısı yarıya iner ve ağ trafiği azalır. <b>Stateful'luk devam eder</b> — <code>reduce</code> hâlâ bir state store kullanır ve changelog yine oluşur (6.2). Bu, Streams'te en etkili optimizasyonlardan biridir."
+    },
+    {
+      topic: "Streams ve consumer group",
+      q: "Aynı application.id ile ikinci bir instance başlatırsan ne olur?",
+      opts: [
+        "Task'lar iki instance arasında yeniden dağıtılır (rebalance)",
+        "İkinci instance hata alır",
+        "İki instance de tüm task'ları çalıştırır, veri iki kez işlenir",
+        "İkinci instance yalnızca standby task alır"
+      ],
+      a: [0],
+      why: "Streams bir consumer group olduğu için aynı <code>application.id</code> ile başlayan instance'lar <b>aynı gruba</b> katılır ve task'lar aralarında bölüşülür — yatay ölçeklemenin yolu budur. Standby task'lar ayrı bir yapılandırmayla (<code>num.standby.replicas</code>) oluşur, otomatik değil (6.2)."
+    },
+    {
+      topic: "Yapılandırma",
+      q: "Kafka Streams'te commit.interval.ms varsayılanı hakkında hangisi doğrudur?",
+      opts: [
+        "At-least-once'ta 30000 ms, exactly_once_v2'de 100 ms'dir",
+        "Her iki modda da 30000 ms'dir",
+        "Her iki modda da 100 ms'dir",
+        "Ayarlanamaz, sabittir"
+      ],
+      a: [0],
+      why: "EOS modunda her commit bir <b>transaction sınırıdır</b> (4.1) ve uçtan uca gecikmeyi doğrudan belirler; bu yüzden varsayılan çok daha kısadır (100 ms). At-least-once'ta commit yalnızca ilerleme kaydıdır, seyrek olması sorun değildir (30 s). Bu fark, EOS'un neden daha maliyetli olduğunun da bir parçasıdır (6.4)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

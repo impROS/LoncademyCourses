@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "7-2",
+  code: "Connect · 7.2",
+  title: "Connector/SMT geliştirme ve MirrorMaker 2",
+  back: "7.2-connector-smt-ve-mm2.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "SMT sınırları",
+      q: "Bir SMT içinde başka bir topic'ten ya da veritabanından veri okuyup kaydı zenginleştirmek istiyorsun. Doğru yaklaşım nedir?",
+      opts: [
+        "SMT uygun değil; Kafka Streams + GlobalKTable ile zenginleştirme yapılmalı",
+        "SMT'ye bir JDBC bağlantısı eklenmeli",
+        "SMT içinde bir cache tutulmalı",
+        "SMT zincirine ikinci bir connector eklenmeli"
+      ],
+      a: [0],
+      why: "SMT <b>kayıt başına, durumsuz ve hızlı</b> olmak zorundadır: her kayıtta senkron bir dış çağrı yapmak hattın throughput'unu yerle bir eder ve hata yüzeyini büyütür. Join/lookup gerektiren zenginleştirme <b>Kafka Streams</b>'in işidir (6.3). SMT içinde cache tutmak da durumsuzluk kuralını ihlal eder."
+    },
+    {
+      topic: "SMT geliştirme",
+      q: "Özel bir SMT'nin apply() metodu beklemediği bir tiple karşılaşırsa ne yapmalıdır?",
+      opts: [
+        "Kaydı olduğu gibi geri döndürmeli",
+        "İstisna fırlatmalı ki sorun fark edilsin",
+        "null döndürmeli",
+        "Kaydı DLQ'ya yazmalı"
+      ],
+      a: [0],
+      why: "SMT'ler zincirin ortasında çalışır: tanımadığı bir tipte istisna fırlatmak <b>tüm hattı durdurur</b> (<code>errors.tolerance=none</code> varsayılanıyla). \"Dokunamıyorsan dokunma\" kuralı yerleşik SMT'lerin de davranışıdır. <code>null</code> döndürmek kaydı <b>siler</b> (tombstone semantiği) — istenmeyen bir yan etkidir. DLQ'ya yazmak connector'ın işidir, SMT'nin değil."
+    },
+    {
+      topic: "MM2 mimarisi",
+      q: "MirrorMaker 2 nedir?",
+      opts: [
+        "Kafka Connect üzerine kurulmuş üç connector: MirrorSource, MirrorCheckpoint, MirrorHeartbeat",
+        "Broker'a gömülü bir replikasyon özelliği",
+        "Bağımsız bir replikasyon servisi",
+        "Kafka Streams tabanlı bir uygulama"
+      ],
+      a: [0],
+      why: "MM2 ayrı bir sistem değildir: <b>MirrorSourceConnector</b> (veri + topic yapılandırması), <b>MirrorCheckpointConnector</b> (consumer group offsetlerinin çevrimi), <b>MirrorHeartbeatConnector</b> (canlılık). Bu yüzden Connect'in tüm işletim modeli (worker, task, REST, offset topic'leri) MM2 için de geçerlidir."
+    },
+    {
+      topic: "MM2 adlandırma",
+      q: "MM2 replikasyonundan sonra hedef cluster'da topic adı <code>ist.siparisler</code> oldu. Bu neden böyledir?",
+      opts: [
+        "DefaultReplicationPolicy kaynak takma adını ön ek olarak ekler; bu döngüsel replikasyonu engeller",
+        "Bir yapılandırma hatasıdır",
+        "Kafka tüm replike topic'lere ön ek ekler",
+        "Ön ek yalnızca çift yönlü replikasyonda eklenir"
+      ],
+      a: [0],
+      why: "Ön ek bir <b>döngü korumasıdır</b>: A→B→A senaryosunda ön eksiz replikasyon aynı kayıtları sonsuza kadar dolaştırırdı. <code>IdentityReplicationPolicy</code> ile ön ek kaldırılabilir ama o zaman <b>döngü koruması da kalkar</b> — yalnızca tek yönlü, tek atlamalı kurulumlarda bilinçli tercih edilmelidir."
+    },
+    {
+      topic: "MM2 garantileri",
+      q: "MM2 ile felaket kurtarma kuran bir ekibe verilecek en önemli uyarı hangisidir?",
+      opts: [
+        "MM2 asenkron ve at-least-once'tır: RPO sıfır değildir ve failover sonrası duplicate işleme normaldir",
+        "MM2 exactly-once garantisi verir, ek önlem gerekmez",
+        "MM2 senkron replikasyon yapar",
+        "MM2 failover kararını otomatik verir"
+      ],
+      a: [0],
+      why: "MM2 arkada bir consumer/producer çiftidir: kaynak ile hedef arasında her zaman bir <b>lag</b> vardır (RPO = lag). Offsetler birebir aynı değil <b>çevrilmiştir</b>, dolayısıyla failover sonrası bazı kayıtlar yeniden işlenir → tüketiciler <b>idempotent</b> olmalıdır (4.2). Failover kararı da otomatik değildir; operasyon ekibi verir."
+    },
+    {
+      topic: "MM2 yapılandırma",
+      q: "MM2 replikasyonundan sonra hedef cluster'da partition sayısı ve retention kaynaktan farklı. Hangi ayar eksik?",
+      opts: [
+        "sync.topic.configs.enabled",
+        "emit.checkpoints.enabled",
+        "sync.group.offsets.enabled",
+        "refresh.topics.interval.seconds"
+      ],
+      a: [0],
+      why: "<code>sync.topic.configs.enabled</code>, kaynak topic'lerin <b>yapılandırmasını</b> (partition sayısı, retention, cleanup.policy) hedefe taşır. Kapalıysa hedefte topic'ler broker varsayılanlarıyla oluşur ve zamanla ıraksar — failover sonrası sürprizlerin klasik kaynağı. Diğer ayarlar offset ve topic keşfiyle ilgilidir."
+    },
+    {
+      topic: "Offset çevrimi",
+      q: "MirrorCheckpointConnector neden gereklidir?",
+      opts: [
+        "Aynı kaydın offset'i iki cluster'da farklıdır; kaynak offsetlerini hedef offsetlerine çevirir",
+        "Veriyi kopyalar",
+        "Cluster'lar arası ağ sağlığını ölçer",
+        "Topic yapılandırmalarını senkronlar"
+      ],
+      a: [0],
+      why: "Cluster'lar bağımsız log'lardır: hedefteki bir kaydın offset'i kaynaktakiyle aynı olmak zorunda değildir. Checkpoint connector, <code>offset-syncs</code> topic'ini kullanarak eşleme yapar ve <code>sync.group.offsets.enabled=true</code> ise hedefte grup offsetlerini yazar — böylece failover sonrası tüketiciler yaklaşık doğru noktadan devam eder. Veriyi <b>MirrorSource</b>, canlılığı <b>MirrorHeartbeat</b> taşır."
+    },
+    {
+      topic: "SMT geliştirme",
+      q: "Özel SMT'ler neden Key ve Value iç sınıflarıyla yazılır?",
+      opts: [
+        "Aynı dönüşümün kaydın key'ine mi value'suna mı uygulanacağını yapılandırmada seçebilmek için",
+        "Zorunlu bir Java kısıtı olduğu için",
+        "Performans için",
+        "Serde uyumluluğu için"
+      ],
+      a: [0],
+      why: "Yerleşik SMT'lerin tamamı bu konvansiyonu izler: ortak mantık soyut taban sınıfta, hangi alana uygulanacağı <code>$Key</code>/<code>$Value</code> iç sınıflarında. Yapılandırmada <code>transforms.x.type=...MaskeleSmt$Value</code> yazarak seçim yapılır — aynı kodu iki kez yazmadan iki davranış elde edilir."
+    },
+    {
+      topic: "Predicate",
+      q: "Bir SMT'yi yalnızca belirli topic'lerde çalıştırmak için ne kullanılır?",
+      opts: [
+        "predicates (ör. TopicNameMatches) ve transforms.<ad>.predicate ayarı",
+        "Ayrı bir connector",
+        "RegexRouter SMT'si",
+        "errors.tolerance"
+      ],
+      a: [0],
+      why: "Connect <b>predicate</b> mekanizması sunar: <code>TopicNameMatches</code>, <code>HasHeaderKey</code>, <code>RecordIsTombstone</code> gibi koşullar tanımlanır ve <code>transforms.&lt;ad&gt;.predicate</code> ile bir SMT'ye bağlanır (<code>negate=true</code> ile tersi). <code>RegexRouter</code> topic'i <i>değiştirir</i>, koşul üretmez."
+    },
+    {
+      topic: "Plugin dağıtımı",
+      q: "'Failed to find any class that implements Transformation' hatası alıyorsun. En olası sebep nedir?",
+      opts: [
+        "Jar yanlış yerde ya da plugin.path plugin dizinlerinin üst dizinini göstermiyor",
+        "SMT sınıfı public değil",
+        "Kafka sürümü eski",
+        "Converter yanlış seçilmiş"
+      ],
+      a: [0],
+      why: "Connect plugin'leri <code>plugin.path</code> altındaki <b>alt dizinlerde</b> arar: <code>/opt/connectors/benim-smt/*.jar</code> yapısında <code>plugin.path=/opt/connectors</code> verilir. Jar'ı doğrudan <code>plugin.path</code>'in kendisine koymak ya da yolu yanlış vermek bu hatayı üretir (7.1'de aynı sınıf hatayı yaşadık)."
+    },
+    {
+      topic: "Connector geliştirme",
+      q: "Kendi source connector'ını yazarken SourceRecord'a sourcePartition ve sourceOffset vermek neden zorunludur?",
+      opts: [
+        "Connect'in yeniden başlatmada dış sistemde nereden devam edeceğini bilmesi için",
+        "Kafka partition'ını belirlemek için",
+        "SMT'lerin çalışması için",
+        "Converter'ın şemayı bulması için"
+      ],
+      a: [0],
+      why: "Source connector'ın offset'i <b>dış sistemdeki konumdur</b> (7.1): <code>sourcePartition</code> iş biriminin kimliği (dosya adı, tablo adı), <code>sourceOffset</code> o birimde nerede kalındığı. Connect bu ikiliyi saklar ve yeniden başlatmada geri verir. Verilmezse her başlangıçta baştan okunur → duplicate. Kafka partition'ı ayrı bir alandır."
+    },
+    {
+      topic: "SMT sınırları",
+      q: "Aşağıdaki işlemlerden hangisi SMT ile <b>yapılamaz</b>?",
+      opts: [
+        "İki farklı topic'teki kayıtları birleştirmek (join)",
+        "Bir alanı maskelemek",
+        "Kaydı başka bir topic'e yönlendirmek",
+        "Zaman damgası formatını dönüştürmek"
+      ],
+      a: [0],
+      why: "SMT tek bir kaydı görür ve durum tutmaz; <b>join doğası gereği iki kaydı ve durumu</b> gerektirir → Kafka Streams (6.3). Maskeleme (<code>MaskField</code>), yönlendirme (<code>RegexRouter</code>) ve zaman dönüşümü (<code>TimestampConverter</code>) klasik SMT işleridir."
+    },
+    {
+      topic: "MM2 offset çevrimi",
+      q: "MM2 replikasyonunda kaynakta grup offset'i p0 için 180 iken hedefte 102 görünüyor. Bu bir hata mıdır?",
+      opts: [
+        "Hayır — offset çevrimi muhafazakârdır; MM2 emin olmadığında geri yuvarlar, çünkü ileri yuvarlamak veri kaybı olurdu",
+        "Evet — offset-syncs topic'i bozulmuştur",
+        "Evet — sync.group.offsets.enabled kapalıdır",
+        "Hayır — hedefte partition sayısı farklı olduğu için offsetler bölünür"
+      ],
+      a: [0],
+      why: "Çeviri <code>offset-syncs</code> kayıtlarına dayanır ve bu kayıtlar seyrektir. MM2 iki kötüden az olanı seçer: <b>geri yuvarlamak = tekrar işleme</b>, ileri yuvarlamak <b>= veri kaybı</b>. Lab'da p1 birebir çevrildi (50→50) ama p0 geride kaldı (180→102). Pratik sonuç: <b>failover sonrası duplicate normaldir</b>, tüketiciler idempotent olmalıdır (4.2)."
+    },
+    {
+      topic: "MM2 işletim",
+      q: "MM2 kurdun ama hedef cluster'da consumer group'lar hiç görünmüyor. İlk kontrol edeceğin ayar nedir?",
+      opts: [
+        "refresh.groups.interval.seconds — varsayılanı 600 saniyedir, grup listesi 10 dakikada bir taranır",
+        "replication.factor",
+        "tasks.max",
+        "sync.topic.configs.enabled"
+      ],
+      a: [0],
+      why: "MirrorCheckpointConnector grup listesini periyodik tarar; varsayılan <b>10 dakikadır</b>. Bu setin hazırlığında da ilk denemede grup görünmedi, aralık 10 saniyeye çekilince belirdi. Üretimde varsayılan yeterlidir ama teşhis sırasında ilk bakılacak yerdir."
+    },
+    {
+      topic: "MM2 mimarisi",
+      q: "MM2 worker'ları hangi tarafta çalıştırılmalıdır ve neden? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Genellikle hedef tarafta — uzaktan okuyup yerele yazmak ağ kopmalarında daha dayanıklıdır",
+        "MM2 ayrı makinelerde çalıştırılmalı, broker'larla aynı konteynerde değil",
+        "Kaynak tarafta, çünkü okuma daha maliyetlidir",
+        "Broker'ların içinde, kaynak tasarrufu için"
+      ],
+      a: [0, 1],
+      why: "Yaygın pratik <b>hedef tarafta</b> çalıştırmaktır: yerel yazma daha güvenilirdir ve WAN kesintilerinde tüketici tarafı yeniden dener. MM2 birden çok Connect worker'ı ve producer/consumer çifti başlatır; <b>broker'la aynı makinede/konteynerde çalıştırmak</b> bellek ve disk tüketir — bu setin hazırlığında broker'ı çökerttiği için lab'a dahil edilmedi."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "7-1",
+  code: "Connect · 7.1",
+  title: "Connect mimarisi ve offset yönetimi",
+  back: "7.1-connect-mimarisi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Offset yönetimi",
+      q: "Source connector ile sink connector'ın offsetleri arasındaki fark nedir?",
+      opts: [
+        "Source offset dış sistemdeki konumdur (dosya baytı, DB satırı); sink offset Kafka offset'idir ve __consumer_offsets'te tutulur",
+        "İkisi de __consumer_offsets'te tutulur",
+        "İkisi de offset.storage.topic'te tutulur",
+        "Source offset tutulmaz; her başlangıçta baştan okunur"
+      ],
+      a: [0],
+      why: "Source connector Kafka'ya <i>yazar</i>: hatırlaması gereken şey <b>dış sistemde nerede kaldığıdır</b> (standalone'da dosya, distributed'da <code>offset.storage.topic</code>). Sink connector Kafka'dan <i>okur</i>: sıradan bir consumer group'tur ve offsetleri <code>__consumer_offsets</code>'tedir, grup adı <code>connect-&lt;connector-adı&gt;</code>."
+    },
+    {
+      topic: "Task modeli",
+      q: "tasks.max=10 verildi ama connector yalnızca 1 task oluşturdu. Sebep nedir?",
+      opts: [
+        "tasks.max bir üst sınırdır; connector bölünebilir iş birimi kadar task üretir (FileStreamSource dosyayı bölemez)",
+        "Worker sayısı yetersiz",
+        "tasks.max yalnızca sink connector'larda geçerlidir",
+        "Bir yapılandırma hatasıdır"
+      ],
+      a: [0],
+      why: "<code>tasks.max</code> <b>tavandır</b>, hedef değil. Connector işi kaça bölebileceğine kendisi karar verir: FileStreamSource tek dosyayı bölemez (her zaman 1), JDBC source tablo başına 1, sink connector'lar ise partition sayısına kadar task üretir."
+    },
+    {
+      topic: "Teşhis",
+      q: "Connector /status çıktısında RUNNING görünüyor ama topic'e hiç kayıt gelmiyor ve log'da hata yok. Ne yaparsın?",
+      opts: [
+        "Task listesini ve topic offsetlerini birlikte kontrol eder, plugin.path yapılandırmasını gözden geçiririm",
+        "Connector'ı silip yeniden oluştururum, başka yapılacak bir şey yok",
+        "Broker'ları yeniden başlatırım",
+        "tasks.max'ı artırırım"
+      ],
+      a: [0],
+      why: "<code>RUNNING</code> bir <b>sağlık kanıtı değildir</b>: task hiç örneklenmemiş olabilir. Bu setin hazırlanışında gerçekten yaşanan vaka buydu — <code>plugin.path</code> tüm <code>libs</code> dizinini gösteriyordu, classloader çakışması oluştu ve task sessizce çalışmadı. Doğru plugin yolu verilince veri anında aktı."
+    },
+    {
+      topic: "plugin.path",
+      q: "plugin.path neden Kafka'nın kendi libs dizinini göstermemelidir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Her jar taranır; worker başlangıcı dakikalar sürer",
+        "Classpath'te zaten olan sınıflar plugin olarak da yüklenir; sessiz classloader çakışmaları oluşur",
+        "Kafka bu dizini salt okunur yapar",
+        "plugin.path yalnızca standalone modda kullanılır"
+      ],
+      a: [0, 1],
+      why: "Lab'da ölçtük: tüm <code>libs</code> ile başlangıç <b>2 dakikadan uzun</b>, tek plugin jar'ıyla <b>15 saniye</b>. Daha kötüsü, çift yükleme sessiz hatalara yol açtı. Üretimde ayrı bir <code>/opt/connectors</code> dizini kullanılır. <code>plugin.path</code> her iki modda da geçerlidir."
+    },
+    {
+      topic: "Distributed mod",
+      q: "config.storage.topic neden tek partition olmak zorundadır?",
+      opts: [
+        "Yapılandırma değişikliklerinin toplam sırası (total order) gerekir",
+        "Compaction yalnızca tek partition'da çalışır",
+        "REST API tek partition'dan okur",
+        "Zorunlu değildir, yalnızca öneridir"
+      ],
+      a: [0],
+      why: "Connector yapılandırmaları bir olay dizisidir ve tüm worker'ların <b>aynı sırayla</b> görmesi gerekir; birden çok partition sırayı bölerdi. Aynı sebeple KRaft metadata log'u da tek partition'dır (1.3). Bu bir öneri değil, <b>zorunluluktur</b>."
+    },
+    {
+      topic: "Converter",
+      q: "JsonConverter ile mesajlar beklenenin çok üstünde büyük. En olası sebep nedir?",
+      opts: [
+        "schemas.enable=true — şema her mesajın içine gömülüyor",
+        "Converter sıkıştırmayı devre dışı bırakıyor",
+        "SMT'ler her mesaja header ekliyor",
+        "Key ve value iki kez serileştiriliyor"
+      ],
+      a: [0],
+      why: "<code>JsonConverter</code> varsayılan olarak <code>schemas.enable=true</code> ile çalışır ve şemayı <b>her mesajın içine</b> koyar — küçük yüklerde boyutu kat kat artırır. Şema gerçekten gerekiyorsa doğru çözüm <b>Schema Registry + Avro/Protobuf</b>'tur (2.4): şema bir kez saklanır, mesajda yalnızca id taşınır."
+    },
+    {
+      topic: "Hata yönetimi",
+      q: "Bozuk bir mesajın sink connector'ı durdurmasını engellemek için üretim reçetesi nedir?",
+      opts: [
+        "errors.tolerance=all + errors.deadletterqueue.topic.name + context.headers.enable=true",
+        "errors.tolerance=all tek başına yeterlidir",
+        "errors.retry.timeout=-1",
+        "tasks.max'ı artırmak"
+      ],
+      a: [0],
+      why: "<code>errors.tolerance=all</code> tek başına kaydı <b>sessizce atar</b> — Streams'teki <code>LogAndContinue</code> tuzağının aynısı (6.4). DLQ ile kayıt saklanır, <code>context.headers.enable=true</code> ile hatanın sebebi kayda header olarak yazılır ve sonradan incelenebilir. Sonsuz retry hattı büsbütün tıkar."
+    },
+    {
+      topic: "Offset yönetimi",
+      q: "Standalone modda /tmp/connect.offsets dosyasını silip connector'ı yeniden çalıştırırsan ne olur?",
+      opts: [
+        "Kaynak baştan okunur; topic'te duplicate oluşur",
+        "Connector başlamaz",
+        "Yalnızca yeni satırlar okunur",
+        "Offsetler __consumer_offsets'ten geri yüklenir"
+      ],
+      a: [0],
+      why: "Standalone modda source offsetleri <b>yalnızca o dosyadadır</b>; silinince connector \"hiç okumadım\" varsayar ve baştan başlar. Bu, standalone modun en büyük operasyonel zayıflığıdır ve distributed modda offsetlerin Kafka topic'inde tutulmasının sebebidir."
+    },
+    {
+      topic: "Sink = consumer group",
+      q: "Bir sink connector'ın ne kadar geride olduğunu nasıl ölçersin?",
+      opts: [
+        "kafka-consumer-groups.sh --describe --group connect-<connector-adı>",
+        "REST API'de /connectors/<ad>/lag endpoint'i ile",
+        "offset.storage.topic'i okuyarak",
+        "Sink connector'lar için lag ölçülemez"
+      ],
+      a: [0],
+      why: "Sink connector <b>sıradan bir consumer group'tur</b>; grup adı <code>connect-</code> ön ekiyle connector adıdır. Dolayısıyla lag, rebalance, <code>max.poll.interval.ms</code> — 3.2 ve 3.3'teki her şey aynen geçerlidir. <code>offset.storage.topic</code> <b>source</b> connector'lar içindir."
+    },
+    {
+      topic: "REST API",
+      q: "Connector oluşturmak/güncellemek için tercih edilen REST çağrısı hangisidir ve neden?",
+      opts: [
+        "PUT /connectors/<ad>/config — idempotenttir; hem oluşturur hem günceller",
+        "POST /connectors — tek doğru yöntemdir",
+        "PATCH /connectors/<ad> — kısmi güncelleme yapar",
+        "POST /connectors/<ad>/restart"
+      ],
+      a: [0],
+      why: "<code>PUT .../config</code> idempotenttir: connector yoksa oluşturur, varsa günceller — otomasyon ve GitOps akışları için idealdir. <code>POST /connectors</code> zaten var olan bir connector için 409 döndürür. Dağıtmadan önce <code>PUT /connector-plugins/&lt;sınıf&gt;/config/validate</code> ile yapılandırma doğrulanabilir."
+    },
+    {
+      topic: "Standalone vs distributed",
+      q: "Distributed modun standalone'a göre sağladığı temel avantaj nedir?",
+      opts: [
+        "Worker kaybında task'lar diğer worker'lara yeniden dağıtılır (failover) ve durum Kafka topic'lerinde saklanır",
+        "Daha yüksek throughput",
+        "SMT desteği",
+        "Converter çeşitliliği"
+      ],
+      a: [0],
+      why: "Distributed modda connector yapılandırmaları, offsetler ve durumlar <b>Kafka topic'lerinde</b> tutulur; bir worker ölürse task'lar kalanlara dağıtılır. SMT'ler ve converter'lar <b>her iki modda da</b> aynıdır; throughput farkı task dağılımından gelir, moddan değil."
+    },
+    {
+      topic: "SMT",
+      q: "Lab'da kayıtlarda görülen <code>kaynak:dosya</code> header'ı nereden geldi?",
+      opts: [
+        "InsertHeader SMT'si — source connector'ın transforms zincirinde tanımlıydı",
+        "Connect her kayda kaynak connector adını header olarak ekler",
+        "FileStreamSourceConnector varsayılan olarak ekler",
+        "Converter ekledi"
+      ],
+      a: [0],
+      why: "SMT'ler (Single Message Transforms) kayıt bazlı, hafif dönüşümlerdir ve <code>transforms=...</code> zinciriyle tanımlanır. Lab'da <code>InsertHeader</code> her kayda <code>kaynak=dosya</code> header'ı ekledi. Connect kendiliğinden header eklemez; converter yalnızca serileştirme yapar."
+    },
+    {
+      topic: "Mimari",
+      q: "Kafka Connect'te 'connector' tam olarak nedir?",
+      opts: [
+        "Bir yapılandırmadır; kendisi veri taşımaz, işi bölüp task'lar üretir",
+        "Veri taşıyan çalışan bir thread'dir",
+        "Bir Kafka topic'idir",
+        "Bir worker sürecidir"
+      ],
+      a: [0],
+      why: "Connector işin <b>tanımıdır</b>: hangi sistem, hangi topic, hangi dönüşümler. Asıl veriyi <b>task</b>'lar taşır; worker ise task'ları çalıştıran JVM sürecidir. Bu ayrımı bilmemek, \"connector RUNNING ama veri yok\" vakasında yanlış yere bakmaya yol açar."
+    },
+    {
+      topic: "Offset yönetimi",
+      q: "Lab'da kaynak dosyaya bir satır eklenip connector yeniden çalıştırıldığında topic offset'i 3'ten 4'e çıktı. Bu neyi kanıtlar?",
+      opts: [
+        "Source offset dış sistemdeki konumu hatırladı; ilk üç satır tekrar yazılmadı",
+        "Kafka duplicate'leri otomatik eledi",
+        "SMT tekrarlanan kayıtları filtreledi",
+        "Topic compacted olduğu için eskiler silindi"
+      ],
+      a: [0],
+      why: "Connect, source connector'ın dış sistemdeki konumunu (burada dosyada okunan bayt) kalıcı olarak saklar ve yeniden başladığında oradan devam eder. Kafka'nın kendisi <b>içerik bazlı duplicate elemesi yapmaz</b> (2.2); SMT'ler filtreleme için ayrıca yapılandırılmalıdır ve topic <code>delete</code> politikasındaydı."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

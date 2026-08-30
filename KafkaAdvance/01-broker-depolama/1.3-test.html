@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-3",
+  code: "Broker & Depolama · 1.3",
+  title: "KRaft: metadata quorum ve controller",
+  back: "1.3-kraft-metadata.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Quorum matematiği",
+      q: "5 controller'lı bir KRaft quorum'u kaç node kaybını tolere eder?",
+      opts: ["2", "3", "4", "1"],
+      a: [0],
+      why: "Raft <b>kesin çoğunluk</b> ister: 5 voter için çoğunluk 3, dolayısıyla 2 kayıp tolere edilir. Not: 4 voter da yine yalnızca 2 kayıp tolere eder (çoğunluk 3) — bu yüzden çift sayılı quorum ek maliyet getirir, ek dayanıklılık getirmez."
+    },
+    {
+      topic: "Quorum matematiği",
+      q: "3 node'lu combined mod bir cluster'da 2 node çöktü. Ne olur?",
+      opts: [
+        "Metadata yazan işlemler (topic oluşturma, config değişikliği) durur; kalan broker önbelleğiyle bazı istekleri yanıtlamaya devam edebilir",
+        "Cluster tamamen kapanır, hiçbir istek yanıtlanmaz",
+        "Kalan node otomatik olarak tek node'lu quorum'a geçer ve normal çalışır",
+        "Kafka üçüncü bir controller'ı otomatik başlatarak quorum'u onarır"
+      ],
+      a: [0],
+      why: "Çoğunluk (2/3) kaybolduğu için Raft <b>metadata yazamaz</b>. Ama broker'lar bellekteki metadata ile bir süre okuma/yazma yanıtlayabilir — bu yüzden \"tamamen kapanır\" yanlıştır. Kafka quorum'u kendi kendine küçültmez (bu split-brain'e davetiye olurdu) ve node başlatmaz."
+    },
+    {
+      topic: "Mimari",
+      q: "KRaft'ta broker'lar metadata değişikliklerini nasıl öğrenir?",
+      opts: [
+        "Observer olarak __cluster_metadata log'unu fetch eder ve delta uygularlar",
+        "Active controller her değişiklikte tüm broker'lara RPC gönderir",
+        "Her broker ZooKeeper'a watch koyar",
+        "Broker'lar birbirine gossip protokolüyle yayar"
+      ],
+      a: [0],
+      why: "Broker'lar quorum'un <b>observer</b>'larıdır: metadata log'unu tıpkı bir consumer gibi fetch eder, aldıkları kayıtları kendi bellek durumlarına uygularlar. Push/RPC yayılımı <b>ZooKeeper dönemine</b> aitti ve büyük cluster'larda ölçeklenmiyordu. ZooKeeper 4.0'da tamamen kaldırıldı."
+    },
+    {
+      topic: "Mimari",
+      q: "__cluster_metadata topic'i hakkında hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Tek partition'dan oluşur",
+        "Replikaları controller quorum voter'larıdır",
+        "Partition sayısı controller sayısına göre otomatik artar",
+        "Normal topic'ler gibi retention.ms ile silinir"
+      ],
+      a: [0, 1],
+      why: "Metadata log'u <b>tek partition</b>'dır — toplam sıralama (total order) gerektiği için başka türlü olamaz — ve replikaları voter'lardır. Büyümesi retention ile değil <b>snapshot</b> ile yönetilir: controller durumun anlık görüntüsünü alır, eski log kısımları gerekmez."
+    },
+    {
+      topic: "Failover",
+      q: "Controller lideri olan node'u öldürüp geri başlattın. Liderliğin ona geri dönmediğini görüyorsun. Bu ne anlama gelir?",
+      opts: [
+        "Normaldir — Raft'ta preferred leader kavramı yoktur",
+        "Quorum bozulmuştur, manuel müdahale gerekir",
+        "auto.leader.rebalance.enable kapalıdır, açılmalıdır",
+        "Node metadata'yı kaybetmiştir, yeniden format gerekir"
+      ],
+      a: [0],
+      why: "Veri partition'larında <code>auto.leader.rebalance.enable</code> liderliği <i>preferred leader</i>'a geri taşır; <b>Raft quorum'unda böyle bir kavram yoktur</b> ve liderliğin hangi voter'da olduğu önemsizdir. Bu ayarı quorum'a uygulamaya çalışmak yaygın bir karıştırmadır."
+    },
+    {
+      topic: "Failover",
+      q: "describe --replication çıktısında bir voter için <code>LogEndOffset: -1</code> ve sürekli artan <code>Lag</code> görüyorsun. Ne anlama gelir?",
+      opts: [
+        "O voter'a ulaşılamıyor (ölü ya da ağdan kopuk)",
+        "O voter snapshot yüklüyor",
+        "O voter lider seçilmek üzere",
+        "O voter'ın diski dolu"
+      ],
+      a: [0],
+      why: "<code>-1</code>, lider o voter'dan hiç bilgi alamadığını gösterir; <code>Lag</code> her yeni metadata kaydıyla büyür. Bu, ölü ya da erişilemeyen node'un imzasıdır. Disk doluluğu farklı bir belirti verir (broker log'unda I/O hataları), snapshot yükleyen node ise fetch etmeye devam eder."
+    },
+    {
+      topic: "Feature flag",
+      q: "4.3 binary'sine yükselttiniz ama yeni özellikler etkin değil. İlk kontrol edeceğin şey nedir?",
+      opts: [
+        "kafka-features.sh describe ile metadata.version'ın finalize edilmiş seviyesi",
+        "server.properties'te inter.broker.protocol.version",
+        "ZooKeeper bağlantısının kesilip kesilmediği",
+        "Client kütüphanesinin sürümü"
+      ],
+      a: [0],
+      why: "KRaft'ta yükseltme iki adımlıdır: <b>önce binary</b>, sonra <code>kafka-features.sh upgrade</code> ile feature seviyesi. Binary yeni olsa bile <code>metadata.version</code> eski seviyede kalabilir ve yeni kayıt tipleri kullanılmaz. <code>inter.broker.protocol.version</code> ZooKeeper döneminin ayarıydı; ZooKeeper 4.x'te zaten yok."
+    },
+    {
+      topic: "Feature flag",
+      q: "kafka-features describe çıktısında <code>transaction.version</code> FinalizedVersionLevel değerinin 2 olması ne anlama gelir?",
+      opts: [
+        "TV2 (KIP-890) etkin — transaction coordinator her transaction'da producer epoch'unu artırır",
+        "Cluster en fazla 2 eşzamanlı transaction destekler",
+        "Transaction state log'u 2 replikalıdır",
+        "Transaction'lar 2 fazlı commit kullanır"
+      ],
+      a: [0],
+      why: "<code>transaction.version=2</code>, KIP-890'ın ikinci nesil transaction protokolüdür (TV2): coordinator her transaction'ın sonunda epoch'u artırır, böylece zombi producer'ın bir sonraki transaction'a mesaj \"sızdırması\" engellenir. Kafka 4.0'dan itibaren varsayılan etkindir (4.1'de detaylandırılacak). Eşzamanlı transaction sayısı veya replikasyon faktörü ile ilgisi yoktur."
+    },
+    {
+      topic: "Combined vs isolated",
+      q: "Combined mod (process.roles=broker,controller) üretimde neden önerilmez?",
+      opts: [
+        "Broker yükü/GC duraklaması aynı süreçteki controller'ı etkiler; broker kaybı aynı anda quorum kaybıdır",
+        "Combined modda metadata replike edilmez",
+        "Combined mod yalnızca tek node'lu cluster'larda çalışır",
+        "Combined modda TLS desteklenmez"
+      ],
+      a: [0],
+      why: "Combined modda arıza <b>yayılır</b>: broker tarafındaki bir doygunluk controller'ı da geciktirir ve node kaybı hem veri replikasını hem quorum üyesini götürür. İzole controller'lar öngörülebilir davranır. Combined mod çok node'lu çalışır ve TLS destekler — bu şıklar uydurmadır."
+    },
+    {
+      topic: "ISR vs quorum",
+      q: "ISR ile Raft quorum'u arasındaki temel fark nedir?",
+      opts: [
+        "ISR uyarlanabilir bir kümedir (daralıp genişler); Raft değişmez bir çoğunluk şartı arar",
+        "ISR yalnızca metadata için, quorum yalnızca veri için kullanılır",
+        "ISR eşzamanlı, quorum asenkron çalışır",
+        "İkisi de aynı mekanizmadır, sadece isimleri farklıdır"
+      ],
+      a: [0],
+      why: "ISR <b>uyarlanabilir</b>: yavaş replika kümeden düşer, kalanla devam edilir (yazma sürebilir). Raft <b>matematiksel çoğunluk</b> ister; sağlanmazsa yazma durur, pazarlık yoktur. Rollerin yeri de tersinedir: ISR <i>veri</i> partition'larında, quorum <i>metadata</i>'dadır."
+    },
+    {
+      topic: "Mimari",
+      q: "Metadata snapshot'ının amacı nedir?",
+      opts: [
+        "Yeni katılan/geride kalan bir node'un tüm metadata log'unu baştan okumasını engellemek",
+        "Metadata'yı yedekleyip felaket kurtarma sağlamak",
+        "Eski metadata kayıtlarını sıkıştırarak diskte yer kazanmak dışında bir işlevi yoktur",
+        "Controller failover'ında oy sayımını hızlandırmak"
+      ],
+      a: [0],
+      why: "Snapshot, o andaki <b>tam durumun</b> materyalize hâlidir: katılan node önce snapshot'ı yükler, sonra üzerine son kayıtları uygular. Bu olmasaydı büyük cluster'da bir node'un katılması log'un tamamını okumayı gerektirirdi. Yedekleme aracı değildir; yer kazancı yan etkidir, amaç <b>hızlı katılım</b>."
+    },
+    {
+      topic: "Operasyon",
+      q: "kafka-metadata-quorum.sh komutlarını çalıştırırken hangi parametre kullanılır?",
+      opts: [
+        "--bootstrap-controller ile controller listener adresi",
+        "--bootstrap-server ile broker adresi",
+        "--zookeeper ile ZK adresi",
+        "Parametre gerekmez, yerel config'ten okunur"
+      ],
+      a: [0],
+      why: "Quorum komutları controller listener'ına (bizim lab'da 9093) <code>--bootstrap-controller</code> ile bağlanır. Broker portuna <code>--bootstrap-server</code> ile bağlanmaya çalışırsan quorum bilgisine erişemezsin. <code>--zookeeper</code> parametresi 4.x'te tamamen kaldırıldı."
+    },
+    {
+      topic: "Feature flag",
+      q: "kraft.version feature'ının FinalizedVersionLevel değeri 0'dan 1'e çıkarılırsa ne kazanılır?",
+      opts: [
+        "Dinamik voter kümesi — controller'lar çalışırken eklenip çıkarılabilir",
+        "Metadata log'unun partition sayısı artırılabilir",
+        "ZooKeeper geri getirilebilir",
+        "Controller sayısı sınırsız olur"
+      ],
+      a: [0],
+      why: "<code>kraft.version=1</code> (KIP-853) <b>dinamik quorum</b> demektir: voter listesi statik <code>controller.quorum.voters</code> yapılandırmasına bağlı kalmaz, <code>add-controller</code>/<code>remove-controller</code> ile çalışırken değiştirilebilir. Metadata partition sayısı hiçbir zaman artırılamaz (toplam sıralama gerekir) ve ZooKeeper geri gelmez."
+    },
+    {
+      topic: "Failover",
+      q: "Controller failover'ının ZooKeeper dönemine göre çok daha hızlı olmasının sebebi nedir?",
+      opts: [
+        "Yeni lider metadata log'unu zaten takip ediyordu; durumu baştan okumasına gerek yok",
+        "KRaft metadata'yı bellekte tutmaz, bu yüzden yükleme gerekmez",
+        "Failover sırasında broker'lar metadata'yı yeni controller'a gönderir",
+        "KRaft'ta failover asenkrondur, tamamlanması beklenmez"
+      ],
+      a: [0],
+      why: "ZooKeeper döneminde yeni controller, tüm metadata'yı ZK'dan <b>baştan okuyup</b> bellekte kurardı — büyük cluster'da dakikalar sürebiliyordu. KRaft'ta her voter log'u sürekli takip ettiği için durum zaten hazırdır; failover saniyelere iner. Metadata bellekte tutulur (log'dan kurulur), broker'lar controller'a metadata göndermez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

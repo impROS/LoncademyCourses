@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.4 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-4",
+  code: "Consumer · 3.4",
+  title: "Share groups (Queues for Kafka)",
+  back: "3.4-share-groups.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Model seçimi",
+      q: "4 partition'lı bir topic'i 50 worker ile işlemek istiyorsun; her mesaj 3 saniyelik bir API çağrısı gerektiriyor ve sıra önemli değil. Hangi model?",
+      opts: [
+        "Share group — tüketici sayısı partition sayısıyla sınırlı değildir",
+        "Consumer group — partition sayısını 50'ye çıkararak",
+        "Consumer group — 4 worker yeterlidir",
+        "Kafka Streams"
+      ],
+      a: [0],
+      why: "Share group'ta atama birimi <b>kayıttır</b>, partition değil: 4 partition'lı topic'i 50 tüketici paylaşabilir. Partition'ı 50'ye çıkarmak da bir yol ama key→partition eşlemesini bozar (2.1) ve broker maliyetini artırır. Klasik grupta 4 worker tavanı, uzun işlemede throughput'u kilitler."
+    },
+    {
+      topic: "Onay tipleri",
+      q: "RELEASE ile REJECT arasındaki fark nedir?",
+      opts: [
+        "RELEASE kaydı yeniden teslim edilebilir kılar; REJECT kaydı arşivler, bir daha teslim edilmez",
+        "RELEASE kaydı siler; REJECT kaydı DLQ'ya yazar",
+        "RELEASE yalnızca implicit modda, REJECT explicit modda kullanılır",
+        "İkisi de aynıdır; REJECT eski adıdır"
+      ],
+      a: [0],
+      why: "<b>RELEASE</b> = \"şu an ben yapamadım, başkası (ya da ben, sonra) denesin\" → kayıt yeniden teslim edilir. <b>REJECT</b> = \"bu kayıt işlenemez\" → <b>arşivlenir</b>, kimseye gitmez. REJECT geri dönüşü olmayan bir karardır; geçici hatalarda RELEASE, kalıcı bozuklukta REJECT kullanılır."
+    },
+    {
+      topic: "Teslimat limiti",
+      q: "Bir kayıt 5 kez teslim edildi ve hiç ACCEPT edilmedi. Varsayılan yapılandırmada ne olur?",
+      opts: [
+        "Arşivlenir — group.share.delivery.count.limit=5 aşıldığı için bir daha teslim edilmez",
+        "Sonsuza kadar yeniden teslim edilmeye devam eder",
+        "Topic'ten silinir",
+        "Otomatik olarak bir DLQ topic'ine yazılır"
+      ],
+      a: [0],
+      why: "<code>group.share.delivery.count.limit</code> (varsayılan <b>5</b>) zehirli kayda karşı <b>yerleşik güvenlik ağıdır</b>: limit aşılınca kayıt arşivlenir ve kuyruk tıkanmaz. Klasik consumer group'ta böyle bir ağ yoktur — orada bozuk kayıt tüketiciyi kilitler (2.4). Kayıt log'dan <i>silinmez</i>; yalnızca o share grubuna teslim edilmez. Otomatik DLQ yoktur, onu sen kurarsın."
+    },
+    {
+      topic: "Sıra garantisi",
+      q: "Bir ekip share group'a geçtikten sonra aynı hesaba ait işlemlerin karıştığını fark etti. Neden?",
+      opts: [
+        "Share group sıra garantisi vermez; kayıtlar tüketicilere bağımsız dağıtılır",
+        "Key'i null verdikleri için",
+        "Partition sayısını artırdıkları için",
+        "delivery.count.limit çok düşük olduğu için"
+      ],
+      a: [0],
+      why: "Share group'un tüm amacı <b>kayıtları bağımsız iş birimleri</b> olarak dağıtmaktır; aynı key'in iki kaydı aynı anda iki farklı tüketiciye gidebilir. <b>Sıra gerekiyorsa yanlış araç seçilmiştir</b> — consumer group'a dönmek gerekir. Bu, share group'a geçerken sorulacak ilk sorudur."
+    },
+    {
+      topic: "Lab yorumu",
+      q: "Lab'da 60 kayıtlık bir topic'te s3 tüketicisi 80 kez RELEASE etti. Bu nasıl mümkün?",
+      opts: [
+        "RELEASE edilen kayıtlar yeniden teslim edilir; aynı kayıt s3'e birden çok kez gelmiş olabilir",
+        "Producer 80 kayıt üretmiştir",
+        "Sayaç hatalıdır",
+        "RELEASE her çağrıda kaydı çoğaltır"
+      ],
+      a: [0],
+      why: "RELEASE kaydı \"Available\" durumuna geri koyar; yeniden dağıtımda <b>aynı tüketiciye</b> de düşebilir. 60 benzersiz kayıt için 80 teslim, birçok kaydın en az iki kez dağıtıldığını gösterir. <code>delivery.count.limit</code> olmasaydı bu döngü sürerdi — sayı tam da bu limitin neden var olduğunu kanıtlıyor."
+    },
+    {
+      topic: "API farkları",
+      q: "KafkaShareConsumer'da bulunmayan yetenekler hangileridir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "seek() ile belirli bir offset'e konumlanma",
+        "ConsumerRebalanceListener ile partition devir bildirimleri",
+        "subscribe() ile topic'e abone olma",
+        "commitSync() ile onayları gönderme"
+      ],
+      a: [0, 1],
+      why: "Share group modelinde <b>offset ve partition sahipliği kavramları dışarı verilmez</b>: <code>seek()</code>, <code>assign()</code>, <code>position()</code> ve rebalance listener yoktur. <code>subscribe()</code> vardır (ama partition ataması bildirilmez) ve <code>commitSync()</code> vardır — offset değil <b>onayları</b> gönderir."
+    },
+    {
+      topic: "Yapılandırma",
+      q: "İşleme 45 saniye sürüyor ve kayıtlar iş bitmeden başkalarına yeniden dağıtılıyor. Hangi ayar sorumludur?",
+      opts: [
+        "group.share.record.lock.duration.ms (varsayılan 30000)",
+        "group.share.delivery.count.limit",
+        "max.poll.interval.ms",
+        "session.timeout.ms"
+      ],
+      a: [0],
+      why: "Kayıt \"acquired\" durumunda yalnızca <code>record.lock.duration.ms</code> (varsayılan <b>30 s</b>, üst sınır 60 s) kadar kalabilir; süre dolunca kayıt serbest bırakılır ve başkasına teslim edilir. 45 saniyelik işleme bu kirayı aşar. Çözüm: kilidi uzatmak ya da Kafka 4.2'deki <b>RENEW</b> onayıyla süreyi yenilemek. <code>max.poll.interval.ms</code> klasik grubun mekanizmasıdır."
+    },
+    {
+      topic: "Olgunluk",
+      q: "Share group (KIP-932) hangi sürümde üretime hazır ilan edildi?",
+      opts: ["4.2", "4.0", "4.1", "3.9"],
+      a: [0],
+      why: "Yol haritası: <b>4.0</b> erken erişim, <b>4.1</b> önizleme (\"üretime hazır değil, deneyebilirsiniz\"), <b>4.2</b> <b>üretime hazır</b> (RENEW onay tipi, share coordinator için adaptif batching, kapsamlı lag metrikleri ile birlikte). Sürüm eşleştirmesi bu konunun klasik sınav sorusudur."
+    },
+    {
+      topic: "Başlangıç noktası",
+      q: "Share consumer'ları başlattın ama topic'te veri olmasına rağmen hiç kayıt gelmiyor. En olası sebep nedir?",
+      opts: [
+        "Share group varsayılan olarak log sonundan başlar; yalnızca yeni gelen kayıtları görür",
+        "share.acknowledgement.mode ayarlanmamış",
+        "Topic'in partition sayısı tüketici sayısından az",
+        "Share group compacted topic'lerde çalışmaz"
+      ],
+      a: [0],
+      why: "Share group'un başlangıç noktası varsayılan olarak <b>log sonudur</b>: bağlanmadan önce yazılmış kayıtlar görülmez. Lab'da tam olarak bu tuzağa düştük ve üretimi tüketiciler bağlandıktan <i>sonra</i> yapacak şekilde düzelttik. Klasik gruptaki <code>auto.offset.reset=earliest</code> refleksi burada aynı şekilde çalışmaz. Partition sayısı tavan değildir — bu zaten share group'un asıl vaadidir."
+    },
+    {
+      topic: "Model seçimi",
+      q: "Aşağıdaki senaryolardan hangisi <b>consumer group</b> gerektirir?",
+      opts: [
+        "Exactly-once transaction zinciri (tüket-işle-yaz atomik olmalı)",
+        "Uzun süren bağımsız işlerin çok sayıda worker'a dağıtılması",
+        "Başarısız mesajın başka bir worker'a devredilmesi",
+        "Zehirli kayda karşı otomatik teslim limiti"
+      ],
+      a: [0],
+      why: "Kafka transaction'ları (4.1) tüketici offset'lerini transaction'a dahil eder ve bu mekanizma <b>consumer group</b> üzerine kuruludur. Diğer üç madde tam olarak share group'un güçlü olduğu alanlardır. Kural: <b>sıra ve atomiklik → consumer group; iş dağıtımı → share group.</b>"
+    },
+    {
+      topic: "Durum yönetimi",
+      q: "Share group'ta ilerleme bilgisi nerede tutulur?",
+      opts: [
+        "__share_group_state topic'inde, share coordinator tarafından",
+        "__consumer_offsets topic'inde",
+        "__cluster_metadata log'unda",
+        "Her tüketicinin yerel diskinde"
+      ],
+      a: [0],
+      why: "Share group tek bir offset yerine <b>kayıt başına durum</b> (acquired/acknowledged/released/archived) tutar; bu durum <code>__share_group_state</code> topic'inde, <b>share coordinator</b> tarafından yönetilir (<code>share.coordinator.state.topic.num.partitions=50</code>). <code>__consumer_offsets</code> klasik grupların offsetleri içindir."
+    },
+    {
+      topic: "Lab yorumu",
+      q: "Lab'da s1 27, s2 17 kayıt aldı. Bu dengesizlik bir sorun mudur?",
+      opts: [
+        "Hayır — share group iş dağıtır, eşit dağıtım garanti etmez; hızlı tüketici daha çok alır",
+        "Evet — assignor yanlış yapılandırılmış",
+        "Evet — partition sayısı artırılmalı",
+        "Hayır ama yalnızca tek partition'lı topic'lerde normaldir"
+      ],
+      a: [0],
+      why: "Bir kuyrukta doğru davranış <b>işi bitiren daha çok iş alır</b>'dır; eşit bölüşüm değil. Klasik consumer group partition'ları eşit dağıtmaya çalışır çünkü orada birim partition'dır. Share group'ta hızlı worker'ın daha çok kayıt alması <b>istenen</b> davranıştır ve partition sayısıyla ilgisi yoktur."
+    },
+    {
+      topic: "Onay tipleri",
+      q: "Kafka 4.2 ile eklenen RENEW onay tipi ne işe yarar?",
+      opts: [
+        "Uzun süren işlemede kaydın kilidini uzatmak",
+        "Arşivlenmiş bir kaydı yeniden teslim edilebilir yapmak",
+        "Share grubunu yeniden dengelemek",
+        "Kaydı başka bir topic'e taşımak"
+      ],
+      a: [0],
+      why: "<code>RENEW</code>, <code>record.lock.duration.ms</code> dolmadan kilidi tazeleyerek \"hâlâ üzerinde çalışıyorum\" demeyi sağlar — uzun işlemelerde kaydın gereksiz yere başkasına devredilmesini önler. Arşivlenmiş kayıt geri getirilemez; RENEW atama ya da taşıma yapmaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

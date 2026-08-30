@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>00.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "00-1",
+  code: "Başlangıç · 00.1",
+  title: "Genel bakış ve ileri seviye trickler",
+  back: "00-genel-bakis-ve-trickler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular Türkçe; config isimleri ve kod orijinal hâlinde.",
+  questions: [
+    {
+      topic: "Log vs kuyruk",
+      q: "Bir ekip, mesajları iki ayrı uygulamanın da işlemesini istiyor: biri fatura kesecek, biri analitik yazacak. Kafka'da en doğru yaklaşım nedir?",
+      opts: [
+        "Aynı topic'i iki farklı consumer group ile tüketmek",
+        "Topic'i iki kez yazmak (her uygulama için ayrı topic)",
+        "Tek grupta iki consumer çalıştırıp mesajı ikisine de dağıtmak",
+        "Fanout exchange tanımlayıp mesajı çoğaltmak"
+      ],
+      a: [0],
+      why: "Kafka'da tüketim <b>yıkıcı değildir</b>: mesaj okununca silinmez. Farklı consumer group'lar aynı partition'ları bağımsız offset'lerle okur, maliyeti sıfırdır. <b>Tek grupta iki consumer</b> yanlış: aynı gruptaki consumer'lar partition'ları <i>paylaşır</i>, aynı mesajı ikisi de almaz. Fanout exchange RabbitMQ kavramıdır, Kafka'da karşılığı zaten consumer group'tur."
+    },
+    {
+      topic: "Paralellik tavanı",
+      q: "6 partition'lı bir topic'i, 12 consumer içeren tek bir consumer group tüketiyor (klasik consumer group protokolü). Throughput neden artmadı?",
+      opts: [
+        "6 consumer partition alır, kalan 6'sı atıl bekler",
+        "12 consumer 6 partition'ı zaman paylaşımıyla böler, ek yük throughput'u düşürür",
+        "Consumer sayısı partition sayısını aşınca broker grubu reddeder",
+        "Her consumer tüm partition'ları okur, aynı veri 12 kez işlenir"
+      ],
+      a: [0],
+      why: "Klasik consumer group'ta bir partition aynı anda <b>tek bir</b> consumer'a atanır. Fazladan consumer'lar boş oturur; ne hata verir, ne veriyi bölüşür. Bu yüzden paralellik tavanı = partition sayısı. Kafka 4.2+ <b>share group</b> ile bu tavanı kaldırır (3.4). Broker fazladan consumer'ı reddetmez — sessizce atıl bırakır ki bu tuzağın asıl tehlikesi budur."
+    },
+    {
+      topic: "Sıralama garantisi",
+      q: "\"Aynı müşterinin olayları sırayla işlensin\" gereksinimi için Kafka'da doğru tasarım nedir?",
+      opts: [
+        "Kayıtları müşteri id'sini key olarak vererek üretmek",
+        "Topic'i tek partition'a düşürmek dışında bir yol yoktur",
+        "Producer'da acks=all vermek",
+        "Consumer'da max.poll.records=1 yapmak"
+      ],
+      a: [0],
+      why: "Kafka sırayı yalnızca <b>partition içinde</b> garanti eder ve aynı key aynı partition'a gider. Müşteri id'si key olursa o müşterinin olayları sıralı olur. <code>acks=all</code> dayanıklılıkla ilgilidir, sırayla değil. <code>max.poll.records=1</code> tek seferde kaç kayıt çekildiğini değiştirir, partition'lar arası sıra üretmez. Tek partition çözer ama paralelliği tamamen öldürür — gereksiz."
+    },
+    {
+      topic: "Dayanıklılık üçgeni",
+      q: "Bir ekip p99 gecikmeyi düşürmek istiyor ve throughput'tan feda etmeye razı. Hangi iki değişiklik bu yönde çalışır? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "linger.ms değerini düşürmek",
+        "fetch.min.bytes değerini düşürmek",
+        "batch.size değerini büyütmek",
+        "compression.type=zstd yapmak"
+      ],
+      a: [0, 1],
+      why: "<code>linger.ms</code> producer'ın batch dolsun diye beklediği süredir; düşürmek gecikmeyi azaltır, batch verimini düşürür. <code>fetch.min.bytes</code> broker'ın consumer'a cevap vermek için beklediği veri miktarıdır; düşürmek cevabı hızlandırır. Diğer ikisi <b>ters yönde</b> çalışır: büyük batch ve sıkıştırma verim içindir, gecikmeyi artırır."
+    },
+    {
+      topic: "Kafka 4.x farkları",
+      q: "Kafka 4.x cluster'ında ZooKeeper'ın rolü nedir?",
+      opts: [
+        "Hiçbiri — 4.0 ile tamamen kaldırıldı, metadata KRaft ile Kafka'nın kendi log'unda tutulur",
+        "Yalnızca controller seçimi için gerekir, geri kalan metadata KRaft'tadır",
+        "Opsiyoneldir; isteyen ZooKeeper modunda çalıştırmaya devam edebilir",
+        "ACL ve kota bilgileri için hâlâ zorunludur"
+      ],
+      a: [0],
+      why: "Kafka 4.0 <b>KRaft-only</b>'dir; ZooKeeper desteği tamamen kaldırıldı, geçiş yolu 3.x sürümlerinde bırakıldı. \"Opsiyonel\" cevabı 3.x dönemine aittir — sürüm tarihini karıştıran en yaygın hata. ACL ve kotalar da metadata log'unda tutulur."
+    },
+    {
+      topic: "Kafka 4.x farkları",
+      q: "Kafka 4.0'da KIP-1030 ile producer'ın hangi varsayılanı değişti?",
+      opts: [
+        "linger.ms: 0 → 5",
+        "acks: 1 → all",
+        "enable.idempotence: false → true",
+        "batch.size: 16384 → 65536"
+      ],
+      a: [0],
+      why: "KIP-1030 <code>linger.ms</code> varsayılanını <b>0'dan 5'e</b> çıkardı: küçük bir gecikme karşılığında ciddi batch kazancı. <code>acks=all</code> ve <code>enable.idempotence=true</code> varsayılanları <b>3.0</b>'da gelmişti, 4.0'da değil — sürümü karıştırmak klasik tuzaktır. <code>batch.size</code> hâlâ 16384."
+    },
+    {
+      topic: "Veri kaybı refleksi",
+      q: "replication.factor=3, acks=all ve min.insync.replicas=1 ile çalışan bir topic'te veri kaybı nasıl oluşur?",
+      opts: [
+        "ISR tek replikaya düştüğünde yazma başarılı döner; o replika kaybolursa veri gider",
+        "acks=all ile veri kaybı mümkün değildir, sadece yazma reddedilir",
+        "Kayıp yalnızca unclean.leader.election.enable=true ise mümkündür",
+        "min.insync.replicas producer'ı değil yalnızca consumer'ı etkiler"
+      ],
+      a: [0],
+      why: "<code>acks=all</code> \"tüm replikalar\" değil, <b>ISR'deki tüm replikalar</b> demektir. ISR 1 kişiye düşerse tek kopyaya yazıp başarı döner. <code>min.insync.replicas=2</code> bu durumda yazmayı <code>NotEnoughReplicas</code> ile reddederdi. Mutlak ifadeli \"mümkün değildir\" şıkkı klasik tuzaktır. <code>min.insync.replicas</code> yazma tarafını bağlar."
+    },
+    {
+      topic: "Duplicate refleksi",
+      q: "Bir consumer, çektiği kayıtları veritabanına yazmadan hemen önce offset'i commit ediyor. Uygulama işlem sırasında çökerse ne olur?",
+      opts: [
+        "Kayıtlar işlenmeden atlanır — at-most-once, veri kaybı",
+        "Kayıtlar tekrar işlenir — at-least-once, duplicate",
+        "Kafka transaction'ı geri alır, kayıp da duplicate de olmaz",
+        "Rebalance tetiklenir ve offset otomatik geri sarılır"
+      ],
+      a: [0],
+      why: "Offset commit'i işlemden <b>önce</b> yapmak, \"okudum sayıldı ama işlemedim\" durumudur: yeniden başlayan consumer o kayıtları bir daha görmez → <b>veri kaybı</b>. İşlemden <i>sonra</i> commit at-least-once verir (duplicate riski). Hafıza kancası: <b>önce commit = kayıp, sonra commit = tekrar.</b>"
+    },
+    {
+      topic: "Kavram ayrımı",
+      q: "cleanup.policy=compact olan bir topic'te aşağıdakilerden hangisi doğrudur?",
+      opts: [
+        "Her key için en az son değer korunur; eski değerler zamanla temizlenir",
+        "Kayıtlar gzip ile sıkıştırılarak diskte yer kazandırılır",
+        "Retention süresi dolan tüm kayıtlar key'e bakılmadan silinir",
+        "Aynı key'in tüm sürümleri tek kayıtta birleştirilir"
+      ],
+      a: [0],
+      why: "Compaction bir <b>saklama politikasıdır</b>: key başına en güncel değeri tutar, eskileri temizler. <b>Compression</b> (gzip/lz4/zstd) ise baytları küçültür ve <code>compression.type</code> ile ayarlanır — isim benzerliği en sık karıştırılan çiftlerden biridir. Süreye göre silme <code>cleanup.policy=delete</code>'in işidir. Değerler \"birleştirilmez\", eskiler atılır."
+    },
+    {
+      topic: "Teşhis refleksi",
+      q: "\"Consumer grubumuz rebalance döngüsünden çıkamıyor, hiç ilerleme yok\" şikâyetinde ilk bakılacak iki ayar hangisidir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "max.poll.interval.ms ile kayıt işleme süresinin ilişkisi",
+        "session.timeout.ms ve heartbeat davranışı",
+        "compression.type",
+        "log.segment.bytes"
+      ],
+      a: [0, 1],
+      why: "Rebalance döngüsünün klasik sebebi, iki poll arasındaki işlem süresinin <code>max.poll.interval.ms</code>'i aşmasıdır: broker consumer'ı ölü sayar, grup yeniden dağıtılır, aynı şey tekrarlanır. <code>session.timeout.ms</code>/heartbeat ikincil sebeptir (ağ, GC, pod restart). Sıkıştırma ve segment boyutu rebalance ile ilgisizdir — kategori dışı çeldirici."
+    },
+    {
+      topic: "Kavram ayrımı",
+      q: "Consumer lag'i 0 olduğu hâlde uçtan uca gecikmenin yüksek olması mümkün müdür?",
+      opts: [
+        "Evet — örneğin producer tarafında büyük linger.ms varsa kayıt geç yazılır",
+        "Hayır — lag 0 ise tanım gereği gecikme de sıfıra yakındır",
+        "Evet ama yalnızca compaction çalışırken",
+        "Hayır — lag zaten uçtan uca gecikmenin milisaniye cinsinden ölçüsüdür"
+      ],
+      a: [0],
+      why: "<b>Lag</b> = consumer'ın log sonuna göre kaç kayıt geride olduğu (adet). <b>Latency</b> = bir olayın üretilip işlenmesine kadar geçen süre. Producer 100 ms bekletip yazıyorsa consumer anında okusa bile uçtan uca gecikme en az 100 ms'dir; lag yine 0 görünür. Bu ayrımı bilmemek yanlış alarm kurdurur (5.2)."
+    },
+    {
+      topic: "Doğru araç seçimi",
+      q: "Bir ekip, her mesajın ayrı ayrı onaylanmasını ve başarısız olanların başka bir tüketiciye yeniden dağıtılmasını istiyor. Partition sayısıyla sınırlanmak da istemiyorlar. Kafka 4.2+ ile doğru cevap nedir?",
+      opts: [
+        "Share group (KIP-932) kullanmak",
+        "Klasik consumer group'ta partition sayısını consumer sayısına eşitlemek",
+        "Her mesaj için ayrı topic açmak",
+        "Kafka Streams ile yeniden işlemek"
+      ],
+      a: [0],
+      why: "Share group, Kafka'ya <b>kuyruk semantiği</b> getirir: mesaj başına acknowledge, yeniden teslim ve partition sayısından bağımsız tüketici sayısı. 4.1'de önizleme, <b>4.2'de üretime hazır</b> ilan edildi. Klasik grupla partition eşitlemek tavanı yükseltir ama mesaj başına onay vermez. Streams akış işleme kütüphanesidir, kuyruk değil."
+    },
+    {
+      topic: "Kafka 4.x farkları",
+      q: "Kafka 4.x hakkında aşağıdakilerden hangileri doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Broker ve Connect için Java 17+ gerekir",
+        "KIP-848 protokolü broker tarafında varsayılan açıktır, consumer group.protocol=consumer ile katılır",
+        "Client ve Streams için Java 8 hâlâ desteklenir",
+        "KIP-848 ile consumer tarafında hiçbir ayar değişikliği gerekmez, otomatik devreye girer"
+      ],
+      a: [0, 1],
+      why: "Kafka 4.0: broker/Connect/tools <b>Java 17+</b>, client/Streams <b>Java 11+</b> — Java 8 desteği KIP-750 ile düştü. KIP-848 sunucuda varsayılan etkindir ama <b>consumer'ın opt-in etmesi gerekir</b>: <code>group.protocol=consumer</code>. \"Otomatik devreye girer\" şıkkı en yaygın yanlış inanıştır."
+    },
+    {
+      topic: "Teşhis refleksi",
+      q: "\"Mesaj kayboldu\" şikâyetinde, bu setin önerdiği ilk üçlü nedir?",
+      opts: [
+        "acks · min.insync.replicas · unclean.leader.election.enable",
+        "linger.ms · batch.size · compression.type",
+        "max.poll.records · fetch.max.bytes · session.timeout.ms",
+        "segment.bytes · retention.ms · cleanup.policy"
+      ],
+      a: [0],
+      why: "Kayıp = <b>dayanıklılık zinciri</b>: kaç kopyanın onayıyla yazıldı (<code>acks</code>), kaç güncel kopya şart koşuldu (<code>min.insync.replicas</code>), geri kalmış bir replika lider olabilir mi (<code>unclean.leader.election.enable</code>). İkinci şık producer performansı, üçüncüsü consumer davranışı, dördüncüsü saklamadır — hepsi gerçek ayarlar ama farklı katmanın soruları. Önce <b>katmanı</b> seç."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

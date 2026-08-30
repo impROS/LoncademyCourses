@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.4 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-4",
+  code: "Operasyon · 5.4",
+  title: "Güvenlik: SASL, TLS, ACL, kota",
+  back: "5.4-guvenlik.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Tüketici ACL'leri",
+      q: "Bir tüketiciye Topic:Read ve Topic:Describe verildi ama hâlâ çalışmıyor. Hangi hata beklenir ve ne eksiktir?",
+      opts: [
+        "GroupAuthorizationException — Group:Read ACL'i eksik",
+        "TopicAuthorizationException — Topic:Write eksik",
+        "ClusterAuthorizationException — Cluster:Describe eksik",
+        "SaslAuthenticationException — kimlik doğrulama başarısız"
+      ],
+      a: [0],
+      why: "Tüketici üç ACL ister: <code>Topic:Read</code>, <code>Topic:Describe</code> ve <b><code>Group:Read</code></b>. Üçüncüsü en sık unutulanıdır ve hata mesajı topic değil <b>grup</b> hakkındadır: <code>GroupAuthorizationException: Not authorized to access group: ...</code>. Bu ayrımı bilmek teşhis süresini dakikalara indirir."
+    },
+    {
+      topic: "Protokol seçimi",
+      q: "SASL_PLAINTEXT + PLAIN kombinasyonu neden üretim için uygun değildir?",
+      opts: [
+        "Şifreleme yoktur; kullanıcı adı ve parola ağda düz metin taşınır",
+        "PLAIN mekanizması Kafka 4.x'te kaldırıldı",
+        "SASL_PLAINTEXT yalnızca tek node'lu cluster'larda çalışır",
+        "ACL'ler bu protokolde uygulanmaz"
+      ],
+      a: [0],
+      why: "<code>SASL_PLAINTEXT</code> kimlik doğrular ama <b>şifrelemez</b>; <code>PLAIN</code> mekanizması da parolayı doğrudan taşır — ağı dinleyen parolayı görür. Üretimde <b><code>SASL_SSL</code></b> (ve tercihen SCRAM/OAUTHBEARER) kullanılır. ACL'ler her protokolde çalışır; PLAIN kaldırılmadı."
+    },
+    {
+      topic: "Yetkilendirme yapılandırması",
+      q: "allow.everyone.if.no.acl.found=true ayarı ne yapar?",
+      opts: [
+        "Hiç ACL'i olmayan kaynaklara herkesin erişmesine izin verir — yetkilendirmeyi fiilen zayıflatır",
+        "Tüm ACL'leri devre dışı bırakır",
+        "Yalnızca süper kullanıcılara erişim verir",
+        "ACL'i olmayan kaynaklara erişimi tamamen engeller"
+      ],
+      a: [0],
+      why: "Varsayılan <b>false</b>'tur: ACL'i olmayan kaynağa erişim reddedilir. <code>true</code> genelde ACL'leri kademeli devreye alırken geçiş için açılır ve <b>kapatılması unutulur</b> — güvenlik denetimlerinde en sık bulunan açıklardandır. Var olan ACL'ler yine uygulanır, ama korumasız kaynaklar herkese açıktır."
+    },
+    {
+      topic: "TLS maliyeti",
+      q: "TLS etkinleştirildikten sonra broker CPU kullanımının artması nedir?",
+      opts: [
+        "Beklenen davranış — sıfır kopya (sendfile) devre dışı kalır, veri kullanıcı alanında şifrelenir",
+        "Yapılandırma hatası — sertifikalar yanlış",
+        "Geçici — TLS oturum önbelleği ısınınca düşer",
+        "Bir bug; Kafka 4.x'te düzeltildi"
+      ],
+      a: [0],
+      why: "Sıfır kopya, verinin çekirdek alanından doğrudan sokete gitmesidir (1.1); şifreleme veriye dokunmayı gerektirdiği için bu yol kapanır. CPU artışı <b>mimari bir sonuçtur</b>, ayar hatası değil — kapasite planına dahil edilmelidir (5.5). Oturum önbelleği handshake maliyetini azaltır ama şifreleme maliyetini kaldırmaz."
+    },
+    {
+      topic: "Kotalar",
+      q: "Bir uygulama hiç hata almadan yavaşladı. Güvenlik/operasyon tarafında hangi ihtimali kontrol edersin?",
+      opts: [
+        "Kullanıcı/istemci kotası (producer_byte_rate vb.) throttle uyguluyor olabilir",
+        "ACL reddi olmuş olabilir",
+        "TLS sertifikası süresi dolmuş olabilir",
+        "SASL mekanizması değişmiş olabilir"
+      ],
+      a: [0],
+      why: "Kafka kotayı <b>reddederek değil geciktirerek</b> uygular: istemci istisna almaz, sadece yavaşlar. ACL reddi ve sertifika süresi dolması <b>hata üretir</b>, sessiz kalmaz. Throttle metrikleri (<code>kafka.server:type=Produce,client-id=...</code>) teşhisi kesinleştirir."
+    },
+    {
+      topic: "Kavram ayrımı",
+      q: "Kimlik doğrulama (authentication) ile yetkilendirme (authorization) arasındaki fark nedir?",
+      opts: [
+        "İlki 'sen kimsin' (SASL/mTLS), ikincisi 'ne yapabilirsin' (ACL) sorusunu cevaplar",
+        "İlki client, ikincisi broker tarafında yapılır",
+        "İlki TLS ile, ikincisi SASL ile sağlanır",
+        "Aynı şeyin iki adıdır"
+      ],
+      a: [0],
+      why: "Kimliği doğrulanmış bir kullanıcı <b>hiçbir şey yapmaya yetkili olmayabilir</b> — lab'da alice tam olarak bu durumdaydı: SASL ile giriş yaptı ama ACL'i olmadığı için yazamadı. TLS şifreleme (ve mTLS'te kimlik) sağlar; ACL yetkilendirmedir. Üçü ayrı ayrı yapılandırılır."
+    },
+    {
+      topic: "Prensipler",
+      q: "Kafka'da ACL prensipleri (principal) nasıl belirlenir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "SASL'da kimlik doğrulanan kullanıcı adı User:alice biçiminde kullanılır",
+        "mTLS'te sertifika DN'inden ssl.principal.mapping.rules ile türetilir",
+        "Prensipler client.id değerinden alınır",
+        "Prensipler IP adresine göre otomatik oluşturulur"
+      ],
+      a: [0, 1],
+      why: "SASL'da kimlik doğrulanan kullanıcı adı doğrudan prensip olur; mTLS'te sertifikanın Distinguished Name'i <code>ssl.principal.mapping.rules</code> ile sadeleştirilir. Düz metin bağlantılar <code>User:ANONYMOUS</code> olur. <code>client.id</code> yalnızca izleme/kota etiketi olarak kullanılır, kimlik değildir; IP ise ACL'lerde <code>--allow-host</code> ile ayrı bir boyuttur."
+    },
+    {
+      topic: "Süper kullanıcılar",
+      q: "Bir uygulamayı super.users listesine eklemek neden kötü bir çözümdür?",
+      opts: [
+        "Süper kullanıcılar ACL kontrolünü tamamen atlar; o uygulama için yetkilendirme fiilen kapatılır",
+        "Süper kullanıcılar yalnızca tek node'lu cluster'larda çalışır",
+        "Performans düşer",
+        "Süper kullanıcı olan istemciler TLS kullanamaz"
+      ],
+      a: [0],
+      why: "<code>super.users</code> yetkilendirmeyi <b>bypass eder</b>: o prensip her kaynakta her işlemi yapabilir. \"ACL derdi bitti\" çözümü, güvenlik modelini o uygulama için tamamen kaldırır. Süper kullanıcı yalnızca yönetim/otomasyon hesapları için, mümkün olduğunca dar tutulmalıdır."
+    },
+    {
+      topic: "Listener modeli",
+      q: "Kafka'da güvenlik ayarları hangi düzeyde tanımlanır?",
+      opts: [
+        "Listener bazında — aynı cluster'da bir listener PLAINTEXT, diğeri SASL_SSL olabilir",
+        "Cluster bazında — tüm bağlantılar aynı protokolü kullanır",
+        "Topic bazında",
+        "Consumer group bazında"
+      ],
+      a: [0],
+      why: "<code>listener.security.protocol.map</code> her listener'a ayrı bir protokol atar; bu yüzden \"cluster güvenli mi?\" sorusunun cevabı her zaman <b>\"hangi listener?\"</b> ile başlar. Lab'ın güvenli cluster'ında iç iletişim PLAINTEXT, istemci tarafı SASL_PLAINTEXT'ti. ACL'ler ise cluster genelindedir, topic bazında yapılandırılmaz (topic bazında <i>kaynak</i> olurlar)."
+    },
+    {
+      topic: "Üretici ACL'leri",
+      q: "Transactional bir producer için gereken ACL seti hangisidir?",
+      opts: [
+        "Topic:Write, Topic:Describe ve TransactionalId:Write",
+        "Yalnızca Topic:Write",
+        "Cluster:Alter ve Topic:Write",
+        "Group:Read ve Topic:Write"
+      ],
+      a: [0],
+      why: "Normal üretici <code>Topic:Write</code> + <code>Topic:Describe</code> ister; transaction kullanan producer ayrıca kendi <code>transactional.id</code>'si üzerinde <b><code>TransactionalId:Write</code></b> yetkisine ihtiyaç duyar (4.1). <code>Group:Read</code> tüketici tarafıdır; <code>Cluster:Alter</code> yönetim işlemleri içindir."
+    },
+    {
+      topic: "SASL mekanizmaları",
+      q: "Vanilla Apache Kafka'da (harici kimlik sağlayıcı olmadan) önerilen SASL mekanizması hangisidir?",
+      opts: [
+        "SCRAM-SHA-512",
+        "PLAIN",
+        "GSSAPI",
+        "OAUTHBEARER"
+      ],
+      a: [0],
+      why: "SCRAM parolayı <b>hash'lenmiş</b> olarak cluster metadata'sında saklar ve challenge-response ile doğrular; ek altyapı gerektirmez. <code>PLAIN</code> parolayı düz metin taşır (yalnız TLS ile). <code>GSSAPI</code> Kerberos, <code>OAUTHBEARER</code> ise OIDC altyapısı gerektirir — kurumsal ortamlarda mükemmel ama \"vanilla\" kurulum için ağırdır."
+    },
+    {
+      topic: "TLS işletimi",
+      q: "Süresi dolmak üzere olan broker sertifikaları için ne yapılmalıdır?",
+      opts: [
+        "Keystore/truststore dinamik config güncellemesiyle yeniden yüklenebilir; broker restart'ı gerekmez",
+        "Tüm broker'lar aynı anda yeniden başlatılmalıdır",
+        "TLS geçici olarak kapatılıp sertifika değiştirilmelidir",
+        "Sertifikalar değiştirilemez; cluster yeniden kurulmalıdır"
+      ],
+      a: [0],
+      why: "Kafka keystore/truststore'u <b>dinamik broker config</b> olarak destekler: <code>kafka-configs.sh</code> ile güncellenir ve yeniden yüklenir, kesinti olmaz. En sık yaşanan TLS kesintisi \"sertifika süresi doldu\"dur — rotasyon <b>süre dolmadan</b> planlanmalıdır. TLS'i kapatmak güvenlik açığı yaratır."
+    },
+    {
+      topic: "Yetkilendirme yapılandırması",
+      q: "KRaft modunda kullanılan yetkilendirici sınıfı hangisidir?",
+      opts: [
+        "org.apache.kafka.metadata.authorizer.StandardAuthorizer",
+        "kafka.security.auth.SimpleAclAuthorizer",
+        "kafka.security.authorizer.AclAuthorizer",
+        "Yetkilendirici KRaft'ta gerekmez"
+      ],
+      a: [0],
+      why: "<code>StandardAuthorizer</code> ACL'leri cluster metadata'sında (KRaft log'unda) tutar; ZooKeeper dönemindeki <code>AclAuthorizer</code>/<code>SimpleAclAuthorizer</code> artık geçerli değildir. Yetkilendirici <b>varsayılan olarak tanımlı değildir</b> — açıkça ayarlanmazsa hiçbir yetkilendirme yapılmaz."
+    },
+    {
+      topic: "Kotalar",
+      q: "Kafka kotaları hangi düzeylerde tanımlanabilir?",
+      opts: [
+        "Kullanıcı, client-id ve bunların kombinasyonu düzeyinde",
+        "Yalnızca topic düzeyinde",
+        "Yalnızca broker düzeyinde",
+        "Yalnızca consumer group düzeyinde"
+      ],
+      a: [0],
+      why: "Kotalar <code>--entity-type users</code>, <code>--entity-type clients</code> ve ikisinin kombinasyonu ile tanımlanır; varsayılan (tüm kullanıcılar için) kotalar da mümkündür. Sınırlanan şey topic değil <b>istemcidir</b>: <code>producer_byte_rate</code>, <code>consumer_byte_rate</code>, <code>request_percentage</code>, <code>controller_mutation_rate</code>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

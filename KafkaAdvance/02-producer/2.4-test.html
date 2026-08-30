@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.4 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-4",
+  code: "Producer · 2.4",
+  title: "Serialization ve şema evrimi",
+  back: "2.4-serialization-ve-sema.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Uyumluluk türleri",
+      q: "Bir topic'e <b>varsayılanı olmayan</b> zorunlu bir alan ekliyorsun. Hangi uyumluluk kırılır ve doğru dağıtım sırası nedir?",
+      opts: [
+        "BACKWARD kırılır; önce tüm consumer'lar güncellenmeli, sonra producer",
+        "FORWARD kırılır; önce producer güncellenmeli, sonra consumer'lar",
+        "Hiçbiri kırılmaz; alan eklemek her zaman güvenlidir",
+        "FULL kırılır; değişiklik hiçbir sırayla yapılamaz"
+      ],
+      a: [0],
+      why: "BACKWARD = <i>yeni şemayla yazılan veriyi eski okuyucu okuyabilir mi?</i> Eski okuyucu, varsayılanı olmayan yeni alanı dolduramaz → kırılır. Bu durumda önce <b>consumer'lar</b> yeni şemayı öğrenmeli (FORWARD uyumluluk sağlanır), sonra producer geçmelidir. Alana varsayılan verilseydi her iki yön de güvenli olurdu."
+    },
+    {
+      topic: "Zehirli kayıt",
+      q: "Deserializer bir kayıtta istisna fırlattı. Consumer'ın offset'i (position) ne olur?",
+      opts: [
+        "İlerlemez — aynı kayıt her poll'da yeniden denenir ve tüketici kilitlenir",
+        "Bir sonraki kayda ilerler ve hatalı kayıt atlanır",
+        "Grup rebalance olur ve partition başka consumer'a geçer",
+        "Otomatik olarak DLQ'ya yazılır"
+      ],
+      a: [0],
+      why: "Deserialization <code>poll()</code> içinde, offset ilerletilmeden yapılır: istisna fırlarsa <b>position sabit kalır</b> ve her poll aynı kayda çarpar — <b>zehirli kayıt (poison pill)</b>. Lab'da <code>position=1</code> olarak takıldığını gördük. Kafka'nın hata mesajı bile çözümü söyler: \"please seek past the record\". DLQ ve atlama otomatik değildir, uygulaman yazmalıdır."
+    },
+    {
+      topic: "Wire format",
+      q: "Confluent Schema Registry ile serileştirilmiş bir mesajın ilk baytları neyi içerir?",
+      opts: [
+        "0x00 magic byte + 4 baytlık schema id, ardından gövde",
+        "Şemanın tam JSON metni, ardından gövde",
+        "Mesajın CRC'si ve uzunluğu",
+        "Topic adı ve partition numarası"
+      ],
+      a: [0],
+      why: "Format: <code>0x00</code> (magic) + <b>4 baytlık schema id</b> + Avro/Protobuf gövdesi. Şemanın <i>kendisi</i> mesajda taşınmaz — registry'de durur, mesajda yalnızca kimliği vardır. Şemayı her mesajda taşımak Avro'nun boyut avantajını yok ederdi."
+    },
+    {
+      topic: "Serializer konumu",
+      q: "Serializer ve deserializer hangi thread'lerde çalışır?",
+      opts: [
+        "Serializer uygulama thread'inde (send içinde), deserializer consumer'ın poll thread'inde",
+        "İkisi de Sender thread'inde",
+        "İkisi de broker tarafında",
+        "Serializer Sender thread'inde, deserializer ayrı bir worker thread'inde"
+      ],
+      a: [0],
+      why: "Serileştirme <code>send()</code> çağrısı sırasında <b>uygulama thread'inde</b> yapılır (bu yüzden hatası senkron fırlar ve yavaş bir serializer uygulamayı yavaşlatır). Deserileştirme <code>poll()</code> içinde, <b>poll thread'inde</b> yapılır — zehirli kayıt probleminin kaynağı budur. Broker baytları hiç yorumlamaz."
+    },
+    {
+      topic: "Uyumluluk türleri",
+      q: "Aşağıdaki değişikliklerden hangisi hiçbir uyumluluk türünde güvenli <b>değildir</b>?",
+      opts: [
+        "Bir alanın tipini int'ten string'e değiştirmek",
+        "Varsayılanı olan yeni bir alan eklemek",
+        "Varsayılanı olan bir alanı silmek",
+        "Yeni bir opsiyonel alan eklemek"
+      ],
+      a: [0],
+      why: "<b>Tip değişikliği</b> hem eski hem yeni okuyucuyu kırar — ne BACKWARD ne FORWARD güvenlidir. Altın kural: <i>yeni alanlar varsayılanla eklenir; tip ve ad asla değişmez.</i> Tip değiştirmek gerekiyorsa yeni bir alan eklenir, eski alan bir süre birlikte yaşatılır, sonra kaldırılır."
+    },
+    {
+      topic: "Uyumluluk türleri",
+      q: "FORWARD uyumluluk neyi garanti eder?",
+      opts: [
+        "Eski şemayla yazılmış veriyi yeni şemayı bilen okuyucunun okuyabilmesini",
+        "Yeni şemayla yazılmış veriyi eski okuyucunun okuyabilmesini",
+        "Tüm geçmiş sürümlerle uyumluluğu",
+        "Şemanın hiç değişmemesini"
+      ],
+      a: [0],
+      why: "FORWARD, okuyucunun <b>ileri</b> (yeni) olduğu durumdur: eski veriyi yeni kod okuyabilmelidir → önce <b>consumer</b> güncellenebilir. BACKWARD tam tersidir (yeni veri ↔ eski okuyucu, önce producer). \"Tüm geçmiş sürümler\" <code>*_TRANSITIVE</code> varyantlarının işidir."
+    },
+    {
+      topic: "Toleranslı deserializer",
+      q: "Lab'da v1 kaydı okunduğunda <code>currency=TRY</code> göründü ama bu alan mesajda yoktu. Bu neyin örneğidir?",
+      opts: [
+        "Deserializer'ın eksik alanı varsayılanla doldurması — çalışan BACKWARD uyumluluk",
+        "Broker'ın eksik alanı tamamlaması",
+        "Schema Registry'nin mesajı dönüştürmesi",
+        "Bir hata; değer null olmalıydı"
+      ],
+      a: [0],
+      why: "Toleranslı deserializer, sürüm baytına bakıp v1 gövdesinde <code>currency</code> olmadığını bilir ve <b>varsayılanı</b> koyar. Bu tam olarak BACKWARD uyumluluğun çalışan hâlidir. Broker baytlara dokunmaz; lab'da Schema Registry de yoktur — mantığı elle yazdık."
+    },
+    {
+      topic: "Zehirli kayıt",
+      q: "Zehirli kayıt problemi için hangi çözümler uygundur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Deserializer'ı sarmalayıp hata durumunda özel bir 'hatalı kayıt' nesnesi döndürmek",
+        "Hatalı kaydı DLQ'ya yazıp consumer.seek ile bir sonraki offset'e geçmek",
+        "Deserializer'da catch (Exception e) { return null; } yazmak",
+        "Broker'da message.max.bytes değerini artırmak"
+      ],
+      a: [0, 1],
+      why: "Doğru yaklaşımlar hatayı <b>görünür ve kurtarılabilir</b> kılar: sarmalayıcı deserializer (Spring Kafka'daki <code>ErrorHandlingDeserializer</code> bunu yapar) ve DLQ + <code>seek</code>. Sessizce <code>null</code> döndürmek veriyi görünmez şekilde kaybeder. <code>message.max.bytes</code> tamamen ilgisiz bir boyut ayarıdır."
+    },
+    {
+      topic: "Format seçimi",
+      q: "Altı farklı takımın okuduğu, uzun ömürlü bir topic için en uygun yaklaşım nedir?",
+      opts: [
+        "Şema kayıtlı bir format (Avro/Protobuf) + topic bazında uyumluluk kuralı",
+        "Şemasız JSON — herkes kolayca okuyabilir",
+        "Her takım için ayrı topic",
+        "Mesajın içine şemanın tam metnini gömmek"
+      ],
+      a: [0],
+      why: "Çok tüketicili, uzun ömürlü topic'lerde asıl risk <b>sessiz kırılmadır</b>; şema kayıtlı format + zorunlu uyumluluk kuralı bunu <i>dağıtım anında</i> yakalar. Şemasız JSON tip değişikliğini kimseye söylemez. Takım başına topic veriyi çoğaltır. Şemayı her mesaja gömmek boyutu felakete çevirir."
+    },
+    {
+      topic: "Schema Registry",
+      q: "Schema Registry hakkında hangisi doğrudur?",
+      opts: [
+        "Apache Kafka'nın parçası değildir; Confluent, Karapace gibi ayrı bileşenlerdir",
+        "Kafka 4.0 ile broker'a dahil edilmiştir",
+        "KRaft metadata log'unda saklanır",
+        "Her broker'da otomatik olarak çalışır"
+      ],
+      a: [0],
+      why: "Vanilla Apache Kafka kurulumunda Schema Registry <b>yoktur</b>; ayrı bir servistir (Confluent Schema Registry, Karapace, Apicurio...). Bu yüzden bu setin lab'ında şema mantığını elle yazdık. Metadata log'u cluster metadata'sı içindir (1.3), uygulama şemaları için değil."
+    },
+    {
+      topic: "Uyumluluk türleri",
+      q: "BACKWARD ile BACKWARD_TRANSITIVE arasındaki fark nedir?",
+      opts: [
+        "TRANSITIVE kuralı yalnızca bir önceki sürüme değil tüm geçmiş sürümlere uygular",
+        "TRANSITIVE hem ileri hem geri uyumluluğu kontrol eder",
+        "TRANSITIVE yalnızca Protobuf'ta geçerlidir",
+        "Fark yoktur, ikisi eş anlamlıdır"
+      ],
+      a: [0],
+      why: "Düz BACKWARD yalnızca <b>bir önceki</b> sürümle uyumu kontrol eder; birkaç sürüm sonra çok eski bir okuyucu yine kırılabilir. <code>BACKWARD_TRANSITIVE</code> <b>tüm geçmişe</b> bakar — uzun ömürlü ve geriden okunan topic'lerde tercih edilir. İki yönü birden kontrol eden tür FULL'dür."
+    },
+    {
+      topic: "Serializer konumu",
+      q: "Yavaş bir serializer (örneğin ağır şema doğrulaması yapan) uygulamayı nasıl etkiler?",
+      opts: [
+        "send() çağrısını yavaşlatır çünkü uygulama thread'inde çalışır",
+        "Yalnızca Sender thread'ini etkiler, uygulama etkilenmez",
+        "Broker CPU'sunu artırır",
+        "Consumer tarafında gecikmeye yol açar"
+      ],
+      a: [0],
+      why: "Serileştirme kayıt tampona konmadan <b>önce</b>, uygulama thread'inde yapılır: pahalı bir serializer doğrudan <code>send()</code> çağrısının süresine yansır ve uygulama thread'lerini meşgul eder. Broker baytları yorumlamaz; consumer tarafı ayrı bir deserializer çalıştırır."
+    },
+    {
+      topic: "Wire format",
+      q: "Mesajın başına şema kimliği koymanın temel gerekçesi nedir?",
+      opts: [
+        "Okuyucunun baytları yorumlamadan önce hangi şemayla yazıldığını bilmesi",
+        "Mesaj boyutunu küçültmek",
+        "Broker'ın mesajı doğrulayabilmesi",
+        "Partition seçimini hızlandırmak"
+      ],
+      a: [0],
+      why: "Bayt dizisinin kendisi \"ben v2'yim\" demez. Kimlik olmadan okuyucu ancak tahmin edebilir. Broker <b>hiçbir zaman</b> mesaj içeriğini doğrulamaz — bu client sorumluluğudur. Kimlik boyutu birkaç bayt <i>artırır</i>, azaltmaz; partition seçimiyle ilgisi yoktur."
+    },
+    {
+      topic: "Toleranslı deserializer",
+      q: "Toleranslı bir deserializer, bildiğinden <b>daha yeni</b> bir sürümle karşılaştığında ne yapmalıdır?",
+      opts: [
+        "Tanıdığı alanları okuyup kalan baytları atlamalı — ileriye dönük uyumluluk",
+        "İstisna fırlatıp tüketimi durdurmalı",
+        "Kaydı null olarak döndürmeli",
+        "Producer'dan eski sürümle yeniden göndermesini istemeli"
+      ],
+      a: [0],
+      why: "Bilinmeyen kuyruğu <b>atlamak</b>, ileriye dönük uyumluluğun uygulama tarafındaki karşılığıdır: yeni alanları anlamayan tüketici, anladığı kadarıyla çalışmaya devam eder. İstisna fırlatmak tüketiciyi kilitler (zehirli kayıt); <code>null</code> döndürmek veriyi sessizce kaybeder. Client broker'dan yeniden gönderim isteyemez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

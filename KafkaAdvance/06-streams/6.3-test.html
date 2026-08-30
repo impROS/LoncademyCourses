@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.3 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-3",
+  code: "Streams · 6.3",
+  title: "Join, windowing ve zaman semantiği",
+  back: "6.3-join-ve-windowing.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Stream time",
+      q: "Pencereli bir aggregate hiç çıktı üretmiyor. En olası sebep nedir?",
+      opts: [
+        "Stream time ilerlemiyor — o partition'a yeni veri gelmiyor, dolayısıyla pencere kapanmıyor",
+        "Duvar saati henüz pencere sonuna ulaşmadı",
+        "Changelog topic'i oluşmamış",
+        "Aggregate fonksiyonu null döndürüyor"
+      ],
+      a: [0],
+      why: "Kafka Streams pencereleri <b>stream time</b> ile kapatır: o task'ın gördüğü en büyük event time. Veri akmıyorsa zaman ilerlemez ve pencere kapanmaz — duvar saatinin ilerlemesi hiçbir şey değiştirmez. Test ortamlarında \"sonuç gelmiyor\" şikâyetinin bir numaralı sebebidir."
+    },
+    {
+      topic: "Hopping window",
+      q: "60 saniye boyunda, 10 saniye adımlı bir hopping window'da tek bir kayıt kaç pencereye düşer?",
+      opts: ["6", "1", "10", "60"],
+      a: [0],
+      why: "Çakışan pencere sayısı = boy / adım = 60/10 = <b>6</b>. Her kayıt 6 ayrı pencerede sayılır → state store, changelog trafiği ve çıktı hacmi <b>6 katına</b> çıkar. Lab'da 10 sn boy / 5 sn adım ile tek kaydın iki pencerede sayıldığını gördük. Bu çoğalma hopping window'un gizli maliyetidir."
+    },
+    {
+      topic: "Session window",
+      q: "Session window çıktısında bir <code>null</code> value görülmesi ne anlama gelir?",
+      opts: [
+        "Oturumlar birleşti; eski pencere tombstone ile siliniyor, ardından birleşmiş pencere yazılıyor",
+        "Aggregate fonksiyonu hata verdi",
+        "Pencere boş kaldı",
+        "Serde uyumsuzluğu var"
+      ],
+      a: [0],
+      why: "Yeni bir olay iki oturumu birleştirebilir; Streams eski oturum penceresini <b>tombstone</b> (null value, 1.4) ile silip yenisini yazar. Lab'da tam olarak bu diziyi gördük: <code>→ 1</code>, <code>→ null</code>, <code>→ 2</code>. <b>Aşağı akış kodun null value'ları ele almalıdır</b> — aksi hâlde NPE alırsın."
+    },
+    {
+      topic: "Grace period",
+      q: "10 sn pencere + 5 sn grace ile çalışıyorsun. Stream time 30'a ulaştıktan sonra event time'ı 4 olan bir kayıt geldi. Ne olur?",
+      opts: [
+        "Kayıt sessizce atılır ve dropped-records metriği artar",
+        "0-10 penceresi güncellenir",
+        "Yeni bir pencere açılır",
+        "Uygulama hata fırlatır"
+      ],
+      a: [0],
+      why: "0-10 penceresi <code>stream_time &gt; 10 + 5 = 15</code> olduğunda kapandı; stream time 30'ken gelen t=4 kaydı <b>çok geçtir</b> ve sessizce atılır. Lab'da tam olarak bunu gözlemledik: çıktı üretilmedi. Sessiz olduğu için <b>izlenmesi gereken metrik <code>dropped-records</code></b>'tır."
+    },
+    {
+      topic: "Join türleri",
+      q: "KStream-KStream join'de pencere neden zorunludur?",
+      opts: [
+        "İki akışın da sınırsız olması nedeniyle eşleşme aralığı tanımlanmalıdır; aksi hâlde sonsuz state gerekir",
+        "Kafka API'si teknik olarak başka türlü izin vermiyor",
+        "Performans optimizasyonu içindir, mantıksal bir gereklilik değildir",
+        "Yalnızca EOS modunda zorunludur"
+      ],
+      a: [0],
+      why: "İki taraf da sonsuz akış olduğu için \"ne kadar geriye bakayım?\" sorusunun cevabı olmalıdır; pencere olmadan tüm geçmişi saklamak gerekirdi. Streams her iki akış için pencere boyunca birer state store tutar — <b>pencere büyüdükçe bellek/disk doğrusal artar</b>. Stream-table join'de pencere yoktur çünkü tablo zaten sonlu bir durumdur."
+    },
+    {
+      topic: "Stream-table join",
+      q: "Lab'da S-1 siparişi için join çıktısı üretilmedi, S-2 ve S-3 için üretildi. Neden?",
+      opts: [
+        "S-1 geldiğinde tabloda o key henüz yoktu; stream-table join eşleşme bulamayınca sessizce sonuç üretmez",
+        "S-1'in zaman damgası geçersizdi",
+        "S-1 farklı bir partition'a düştü",
+        "İlk kayıt her zaman atlanır"
+      ],
+      a: [0],
+      why: "Stream-table join <b>asimetriktir</b> ve tablonun <b>o anki</b> hâline bakar: tabloda key yoksa <code>join</code> hiçbir şey üretmez. Bu, uygulama açılışında (tablo henüz yüklenirken) <b>sessiz veri kaybının</b> klasik sebebidir. Çözüm: <code>leftJoin</code> + null kontrolü veya GlobalKTable ile tabloyu önceden yüklemek."
+    },
+    {
+      topic: "Stream-table join",
+      q: "Stream-table join'de tablo güncellendiğinde daha önce gelmiş akış kayıtları yeniden hesaplanır mı?",
+      opts: [
+        "Hayır — sonuç yalnızca akış tarafında yeni kayıt geldiğinde üretilir",
+        "Evet — tablo değişimi tüm eşleşmeleri yeniler",
+        "Yalnızca GlobalKTable ile evet",
+        "Yalnızca EOS modunda evet"
+      ],
+      a: [0],
+      why: "Join <b>asimetriktir</b>: tetikleyici yalnızca akış tarafıdır. Lab'da tablo \"Ayşe\" → \"Ayşe Yılmaz\" olarak güncellendi ama S-2 için yeni sonuç üretilmedi; yalnızca S-3 güncel değerle eşleşti. Her iki tarafın da tetiklediği join türü <b>KTable-KTable</b>'dır."
+    },
+    {
+      topic: "Co-partitioning",
+      q: "Join yaparken co-partitioning için hangi şartlar gerekir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "İki topic'in partition sayısı aynı olmalı",
+        "Aynı partitioning stratejisi ve aynı key tipi kullanılmalı",
+        "İki topic aynı broker'da bulunmalı",
+        "İki topic aynı retention süresine sahip olmalı"
+      ],
+      a: [0, 1],
+      why: "Aynı key'in iki tarafta da <b>aynı task'a</b> düşmesi gerekir; bunun için partition sayıları ve <code>murmur2(key) % N</code> sonucunu belirleyen strateji/serde aynı olmalıdır. Broker yerleşimi ve retention ilgisizdir. <b>GlobalKTable</b> bu şartı tamamen kaldırır çünkü her instance tam kopya tutar."
+    },
+    {
+      topic: "suppress",
+      q: "<code>suppress(Suppressed.untilWindowCloses(...))</code> kullanan bir uygulama düşük trafikli bir topic'te hiç sonuç üretmiyor. Neden?",
+      opts: [
+        "Nihai sonuç ancak stream time pencereyi kapatacak kadar ilerleyince yayılır; veri gelmezse yayılmaz",
+        "suppress yalnızca EOS modunda çalışır",
+        "Buffer dolmadığı için sonuç tutuluyor",
+        "suppress edilen sonuçlar changelog'a yazılır, çıktı topic'ine değil"
+      ],
+      a: [0],
+      why: "<code>untilWindowCloses</code> pencerenin kapanmasını bekler; pencere ise <b>stream time</b> ile kapanır. Seyrek trafikte bir sonraki kayıt saatler sonra gelirse sonuç da o zaman yayılır. Düşük trafikli akışlarda <code>untilTimeLimit</code> tercih edilmeli ya da suppress hiç kullanılmamalıdır."
+    },
+    {
+      topic: "Zaman semantiği",
+      q: "Kafka Streams'te varsayılan timestamp extractor nedir ve geçersiz bir zaman damgasında ne yapar?",
+      opts: [
+        "FailOnInvalidTimestamp — uygulamayı durdurur",
+        "WallclockTimestampExtractor — duvar saatini kullanır",
+        "LogAndSkipOnInvalidTimestamp — kaydı atlar",
+        "UsePartitionTimeOnInvalidTimestamp — partition zamanını kullanır"
+      ],
+      a: [0],
+      why: "Varsayılan <code>FailOnInvalidTimestamp</code>'tir: geçersiz (negatif) zaman damgası sessizce yanlış pencerelemeye yol açmasın diye uygulama <b>durur</b>. Diğer üçü açıkça seçilebilecek alternatiflerdir; <code>WallclockTimestampExtractor</code> event time semantiğinden processing time'a geçmek demektir ve pencereleme davranışını kökten değiştirir."
+    },
+    {
+      topic: "Pencere tipleri",
+      q: "Hopping window'un boş pencere üretme israfını ortadan kaldıran pencere tipi hangisidir?",
+      opts: [
+        "Sliding window — yalnızca kayıt olan noktalarda pencere üretir",
+        "Tumbling window",
+        "Session window",
+        "Global window"
+      ],
+      a: [0],
+      why: "Sliding window kayıt merkezlidir: pencereler sabit bir takvime göre değil, <b>kayıtların bulunduğu noktalara</b> göre oluşur; veri olmayan aralıklarda pencere üretilmez. Tumbling çakışmaz (farklı bir amaç), session ise boşluk tabanlıdır. \"Global window\" Kafka Streams'te bir pencere tipi değildir."
+    },
+    {
+      topic: "Grace period",
+      q: "Grace period'ı büyütmenin olumsuz sonuçları nelerdir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Pencereler daha uzun süre state store'da tutulur; bellek/disk büyür",
+        "Nihai sonuçlar daha geç yayılır (suppress ile birlikte gecikme artar)",
+        "Geç gelen kayıtlar atılır",
+        "Co-partitioning bozulur"
+      ],
+      a: [0, 1],
+      why: "Grace, pencerenin kapanmasını geciktirir: store daha uzun süre dolu kalır ve nihai sonuç daha geç yayılır. Kazancı ise geç gelen kayıtların <b>atılmaması</b>dır — yani üçüncü şık grace'i büyütmenin sonucu değil, <i>küçük tutmanın</i> sonucudur. Doğru değer <code>dropped-records</code> metriğine ve gerçek gecikme dağılımına bakarak seçilir."
+    },
+    {
+      topic: "Zaman semantiği",
+      q: "Event time ile ingestion time arasındaki fark nedir?",
+      opts: [
+        "Event time olayın gerçekleştiği an (producer'ın CreateTime'ı); ingestion time broker'a yazıldığı an",
+        "Event time broker'da, ingestion time client'ta üretilir",
+        "İkisi de aynıdır, isimleri farklıdır",
+        "Event time yalnızca Streams'te, ingestion time yalnızca consumer'da kullanılır"
+      ],
+      a: [0],
+      why: "Varsayılan <code>log.message.timestamp.type=CreateTime</code> ile zaman damgası <b>producer'dan</b> gelir (event time). <code>LogAppendTime</code> seçilirse broker yazma anını damgalar (ingestion time) — bu, geçmiş tarihli kayıtların retention'ı tetiklemesi gibi sorunları önler (1.4) ama <b>gerçek olay zamanını kaybettirir</b> ve pencereleme semantiğini değiştirir."
+    },
+    {
+      topic: "Join türleri",
+      q: "KStream-GlobalKTable join'in KStream-KTable join'e göre avantajı nedir?",
+      opts: [
+        "Co-partitioning gerekmez; her instance tablonun tam kopyasını tuttuğu için repartition yapılmaz",
+        "Daha az bellek kullanır",
+        "Pencereleme desteği vardır",
+        "Tablo tarafındaki güncellemeler de sonuç üretir"
+      ],
+      a: [0],
+      why: "GlobalKTable tüm partition'ları her instance'ta tutar: key'in hangi task'ta olduğu önemsizleşir, <b>co-partitioning şartı ve repartition maliyeti ortadan kalkar</b> — üstelik akış tarafındaki key'den farklı bir alanla da join yapılabilir. Bedeli <b>daha fazla bellek/disk</b> ve açılışta tüm topic'in okunmasıdır; küçük referans tabloları için idealdir."
+    },
+    {
+      topic: "Pencere tipleri",
+      q: "Tumbling window ile hopping window arasındaki temel fark nedir?",
+      opts: [
+        "Tumbling'de pencereler bitişik ve çakışmaz; hopping'de adım boydan küçük olduğu için çakışırlar",
+        "Tumbling event time, hopping processing time kullanır",
+        "Tumbling stateless, hopping stateful'dur",
+        "Tumbling yalnızca count, hopping her aggregate ile çalışır"
+      ],
+      a: [0],
+      why: "Tumbling aslında adımın boya eşit olduğu özel bir hopping window'dur: her kayıt <b>tam bir</b> pencereye düşer. Hopping'de adım küçüldükçe çakışma ve dolayısıyla veri çoğalması artar. İkisi de event time kullanır, ikisi de stateful'dur ve her ikisi de tüm aggregate'lerle çalışır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

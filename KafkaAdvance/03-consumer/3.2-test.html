@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-2",
+  code: "Consumer · 3.2",
+  title: "Grup protokolü ve rebalance (KIP-848)",
+  back: "3.2-grup-protokolu-ve-rebalance.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Zamanlayıcılar",
+      q: "Bir consumer 6 dakika süren bir işleme adımına takıldı; süreç yaşıyor ve heartbeat gönderiliyor. Hangi zamanlayıcı onu gruptan atar?",
+      opts: [
+        "max.poll.interval.ms (varsayılan 5 dakika)",
+        "session.timeout.ms (varsayılan 45 saniye)",
+        "heartbeat.interval.ms (varsayılan 3 saniye)",
+        "request.timeout.ms (varsayılan 30 saniye)"
+      ],
+      a: [0],
+      why: "Klasik protokolde heartbeat'i <b>arka plan thread'i</b> gönderir; işleme takılsa bile heartbeat akmaya devam eder, dolayısıyla <code>session.timeout.ms</code> tetiklenmez. Takılmayı yakalayan <code>max.poll.interval.ms</code>'tir. Ayrım: <b>session = yaşıyor mu, max.poll.interval = ilerliyor mu.</b>"
+    },
+    {
+      topic: "Klasik protokol",
+      q: "Klasik consumer grup protokolünde partition atamasını kim hesaplar?",
+      opts: [
+        "Grup lideri seçilen bir consumer",
+        "Grup koordinatörü broker",
+        "Cluster controller",
+        "Her consumer kendi payını hesaplar"
+      ],
+      a: [0],
+      why: "Klasik protokolde koordinatör üyelerden birini <b>grup lideri</b> seçer ve üye listesini ona gönderir; atamayı o <b>consumer</b> hesaplayıp SyncGroup ile geri verir. Bu tasarım client sürüm/strateji uyuşmazlıklarını grup çapında arızaya çevirir — KIP-848'in atamayı broker'a taşımasının sebeplerinden biri budur."
+    },
+    {
+      topic: "KIP-848",
+      q: "Kafka 4.x cluster'ında yeni consumer grup protokolünü kullanmak için ne gerekir?",
+      opts: [
+        "Client'ta group.protocol=consumer ayarlamak — broker tarafı zaten destekler",
+        "Hiçbir şey; 4.x'te otomatik olarak etkindir",
+        "Broker'da group.coordinator.rebalance.protocols'ü değiştirmek",
+        "Tüm consumer'ları CooperativeStickyAssignor'a geçirmek"
+      ],
+      a: [0],
+      why: "Broker tarafı varsayılan olarak <code>classic,consumer,streams</code> protokollerini destekler, ama <b>client varsayılanı hâlâ <code>classic</code></b>'tir. Yeni protokol bir <b>opt-in</b>'dir: <code>group.protocol=consumer</code>. \"4.x'te otomatik\" varsayımı en yaygın yanlış inanıştır. Yeni protokolde client tarafı assignor ayarı zaten yok sayılır."
+    },
+    {
+      topic: "KIP-848",
+      q: "KIP-848 protokolünde atama değişiklikleri consumer'lara nasıl iletilir?",
+      opts: [
+        "Heartbeat cevaplarıyla kademeli olarak — global bir barrier yoktur",
+        "JoinGroup/SyncGroup turlarıyla, tüm üyeler beklenerek",
+        "Metadata log'u üzerinden broadcast edilerek",
+        "Consumer'lar periyodik olarak koordinatörden atama tablosunu sorgular"
+      ],
+      a: [0],
+      why: "Yeni protokolde koordinatör atamayı kendisi hesaplar ve <code>ConsumerGroupHeartbeat</code> cevaplarında \"şunu bırak / şunu al\" der. <b>Barrier yoktur</b>: üyeler bağımsız ilerler, grup bir bütün olarak durmaz. Bu yüzden tek bir \"rebalance süresi\" yerine <b>yakınsama</b> ölçülür."
+    },
+    {
+      topic: "Assignor'lar",
+      q: "6 partition, 2 consumer çalışırken 3. consumer katıldı. CooperativeStickyAssignor ile ne olur?",
+      opts: [
+        "Yalnızca taşınacak partition'lar geri alınır (örneğin ikisi), diğerleri kesintisiz devam eder",
+        "Her iki consumer da tüm partition'larını bırakır, sonra yeniden dağıtılır",
+        "Yeni consumer yalnızca yeni gelen kayıtları alır",
+        "Rebalance olmaz; 3. consumer atıl bekler"
+      ],
+      a: [0],
+      why: "Cooperative (artımlı) rebalance yalnızca <b>gerçekten taşınacak</b> partition'ları geri alır. Lab'da tam olarak bunu gördük: <code>c2 GERİ ALINDI [5]</code>, <code>c1 GERİ ALINDI [4]</code>, <code>c3 ATANDI [4,5]</code>. Eager assignor'da (Range/RoundRobin/Sticky) tüm atamalar bırakılırdı — deploy sırasındaki uzun kesintilerin sebebi budur."
+    },
+    {
+      topic: "Koordinatör",
+      q: "Bir broker çöktü ve 30 consumer group'tan yalnızca 6'sı etkilendi. Neden?",
+      opts: [
+        "Grubun koordinatörü, hash(group.id) % 50 ile seçilen __consumer_offsets partition'ının lideridir; yalnızca o broker'da koordinatörü olan gruplar etkilenir",
+        "Yalnızca o broker'dan okuyan gruplar etkilenir",
+        "Etkilenenler static membership kullanmayan gruplardır",
+        "Etkilenme rastgeledir"
+      ],
+      a: [0],
+      why: "Her grubun koordinatörü, kendi offset partition'ının <b>lideri</b> olan broker'dır. Bir broker düşünce yalnızca ona düşen gruplar koordinatör değişimi yaşar. Grubun <i>tükettiği</i> topic'in liderleriyle bunun ilgisi yoktur — bu ayrım \"neden sadece bazıları\" sorusunun cevabıdır."
+    },
+    {
+      topic: "Static membership",
+      q: "group.instance.id ile static membership kullanan bir ekip, restart'ta hâlâ rebalance yaşıyor. En olası sebep nedir?",
+      opts: [
+        "group.instance.id her açılışta rastgele (ör. UUID) üretiliyor",
+        "session.timeout.ms çok yüksek",
+        "Static membership yalnızca KIP-848 protokolünde çalışır",
+        "group.instance.id'nin topic adıyla eşleşmesi gerekir"
+      ],
+      a: [0],
+      why: "Static membership'in tüm fikri, dönen üyenin <b>aynı kimlikle</b> tanınmasıdır. UUID gibi her açılışta değişen bir değer verirsen üye \"yeni üye\" olarak görünür ve rebalance tetiklenir. Kimlik pod ordinal'i gibi <b>kararlı</b> olmalıdır — StatefulSet'in tercih sebeplerinden biri budur."
+    },
+    {
+      topic: "Static membership",
+      q: "Static membership'in bedeli nedir?",
+      opts: [
+        "Gerçekten ölen bir üye de session.timeout.ms boyunca partition'larını tutar",
+        "Offset commit'leri devre dışı kalır",
+        "Cooperative rebalance kullanılamaz",
+        "Grup en fazla 10 üyeye çıkabilir"
+      ],
+      a: [0],
+      why: "Static membership \"bu üye geri gelecek\" varsayımına dayanır: kısa kesintilerde rebalance'ı önler ama <b>kalıcı</b> ölümde de partition'lar <code>session.timeout.ms</code> dolana kadar boşta bekler — o süre boyunca o partition'lar işlenmez. Takas bilinçli yapılmalıdır."
+    },
+    {
+      topic: "Rebalance teşhisi",
+      q: "\"Grup sürekli rebalance oluyor ve lag artıyor\" şikâyetinde ilk çözüm ne olmalıdır?",
+      opts: [
+        "max.poll.records'ı düşürerek poll döngüsünü hızlandırmak",
+        "session.timeout.ms'i büyütmek",
+        "Partition sayısını artırmak",
+        "auto.offset.reset'i earliest yapmak"
+      ],
+      a: [0],
+      why: "Formül: <code>max.poll.records × işleme süresi &lt; max.poll.interval.ms</code>. Döngü yavaşladığı için üye atılıyor ve döngü kendini besliyor. <code>max.poll.records</code>'ı düşürmek en doğrudan ve yan etkisiz çözümdür. <code>session.timeout.ms</code> farklı bir mekanizmadır; partition artırmak sıra garantisini bozar (2.1)."
+    },
+    {
+      topic: "Klasik protokol",
+      q: "Klasik protokolde her rebalance turunda artan 'generation' kavramının pratik sonucu nedir?",
+      opts: [
+        "Eski generation ile yapılan offset commit'leri reddedilir (CommitFailedException) ve o kayıtlar yeniden işlenir",
+        "Consumer'lar yeniden bağlanmak zorunda kalır",
+        "Partition liderleri değişir",
+        "Offset'ler sıfırlanır"
+      ],
+      a: [0],
+      why: "Generation, atamanın \"sürümüdür\". Bir consumer uzun işleme sırasında gruptan atılıp yeni generation oluşursa, elindeki batch'in commit'i <b>reddedilir</b> — <code>CommitFailedException</code>. Kayıtlar başka bir üyeye atanır ve yeniden işlenir (at-least-once'ın kaynaklarından biri). Offsetler sıfırlanmaz, liderler değişmez."
+    },
+    {
+      topic: "KIP-848",
+      q: "Yeni protokolde session.timeout.ms ve heartbeat.interval.ms nerede belirlenir?",
+      opts: [
+        "Broker tarafında (group.consumer.* ayarlarıyla); client'taki karşılıkları yok sayılır",
+        "Client tarafında, klasik protokoldeki gibi",
+        "İkisi de topic düzeyinde ayarlanır",
+        "Bu ayarlar yeni protokolde tamamen kaldırılmıştır"
+      ],
+      a: [0],
+      why: "KIP-848 grup davranışını <b>merkezîleştirir</b>: <code>group.consumer.session.timeout.ms</code> (45000) ve <code>group.consumer.heartbeat.interval.ms</code> (5000) broker ayarlarıdır ve broker min/max sınırları da dayatır. Böylece tek bir kötü yapılandırılmış client tüm grubun davranışını bozamaz."
+    },
+    {
+      topic: "Assignor'lar",
+      q: "Klasik protokolde bir grup hiç oluşmuyor ve üyeler sürekli JoinGroup deniyor. Muhtemel sebep nedir?",
+      opts: [
+        "Üyelerin partition.assignment.strategy listeleri ortak bir strateji içermiyor",
+        "Partition sayısı üye sayısından az",
+        "auto.offset.reset değerleri farklı",
+        "max.poll.records değerleri farklı"
+      ],
+      a: [0],
+      why: "Klasik protokolde grup, üyelerin <b>ortak</b> bir atama stratejisinde anlaşmasını gerektirir; farklı client sürümleri/kütüphaneleri kesişmeyen listeler bildirirse grup kurulamaz. Partition sayısının az olması yalnızca bazı üyeleri atıl bırakır. Bu sınıf hatalar KIP-848'de <b>yapısal olarak</b> ortadan kalkar."
+    },
+    {
+      topic: "Zamanlayıcılar",
+      q: "Kubernetes'te 20 pod'lu bir tüketiciyi kesintisiz güncellemek için hangi iki yaklaşım uygundur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "group.protocol=consumer (KIP-848) kullanmak",
+        "Kararlı group.instance.id ile static membership uygulamak",
+        "session.timeout.ms'i 10 dakikaya çıkarmak",
+        "Her pod'a ayrı group.id vermek"
+      ],
+      a: [0, 1],
+      why: "KIP-848 barrier'ı kaldırır (grup bir bütün olarak durmaz); static membership restart'ları rebalance'a çevirmez. <code>session.timeout.ms</code>'i şişirmek gerçek ölümlerin fark edilmesini geciktirir. Her pod'a ayrı <code>group.id</code> vermek grubu tamamen bozar: her pod <b>tüm</b> partition'ları okur ve veri 20 kez işlenir."
+    },
+    {
+      topic: "Rebalance teşhisi",
+      q: "KIP-848 protokolünde \"rebalance süresi\" ölçmek neden zordur?",
+      opts: [
+        "Tek bir durma anı yoktur; değişiklikler heartbeat'lerle kademeli akar, ölçülecek şey yakınsama süresidir",
+        "Yeni protokol metrik yayınlamaz",
+        "Rebalance broker tarafında olduğu için client hiç haberdar olmaz",
+        "Rebalance artık hiç gerçekleşmez"
+      ],
+      a: [0],
+      why: "Klasik protokolde \"rebalance\" net bir barrier'dı: başladı-bitti. KIP-848'de koordinatör atamayı kademeli devrettiği için grup hiçbir anda tümüyle durmaz; anlamlı ölçü <b>yakınsama süresi</b> ve devir sırasındaki lag'dir. Rebalance elbette gerçekleşir ve consumer <code>ConsumerRebalanceListener</code> ile haberdar olur."
+    },
+    {
+      topic: "Koordinatör",
+      q: "Consumer group koordinatörü ile cluster controller arasındaki fark nedir?",
+      opts: [
+        "Koordinatör bir grubun üyelik ve offset'lerinden, controller cluster metadata'sından sorumludur; farklı broker'lar olabilir",
+        "İkisi her zaman aynı broker'dır",
+        "Controller grup atamasını yapar, koordinatör yalnızca offset yazar",
+        "Koordinatör KRaft quorum'unun lideridir"
+      ],
+      a: [0],
+      why: "<b>Koordinatör</b>: grup başına, o grubun <code>__consumer_offsets</code> partition'ının lideri; üyelik, atama (yeni protokolde) ve offset commit'leri. <b>Controller</b>: cluster genelinde, KRaft quorum'unun lideri; topic/partition/lider metadata'sı (1.3). Aynı broker olabilirler ama kavramlar bağımsızdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

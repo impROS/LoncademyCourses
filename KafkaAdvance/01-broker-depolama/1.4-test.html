@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.4 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-4",
+  code: "Broker & Depolama · 1.4",
+  title: "Retention, compaction ve tombstone",
+  back: "1.4-retention-ve-compaction.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Politika seçimi",
+      q: "Bir 'kullanıcı profili son hâli' topic'i ile bir 'ödeme olayları' topic'i için doğru cleanup.policy eşleşmesi nedir?",
+      opts: [
+        "Profil → compact, ödeme olayları → delete",
+        "Profil → delete, ödeme olayları → compact",
+        "İkisi de compact",
+        "İkisi de compact,delete"
+      ],
+      a: [0],
+      why: "Profil bir <b>durum tablosudur</b>: her key'in yalnızca son hâli anlamlıdır → <code>compact</code>. Ödeme olayları bir <b>olay akışıdır</b>: her kayıt ayrı bir gerçektir, aynı key'in eskisi silinemez → <code>delete</code>. Olay akışına compaction uygulamak <b>denetim verisini sessizce yok eder</b> — gerçek üretimde görülen ciddi bir hatadır."
+    },
+    {
+      topic: "delete politikası",
+      q: "12 partition'lı bir topic'e <code>retention.bytes=5368709120</code> (5 GB) verdin. En kötü durumda bu topic ne kadar disk kullanır?",
+      opts: ["Yaklaşık 60 GB (replikasyon hariç)", "5 GB", "5 GB / 12", "Sınırsız"],
+      a: [0],
+      why: "<code>retention.bytes</code> <b>partition başınadır</b>: 12 × 5 GB = 60 GB — ve bu <i>replika başına</i> hesaptır, replication.factor=3 ile cluster genelinde 180 GB. Kapasite planlamasında en sık yapılan çarpma hatası budur (5.5)."
+    },
+    {
+      topic: "Aktif segment",
+      q: "Günde birkaç mesaj alan bir topic'te <code>retention.ms=3600000</code> olmasına rağmen aylık veri diskte duruyor. Doğru çözüm nedir?",
+      opts: [
+        "segment.ms değerini düşürerek segmentin dönmesini sağlamak",
+        "log.cleaner.enable=true yapmak",
+        "cleanup.policy=compact yapmak",
+        "retention.check.interval.ms'i 1 saniyeye düşürmek"
+      ],
+      a: [0],
+      why: "Retention <b>segment düzeyinde</b> çalışır ve <b>aktif segment silinmez</b>. Trafik azsa segment hiç dolmaz, dönmez, silinmez. Çözüm <code>segment.ms</code>'i düşürüp segmenti zorla döndürmektir (KIP-1030 sonrası min 1 dakika). Tarama sıklığını artırmak dönmemiş bir segmenti silmez; cleaner ve compaction farklı mekanizmalardır."
+    },
+    {
+      topic: "Tombstone",
+      q: "Compacted bir topic'te bir key'i nasıl silersin?",
+      opts: [
+        "Aynı key ile value=null gönderirsin (tombstone)",
+        "Admin API'de deleteRecords çağırırsın",
+        "Key'i boş string olarak gönderirsin",
+        "Topic'i silip yeniden oluşturursun"
+      ],
+      a: [0],
+      why: "Silme <code>value == null</code> ile ifade edilir; buna <b>tombstone</b> denir. Cleaner geçtiğinde o key'in tüm eski sürümlerini siler, tombstone'un kendisi <code>delete.retention.ms</code> (varsayılan 24 saat) kadar daha kalır. Boş string <i>bir değerdir</i>, silme değil. <code>deleteRecords</code> offset tabanlı budama yapar, key bazlı silme değildir."
+    },
+    {
+      topic: "Tombstone",
+      q: "delete.retention.ms varsayılan 24 saattir. Haftada bir çalışan bir batch tüketici için bu neden risklidir?",
+      opts: [
+        "Tüketici tombstone'u kaçırır ve silinmiş key'in eski değerini taşımaya devam eder",
+        "Tüketici tombstone'u iki kez görür ve kaydı iki kez siler",
+        "Tombstone'lar birikir ve topic sonsuz büyür",
+        "Tüketici offset'ini kaybeder ve baştan okur"
+      ],
+      a: [0],
+      why: "Tombstone'un log'da kalma amacı, geride kalan tüketicilerin \"bu key silindi\" bilgisini görebilmesidir. 7 gün sonra gelen bir tüketici 24 saatlik tombstone'u <b>hiç görmez</b>: key ona göre hiç silinmemiştir → <b>hayalet kayıt</b>. Kural: <code>delete.retention.ms</code> > tüketicinin maksimum gecikmesi."
+    },
+    {
+      topic: "Compaction garantisi",
+      q: "10 key'e 2000'er güncelleme yazıp compaction'ı bekledin. Sonuçta 20001 kayıt yerine 218 kayıt kaldı — key başına ~22. Neden tam olarak 1 kalmadı? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Aktif segment hiçbir zaman temizlenmez",
+        "Cleaner asenkrondur ve kirli oran eşiği sağlanmadan segmentlere dokunmaz",
+        "Compaction her key için son 20 sürümü saklamak üzere tasarlanmıştır",
+        "Tombstone yazıldığı için compaction o partition'da durdurulur"
+      ],
+      a: [0, 1],
+      why: "Compaction'ın garantisi <b>\"son değer kaybolmaz\"</b>dır, \"key başına tam 1 kayıt kalır\" değil. Aktif segment ve henüz temizlenmemiş kirli kısım tekrarlı kayıtlar içerebilir; cleaner <code>min.cleanable.dirty.ratio</code> eşiği ve <code>backoff</code> periyoduyla asenkron çalışır. \"Son 20 sürüm\" diye bir ayar yoktur; tombstone compaction'ı durdurmaz. <b>Pratik sonuç: tüketicin tekrarlı key'lere dayanıklı olmalı.</b>"
+    },
+    {
+      topic: "Compaction mekaniği",
+      q: "Compaction sonrası bir consumer offset 5000 ile 5200 arasında hiç kayıt bulamıyor. Bu ne anlama gelir?",
+      opts: [
+        "Normaldir — compaction offsetleri korur, silinen kayıtların yerinde boşluk kalır",
+        "Veri bozulmuştur, partition yeniden replike edilmelidir",
+        "Consumer yanlış partition'a bağlanmıştır",
+        "Compaction offsetleri yeniden numaralandırmıştır, consumer offset'i geçersizdir"
+      ],
+      a: [0],
+      why: "Compaction offsetleri <b>asla yeniden numaralandırmaz</b> — numaralandırsaydı tüm consumer offset'leri anlamsızlaşırdı. Silinen kayıtların offsetleri boşluk olarak kalır ve consumer bunları sessizce atlar. Bu, compacted topic'lerde tamamen normal bir görüntüdür."
+    },
+    {
+      topic: "Cleaner ayarları",
+      q: "min.cleanable.dirty.ratio ayarı ne yapar ve varsayılanı nedir?",
+      opts: [
+        "Log'un kirli kısmı bu oranı geçince cleaner devreye girer; varsayılan 0.5",
+        "Compaction sonrası kalması gereken minimum kayıt oranı; varsayılan 0.5",
+        "Bir segmentin silinebilmesi için dolu olması gereken oran; varsayılan 0.9",
+        "Cleaner thread'lerinin CPU kullanım üst sınırı; varsayılan 0.5"
+      ],
+      a: [0],
+      why: "<code>min.cleanable.dirty.ratio</code> (varsayılan <b>0.5</b>), henüz temizlenmemiş (kirli) kısmın log'a oranı bu değeri aşınca temizliği tetikler. Düşürmek daha sık ve daha agresif temizlik demektir — CPU ve I/O maliyeti karşılığında daha küçük disk. Lab'da 0.01 verdik ki cleaner hemen çalışsın."
+    },
+    {
+      topic: "Politika seçimi",
+      q: "Compacted bir topic'in diski sürekli büyüyor ve compaction işe yaramıyor gibi görünüyor. Hangi iki sebep bunu açıklar? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Key kardinalitesi çok yüksek — her key neredeyse benzersiz, silinecek eski sürüm yok",
+        "log.cleaner.dedupe.buffer.size yetersiz; cleaner tek geçişte tüm key'leri tutamıyor",
+        "Compaction yalnızca cleanup.policy=delete ile birlikte çalışır",
+        "Tombstone'lar compaction'ı kalıcı olarak devre dışı bırakır"
+      ],
+      a: [0, 1],
+      why: "Compaction yalnızca <b>tekrar eden key'leri</b> temizler; her kayıt benzersiz bir key taşıyorsa silinecek bir şey yoktur — bu durumda <code>compact,delete</code> gerekir. İkinci gerçek sebep dedupe buffer'ın (varsayılan 128 MiB) yetersizliğidir: cleaner tüm key'leri haritalayamaz ve temizlik yarım kalır. Diğer iki şık uydurmadır."
+    },
+    {
+      topic: "Zaman damgası",
+      q: "Bir uygulama geçmiş tarihli (örneğin 2020) CreateTime ile veri basmaya başladı ve o topic'in segmentleri hızla silindi. Teknik açıklaması nedir?",
+      opts: [
+        "Retention kararı segmentin zaman damgalarına bakar; CreateTime varsayılan olarak producer'dan gelir",
+        "Kafka geçmiş tarihli kayıtları her zaman reddeder",
+        "Broker saatiyle uyuşmayan kayıtlar otomatik olarak compaction'a tabi tutulur",
+        "log.message.timestamp.after.max.ms geçmiş tarihli kayıtları anında siler"
+      ],
+      a: [0],
+      why: "<code>log.message.timestamp.type</code> varsayılanı <b>CreateTime</b>'dır: zaman damgası <i>producer'dan</i> gelir. Segment eski görünür ve retention onu siler. Kafka 4.0'daki <code>log.message.timestamp.after.max.ms=3600000</code> yalnızca <b>gelecek</b> yönünü sınırlar (1 saatten ileri tarihli kayıtları reddeder); geçmiş yönü <code>before.max.ms</code> ile sınırlanır ve varsayılanı pratikte sınırsızdır. Alternatif: <code>LogAppendTime</code>."
+    },
+    {
+      topic: "Politika seçimi",
+      q: "cleanup.policy=compact,delete ne yapar?",
+      opts: [
+        "Hem key başına eski sürümleri temizler hem de yeterince eski segmentleri tamamen siler",
+        "Önce compaction dener, başarısız olursa delete uygular",
+        "Yalnızca tombstone'lu key'leri siler",
+        "Geçersiz bir kombinasyondur, broker reddeder"
+      ],
+      a: [0],
+      why: "<code>compact,delete</code> iki politikayı <b>birlikte</b> uygular: eski key sürümleri temizlenir <i>ve</i> <code>retention.ms</code>/<code>retention.bytes</code>'ı aşan segmentler silinir. Sınırsız büyüyen compacted topic'lerin (yüksek key kardinalitesi) standart çözümüdür; Kafka Streams'in windowed store changelog'ları da böyle yapılandırılır."
+    },
+    {
+      topic: "delete politikası",
+      q: "Bir topic'te hem retention.ms hem retention.bytes ayarlıysa ne olur?",
+      opts: [
+        "Hangi koşul önce sağlanırsa segment silinir",
+        "Yalnızca retention.ms dikkate alınır",
+        "Yalnızca retention.bytes dikkate alınır",
+        "İkisinin de sağlanması beklenir"
+      ],
+      a: [0],
+      why: "İki sınır <b>bağımsız</b> çalışır ve <b>önce dolan kazanır</b>: segment ya yaşlandığı ya da partition boyut sınırını aştığı için silinir. \"İkisinin de sağlanması\" beklenseydi disk sınırı hiçbir zaman koruyucu olmazdı — bu, kapasite güvenliğinin tersi olurdu."
+    },
+    {
+      topic: "Compaction mekaniği",
+      q: "Compaction sonrası segment dosyalarının boyutu 0 bayta düştü ama dosya adları (00000000000000001984.log gibi) değişmedi. Bu neden böyledir?",
+      opts: [
+        "Dosya adı base offset'tir; offsetler korunduğu için isim de korunur",
+        "Kafka silinen dosyaları isim olarak saklar, içeriği başka yere taşır",
+        "Boyut 0 görünmesi bir raporlama hatasıdır, veri hâlâ oradadır",
+        "İsimler yalnızca broker restart'ında güncellenir"
+      ],
+      a: [0],
+      why: "Segment dosya adı <b>base offset</b>'tir (1.1) ve compaction offsetleri korur; dolayısıyla segmentin kimliği değişmez. İçindeki tüm kayıtların daha yeni sürümleri varsa segment gerçekten boşalır (0 bayt) ama yerinde durur. Lab'da dizin ~10 MB'dan 180 KB'a indi — boyut raporu doğrudur."
+    },
+    {
+      topic: "Cleaner ayarları",
+      q: "Aşağıdaki varsayılan değerlerden hangisi <b>yanlıştır</b>?",
+      opts: [
+        "delete.retention.ms = 1 saat",
+        "retention.ms (log.retention.hours) = 7 gün",
+        "min.cleanable.dirty.ratio = 0.5",
+        "log.retention.check.interval.ms = 5 dakika"
+      ],
+      a: [0],
+      why: "<code>delete.retention.ms</code> varsayılanı <b>86400000 ms = 24 saat</b>tir, 1 saat değil. Diğer üçü doğrudur: retention 7 gün (168 saat), kirli oran eşiği 0.5, retention taraması 5 dakikada bir. Bu sayılar sınav ve mülakat sorularının klasik hedefleridir — ezberlemeye değer."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

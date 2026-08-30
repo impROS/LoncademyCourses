@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-2",
+  code: "EOS · 4.2",
+  title: "Outbox ve idempotent tüketici desenleri",
+  back: "4.2-outbox-ve-idempotent-tuketici.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Dual write",
+      q: "<pre>@Transactional\nvoid siparisOlustur(s) {\n  repo.save(s);\n  kafkaTemplate.send(\"siparisler\", s);\n}</pre>Bu kodun temel problemi nedir?",
+      opts: [
+        "DB transaction'ı Kafka'yı kapsamaz; iki sistem arasında atomiklik yoktur",
+        "kafkaTemplate.send asenkron olduğu için sıra bozulur",
+        "@Transactional metodun içinde send çağrılamaz",
+        "Problem yok; Spring iki kaynağı da yönetir"
+      ],
+      a: [0],
+      why: "<b>Çift yazma (dual write)</b> problemi: <code>@Transactional</code> yalnızca veritabanını kapsar. DB commit'inden sonra Kafka gönderimi başarısız olursa olay kaybolur; Kafka'ya gidip DB rollback olursa hayalet olay oluşur — <b>gönderilen mesaj geri alınamaz</b>. \"Spring hallediyor\" varsayımı bu hatanın en yaygın sebebidir."
+    },
+    {
+      topic: "Outbox",
+      q: "Outbox deseni hangi teslimat garantisini verir?",
+      opts: [
+        "At-least-once — relay mesajı yazıp işaretlemeden çökerse tekrar gönderir",
+        "Exactly-once — outbox tablosu tekilliği garanti eder",
+        "At-most-once — yayınlanamayan satırlar atlanır",
+        "Garanti relay implementasyonuna göre exactly-once olabilir"
+      ],
+      a: [0],
+      why: "Relay, mesajı Kafka'ya yazıp <code>published_at</code>'i güncellemeden çökerse aynı satırı tekrar yayınlar. Bu yüzden outbox <b>her zaman</b> tüketici tarafında idempotency ile eşleşmelidir. Outbox'ın çözdüğü şey tekillik değil, <b>kayıpsızlık ve atomikliktir</b>."
+    },
+    {
+      topic: "Outbox",
+      q: "Outbox tablosundaki aggregate_id alanı neden Kafka key'i olarak kullanılır?",
+      opts: [
+        "Aynı toplulaştırmanın olayları aynı partition'a gitsin ve sıraları korunsun",
+        "Tekilleştirme için gereklidir",
+        "Relay'in hangi satırı yayınlayacağını belirler",
+        "Partition sayısını otomatik ayarlar"
+      ],
+      a: [0],
+      why: "Kafka'da sıra yalnızca partition içinde garanti edilir ve aynı key aynı partition'a gider (2.1). <code>aggregate_id</code>'yi key yapmak, bir siparişin/hesabın olaylarının sıralı kalmasını sağlar — outbox'ın sessiz ama kritik ayrıntısı. Tekilleştirme <code>message_id</code> ile yapılır."
+    },
+    {
+      topic: "Doğal idempotency",
+      q: "Aşağıdaki işlemlerden hangisi <b>doğal olarak idempotent</b>tir?",
+      opts: [
+        "UPDATE hesap SET bakiye = 500 WHERE id = 42",
+        "UPDATE hesap SET bakiye = bakiye + 10 WHERE id = 42",
+        "INSERT INTO hareket VALUES (...)",
+        "POST /siparis"
+      ],
+      a: [0],
+      why: "<b>Mutlak yazma idempotenttir</b>: kaç kez uygulanırsa uygulansın sonuç aynıdır. Artımlı yazma (<code>+ 10</code>), düz INSERT ve POST tekrarlandığında durumu bozar. Tasarım ipucu: olayı mümkünse <b>\"yeni durum\"</b> olarak taşı, \"delta\" olarak değil — böylece dedup mekanizmasına hiç ihtiyaç duymayabilirsin."
+    },
+    {
+      topic: "Lab yorumu",
+      q: "Lab'da 130 kayıt (100 benzersiz iş) işlendi. Naif tüketici 1300, idempotent tüketici 1000 üretti. Farkın sebebi nedir?",
+      opts: [
+        "Naif tüketici 30 duplicate'i de uyguladı; idempotent tüketici message-id ile onları eledi",
+        "Naif tüketici bazı kayıtları iki kez okudu",
+        "Idempotent tüketici 30 kaydı atladı ve veri kaybetti",
+        "Broker duplicate'leri farklı sırada teslim etti"
+      ],
+      a: [0],
+      why: "30 iş bilerek iki kez <b>yazıldı</b> (at-least-once gerçeği). Naif tüketici hepsini uyguladı → 130 × 10 = 1300. Idempotent tüketici <code>message-id</code> ile 100 benzersiz işi tanıdı → 1000. Idempotent tüketici veri <i>kaybetmedi</i>; zaten uygulanmış işi tekrar uygulamadı."
+    },
+    {
+      topic: "Dedup mekaniği",
+      q: "Idempotent tüketicide duplicate tespit edildiğinde offset ilerletilmezse ne olur?",
+      opts: [
+        "Tüketici o kayda kilitlenir; aynı duplicate'i sonsuza kadar işlemeye çalışır",
+        "Kafka kaydı otomatik atlar",
+        "Rebalance tetiklenir ve kayıt başka tüketiciye geçer",
+        "Hiçbir şey; offset bir sonraki poll'da otomatik ilerler"
+      ],
+      a: [0],
+      why: "Duplicate <b>işlenmemiş</b> olsa da <b>geçilmiş</b> sayılmalıdır: offset ilerlemezse tüketici aynı kaydı tekrar tekrar okur ve ilerleme durur. Lab kodunda duplicate dalında bile <code>offsets.put(tp, nextOffset)</code> çağrılmasının sebebi budur."
+    },
+    {
+      topic: "Kimlik kaynağı",
+      q: "message_id olarak topic-partition-offset kullanmanın kırıldığı senaryo hangisidir?",
+      opts: [
+        "Topic yeniden oynatıldığında veya MirrorMaker ile kopyalandığında offsetler değişir",
+        "Consumer group değiştiğinde",
+        "Partition sayısı azaldığında",
+        "Compaction çalıştığında"
+      ],
+      a: [0],
+      why: "Offset <b>fiziksel bir konumdur</b>, işin kimliği değil: aynı iş başka bir topic'e/partition'a yazıldığında ya da replay edildiğinde offset değişir ve dedup çalışmaz. Kalıcı tekillik için <b>iş anahtarı</b> (sipariş id gibi) veya producer'ın ürettiği sabit bir UUID header'ı tercih edilir. Partition sayısı zaten azaltılamaz."
+    },
+    {
+      topic: "Relay seçimi",
+      q: "Outbox relay'i için CDC (Debezium) ile poller yaklaşımını karşılaştıran hangi ifadeler doğrudur? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "CDC daha düşük gecikme sağlar ve DB'ye ek sorgu yükü bindirmez",
+        "Poller daha sade bir mimaridir ama gecikmesi poll aralığı kadardır",
+        "CDC outbox tablosuna ihtiyaç duymaz",
+        "Poller exactly-once garantisi verir"
+      ],
+      a: [0, 1],
+      why: "CDC veritabanının write-ahead log'unu okur: milisaniye gecikme, sorgu yükü yok, ama ek altyapı ve işletim maliyeti var. Poller <code>SELECT ... WHERE published_at IS NULL</code> ile çalışır: sade ama gecikme ve DB yükü getirir. CDC de outbox tablosunu okur (\"outbox olmadan CDC\" farklı bir desendir) ve <b>hiçbiri</b> exactly-once vermez."
+    },
+    {
+      topic: "Dedup mekaniği",
+      q: "processed_messages tablosu 400 milyon satıra ulaştı. Doğru çözüm nedir?",
+      opts: [
+        "Duplicate'lerin gelebileceği en uzun pencereden kısa olmayan bir TTL ile periyodik temizlik",
+        "Tabloyu tamamen kaldırıp offset tabanlı dedup'a geçmek",
+        "Tabloyu her gün TRUNCATE etmek",
+        "Kafka retention'ını düşürmek"
+      ],
+      a: [0],
+      why: "Dedup tablosu <b>zorunlu olarak</b> temizlenmelidir, ama TTL keyfî seçilemez: duplicate'ler retry, replay ve mirror yoluyla ne kadar geriden gelebiliyorsa TTL ondan <b>kısa olmamalıdır</b>. Her gün TRUNCATE etmek bir günden eski duplicate'lere karşı korumayı kaldırır — <code>delete.retention.ms</code> mantığının (1.4) aynısı."
+    },
+    {
+      topic: "Offset saklama",
+      q: "Offset'i iş verisiyle aynı DB transaction'ında saklamanın operasyonel bedeli nedir?",
+      opts: [
+        "kafka-consumer-groups --describe artık gerçek ilerlemeyi göstermez; offset veritabanındadır",
+        "Rebalance devre dışı kalır",
+        "Consumer group kullanılamaz",
+        "Partition ataması elle yapılmak zorundadır"
+      ],
+      a: [0],
+      why: "Offset Kafka'ya commit edilmediği için standart izleme araçları (lag dahil) gerçeği göstermez; izlemeyi kendin kurmalısın ve açılışta <code>onPartitionsAssigned</code> içinde DB'den okuyup <code>seek()</code> yapmalısın. Grup üyeliği ve rebalance normal çalışmaya devam eder."
+    },
+    {
+      topic: "Kapsam",
+      q: "Kafka transaction'ları (4.1) ile idempotent tüketici deseni arasındaki ilişki nedir?",
+      opts: [
+        "Transaction Kafka içi atomikliği, idempotent tüketici Kafka dışına çıkan etkilerin tekilliğini sağlar; ikisi farklı sınırları korur",
+        "İdempotent tüketici transaction'ların yerine geçer",
+        "Transaction kullanılıyorsa idempotent tüketiciye gerek yoktur",
+        "İkisi de aynı problemi çözer, biri seçilmelidir"
+      ],
+      a: [0],
+      why: "Sınır farkı: transaction \"Kafka'ya yaz + offset commit\" ikilisini atomik yapar; hedef bir veritabanı ya da API olduğunda bu garanti <b>biter</b> ve tekilliği uygulama sağlamalıdır. Kafka→Kafka akışta transaction, Kafka→dış sistemde idempotent tüketici kullanılır; birbirinin alternatifi değil <b>tamamlayıcısıdır</b>."
+    },
+    {
+      topic: "Dual write",
+      q: "Outbox deseninde iş verisi ile outbox kaydı neden aynı transaction'da yazılmalıdır?",
+      opts: [
+        "Tek bir atomik karar noktası oluşsun: ya ikisi de olur ya hiçbiri",
+        "Performans için",
+        "Kafka'nın outbox tablosunu okuyabilmesi için",
+        "Sıra garantisi için"
+      ],
+      a: [0],
+      why: "Outbox'ın tüm fikri budur: iki farklı sistemi (DB + Kafka) atomik yazmaya çalışmak yerine, <b>tek bir sistem içinde</b> (aynı DB) iki tabloya atomik yazmak. Yayınlama işi asenkron relay'e devredilir. Kafka outbox tablosunu okumaz; relay okur."
+    },
+    {
+      topic: "Doğal idempotency",
+      q: "Bir olay akışını tasarlarken \"delta\" yerine \"yeni durum\" taşımanın avantajı nedir?",
+      opts: [
+        "Tüketici işlemesi doğal olarak idempotent olur; dedup mekanizmasına ihtiyaç kalmayabilir",
+        "Mesaj boyutu küçülür",
+        "Sıra garantisine ihtiyaç kalmaz",
+        "Kafka transaction'ları gereksizleşir"
+      ],
+      a: [0],
+      why: "\"Bakiye artık 500\" mesajı kaç kez uygulanırsa uygulansın sonuç aynıdır; \"bakiyeye 10 ekle\" ise değildir. Bu tasarım tercihi tüm dedup altyapısını gereksiz kılabilir. Ancak <b>sıra hâlâ önemlidir</b> — eski bir durum mesajı yenisinin üstüne yazılmamalıdır; mesaj boyutu da genelde artar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

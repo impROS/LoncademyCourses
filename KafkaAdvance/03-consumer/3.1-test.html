@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-1",
+  code: "Consumer · 3.1",
+  title: "Fetch/poll döngüsü ve akış kontrolü",
+  back: "3.1-fetch-ve-poll-dongusu.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "poll() anatomisi",
+      q: "Bir fetch cevabı 50.000 kayıt getirdi ve <code>max.poll.records=500</code>. Sonraki 100 poll çağrısı için kaç kez ağa çıkılır?",
+      opts: [
+        "Prensipte hiç — kayıtlar tampondan verilir; fetch'ler arka planda öngörülü yapılır",
+        "100 kez — her poll bir fetch isteğidir",
+        "50.000 kez — kayıt başına bir istek",
+        "Her 500 kayıtta bir, yani 100 kez"
+      ],
+      a: [0],
+      why: "Consumer <b>tampon tutar</b> ve fetch'i <b>öngörülü (prefetch)</b> yapar: <code>poll()</code> tamponda veri varken ağa çıkmaz, sadece <code>max.poll.records</code> kadar kaydı deserialize edip döndürür. Bu yüzden <code>poll()</code> süresi ağ gecikmesinin ölçüsü değildir. \"Her poll = bir fetch\" varsayımı klasik yanlış modeldir."
+    },
+    {
+      topic: "Rebalance riski",
+      q: "Kayıt başına işleme 400 ms sürüyor ve <code>max.poll.interval.ms</code> varsayılanda (300.000 ms). max.poll.records en fazla kaç olmalıdır?",
+      opts: [
+        "750'nin belirgin şekilde altı — güvenlik payıyla örneğin 100-200",
+        "750 tam olarak doğru değerdir",
+        "500 varsayılanı her durumda güvenlidir",
+        "Sınır yoktur; max.poll.interval.ms yalnızca ağ kopmasında devreye girer"
+      ],
+      a: [0],
+      why: "300.000 / 400 = 750 <b>teorik tavandır</b>; tam tavanda çalışmak GC duraklaması ya da yavaş bir kayıt olduğunda döngüyü kırar. Formül: <code>max.poll.records × işleme süresi &lt; max.poll.interval.ms</code>, üstelik payla. Varsayılan 500 bu senaryoda 200 saniye eder — tehlikeli derecede yakın."
+    },
+    {
+      topic: "Fetch ayarları",
+      q: "Dolu bir topic'i baştan okurken <code>fetch.min.bytes=1MB</code> ayarı lab'da throughput'u %40 <b>düşürdü</b>. Neden?",
+      opts: [
+        "Veri zaten hazırdı; asgari bayt şartı yalnızca bekleme ekledi — bu ayar seyrek trafikte kazandırır",
+        "fetch.min.bytes yalnızca producer tarafında geçerlidir",
+        "1 MB, max.partition.fetch.bytes'ı aştığı için istekler bölündü",
+        "Ayar deserialization'ı yavaşlatır"
+      ],
+      a: [0],
+      why: "<code>fetch.min.bytes</code>'ın amacı <b>boş/küçük fetch turlarını azaltmaktır</b>: seyrek trafikte broker CPU'sunu ve gereksiz round-trip'i düşürür. Log zaten doluyken kazanacak bir şey yoktur; şart sadece cevabın gecikmesine yol açar. Ders: <b>bir ayarı büyütmeden önce darboğazın orada olduğunu ölç.</b>"
+    },
+    {
+      topic: "Ayar ayrımı",
+      q: "<code>max.partition.fetch.bytes</code> ile <code>fetch.max.bytes</code> arasındaki fark nedir?",
+      opts: [
+        "İlki partition başına, ikincisi tüm fetch cevabının toplamı için üst sınırdır",
+        "İlki consumer, ikincisi broker ayarıdır",
+        "İlki bayt, ikincisi kayıt sayısı sınırıdır",
+        "Aynı şeyin eski ve yeni adıdır"
+      ],
+      a: [0],
+      why: "<code>max.partition.fetch.bytes</code> (varsayılan <b>1 MiB</b>) <b>partition başına</b>; <code>fetch.max.bytes</code> (varsayılan <b>50 MiB</b>) cevabın tamamı için tavandır. 100 partition atanmış bir consumer'da partition başına sınır teorik olarak 100 MiB ederdi — toplam sınır bunu keser. İkisi de consumer ayarıdır ve ikisi de bayt cinsindendir."
+    },
+    {
+      topic: "Akış kontrolü",
+      q: "Aşağı akış sistemi yetişemiyor. Consumer'ı yavaşlatmanın doğru yolu nedir?",
+      opts: [
+        "consumer.pause(partitions) çağırıp poll() etmeye devam etmek, düzelince resume()",
+        "Döngüye Thread.sleep() koymak",
+        "poll() çağırmayı geçici olarak bırakmak",
+        "max.poll.interval.ms'i sonsuza yakın yapmak"
+      ],
+      a: [0],
+      why: "<code>pause()</code> kayıt döndürmeyi durdurur ama <b>poll() çağırmaya devam etmelisin</b>: poll koordinasyonu ve heartbeat'i yürütür. <code>sleep</code> koymak ya da poll'u bırakmak <code>max.poll.interval.ms</code>'i aşırır ve <b>rebalance</b> tetikler. Timeout'u sonsuzlaştırmak gerçekten ölen consumer'ların da fark edilmesini engeller."
+    },
+    {
+      topic: "poll() anatomisi",
+      q: "poll() çağrısı hangi işleri yapar? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Gerekiyorsa grup koordinasyonu/rebalance adımlarını yürütür",
+        "enable.auto.commit=true ise zamanı gelmişse offset commit eder",
+        "Partition liderlerini yeniden seçer",
+        "Broker'daki retention politikasını tetikler"
+      ],
+      a: [0, 1],
+      why: "<code>poll()</code> beş iş yapar: koordinasyon/rebalance, heartbeat, otomatik commit, fetch ve kayıtları deserialize edip döndürme. Lider seçimi controller'ın (1.3), retention broker'ın (1.4) işidir — consumer'ın bunlarla ilgisi yoktur."
+    },
+    {
+      topic: "Konumlanma",
+      q: "\"Dün saat 14:00'ten itibaren yeniden işleyelim\" gereksinimini nasıl karşılarsın?",
+      opts: [
+        "offsetsForTimes() ile o zamana karşılık gelen offsetleri bulup seek() yapmak",
+        "seekToBeginning() ile baştan okuyup istenmeyen kayıtları atlamak",
+        "auto.offset.reset=earliest yapıp consumer'ı yeniden başlatmak",
+        "retention.ms'i değiştirmek"
+      ],
+      a: [0],
+      why: "<code>offsetsForTimes()</code> her partition için verilen zaman damgasına karşılık gelen ilk offset'i döndürür; bunu mümkün kılan <b>.timeindex</b> dosyalarıdır (1.1). Baştan okuyup atlamak çalışır ama gereksiz maliyet üretir. <code>auto.offset.reset</code> yalnızca <b>kayıtlı offset yokken</b> devreye girer, var olanı değiştirmez."
+    },
+    {
+      topic: "assign vs subscribe",
+      q: "assign() kullanan bir consumer uygulamasının ikinci bir instance'ını başlatırsan ne olur?",
+      opts: [
+        "İki instance da aynı partition'ları okur — grup koordinasyonu yoktur, otomatik dağılım olmaz",
+        "Partition'lar otomatik olarak ikiye bölünür",
+        "İkinci instance hata alır",
+        "Rebalance tetiklenir ve atama yenilenir"
+      ],
+      a: [0],
+      why: "<code>assign()</code> grup koordinasyonunu <b>tamamen atlar</b>: partition'ları sen belirlersin, rebalance yoktur, otomatik dağılım yoktur. İki instance aynı partition'ı okuyup aynı veriyi iki kez işler. Ölçeklenen üretim tüketicileri <code>subscribe()</code> kullanmalıdır; <code>assign()</code> araçlar, testler ve ölçümler içindir."
+    },
+    {
+      topic: "Fetch ayarları",
+      q: "Topic'te çok az veri var ama broker CPU'su yüksek ve binlerce fetch isteği görülüyor. Hangi ayar yardımcı olur?",
+      opts: [
+        "fetch.min.bytes'ı artırmak (ör. 64 KiB) ve fetch.max.wait.ms ile gecikme tavanı koymak",
+        "max.poll.records'ı artırmak",
+        "max.partition.fetch.bytes'ı artırmak",
+        "auto.offset.reset'i earliest yapmak"
+      ],
+      a: [0],
+      why: "Bu, <code>fetch.min.bytes</code>'ın <b>tam olarak var olduğu senaryodur</b>: broker cevabı asgari bayt birikene kadar (en fazla <code>fetch.max.wait.ms</code>) bekletir, boş turlar kaybolur. <code>max.poll.records</code> ve <code>max.partition.fetch.bytes</code> istek <i>sayısını</i> değil içerik boyutunu etkiler; offset reset ilgisizdir."
+    },
+    {
+      topic: "Ölçüm yorumlama",
+      q: "Lab'da max.poll.records 500'den 10'a düşürüldüğünde poll sayısı 400'den 20.000'e çıktı ve throughput %30 düştü. Bunun sebebi nedir?",
+      opts: [
+        "Kayıt başına sabit maliyet (döngü, deserialize çağrısı, koordinasyon kontrolü) çok daha fazla kez ödendi",
+        "Her poll ayrı bir fetch isteği ürettiği için ağ trafiği 50 kat arttı",
+        "Broker her poll'da rebalance kontrolü yaptı",
+        "Deserializer 10 kayıttan az batch'lerde çalışmaz"
+      ],
+      a: [0],
+      why: "Fetch sayısı değişmedi — kayıtlar aynı tampondan geldi. Değişen şey <b>çağrı başına sabit maliyetin</b> 50 kat daha fazla ödenmesiydi. Bu, \"küçük batch = daha az iş\" sezgisinin neden yanlış olduğunu gösterir; aynı mantık producer tarafındaki batching'de de geçerlidir (2.1)."
+    },
+    {
+      topic: "Rebalance riski",
+      q: "İşleme süresi uzun olan bir consumer için hangi çözüm <b>ilk</b> tercih edilmelidir?",
+      opts: [
+        "max.poll.records'ı düşürmek",
+        "max.poll.interval.ms'i büyütmek",
+        "session.timeout.ms'i büyütmek",
+        "Partition sayısını azaltmak"
+      ],
+      a: [0],
+      why: "<code>max.poll.records</code>'ı düşürmek <b>her poll'un işini küçültür</b> ve döngüyü hızlı tutar; yan etkisi yoktur. <code>max.poll.interval.ms</code>'i büyütmek işe yarar ama <b>gerçekten ölen</b> bir consumer'ın fark edilmesini de geciktirir — ikinci tercihtir. <code>session.timeout.ms</code> farklı bir mekanizmadır (heartbeat, 3.2); partition azaltmak zaten mümkün değildir."
+    },
+    {
+      topic: "poll() anatomisi",
+      q: "Deserialization poll() içinde mi yoksa fetch sırasında mı yapılır ve bunun sonucu nedir?",
+      opts: [
+        "poll() içinde, döndürülecek kayıtlar için yapılır; bozuk bir kayıt poll()'u kilitler",
+        "Fetch sırasında arka planda yapılır; bozuk kayıt sessizce atlanır",
+        "Broker tarafında yapılır",
+        "Yalnızca kayıt gerçekten kullanıldığında (lazy) yapılır"
+      ],
+      a: [0],
+      why: "Kayıtlar <code>poll()</code> içinde, döndürülmeden hemen önce deserialize edilir — bu yüzden bir <code>SerializationException</code> <code>poll()</code>'dan fırlar ve <b>offset ilerlemez</b> (zehirli kayıt, 2.4). Broker baytları hiç yorumlamaz; lazy deserialization diye bir mekanizma yoktur."
+    },
+    {
+      topic: "Konumlanma",
+      q: "auto.offset.reset ayarı ne zaman devreye girer?",
+      opts: [
+        "Grup için kayıtlı offset yoksa ya da kayıtlı offset artık log'da geçerli değilse",
+        "Her rebalance sonrasında",
+        "Her consumer başlangıcında",
+        "enable.auto.commit=false olduğunda"
+      ],
+      a: [0],
+      why: "<code>auto.offset.reset</code> (varsayılan <b>latest</b>) yalnızca <b>başlanacak bir offset bulunamadığında</b> devreye girer: yeni bir grup ya da retention nedeniyle geçersizleşmiş offset. Var olan geçerli bir offset'i asla değiştirmez — \"her başlangıçta baştan okur\" beklentisi bu yüzden yanlıştır."
+    },
+    {
+      topic: "Ayar ayrımı",
+      q: "<code>max.poll.records</code> değerini artırmak fetch trafiğini nasıl etkiler?",
+      opts: [
+        "Doğrudan etkilemez — fetch boyutunu fetch.* ayarları belirler; max.poll.records yalnızca tampondan kaç kayıt verileceğini belirler",
+        "Fetch isteklerinin boyutunu orantılı olarak büyütür",
+        "Fetch isteklerinin sayısını orantılı olarak azaltır",
+        "Broker'ın partition başına gönderdiği bayt miktarını artırır"
+      ],
+      a: [0],
+      why: "İki dünya ayrıdır: <b>ağdan ne geliyor</b> (<code>fetch.min.bytes</code>, <code>fetch.max.bytes</code>, <code>max.partition.fetch.bytes</code>) ve <b>elime kaç kayıt geliyor</b> (<code>max.poll.records</code>). Lab'da <code>max.poll.records</code> 500→10 yapıldığında fetch davranışı değişmedi, sadece poll sayısı 50 kat arttı."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-1",
+  code: "EOS · 4.1",
+  title: "Transactions internals ve exactly-once",
+  back: "4.1-transactions-internals.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Abort mekaniği",
+      q: "Abort edilmiş bir transaction'ın kayıtlarına log'da ne olur?",
+      opts: [
+        "Log'da kalırlar; read_committed okuyucular onları atlar, read_uncommitted okuyucular görür",
+        "Broker tarafından hemen silinirler",
+        "Bir sonraki compaction'da temizlenirler",
+        "Hiç yazılmazlar; abort onları broker'a gitmeden iptal eder"
+      ],
+      a: [0],
+      why: "Kafka'da \"geri alma\" yoktur, <b>filtreleme</b> vardır: abort edilen kayıtlar diskte durur, okuyucu <code>.txnindex</code>'teki abort aralıklarına bakarak onları atlar. Lab'da <code>read_uncommitted</code> 7 kayıt, <code>read_committed</code> 4 kayıt gördü — <b>aynı log</b>. (Not: batch'ler broker'a gitmeden abort edilirse gerçekten yazılmazlar; ama gerçek çöküş senaryosunda gitmiş olurlar.)"
+    },
+    {
+      topic: "EOS kapsamı",
+      q: "Kafka'dan okuyup PostgreSQL'e yazan bir uygulamada transaction kullanmak exactly-once sağlar mı?",
+      opts: [
+        "Hayır — DB yazımı Kafka transaction'ının dışındadır; idempotent yazma gerekir",
+        "Evet — sendOffsetsToTransaction DB yazımını da kapsar",
+        "Evet — isolation.level=read_committed yeterlidir",
+        "Hayır — ama transaction.timeout.ms artırılırsa sağlar"
+      ],
+      a: [0],
+      why: "Kafka transaction'ı yalnızca <b>Kafka'ya yazma + offset commit</b> ikilisini atomik yapar. Veritabanına yazma, HTTP çağrısı, e-posta gibi dış etkiler kapsam dışıdır ve geri alınamaz. Çözüm uygulama seviyesinde <b>idempotent yazma</b> ya da offset'in iş verisiyle aynı DB transaction'ında saklanmasıdır (4.2)."
+    },
+    {
+      topic: "Control record",
+      q: "read_committed ile okurken offset 3, 7 ve 9'un hiç görünmemesinin sebebi nedir?",
+      opts: [
+        "Bunlar control record'lardır (COMMIT/ABORT marker); offset tüketirler ama consumer'a verilmezler",
+        "Bu offsetlerdeki kayıtlar silinmiştir",
+        "Compaction bu offsetleri temizlemiştir",
+        "Consumer bu offsetleri atlamıştır çünkü key'leri null'dır"
+      ],
+      a: [0],
+      why: "Her transaction sonunda log'a bir <b>control record</b> (<code>endTxnMarker: COMMIT</code> ya da <code>ABORT</code>) yazılır. Bunlar gerçek kayıtlardır — offset alırlar — ama uygulamaya verilmezler. Bu yüzden transaction kullanan topic'lerde <code>LAG</code> hesabında küçük sapmalar görülür; log sonu offset'i işlenen kayıt sayısından fazladır."
+    },
+    {
+      topic: "TV2 / KIP-890",
+      q: "Lab'da producerEpoch değerinin her transaction'da arttığı görüldü (4 → 5 → 6 → 7). Bu hangi mekanizmadır?",
+      opts: [
+        "TV2 (KIP-890) — coordinator her transaction sonunda epoch'u artırarak zombi producer'ın sonraki transaction'a mesaj sızdırmasını engeller",
+        "Her leader değişiminde epoch artar",
+        "Her batch'te epoch artar",
+        "Epoch retry sayısını gösterir"
+      ],
+      a: [0],
+      why: "Transaction Version 2 (KIP-890, Kafka 4.0'dan beri varsayılan) transaction sınırında epoch'u artırır: geç kalmış bir zombi producer'ın yazması artık eski epoch'a ait olur ve reddedilir. Bu, TV1'deki \"bir transaction'dan diğerine mesaj sızması\" hatasını kapatır. Leader epoch farklı bir kavramdır (1.2)."
+    },
+    {
+      topic: "Tüket-işle-yaz",
+      q: "EOS tüket-işle-yaz döngüsünde offset'i kim commit eder?",
+      opts: [
+        "Producer — sendOffsetsToTransaction(offsets, consumer.groupMetadata()) ile transaction'ın parçası olarak",
+        "Consumer — commitSync() ile",
+        "Broker otomatik olarak",
+        "Consumer, ama yalnızca enable.auto.commit=true ise"
+      ],
+      a: [0],
+      why: "Offset'in atomikliğe dahil olması için transaction'ın <b>içinde</b> yazılması gerekir; bunu <code>producer.sendOffsetsToTransaction(...)</code> yapar. Bu yüzden tüketicide <code>enable.auto.commit=false</code> <b>zorunludur</b>: consumer ayrıca commit ederse atomiklik bozulur. Grup metadata'sı zombi tüketici korumasını da devreye sokar."
+    },
+    {
+      topic: "Fencing",
+      q: "Aynı transactional.id ile ikinci bir producer başlatıldığında birincisine ne olur?",
+      opts: [
+        "ProducerFencedException alır ve bir daha yazamaz — bu ölümcül bir hatadır, producer kapatılmalıdır",
+        "İkinci producer reddedilir",
+        "İki producer da yazmaya devam eder",
+        "Birinci producer otomatik olarak yeni bir epoch alır ve devam eder"
+      ],
+      a: [0],
+      why: "<code>initTransactions()</code> epoch'u artırır ve o kimliğe ait <b>eski oturumları fence'ler</b>. Bu, Kubernetes'te \"eski pod tam ölmedi\" senaryosunun çözümüdür. <code>ProducerFencedException</code> <b>ölümcüldür</b>: yakalayıp retry etmek veri bozar; producer kapatılıp uygulama yeniden başlatılmalıdır."
+    },
+    {
+      topic: "Fencing",
+      q: "İki uygulama instance'ı sürekli birbirini fence'liyor. Sebep ve çözüm nedir?",
+      opts: [
+        "Aynı transactional.id'yi paylaşıyorlar; her instance'a benzersiz ve kararlı bir id verilmeli",
+        "transaction.timeout.ms çok düşük; artırılmalı",
+        "İkisi de aynı consumer group'ta; gruplar ayrılmalı",
+        "isolation.level yanlış; read_committed yapılmalı"
+      ],
+      a: [0],
+      why: "<code>transactional.id</code> <b>instance başına benzersiz</b> olmalıdır — ama aynı zamanda restart'lar arasında <b>kararlı</b> (pod ordinal'i gibi). Paylaşılırsa iki instance sonsuza kadar birbirini fence'ler. Aynı consumer group'ta olmaları normaldir ve sorun değildir."
+    },
+    {
+      topic: "LSO",
+      q: "read_committed kullanan bir tüketici, broker sağlıklı ve veri üretiliyorken bile ilerlemiyor. Muhtemel sebep nedir?",
+      opts: [
+        "O partition'da açık (henüz commit/abort edilmemiş) bir transaction var; LSO ilerlemiyor",
+        "Consumer group rebalance oluyor",
+        "Compaction çalışıyor",
+        "Partition lideri değişti"
+      ],
+      a: [0],
+      why: "<code>read_committed</code> okuyucular <b>LSO (Last Stable Offset)</b>'a kadar okuyabilir: LSO, en eski <b>açık</b> transaction'ın başlangıcıdır. Uzun süren bir transaction o partition'daki tüm read_committed tüketicileri bekletir. <code>transaction.timeout.ms</code> (60 s) dolunca coordinator abort eder ve tıkanma açılır — ama önce açık transaction'ı bulmak gerekir."
+    },
+    {
+      topic: "Yapılandırma",
+      q: "EOS tüket-işle-yaz döngüsünde tüketici tarafında zorunlu olan ayarlar hangileridir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "isolation.level=read_committed",
+        "enable.auto.commit=false",
+        "auto.offset.reset=earliest",
+        "max.poll.records=1"
+      ],
+      a: [0, 1],
+      why: "<code>read_committed</code> olmadan tüketici kendi abort'unu bile okur ve zincir kırılır; <code>enable.auto.commit=false</code> olmadan offset transaction dışında da yazılır ve atomiklik bozulur. <code>auto.offset.reset</code> yalnızca offset yokken devreye girer; <code>max.poll.records=1</code> ise transaction başına maliyeti fırlatır — tam tersi önerilir."
+    },
+    {
+      topic: "Mimari",
+      q: "Transaction coordinator nasıl belirlenir?",
+      opts: [
+        "hash(transactional.id) % transaction.state.log.num.partitions (50) partition'ının lideri",
+        "Cluster controller her zaman coordinator'dır",
+        "Producer'ın bağlandığı ilk broker",
+        "Topic'in partition lideri"
+      ],
+      a: [0],
+      why: "Consumer group koordinatörüyle aynı mantık: <code>transactional.id</code> hash'lenir, <code>__transaction_state</code> topic'inin (varsayılan <b>50</b> partition) ilgili partition'ının lideri coordinator olur. Cluster controller (1.3) ve veri partition liderleri farklı rollerdir."
+    },
+    {
+      topic: "Performans",
+      q: "EOS'a geçince throughput yarıya düştü. En olası sebep nedir?",
+      opts: [
+        "Kayıt başına bir transaction açılıyor; batch başına bir transaction kullanılmalı",
+        "read_committed okuma her kaydı iki kez okuyor",
+        "Transaction'lar sıkıştırmayı devre dışı bırakıyor",
+        "acks=all zorunlu olduğu için"
+      ],
+      a: [0],
+      why: "Her transaction en az iki ek yazma (coordinator kaydı + control record) ve bir koordinasyon turu demektir; kayıt başına transaction bu maliyeti her kayda böler. Doğru granülarite <b>poll batch'i başına bir transaction</b>'dır. <code>acks=all</code> zaten varsayılandır ve EOS'a özgü ek bir maliyet değildir."
+    },
+    {
+      topic: "initTransactions",
+      q: "initTransactions() hangi işleri yapar? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "transactional.id için producer epoch'unu artırarak eski oturumları fence'ler",
+        "Yarım kalmış (açık) transaction'ları abort eder",
+        "Consumer group'a katılır",
+        "Topic'leri oluşturur"
+      ],
+      a: [0, 1],
+      why: "<code>initTransactions()</code>: coordinator'ı bulur, <b>epoch'u artırır</b> (eski producer'lar fence'lenir) ve <b>yarım kalmış transaction'ları temizler</b> (abort). Grup üyeliği tüketicinin işidir; topic oluşturma AdminClient'ın."
+    },
+    {
+      topic: "Abort mekaniği",
+      q: "Partition dizininde beliren <code>.txnindex</code> dosyasının işlevi nedir?",
+      opts: [
+        "Abort edilmiş transaction aralıklarını tutar; read_committed okuyucu bunları atlamak için kullanır",
+        "Açık transaction'ların listesini tutar",
+        "Transaction coordinator'ın durumunu tutar",
+        "Producer id → sequence eşlemesini tutar"
+      ],
+      a: [0],
+      why: "<code>.txnindex</code>, o segmentte hangi offset aralıklarının abort edilmiş transaction'lara ait olduğunu kaydeder; broker fetch cevabında bu bilgiyi verir ve <code>read_committed</code> client kayıtları filtreler. Coordinator durumu <code>__transaction_state</code>'te, producer sequence durumu <code>.snapshot</code> dosyalarında tutulur (2.2)."
+    },
+    {
+      topic: "Hata yönetimi",
+      q: "Transaction döngüsünde hangi istisna <b>abortTransaction()</b> ile ele alınmalı, hangisi producer'ı kapatmayı gerektirir?",
+      opts: [
+        "Genel KafkaException → abort; ProducerFenced/OutOfOrderSequence/Authorization → producer kapatılmalı",
+        "Hepsi abort ile ele alınabilir",
+        "Hepsi producer kapatmayı gerektirir",
+        "ProducerFenced → abort; diğerleri yok sayılabilir"
+      ],
+      a: [0],
+      why: "Geçici hatalarda transaction abort edilip batch yeniden denenir. <code>ProducerFencedException</code>, <code>OutOfOrderSequenceException</code> ve <code>AuthorizationException</code> ise <b>ölümcüldür</b>: producer'ın durumu artık geçerli değildir, abort denemek bile hatalıdır — kapatılıp yeniden oluşturulmalıdır."
+    },
+    {
+      topic: "EOS kapsamı",
+      q: "Aşağıdaki akışlardan hangisinde Kafka'nın EOS garantisi geçerlidir?",
+      opts: [
+        "Kafka topic → işle → Kafka topic (offset dahil)",
+        "Kafka → REST API çağrısı",
+        "Kafka → e-posta gönderimi",
+        "Kafka → S3'e dosya yazma"
+      ],
+      a: [0],
+      why: "Garanti yalnızca <b>Kafka içi</b> akışta geçerlidir: yazma ve offset commit'i tek bir atomik birimdir. Dış etkiler (API, e-posta, dosya) geri alınamaz; onlarda tekillik ancak <b>idempotent yazma</b> ya da deduplication ile sağlanır (4.2). Kafka Streams de aynı Kafka-içi garantiyi kullanır (6.4)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

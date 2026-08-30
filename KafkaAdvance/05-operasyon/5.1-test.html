@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-1",
+  code: "Operasyon · 5.1",
+  title: "Performans tuning: throughput ve gecikme",
+  back: "5.1-performans-tuning.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Gecikme paradoksu",
+      q: "Lab ölçümünde <code>linger.ms=0</code> ile p99 gecikme 1201 ms, <code>linger.ms=50</code> ile 91 ms çıktı. Batch'lemek gecikmeyi nasıl <b>düşürdü</b>?",
+      opts: [
+        "Batch'siz producer istek sayısını patlattı; gecikme broker kuyruğunda beklemekten geliyordu",
+        "linger.ms gecikmeyi hiçbir zaman artırmaz",
+        "Sıkıştırma ağ gecikmesini sıfırladı",
+        "Ölçüm hatalıdır; p99 batch ile artmalıydı"
+      ],
+      a: [0],
+      why: "Doygun bir sistemde <code>linger.ms=0</code> her kaydı ayrı istekte göndermeye çalışır: broker istek kuyruğu şişer ve gecikme <b>kuyruktan</b> gelir. Batch'lemek istek sayısını düşürür, kuyruk erir. <b>Ama bu evrensel değildir</b>: boş bir sistemde <code>linger.ms=50</code> gecikmeye doğrudan 50 ms ekler. Kural: <b>doygunlukta batch'le, boşlukta batch'leme.</b>"
+    },
+    {
+      topic: "Ölçüm yöntemi",
+      q: "Bir benchmark'ta ortalama gecikme 20 ms, p99 900 ms çıktı. Doğru yorum nedir?",
+      opts: [
+        "İsteklerin çoğu hızlı ama belirgin bir kuyruk sorunu var; karar p99'a göre verilmeli",
+        "Ortalama düşük olduğu için sistem sağlıklıdır",
+        "p99 her zaman ortalamanın ~45 katıdır, normaldir",
+        "Ölçüm hatalıdır; p99 ortalamadan küçük olmalıydı"
+      ],
+      a: [0],
+      why: "Ortalama, uzun kuyruğu gizler: kullanıcıların %1'i 900 ms bekliyorsa bu gerçek bir problemdir. Gecikme kararları <b>p99/p99.9</b> ile verilir. p99'un ortalamanın katları olması olağandır ama <i>sabit bir oran</i> yoktur — bu, incelenmesi gereken bir sinyaldir."
+    },
+    {
+      topic: "Darboğaz bulma",
+      q: "Consumer lag artıyor. Kafka ayarlarına dokunmadan önce ne ölçmelisin?",
+      opts: [
+        "Kayıt başına işleme süresini ve ham tüketim hızını (perf-test ile)",
+        "Broker disk boyutunu",
+        "Partition sayısı ile replica sayısının oranını",
+        "Producer'ın compression.type ayarını"
+      ],
+      a: [0],
+      why: "Ham tüketim çok hızlıdır — lab'da <b>655K kayıt/sn</b> ölçüldü. Lag artıyorsa darboğaz neredeyse her zaman <b>senin işleme kodundadır</b>. Önce işleme süresini ölç, sonra ham tüketimi <code>kafka-consumer-perf-test</code> ile kıyasla; fark nerede olduğunu gösterir."
+    },
+    {
+      topic: "Broker ayarları",
+      q: "Broker'lara 32 GB JVM heap vermenin sonucu ne olur?",
+      opts: [
+        "GC duraklamaları uzar; duraklamalar ISR'den düşmeye ve rebalance'a yol açabilir",
+        "Okuma hızlanır çünkü segmentler heap'e önbelleklenir",
+        "Replikasyon hızlanır",
+        "Hiçbir etkisi olmaz"
+      ],
+      a: [0],
+      why: "Kafka veriyi <b>heap'te tutmaz</b>; page cache kullanır ve okumada sıfır kopya yapar (1.1). Büyük heap yalnızca uzun GC duraklamaları getirir; bir broker duraklarsa replikasyon geride kalır, ISR daralır (1.2). Pratik öneri: <b>~6 GB heap</b>, kalan RAM page cache'e."
+    },
+    {
+      topic: "Ölçüm yöntemi",
+      q: "Kafka benchmark'ı yaparken hangi kurallara uyulmalıdır? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Tek seferde tek değişken değiştirmek",
+        "Gerçek üretim verisine benzer içerik kullanmak",
+        "Her zaman sınırsız hızda (--throughput -1) gecikme ölçmek",
+        "İlk koşumun sonucunu esas almak"
+      ],
+      a: [0, 1],
+      why: "Tek değişken olmadan hangi ayarın işe yaradığı bilinemez; tekrarlı dolgu metni sıkıştırma oranını yapay olarak iyileştirir (2.1'de 0.043 çıkmıştı, gerçek JSON'da 0.2-0.5). Sınırsız hızda ölçülen \"gecikme\" büyük ölçüde <b>kuyrukta beklemedir</b> — gecikme için sabit hız gerekir. İlk koşum JIT/bağlantı ısınması yüzünden dezavantajlıdır."
+    },
+    {
+      topic: "Sıkıştırma seçimi",
+      q: "Bulut ortamında cluster'lar arası bant genişliği darboğaz. Hangi sıkıştırma tercih edilir?",
+      opts: [
+        "zstd — daha yüksek CPU karşılığında daha iyi sıkıştırma oranı",
+        "lz4 — her durumda en iyisi",
+        "none — sıkıştırma her zaman gecikme ekler",
+        "gzip — en hızlısı"
+      ],
+      a: [0],
+      why: "Takas nettir: <b>zstd baytı, lz4 CPU'yu</b> optimize eder (2.1'de ölçtük: zstd 0.020 oran / 526K kayıt-sn, lz4 0.043 / 961K). Bant genişliği pahalıysa zstd kazanır. gzip en hızlısı <b>değildir</b>, aksine en yavaş seçeneklerdendir."
+    },
+    {
+      topic: "Broker ayarları",
+      q: "Replikasyon geride kalıyor ve ISR sürekli daralıp genişliyor. Hangi broker ayarı ilk aday?",
+      opts: [
+        "num.replica.fetchers (varsayılan 1)",
+        "num.network.threads (varsayılan 3)",
+        "queued.max.requests (varsayılan 500)",
+        "replica.lag.time.max.ms (varsayılan 30000)"
+      ],
+      a: [0],
+      why: "Follower'lar liderden <code>num.replica.fetchers</code> thread'iyle çeker (1.2); yüksek partition sayısında tek fetcher yetmez ve replikasyon geride kalır. <code>replica.lag.time.max.ms</code>'i artırmak <b>alarmı susturur ama riski büyütür</b> — semptomu değil sebebi düzelt."
+    },
+    {
+      topic: "CLI değişiklikleri",
+      q: "Kafka 4.2 (KIP-1147) ile perf araçlarında hangi parametre değişikliği geldi?",
+      opts: [
+        "--producer-props yerine --command-property, --messages yerine --num-records",
+        "--bootstrap-server yerine --brokers",
+        "--topic parametresi kaldırıldı",
+        "--throughput artık zorunlu"
+      ],
+      a: [0],
+      why: "KIP-1147 CLI argümanlarını standartlaştırdı: <code>--producer-props</code> → <code>--command-property</code>, <code>--messages</code> → <code>--num-records</code>. Eski isimler hâlâ çalışır ama <b>deprecation uyarısı</b> verir — lab çıktısında bu uyarıları göreceksin. <code>--bootstrap-server</code> zaten standarttır."
+    },
+    {
+      topic: "Paralellik",
+      q: "8 partition'lı bir topic'e 30 consumer eklendi ama throughput artmadı. Seçenekler nelerdir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Partition sayısını artırmak (key→partition eşlemesinin bozulacağını bilerek)",
+        "Share group'a geçmek (sıra gerekmiyorsa)",
+        "max.poll.records'ı 1'e düşürmek",
+        "fetch.min.bytes'ı artırmak"
+      ],
+      a: [0, 1],
+      why: "Klasik consumer group'ta paralellik tavanı <b>partition sayısıdır</b>: 22 consumer atıl bekler. İki gerçek çözüm var — partition artırmak (sıra garantisi kırılır, 2.1/5.5) veya <b>share group</b> (3.4, sıra yoksa). <code>max.poll.records=1</code> throughput'u düşürür; <code>fetch.min.bytes</code> tavanı değiştirmez."
+    },
+    {
+      topic: "Ölçüm yöntemi",
+      q: "Benchmark'ta 500K kayıt/sn alındı ama üretimde 40K. En olası sebep nedir?",
+      opts: [
+        "Benchmark üretimi taklit etmiyor: farklı acks, replication.factor, mesaj boyutu veya gerçek dışı veri",
+        "Üretim cluster'ı bozuk",
+        "Benchmark aracı yanlış ölçüyor",
+        "Üretimde compression kapalı olmalı"
+      ],
+      a: [0],
+      why: "Benchmark ile üretim arasındaki uçurum neredeyse her zaman <b>koşulların farklılığındandır</b>: <code>acks</code>, replikasyon faktörü, mesaj boyutu, sıkıştırılabilirlik, partition sayısı, eşzamanlı diğer yükler. Benchmark üretimi taklit etmiyorsa ürettiği sayı bir işe yaramaz."
+    },
+    {
+      topic: "Darboğaz bulma",
+      q: "Producer tarafında <code>buffer-available-bytes</code> sıfıra yaklaşıyor ve <code>record-queue-time-avg</code> artıyor. Bu ne anlama gelir?",
+      opts: [
+        "Broker/ağ yetişemiyor; producer tamponu doluyor ve backpressure başlıyor",
+        "Producer CPU'su yetersiz",
+        "Serializer yavaş",
+        "Consumer geride kalmış"
+      ],
+      a: [0],
+      why: "Kayıtlar tamponda birikiyor ve orada bekleme süresi uzuyorsa gönderim tarafı (Sender + broker) tüketim hızına yetişemiyor demektir; sonunda <code>send()</code> bloklar (2.1). Bu bir <b>producer ayarı</b> sorunu değil, aşağı akış darboğazının belirtisidir. Consumer'ın producer tamponuyla ilgisi yoktur."
+    },
+    {
+      topic: "Gecikme paradoksu",
+      q: "Düşük trafikli, doygun olmayan bir sistemde linger.ms'i 0'dan 50'ye çıkarırsan ne olur?",
+      opts: [
+        "Gecikme yaklaşık 50 ms artar; kuyruk zaten olmadığı için kazanç yoktur",
+        "Gecikme yine düşer",
+        "Hiçbir şey değişmez",
+        "Throughput iki katına çıkar"
+      ],
+      a: [0],
+      why: "Lab'daki kazanç <b>kuyruğun erimesinden</b> geliyordu; kuyruk yoksa erimesi de yoktur ve <code>linger.ms</code> saf bir bekleme olarak gecikmeye eklenir. Bu yüzden \"linger'ı artır\" evrensel bir tavsiye değildir — <b>sistemin doygun olup olmadığına</b> bağlıdır."
+    },
+    {
+      topic: "Broker ayarları",
+      q: "Broker'da num.io.threads (varsayılan 8) ne zaman artırılır?",
+      opts: [
+        "Disk I/O beklemesi yüksekse (RequestHandlerAvgIdlePercent düşükse)",
+        "Ağ doygunsa",
+        "Partition sayısı arttıkça her zaman",
+        "GC duraklamaları uzunsa"
+      ],
+      a: [0],
+      why: "<code>num.io.threads</code> istek işleyici (disk) tarafıdır ve göstergesi <code>RequestHandlerAvgIdlePercent</code>'tir; düşükse thread'ler doymuş demektir. Ağ tarafının göstergesi <code>NetworkProcessorAvgIdlePercent</code> ve ayarı <code>num.network.threads</code>'tir. GC problemi heap boyutuyla çözülür, thread sayısıyla değil."
+    },
+    {
+      topic: "Consumer tarafı",
+      q: "Lab'da ham tüketim 655.000 kayıt/sn ölçüldü. Bu sayının pratik anlamı nedir?",
+      opts: [
+        "Kafka'dan okumak nadiren darboğazdır; tuning çabası işleme koduna ve paralelliğine yönelmelidir",
+        "Consumer ayarları her zaman optimaldir, dokunulmamalıdır",
+        "Bu sayı üretimde de aynen elde edilir",
+        "Consumer sayısını artırmak her zaman bu hızı katlar"
+      ],
+      a: [0],
+      why: "Ham tüketim (deserialize + döndür) çok hızlıdır; gerçek sistemlerde 1-5K kayıt/sn'de takılıyorsan darboğaz <b>senin işleme kodundadır</b> (DB çağrısı, API, hesaplama). Bu sayı lokal cluster'a aittir ve üretimde ağ/veri farkıyla değişir; consumer sayısı ise partition tavanıyla sınırlıdır (3.2)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-3",
+  code: "Producer · 2.3",
+  title: "Teslimat garantileri: acks, retry, hata yönetimi",
+  back: "2.3-teslimat-garantileri.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Callback ve kayıp",
+      q: "Bir ekip 'Kafka veri kaybetti' diyor. Producer callback'inde yalnızca <code>log.error(...)</code> var. Gerçekte ne oldu?",
+      opts: [
+        "Kayıt kalıcı olarak başarısız oldu ve uygulama onu hiçbir yere yazmadı — kayıp uygulamada",
+        "Broker kaydı kabul edip sonra sildi",
+        "Callback çalıştıysa kayıt yazılmıştır, log yanıltıcıdır",
+        "Retry mekanizması devre dışıydı"
+      ],
+      a: [0],
+      why: "Callback'e <b>istisna ile</b> gelen bir kayıt, client'ın <code>delivery.timeout.ms</code> boyunca denedikten sonra pes ettiği kayıttır — yani kalıcı bir başarısızlık. Oraya yalnızca log yazmak <b>kaydı çöpe atmaktır</b>. Doğrusu: kalıcı bir yere (DLQ/tablo) yazmak ve alarm üretebilecek bir metrik artırmak."
+    },
+    {
+      topic: "acks ölçümü",
+      q: "Lab ölçümünde acks=0 için p50 3.332 µs, acks=all için 4.317 µs çıktı; p99'da ise 6.712 µs'e karşı 29.291 µs. Doğru yorum nedir?",
+      opts: [
+        "Dayanıklılığın bedeli medyanda küçük, kuyrukta (p99) büyüktür — replikasyon en yavaş ISR üyesini bekler",
+        "acks=all her istekte 4 kat daha yavaştır",
+        "Ölçüm hatalıdır; p99 p50'nin 4 katı olamaz",
+        "acks=0 daha güvenli olduğu için daha yavaş olmalıydı"
+      ],
+      a: [0],
+      why: "Medyanda ~1 ms fark var; asıl bedel <b>kuyrukta</b> ortaya çıkıyor çünkü <code>acks=all</code> ISR'deki en yavaş replikayı beklemek demektir ve o replikanın ara sıra takılması p99'u yükseltir. \"Her istekte 4 kat\" yorumu p50'yi görmezden gelir. Gecikme dağılımlarında p99'un p50'nin katları olması son derece normaldir."
+    },
+    {
+      topic: "acks ölçümü",
+      q: "acks=0 ile ölçülen gecikme neden yanıltıcıdır?",
+      opts: [
+        "Callback broker onayı beklemeden tetiklenir; ölçülen şey teslimat değil, gönderme süresidir",
+        "acks=0'da callback hiç çalışmaz",
+        "acks=0 metrikleri devre dışı bırakır",
+        "acks=0'da kayıtlar sıkıştırılmadığı için süre farklı ölçülür"
+      ],
+      a: [0],
+      why: "<code>acks=0</code>'da producer onay beklemez: callback \"sokete yazdım\" anında tetiklenir. Ölçtüğün şey <b>teslimat gecikmesi değil</b>, kaydı tampona koyup göndermenin süresidir. Bu yüzden acks=0 gecikme ölçümleri karşılaştırmaya sokulurken açıkça etiketlenmelidir."
+    },
+    {
+      topic: "Teslimat semantiği",
+      q: "acks=all + enable.idempotence=true kullanan bir producer ile hangi semantiği elde edersin?",
+      opts: [
+        "At-least-once — kayıp yok, ama uçtan uca duplicate hâlâ mümkün",
+        "Exactly-once",
+        "At-most-once",
+        "Uygulamaya göre değişir, semantik tanımlanamaz"
+      ],
+      a: [0],
+      why: "Idempotence <b>tek oturumda retry duplicate'ini</b> önler; uygulama restart'ı, tüketici tarafındaki yeniden işleme ve dış sistem çağrıları hâlâ duplicate üretebilir. Kafka'nın varsayılan tasarım hedefi <b>at-least-once</b>'tır. Exactly-once için transaction (4.1) ya da idempotent tüketici (4.2) gerekir."
+    },
+    {
+      topic: "Hata yolları",
+      q: "Producer'da hangi hata <b>send() çağrısında senkron olarak</b> fırlatılır?",
+      opts: [
+        "SerializationException",
+        "NotEnoughReplicasException",
+        "NotLeaderOrFollowerException",
+        "TimeoutException (broker cevap vermedi)"
+      ],
+      a: [0],
+      why: "Serileştirme <b>uygulama thread'inde</b>, kayıt tampona konmadan önce yapılır — hatası da orada fırlatılır. Aynı şekilde <code>RecordTooLargeException</code> ve tampon dolduğunda oluşan <code>TimeoutException</code> senkrondur. Broker kaynaklı hatalar (ISR, lider değişimi, cevap zaman aşımı) <b>callback'e</b> gelir. Sadece callback yazan kod serileştirme hatasını kaçırır."
+    },
+    {
+      topic: "Callback ve kayıp",
+      q: "Producer callback'i hangi thread'de çalışır ve bunun pratik sonucu nedir?",
+      opts: [
+        "Sender thread'inde — içinde bloklayan iş yapmak tüm producer'ı durdurur",
+        "Yeni bir thread'de — istediğin kadar bloklayabilirsin",
+        "Uygulama thread'inde — send() çağrısı dönmeden çalışır",
+        "Broker tarafında çalışır"
+      ],
+      a: [0],
+      why: "Callback'ler <b>Sender thread</b>'inde (I/O thread) çalışır. Orada senkron bir DB yazımı ya da HTTP çağrısı yapmak, o producer'ın <b>tüm gönderimlerini</b> durdurur — \"hiçbir ayar değişmedi ama throughput düştü\" vakalarının klasik sebebi. Ağır işi bir kuyruğa devret."
+    },
+    {
+      topic: "Zaman bütçesi",
+      q: "Producer'da retry davranışını sınırlamak için doğru ayar hangisidir?",
+      opts: [
+        "delivery.timeout.ms",
+        "retries",
+        "reconnect.backoff.ms",
+        "metadata.max.age.ms"
+      ],
+      a: [0],
+      why: "<code>retries</code> varsayılanı <code>Integer.MAX_VALUE</code>'dur; sayıyı sınırlamak yerine <b>süre bütçesi</b> konuşulur: <code>delivery.timeout.ms</code> (varsayılan 120 s) kaydın tampona girmesinden nihai sonuca kadar geçen toplam süredir. Diğer ayarlar bağlantı ve metadata tazeleme ile ilgilidir."
+    },
+    {
+      topic: "acks seçimi",
+      q: "acks=1 neden pratikte önerilmez?",
+      opts: [
+        "acks=0 kadar hızlı değildir, acks=all kadar güvenli değildir; lider replike olmadan çökerse sessiz kayıp olur",
+        "Kafka 4.x'te kaldırılmıştır",
+        "min.insync.replicas ile birlikte kullanılamaz",
+        "Yalnızca tek partition'lı topic'lerde çalışır"
+      ],
+      a: [0],
+      why: "<code>acks=1</code> iki dünyanın da kötüsüdür: ölçümde <code>all</code>'a göre p50 kazancı ~0,4 ms iken, lider çöktüğünde replike olmamış kayıtlar <b>sessizce</b> kaybolur. Kaldırılmamıştır ve min.insync ile teknik bir çakışması yoktur — sadece kötü bir takastır. Ayrıca idempotence ile uyumsuzdur."
+    },
+    {
+      topic: "Zincir",
+      q: "acks=all yapıldığı hâlde veri kaybı yaşanıyorsa hangi iki yer incelenmelidir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "Topic/broker'daki min.insync.replicas değeri",
+        "Producer callback'inde hataların ne yapıldığı",
+        "Consumer'daki max.poll.records",
+        "Topic'in partition sayısı"
+      ],
+      a: [0, 1],
+      why: "Dayanıklılık bir <b>zincirdir</b>: <code>acks</code> → <code>min.insync.replicas</code> → teslimat bütçesi → <b>callback'teki kodun</b>. <code>min.insync.replicas=1</code> ise <code>acks=all</code> tek kopyaya yazabilir (1.2); callback'te hata yutuluyorsa kayıp uygulamadadır. Consumer ayarları ve partition sayısı bu zincirin parçası değildir."
+    },
+    {
+      topic: "Hata yolları",
+      q: "Callback'e ulaşan bir hata hakkında hangisi doğrudur?",
+      opts: [
+        "Client zaten delivery.timeout.ms boyunca denemiştir; bu noktada hata kalıcı kabul edilmelidir",
+        "Hata geçiciyse client tekrar deneyecektir, uygulama bir şey yapmamalıdır",
+        "Callback'e yalnızca kalıcı sınıftaki istisna tipleri ulaşır",
+        "Callback'teki hatayı yeniden send() etmek her zaman güvenlidir"
+      ],
+      a: [0],
+      why: "Retry mekanizması callback'ten <b>önce</b> çalışır: kayıt callback'e istisna ile ulaştıysa client pes etmiştir. İstisnanın <i>tipi</i> retriable görünse bile (örneğin TimeoutException) sonuç kalıcıdır. Yeniden <code>send()</code> etmek mümkündür ama <b>sıra bozulması ve sonsuz döngü</b> riski taşır — bilinçli bir karar olmalıdır."
+    },
+    {
+      topic: "Üretim yapılandırması",
+      q: "Aşağıdaki üretim yapılandırmasında <b>eksik/yanlış</b> olan nedir?<pre>acks=all\nenable.idempotence=true\nmax.in.flight=5\nretries=0</pre>",
+      opts: [
+        "retries=0 idempotence ile uyumsuzdur; producer başlamaz",
+        "max.in.flight=5 çok yüksektir, 1 olmalıdır",
+        "acks=all ile enable.idempotence birlikte kullanılamaz",
+        "Hiçbiri; yapılandırma doğrudur"
+      ],
+      a: [0],
+      why: "Idempotence üç şart dayatır: <code>acks=all</code> ✓, <code>max.in.flight&le;5</code> ✓, <code>retries&gt;0</code> ✗. <code>retries=0</code> ile client <b>başlangıçta</b> ConfigException verir (2.2). Hızlı hata isteniyorsa doğru ayar <code>delivery.timeout.ms</code>'i düşürmektir."
+    },
+    {
+      topic: "Teslimat semantiği",
+      q: "At-most-once semantiğini üreten tüketici davranışı hangisidir?",
+      opts: [
+        "Offset'i kayıtları işlemeden önce commit etmek",
+        "Offset'i kayıtları işledikten sonra commit etmek",
+        "enable.auto.commit=false yapmak",
+        "isolation.level=read_committed kullanmak"
+      ],
+      a: [0],
+      why: "Önce commit → çöküşte o kayıtlar bir daha okunmaz → <b>kayıp</b> (at-most-once). Sonra commit → çöküşte yeniden okunur → <b>duplicate</b> (at-least-once). Hafıza kancası: <b>önce commit = kayıp, sonra commit = tekrar</b> (3.3). <code>read_committed</code> transaction okuma seviyesidir, semantiği tek başına belirlemez."
+    },
+    {
+      topic: "acks seçimi",
+      q: "acks=0 hangi durumda makul bir seçimdir?",
+      opts: [
+        "Kaybı tolere edilebilen yüksek hacimli telemetri/metrik verisi",
+        "Finansal işlem kayıtları",
+        "Denetim (audit) logları",
+        "Consumer offset'lerinin yazılması"
+      ],
+      a: [0],
+      why: "<code>acks=0</code> \"bu verinin bir kısmını kaybetmek problem değil\" demektir; yalnızca örneklenebilir telemetri gibi yüklerde savunulabilir. Finans, denetim ve offset yazımı gibi kayıpların geri alınamaz olduğu yerlerde kullanılamaz — offsetler zaten Kafka'nın kendi iç mekanizmasıyla yazılır."
+    },
+    {
+      topic: "Üretim yapılandırması",
+      q: "Producer ayarları kabaca üç gruba ayrılır. Aşağıdakilerden hangisi <b>dayanıklılık</b> grubuna aittir?",
+      opts: [
+        "enable.idempotence",
+        "linger.ms",
+        "buffer.memory",
+        "compression.type"
+      ],
+      a: [0],
+      why: "Üç grup: <b>dayanıklılık</b> (<code>acks</code>, <code>enable.idempotence</code>, <code>max.in.flight</code>), <b>zaman bütçesi</b> (<code>delivery.timeout.ms</code>, <code>request.timeout.ms</code>, <code>max.block.ms</code>), <b>verim</b> (<code>linger.ms</code>, <code>batch.size</code>, <code>compression.type</code>, <code>buffer.memory</code>). Bir sorunu çözerken önce hangi gruba dokunduğunu söylemek teşhisi netleştirir."
+    },
+    {
+      topic: "Callback ve kayıp",
+      q: "Callback'te kalıcı olarak başarısız olan kayıtlar için en uygun davranış nedir?",
+      opts: [
+        "Kaydı kalıcı bir depoya (DLQ/tablo) yazmak ve alarm üretebilecek bir metrik artırmak",
+        "İstisnayı yutup devam etmek",
+        "Uygulamayı hemen kapatmak",
+        "Aynı callback içinden senkron olarak veritabanına yazmak"
+      ],
+      a: [0],
+      why: "Amaç kaybı <b>görünür ve kurtarılabilir</b> kılmaktır: kayıt bir yere yazılır (sonra yeniden gönderilebilir) ve metrik alarma bağlanır. İstisnayı yutmak en kötüsüdür. Uygulamayı kapatmak tek bir kayıt için orantısızdır (ACL gibi kalıcı sistem hatalarında sağlık göstergesi düşürülebilir). Callback içinde <b>senkron</b> DB yazımı Sender thread'ini bloklar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

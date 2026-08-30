@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.3 Testi — Kafka Advanced</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-3",
+  code: "Operasyon · 5.3",
+  title: "Arıza senaryoları ve troubleshooting",
+  back: "5.3-ariza-senaryolari.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Offline partition",
+      q: "kafka-topics --describe çıktısında <code>Leader: none, Isr: , Elr: 3</code> görüyorsun. İlk yapman gereken nedir?",
+      opts: [
+        "3 numaralı broker'ı geri getirmek",
+        "unclean.leader.election.enable=true yapmak",
+        "Topic'i silip yeniden oluşturmak",
+        "Partition sayısını artırmak"
+      ],
+      a: [0],
+      why: "<code>Elr: 3</code>, verinin 3 numaralı broker'da güvenli olduğunu söylüyor (1.2): o broker dönerse partition <b>veri kaybı olmadan</b> açılır. <code>unclean</code> seçim <b>son çaredir ve veri kaybını kabul etmektir</b>. Topic silmek veriyi yok eder; partition artırmak mevcut sorunu çözmez."
+    },
+    {
+      topic: "Yapılandırma hatası",
+      q: "replication.factor=1 olan bir topic, broker varsayılanı min.insync.replicas=2'yi miras aldı. Sonuç nedir?",
+      opts: [
+        "Topic sağlıklıyken bile acks=all ile yazılamaz — kalıcı yapılandırma hatası",
+        "Kafka topic oluşturmayı reddeder",
+        "min.insync.replicas otomatik olarak 1'e düşürülür",
+        "Yalnızca broker kaybında sorun çıkar"
+      ],
+      a: [0],
+      why: "ISR en fazla replication.factor kadar olabilir: replication.factor=1 iken ISR asla 2'ye ulaşamaz, dolayısıyla <code>acks=all</code> yazmaları <b>her zaman</b> <code>NotEnoughReplicasException</code> alır. Kafka bu kombinasyonu oluştururken engellemez — sessiz bir bomba. Kural: <b>min.insync.replicas &lt; replication.factor</b>."
+    },
+    {
+      topic: "Disk dolması",
+      q: "Broker diski %98 dolu ve broker kapanmak üzere. Ne yapmalısın?",
+      opts: [
+        "Büyük topic'lerde retention.ms ve segment.ms'i düşürüp broker'ın kendi temizlemesini beklemek",
+        "Log dizinindeki en eski .log dosyalarını elle silmek",
+        "Broker'ı silip yeniden format atmak",
+        "Tüm consumer'ları durdurmak"
+      ],
+      a: [0],
+      why: "Log dosyalarını <b>elle silmek</b> broker'ın iç durumunu (index, snapshot, checkpoint) bozar ve veri kaybına yol açar. Doğru yol retention'ı düşürüp temizliği broker'a yaptırmaktır; <code>segment.ms</code>'i de düşürmek gerekir çünkü <b>aktif segment silinmez</b> (1.4). Consumer'ları durdurmak diski etkilemez — Kafka silmeyi tüketime göre yapmaz."
+    },
+    {
+      topic: "Rebalance fırtınası",
+      q: "Consumer group PreparingRebalance durumunda takılı kaldı ve lag artıyor. İlk bakılacak iki şey nedir? (İki doğru cevap — Choose TWO.)",
+      opts: [
+        "max.poll.records × kayıt başına işleme süresi",
+        "Pod restart döngüsü / OOMKilled olayları",
+        "Topic'in retention ayarları",
+        "Broker'ın num.io.threads değeri"
+      ],
+      a: [0, 1],
+      why: "Fırtınanın iki klasik sebebi: <b>işleme süresi</b> <code>max.poll.interval.ms</code>'i aşıyor, ya da üyeler sürekli ölüp doğuyor (OOM, deploy, GC). Retention ve broker thread ayarları rebalance ile ilgisizdir. Kalıcı çözümler: <code>group.instance.id</code>, cooperative assignor ya da <code>group.protocol=consumer</code> (3.2)."
+    },
+    {
+      topic: "Sinsi lag",
+      q: "read_committed kullanan bir tüketici ilerlemiyor; broker sağlıklı, rebalance yok, zehirli kayıt da yok. Hipotezin nedir?",
+      opts: [
+        "O partition'da açık bir transaction var; LSO ilerlemiyor",
+        "Compaction devam ediyor",
+        "Partition offline",
+        "auto.offset.reset yanlış"
+      ],
+      a: [0],
+      why: "<code>read_committed</code> okuyucular <b>LSO</b>'ya kadar okuyabilir (4.1); commit/abort edilmemiş bir transaction LSO'yu dondurur ve o partition'daki tüm read_committed tüketiciler bekler. <code>transaction.timeout.ms</code> (60 s) dolunca coordinator abort eder. Compaction okumayı durdurmaz; partition offline olsaydı hata alırdın."
+    },
+    {
+      topic: "Hata maskeleme",
+      q: "Producer yalnızca TimeoutException veriyor. Gerçek sebebi bulmak için nereye bakarsın?",
+      opts: [
+        "Broker loguna ve UnderMinIsrPartitionCount metriğine",
+        "Consumer group lag'ine",
+        "Producer'ın compression ayarına",
+        "Topic'in cleanup.policy'sine"
+      ],
+      a: [0],
+      why: "<code>NotEnoughReplicasException</code> <b>retriable</b>'dır: client <code>delivery.timeout.ms</code> boyunca dener ve sonunda <code>TimeoutException</code> yüzeye çıkar (1.2, 2.3). Gerçek sebep broker tarafındadır. <code>UnderMinIsrPartitionCount</code> &gt; 0 ise teşhis nettir. <code>retries=0</code> ile test ederek ham hatayı da görebilirsin."
+    },
+    {
+      topic: "Broker dengesizliği",
+      q: "Bir broker'ın CPU'su diğerlerinin iki katı. İlk kontrol edeceğin şey nedir?",
+      opts: [
+        "Partition liderlerinin o broker'da toplanıp toplanmadığı (lider dengesizliği)",
+        "Broker'ın disk boyutu",
+        "Cluster'a broker eklemek",
+        "Topic'in retention süresi"
+      ],
+      a: [0],
+      why: "Tüm okuma/yazma <b>lidere</b> gider (1.2); liderler bir broker'da toplanmışsa o broker yükü tek başına taşır. <code>kafka-topics --describe</code> ile bakılır, <code>kafka-leader-election.sh --election-type preferred</code> ile dengelenir. İkinci aday <b>sıcak key</b>'dir (5.5). Broker eklemek dengesizliği kendiliğinden çözmez."
+    },
+    {
+      topic: "Teşhis akışı",
+      q: "Herhangi bir Kafka arızasında ilk çalıştırılacak komutlardan hangisi <b>sorunlu partition'ları</b> listeler?",
+      opts: [
+        "kafka-topics.sh --describe --under-replicated-partitions ve --unavailable-partitions",
+        "kafka-configs.sh --describe --all",
+        "kafka-dump-log.sh --files ...",
+        "kafka-consumer-perf-test.sh"
+      ],
+      a: [0],
+      why: "Bu iki bayrak tüm cluster'ı tarayıp yalnızca <b>sorunlu</b> partition'ları döker — arıza anındaki ilk komutlardandır. <code>kafka-configs</code> yapılandırma okur, <code>dump-log</code> tek bir segmenti inceler, perf-test ölçüm aracıdır."
+    },
+    {
+      topic: "Veri kaybı teşhisi",
+      q: "\"Veri kayboldu\" şikâyetinde bakılacak beşli sıralamada hangisi <b>yer almaz</b>?",
+      opts: [
+        "Topic'in partition sayısı",
+        "acks ve min.insync.replicas ilişkisi",
+        "Producer callback'inde hataların yutulup yutulmadığı",
+        "Tüketicide commit'in işlemeden önce mi sonra mı yapıldığı"
+      ],
+      a: [0],
+      why: "Kayıp zinciri: <code>acks</code> → <code>min.insync.replicas</code> (replication.factor ile birlikte) → <code>unclean.leader.election.enable</code> → <b>producer callback</b> (2.3) → <b>commit sırası</b> (3.3). Partition sayısı paralellik ve sıra ile ilgilidir; veri kaybına doğrudan sebep olmaz."
+    },
+    {
+      topic: "Metadata arızası",
+      q: "Topic oluşturulamıyor ama mevcut topic'lere okuma/yazma sürüyor. Teşhis nedir?",
+      opts: [
+        "Controller quorum'u çoğunluğu kaybetmiş; metadata yazma işlemleri duruyor",
+        "Tüm broker'lar kapalı",
+        "Disk dolu",
+        "ACL'ler yanlış yapılandırılmış"
+      ],
+      a: [0],
+      why: "KRaft'ta metadata <b>yazma</b> işlemleri çoğunluk gerektirir (1.3); quorum kaybolunca <code>createTopics</code> gibi işlemler durur ama broker'lar bellekteki metadata ile veri isteklerini yanıtlamaya devam edebilir. Teşhis: <code>kafka-metadata-quorum.sh describe --status</code>. ACL sorunu yetkilendirme hatası verirdi, zaman aşımı değil."
+    },
+    {
+      topic: "Offline partition",
+      q: "unclean.leader.election.enable=true yapmanın sonucu nedir?",
+      opts: [
+        "ISR dışı, geride kalmış bir replika lider olur; commit edilmiş veri kaybolabilir",
+        "Partition daha hızlı açılır ve veri kaybı olmaz",
+        "ELR devre dışı kalır ama veri korunur",
+        "Yalnızca yeni yazmalar etkilenir"
+      ],
+      a: [0],
+      why: "Unclean seçim, kullanılabilirliği tutarlılığa tercih etmektir: lider olan replika en güncel veriyi içermeyebilir ve <b>commit edilmiş kayıtlar yok olur</b>. Ayrıca tüketicilerin offset'i log sonunun ötesinde kalabilir. Bu bir kurtarma değil, <b>bilinçli bir kayıp kabulüdür</b> — önce broker'ı geri getirmeyi dene."
+    },
+    {
+      topic: "Consumer teşhisi",
+      q: "kafka-consumer-groups --describe çıktısında bazı partition'ların CONSUMER-ID sütunu \"-\" görünüyor. Ne anlama gelir?",
+      opts: [
+        "O partition'lar hiçbir aktif üyeye atanmamış (grup boş ya da atama tamamlanmamış)",
+        "O partition'lar offline",
+        "O partition'ların lag'i sıfır",
+        "O partition'lar compacted"
+      ],
+      a: [0],
+      why: "\"-\" değeri o partition için <b>aktif bir tüketici olmadığını</b> gösterir: grup tamamen boş olabilir, rebalance sürüyor olabilir ya da consumer sayısı yetersizdir. Partition'ın kendi sağlığıyla (offline/compacted) ilgisi yoktur — onu <code>kafka-topics --describe</code> söyler."
+    },
+    {
+      topic: "Disk dolması",
+      q: "Belirli bir offset'ten öncesini silmek için hangi araç kullanılır?",
+      opts: [
+        "kafka-delete-records.sh --offset-json-file",
+        "kafka-topics.sh --delete",
+        "kafka-configs.sh --delete-config",
+        "kafka-log-dirs.sh --describe"
+      ],
+      a: [0],
+      why: "<code>kafka-delete-records.sh</code>, JSON dosyasında verilen offset'in <b>öncesini</b> budar (log start offset'i ilerletir) — acil disk kurtarmada retention beklemeden alan açar. Dikkatli kullanılmalıdır: silinen veri geri gelmez ve geriden okuyan tüketiciler etkilenir. <code>kafka-log-dirs.sh</code> yalnızca raporlar."
+    },
+    {
+      topic: "Teşhis akışı",
+      q: "Bu setin önerdiği teşhis akışı hangisidir?",
+      opts: [
+        "Katman (producer/broker/consumer) → belirti → kanıt (metrik, describe, log)",
+        "Log oku → ayar değiştir → tekrar dene",
+        "Cluster'ı yeniden başlat → sorun devam ederse incele",
+        "Tüm ayarları varsayılana çek → tek tek geri ekle"
+      ],
+      a: [0],
+      why: "Önce <b>katmanı</b> seçmek arama alanını üçte bire indirir; sonra belirti sınıfı (kayıp/duplicate/yavaşlık/durma) hipotezi daraltır; kanıt ise <b>varsayımı doğrular</b>. Ayar değiştirerek deneme yanılma yapmak üretimde en pahalı yöntemdir ve çoğu zaman ikinci bir arıza üretir."
+    },
+    {
+      topic: "Rebalance fırtınası",
+      q: "Rebalance fırtınası ile \"yavaş consumer\" arasındaki temel fark nedir?",
+      opts: [
+        "Fırtınada grup hiç ilerlemez; yavaş consumer'da lag artar ama iş görülmeye devam eder",
+        "Fırtına yalnızca KIP-848 protokolünde olur",
+        "Yavaş consumer'da offset commit edilmez",
+        "İkisi aynı şeydir"
+      ],
+      a: [0],
+      why: "Ayırt edici işaret <b>ilerleme</b>dir: fırtınada üyeler sürekli atanıp geri alındığı için commit'ler reddedilir ve iş tamamlanmaz; yavaş tüketicide lag büyür ama offset ilerler. <code>--describe --state</code> çıktısında <code>PreparingRebalance</code>'ta takılı kalmak fırtına işaretidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
