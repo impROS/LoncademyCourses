@@ -1,0 +1,8 @@
+# Aynı kişinin farklı e-postalarla attığı commit'leri tek kimlikte toplar.
+# `git log`, `git shortlog` ve `git blame` bu eşlemeyi kendiliğinden uygular.
+#
+# Not: bu dosya commit'lerin içindeki e-postayı DEĞİŞTİRMEZ, yalnızca
+# görüntülenirken düzeltir. Gerçekten değiştirmek geçmişi yeniden yazmayı
+# (git filter-repo + zorla gönderme) gerektirir.
+ridvan.akar <x.impros.x@gmail.com> <ridvan.akar@partner.yildiztech.com.tr>
+ridvan.akar <x.impros.x@gmail.com> <improsyazilim@gmail.com>
