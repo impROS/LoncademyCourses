@@ -69,6 +69,7 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 | [ ] | [1.3 Yedi test prensibi](01-temeller/1.3-test-prensipleri.md) | [test](01-temeller/1.3-test.html) | — |
 | [ ] | [1.4 Test aktiviteleri, testware ve roller](01-temeller/1.4-test-aktiviteleri.md) | [test](01-temeller/1.4-test.html) | — |
 | [ ] | [1.5 Temel beceriler ve bağımsızlık](01-temeller/1.5-beceriler.md) | [test](01-temeller/1.5-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](01-temeller/cevaplar.md) | cevap | — |
 
 ### 02 — Testing Throughout the SDLC *(5/40 puan · 130 dk)*
 
@@ -77,6 +78,7 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 | [ ] | [2.1 SDLC, shift left ve DevOps](02-yasam-dongusu/2.1-sdlc.md) | [test](02-yasam-dongusu/2.1-test.html) | — |
 | [ ] | [2.2 Test seviyeleri ve test tipleri](02-yasam-dongusu/2.2-seviyeler-ve-tipler.md) | [test](02-yasam-dongusu/2.2-test.html) | — |
 | [ ] | [2.3 Bakım testi](02-yasam-dongusu/2.3-bakim-testi.md) | [test](02-yasam-dongusu/2.3-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](02-yasam-dongusu/cevaplar.md) | cevap | — |
 
 ### 03 — Static Testing *(4/40 puan · 80 dk)*
 
@@ -84,6 +86,7 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 |---|---|---|---|
 | [ ] | [3.1 Statik test temelleri](03-statik-test/3.1-statik-test-temelleri.md) | [test](03-statik-test/3.1-test.html) | — |
 | [ ] | [3.2 Geri bildirim ve gözden geçirme süreci](03-statik-test/3.2-gozden-gecirme.md) | [test](03-statik-test/3.2-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](03-statik-test/cevaplar.md) | cevap | — |
 
 ### 04 — Test Analysis and Design *(11/40 puan · 390 dk ⭐ en ağır bölüm)*
 
@@ -95,6 +98,7 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 | [ ] | [4.3 Beyaz kutu teknikleri ⭐](04-analiz-tasarim/4.3-beyaz-kutu.md) | [test](04-analiz-tasarim/4.3-test.html) | — |
 | [ ] | [4.4 Deneyim tabanlı teknikler](04-analiz-tasarim/4.4-deneyim-tabanli.md) | [test](04-analiz-tasarim/4.4-test.html) | — |
 | [ ] | [4.5 İşbirliği tabanlı yaklaşımlar (ATDD)](04-analiz-tasarim/4.5-isbirligi.md) | [test](04-analiz-tasarim/4.5-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](04-analiz-tasarim/cevaplar.md) | cevap | — |
 
 ### 05 — Managing the Test Activities *(9/40 puan · 335 dk ⭐)*
 
@@ -105,12 +109,14 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 | [ ] | [5.2 Risk yönetimi ⭐](05-yonetim/5.2-risk-yonetimi.md) | [test](05-yonetim/5.2-test.html) | — |
 | [ ] | [5.3 İzleme, kontrol, tamamlama ve raporlama](05-yonetim/5.3-izleme-kontrol.md) | [test](05-yonetim/5.3-test.html) | — |
 | [ ] | [5.4–5.5 Konfigürasyon yönetimi ve kusur yönetimi](05-yonetim/5.4-konfigurasyon-kusur.md) | [test](05-yonetim/5.4-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](05-yonetim/cevaplar.md) | cevap | — |
 
 ### 06 — Test Tools *(3/40 puan · 20 dk)*
 
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [6.1–6.2 Araç desteği ve otomasyonun riskleri](06-araclar/6.1-araclar.md) | [test](06-araclar/6.1-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](06-araclar/cevaplar.md) | cevap | — |
 
 ### 99 — Final
 
