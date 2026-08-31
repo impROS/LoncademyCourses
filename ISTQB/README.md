@@ -52,6 +52,7 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 | [ ] | [Sınav künyesi, oyunun kuralları ve trickler](00-baslangic/00-sinav-kunyesi.md) | — | — |
 | [ ] | [Ortam kurulumu — Jira/Xray + Java/JUnit lab ortamı](00-baslangic/01-kurulum.md) | — | — |
 | [ ] | [Kayıt ve satın alma — ne alınmalı, ne alınmamalı](00-baslangic/02-kayit-ve-satin-alma.md) | — | — |
+| ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Fundamentals of Testing *(8/40 puan · 180 dk)*
 
@@ -148,6 +149,31 @@ Haftada ~6 saat. Hafta içi 2 gün + hafta sonu 1 gün gibi bölebilirsin.
   (sertifikan iptal edilebilir) hem de sorular eski v3.1 müfredatından olduğu için seni yanlış çalıştırır.
 
 Ayrıntı: [`00-baslangic/02-kayit-ve-satin-alma.md`](00-baslangic/02-kayit-ve-satin-alma.md)
+
+---
+
+## Otomatik skor kaydı
+
+Tarayıcı güvenlik nedeniyle diske **yazamaz**. Test sonuçlarının ilerleme
+tablosuna kendiliğinden düşmesi için küçük bir yerel süreç çalıştırman gerekiyor:
+
+```bash
+cd /yol/ISTQB && node assets/skor-sunucu.js
+```
+
+Sonra testleri `http://localhost:8892/01-temeller/1.1-test.html` gibi açabilirsin —
+ya da dosyaya çift tıklamaya devam et, ikisi de çalışır.
+
+> ⚠️ **Port neden 8892?** Skor sunucusunun genel varsayılanı 8899. Aynı anda
+> başka bir kurs seti açıksa portu kapar, bu sunucu hiç açılmaz ve skorların
+> **sessizce** kaydedilmez. Bu depodaki her kursa ayrı port verildi.
+
+**Sunucu kapalıyken ne olur:** hiçbir şey kaybolmaz. Sonuç tarayıcının belleğinde
+kuyruğa alınır, sunucuyu açıp herhangi bir testi yeniden açtığında gönderilir.
+
+macOS'ta hep açık tutmak istersen: `assets/skor-sunucu.plist` dosyasındaki yolu
+düzenleyip `~/Library/LaunchAgents/` altına kopyala, sonra
+`launchctl load ~/Library/LaunchAgents/local.istqb.skor.plist`.
 
 ---
 

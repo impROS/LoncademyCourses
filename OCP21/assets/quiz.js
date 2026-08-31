@@ -11,10 +11,10 @@
   var Q = window.QUIZ;
   var PASS = Q.pass || 70;
   var MODE = Q.mode || 'practice';
-  var KEY = 'clfc02-quiz-' + Q.id;
+  var KEY = 'ocp21-quiz-' + Q.id;
   var LETTERS = 'ABCDEFGH';
 
-  var pool = [], state = null, timerId = null, remain = 0;
+  var pool = [], state = null, timerId = null, remain = 0, basladi = 0;
 
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
   function el(id) { return document.getElementById(id); }
@@ -32,6 +32,8 @@
     } catch (e) { return { attempts: 1, last: sc, best: sc }; }
   }
   function readStore() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+
+  try { kuyrugusal(); } catch (e) {}
 
   /* --- soru havuzunu hazırla (şıkları da karıştır, doğru indeksleri taşı) --- */
   function build(list) {
@@ -75,7 +77,7 @@
     if (Q.back) bits.push('<a class="back" style="margin:0 0 0 6px" href="' + Q.back + '">← ' + esc(Q.backLabel || 'Konuya dön') + '</a>');
     bits.push('</div></div>');
     el('app').innerHTML = bits.join('');
-    el('start').onclick = function () { if (Q.time) startTimer(); question(); };
+    el('start').onclick = function () { basladi = Date.now(); if (Q.time) startTimer(); question(); };
   }
 
   function startTimer() {
@@ -99,7 +101,7 @@
     var b = [];
     b.push('<div class="card">');
     b.push('<div class="qmeta"><span>Soru ' + (state.i + 1) + ' / ' + pool.length + '</span><span>' + esc(q.topic) + '</span>' + (state.flag[state.i] ? '<span class="flagged">● işaretli</span>' : '') + '</div>');
-    b.push('<p class="qtext">' + q.q + '</p>');   /* OCP21: soru metni HTML kabul eder (kod blokları icin) */
+    b.push('<p class="qtext">' + esc(q.q) + '</p>');
     if (multi || q.hint) b.push('<p class="qhint">' + esc(q.hint || ('Bu soruda ' + q.a.length + ' doğru cevap var.')) + '</p>');
     b.push('<div class="opts">');
     q.opts.forEach(function (o, i) {
@@ -174,6 +176,58 @@
     else { state.i++; question(); }
   }
 
+
+  /* --- skor sunucusuna bildir (assets/skor-sunucu.js) ------------------------
+     Tarayıcı diske yazamaz; sonucu alıp .md dosyasına yazan yerel sunucuya
+     gönderiyoruz. Sunucu kapalıysa sonuç kuyruğa alınır ve bir dahaki açılışta
+     gönderilir — hiçbir skor kaybolmaz. */
+  /* Birden çok kurs setin varsa her birine ayrı port ver: burayı değiştir ve
+     sunucuyu `SKOR_PORT=8898 node assets/skor-sunucu.js` diye başlat. */
+  var SKOR_PORT = 8891;
+  var SKOR_URL = 'http://localhost:' + SKOR_PORT + '/skor';
+  var KUYRUK = 'ocp21-skor-kuyruk';
+
+  function kuyrugaAl(veri) {
+    try {
+      var k = JSON.parse(localStorage.getItem(KUYRUK) || '[]');
+      k.push(veri); localStorage.setItem(KUYRUK, JSON.stringify(k.slice(-100)));
+    } catch (e) {}
+  }
+  function gonder(veri) {
+    return fetch(SKOR_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(veri), keepalive: true
+    }).then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); });
+  }
+  function kuyrugusal() {
+    var k;
+    try { k = JSON.parse(localStorage.getItem(KUYRUK) || '[]'); } catch (e) { return; }
+    if (!k.length) return;
+    var kalan = [], zincir = Promise.resolve();
+    k.forEach(function (v) {
+      zincir = zincir.then(function () { return gonder(v); }).catch(function () { kalan.push(v); });
+    });
+    zincir.then(function () {
+      try { localStorage.setItem(KUYRUK, JSON.stringify(kalan)); } catch (e) {}
+      if (k.length && kalan.length < k.length) console.log('[skor] ' + (k.length - kalan.length) + ' bekleyen sonuç yazıldı');
+    });
+  }
+
+  function skorBildir(veri, kutuId) {
+    function rozet(metin, sinif) {
+      var d = el(kutuId); if (!d) return;
+      d.innerHTML = '<div class="sub" style="margin-top:10px;opacity:.85">' + metin + '</div>';
+    }
+    gonder(veri).then(function (c) {
+      rozet('📊 Skor <code>' + esc(c.dosya) + '</code> dosyasına yazıldı.');
+      kuyrugusal();
+    }).catch(function () {
+      kuyrugaAl(veri);
+      rozet('📊 Skor sunucusu kapalı — sonuç <b>kuyruğa alındı</b>. '
+          + 'Yazmak için: <code>node assets/skor-sunucu.js</code> çalıştırıp bu sayfayı yenile.');
+    });
+  }
+
   function finish() {
     if (timerId) { clearInterval(timerId); timerId = null; }
     el('timer').style.display = 'none';
@@ -189,10 +243,22 @@
     var rec = store(pct);
     var passed = pct >= PASS;
 
+    var zayifListe = [];
+    Object.keys(byTopic).forEach(function (t) {
+      if (byTopic[t].ok / byTopic[t].n * 100 < PASS) zayifListe.push(t);
+    });
+    skorBildir({
+      id: Q.id, code: Q.code, title: Q.title, back: Q.back, href: location.href,
+      mode: MODE, pass: PASS, right: right, total: pool.length, pct: pct,
+      seconds: basladi ? Math.round((Date.now() - basladi) / 1000) : null,
+      weak: zayifListe
+    }, 'skor-rozet');
+
     var b = ['<div class="card">'];
     b.push('<div class="score"><div class="pct ' + (passed ? 'pass' : 'fail') + '">%' + pct + '</div>');
     b.push('<div class="verdict">' + (passed ? 'Geçtin — bu konu oturmuş' : 'Eşiğin altında — bu konuya geri dön') + '</div>');
-    b.push('<div class="sub">' + right + ' / ' + pool.length + ' doğru · eşik %' + PASS + ' · en iyi skorun %' + rec.best + '</div></div>');
+    b.push('<div class="sub">' + right + ' / ' + pool.length + ' doğru · eşik %' + PASS + ' · en iyi skorun %' + rec.best + '</div>');
+    b.push('<div id="skor-rozet"></div></div>');
 
     var topics = Object.keys(byTopic).sort(function (x, y) { return (byTopic[x].ok / byTopic[x].n) - (byTopic[y].ok / byTopic[y].n); });
     b.push('<table class="brk"><tr><th>Alt konu</th><th>Doğru</th><th>Oran</th></tr>');
@@ -218,7 +284,7 @@
       b.push('<h3 style="font-size:1rem;margin:0 0 12px">Yanlış cevapladıkların (' + wrong.length + ')</h3><div class="review">');
       wrong.forEach(function (i) {
         var q = pool[i];
-        b.push('<div class="rev"><div class="rq">' + (i + 1) + '. ' + q.q + '</div>');
+        b.push('<div class="rev"><div class="rq">' + (i + 1) + '. ' + esc(q.q) + '</div>');
         b.push('<div class="ra">Senin cevabın: ' + (state.ans[i].length ? state.ans[i].map(function (k) { return LETTERS[k] + ') ' + q.opts[k]; }).map(esc).join(' · ') : '(boş)') + '</div>');
         b.push('<div class="rc">Doğru cevap: ' + q.a.map(function (k) { return LETTERS[k] + ') ' + q.opts[k]; }).map(esc).join(' · ') + '</div>');
         b.push('<div class="rw">' + q.why + '</div></div>');

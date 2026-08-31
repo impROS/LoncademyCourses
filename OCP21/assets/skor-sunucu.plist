@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Skor sunucusunu macOS'ta arka planda sürekli çalıştırır (isteğe bağlı).
+     Kurulum:
+       sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/local.ocp21.skor.plist
+       launchctl load  ~/Library/LaunchAgents/local.ocp21.skor.plist
+     Kaldırma:
+       launchctl unload ~/Library/LaunchAgents/local.ocp21.skor.plist
+       rm ~/Library/LaunchAgents/local.ocp21.skor.plist  -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>              <string>local.ocp21.skor</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/env</string>
+    <string>node</string>
+    <string>KURS_KOKU/assets/skor-sunucu.js</string>
+  </array>
+  <key>WorkingDirectory</key>   <string>KURS_KOKU</string>
+  <key>RunAtLoad</key>          <true/>
+  <key>KeepAlive</key>          <true/>
+  <key>StandardOutPath</key>    <string>KURS_KOKU/assets/skor-sunucu.log</string>
+  <key>StandardErrorPath</key>  <string>KURS_KOKU/assets/skor-sunucu.log</string>
+</dict>
+</plist>

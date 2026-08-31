@@ -183,7 +183,7 @@
      gönderilir — hiçbir skor kaybolmaz. */
   /* Birden çok kurs setin varsa her birine ayrı port ver: burayı değiştir ve
      sunucuyu `SKOR_PORT=8897 node assets/skor-sunucu.js` diye başlat. */
-  var SKOR_PORT = 8897;
+  var SKOR_PORT = 8889;
   var SKOR_URL = 'http://localhost:' + SKOR_PORT + '/skor';
   var KUYRUK = 'vibe-skor-kuyruk';
 

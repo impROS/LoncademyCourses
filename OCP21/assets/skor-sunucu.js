@@ -5,7 +5,7 @@
  * .md dosyasına düşmesi için sonucu alıp yazacak küçük bir yerel süreç şart.
  *
  * Çalıştır:  node assets/skor-sunucu.js
- * Testleri:  http://localhost:8899/<bolum>/<kod>-test.html  (önerilen)
+ * Testleri:  http://localhost:8891/<bolum>/<kod>-test.html  (önerilen)
  *            ya da dosyaya çift tıklayarak (file://) — o da çalışır.
  *
  * Bağımlılık yok, sadece Node stdlib. Yalnızca 127.0.0.1'e bağlanır.
@@ -17,7 +17,10 @@ const path = require('path');
 const url  = require('url');
 
 const ROOT = path.resolve(__dirname, '..');
-const PORT = Number(process.env.SKOR_PORT || 8889);
+/* Bu kursun kendi portu. 8899 sabit bırakılırsa aynı anda açık başka bir kurs
+ * setiyle çakışır: sunucu EADDRINUSE ile hiç açılmaz ve kullanıcı skorların
+ * neden yazılmadığını anlayamaz. Süreç 3'te kursa özel portla değiştirilir. */
+const PORT = Number(process.env.SKOR_PORT || 8891);
 
 const MIME = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
   '.css':'text/css; charset=utf-8', '.md':'text/plain; charset=utf-8', '.json':'application/json' };
@@ -39,17 +42,28 @@ function sure(sn) {
 /* --- hangi .md dosyasına yazılacak --- */
 function hedefDosya(s) {
   if (/^final/i.test(s.id || '')) return path.join(ROOT, '99-final', 'sinav-gecmisi.md');
-  let yol;
-  try { yol = decodeURIComponent(new URL(s.href).pathname); } catch (e) { yol = String(s.href || ''); }
-  let dizin = path.dirname(yol);
-  // Mutlak ve BAŞKA bir kursun içindeyse: bu sonuç bize ait değil.
-  // Sessizce kendi kökümüze eklersek anlamsız bir 'dosya yok' hatası çıkar
-  // ve kullanıcı neden yazılmadığını anlayamaz.
-  if (path.isAbsolute(dizin) && !dizin.startsWith(ROOT)) {
-    throw new Error('bu sonuç başka bir kursa ait (' + dizin + '); o kursun skor '
-      + 'sunucusunu kendi portunda başlat — bkz. assets/quiz.js içindeki SKOR_PORT');
+  let u = null;
+  try { u = new URL(s.href); } catch (e) { /* göreli yol; aşağıda ele alınıyor */ }
+  let dizin;
+  if (u && (u.protocol === 'http:' || u.protocol === 'https:')) {
+    // Test bu sunucudan açıldı. Adresteki yol KURS KÖKÜNE göredir, dosya
+    // sistemine göre değil: '/01-bolum/1.1-test.html'. Dosya yoluymuş gibi
+    // değerlendirilirse kökün dışında görünür ve sonuç yanlışlıkla
+    // "başka bir kursa ait" diye reddedilir — yani sunucunun kendi başlangıç
+    // mesajında önerdiği açılış biçimi hiç çalışmaz.
+    dizin = path.join(ROOT, path.dirname(decodeURIComponent(u.pathname)));
+  } else {
+    const yol = u ? decodeURIComponent(u.pathname) : String(s.href || '');
+    dizin = path.dirname(yol);
+    // file:// ile açılmış ve BAŞKA bir kursun içindeyse: bu sonuç bize ait değil.
+    // Sessizce kendi kökümüze eklersek anlamsız bir 'dosya yok' hatası çıkar
+    // ve kullanıcı neden yazılmadığını anlayamaz.
+    if (path.isAbsolute(dizin) && !dizin.startsWith(ROOT)) {
+      throw new Error('bu sonuç başka bir kursa ait (' + dizin + '); o kursun skor '
+        + 'sunucusunu kendi portunda başlat — bkz. assets/quiz.js içindeki SKOR_PORT');
+    }
+    if (!path.isAbsolute(dizin)) dizin = path.join(ROOT, dizin);
   }
-  if (!path.isAbsolute(dizin)) dizin = path.join(ROOT, dizin);
   const hedef = path.resolve(dizin, s.back || '');
   if (!hedef.startsWith(ROOT) || path.extname(hedef) !== '.md') throw new Error('geçersiz hedef: ' + hedef);
   return hedef;

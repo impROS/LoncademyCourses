@@ -53,6 +53,7 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [Yasal & etik çerçeve — nerede pratik yapılır, nerede yapılmaz](00-baslangic/01-yasal-etik.md) | — | — |
 | [ ] | [Ortam kurulumu — Linux, Ghidra, GDB+pwndbg, pwntools](00-baslangic/02-ortam-kurulumu.md) | — | — |
 | [ ] | [Lab siteleri rehberi — hangi site ne için, nasıl başlanır](00-baslangic/03-lab-siteleri.md) | — | — |
+| ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Makine seviyesi temeller *(%16)*
 | ✔ | Konu | Test | Skor |
@@ -134,6 +135,31 @@ Yoğun (4 hafta) gidiyorsan haftaları ikişerle birleştir. Rahat (12 hafta) gi
 - **Ücretli "RE kursu" satın alma.** Bu set + linkteki ücretsiz platformlar zaten fazlasıyla yeter.
 - **Binfmt/malware örnekleriyle çıplak makinede oynama.** Bu kurs Linux CTF binary'leriyle çalışır (zararsız),
   ama merakla indirdiğin her şeyi ana makinende çalıştırma. İzole VM kuralı `00-baslangic/01-yasal-etik.md`'de.
+
+---
+
+## Otomatik skor kaydı
+
+Tarayıcı güvenlik nedeniyle diske **yazamaz**. Test sonuçlarının ilerleme
+tablosuna kendiliğinden düşmesi için küçük bir yerel süreç çalıştırman gerekiyor:
+
+```bash
+cd /yol/ReverseEngineering && node assets/skor-sunucu.js
+```
+
+Sonra testleri `http://localhost:8890/01-temeller/01-test.html` gibi açabilirsin —
+ya da dosyaya çift tıklamaya devam et, ikisi de çalışır.
+
+> ⚠️ **Port neden 8890?** Skor sunucusunun genel varsayılanı 8899. Aynı anda
+> başka bir kurs seti açıksa portu kapar, bu sunucu hiç açılmaz ve skorların
+> **sessizce** kaydedilmez. Bu depodaki her kursa ayrı port verildi.
+
+**Sunucu kapalıyken ne olur:** hiçbir şey kaybolmaz. Sonuç tarayıcının belleğinde
+kuyruğa alınır, sunucuyu açıp herhangi bir testi yeniden açtığında gönderilir.
+
+macOS'ta hep açık tutmak istersen: `assets/skor-sunucu.plist` dosyasındaki yolu
+düzenleyip `~/Library/LaunchAgents/` altına kopyala, sonra
+`launchctl load ~/Library/LaunchAgents/local.relx64.skor.plist`.
 
 ---
 

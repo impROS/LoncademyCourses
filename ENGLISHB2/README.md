@@ -58,6 +58,7 @@ Bitirdiğin kutucuğu işaretle. Test sütununa **en yüksek skorunu** yaz.
 |---|---|---|---|
 | [ ] | [B2'ye genel bakış ve trickler](00-baslangic/00-b2-genel-bakis.md) | — | — |
 | [ ] | [Çalışma yöntemi ve kaynaklar](00-baslangic/01-calisma-yontemi.md) | — | — |
+| ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Dilbilgisi *(10 konu)*
 | ✔ | Konu | Test | Skor |
@@ -135,6 +136,31 @@ g7 (reported speech) g1'i bilmeden çalışmaz.
 
 **Kesinlikle harcama yapmadan önce:** bu setin ilk 4 haftasını bitir. Neye ihtiyacın olduğunu ancak
 o zaman bilirsin.
+
+---
+
+## Otomatik skor kaydı
+
+Tarayıcı güvenlik nedeniyle diske **yazamaz**. Test sonuçlarının ilerleme
+tablosuna kendiliğinden düşmesi için küçük bir yerel süreç çalıştırman gerekiyor:
+
+```bash
+cd /yol/ENGLISHB2 && node assets/skor-sunucu.js
+```
+
+Sonra testleri `http://localhost:8893/01-dilbilgisi/g1-test.html` gibi açabilirsin —
+ya da dosyaya çift tıklamaya devam et, ikisi de çalışır.
+
+> ⚠️ **Port neden 8893?** Skor sunucusunun genel varsayılanı 8899. Aynı anda
+> başka bir kurs seti açıksa portu kapar, bu sunucu hiç açılmaz ve skorların
+> **sessizce** kaydedilmez. Bu depodaki her kursa ayrı port verildi.
+
+**Sunucu kapalıyken ne olur:** hiçbir şey kaybolmaz. Sonuç tarayıcının belleğinde
+kuyruğa alınır, sunucuyu açıp herhangi bir testi yeniden açtığında gönderilir.
+
+macOS'ta hep açık tutmak istersen: `assets/skor-sunucu.plist` dosyasındaki yolu
+düzenleyip `~/Library/LaunchAgents/` altına kopyala, sonra
+`launchctl load ~/Library/LaunchAgents/local.engb2.skor.plist`.
 
 ---
 

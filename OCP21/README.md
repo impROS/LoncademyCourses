@@ -55,6 +55,7 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [Sınav künyesi, formatı ve trickler](00-baslangic/00-sinav-kunyesi.md) | — | — |
 | [ ] | [Ortam kurulumu ve çalışma projesi](00-baslangic/01-kurulum.md) | — | — |
 | [ ] | [Kayıt, satın alma ve sınav günü](00-baslangic/02-kayit-ve-satin-alma.md) | — | — |
+| ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Temel Tipler, Metin ve Tarih/Saat
 | ✔ | Konu | Test | Skor |
@@ -166,6 +167,31 @@ Haftada ~6-8 saat varsayılmıştır. Hafta içi iki akşam okuma+test, hafta so
 | ❌ **"Exam dumps" / "gerçek sorular" satan siteler** — Oracle politika ihlali, sertifikan iptal edilir. Ayrıca içerikleri genelde eski sınav sürümüne ait ve yanlış. |
 | ❌ **Pahalı video kursları** — bu sette olmayan bir şey vermiyorlar. Parayı mock teste harca. |
 | ❌ **Sınav sigortası / retake paketi** — ilk denemede geçecek kadar hazırlanmak daha ucuz. |
+
+---
+
+## Otomatik skor kaydı
+
+Tarayıcı güvenlik nedeniyle diske **yazamaz**. Test sonuçlarının ilerleme
+tablosuna kendiliğinden düşmesi için küçük bir yerel süreç çalıştırman gerekiyor:
+
+```bash
+cd /yol/OCP21 && node assets/skor-sunucu.js
+```
+
+Sonra testleri `http://localhost:8891/01-temel-tipler/1.1-test.html` gibi açabilirsin —
+ya da dosyaya çift tıklamaya devam et, ikisi de çalışır.
+
+> ⚠️ **Port neden 8891?** Skor sunucusunun genel varsayılanı 8899. Aynı anda
+> başka bir kurs seti açıksa portu kapar, bu sunucu hiç açılmaz ve skorların
+> **sessizce** kaydedilmez. Bu depodaki her kursa ayrı port verildi.
+
+**Sunucu kapalıyken ne olur:** hiçbir şey kaybolmaz. Sonuç tarayıcının belleğinde
+kuyruğa alınır, sunucuyu açıp herhangi bir testi yeniden açtığında gönderilir.
+
+macOS'ta hep açık tutmak istersen: `assets/skor-sunucu.plist` dosyasındaki yolu
+düzenleyip `~/Library/LaunchAgents/` altına kopyala, sonra
+`launchctl load ~/Library/LaunchAgents/local.ocp21.skor.plist`.
 
 ---
 

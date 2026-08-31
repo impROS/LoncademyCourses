@@ -172,15 +172,15 @@ konu dosyasının altına ve yukarıdaki ilerleme tablosuna düşer.
 alıp `.md` dosyasına yazacak küçük bir yerel süreç şart. Tek seferlik:
 
 ```bash
-cd /yol/VibeCoding && SKOR_PORT=8897 node assets/skor-sunucu.js
+cd /yol/VibeCoding && SKOR_PORT=8889 node assets/skor-sunucu.js
 ```
 
-Sonra testleri `http://localhost:8897/01-temeller/1.1-test.html` gibi açabilirsin —
+Sonra testleri `http://localhost:8889/01-temeller/1.1-test.html` gibi açabilirsin —
 ya da dosyaya çift tıklamaya devam et, ikisi de çalışır.
 
-> ⚠️ **Port neden 8897?** Skor sunucusunun varsayılanı 8899. Başka bir kurs seti aynı
+> ⚠️ **Port neden 8889?** Skor sunucusunun varsayılanı 8899. Başka bir kurs seti aynı
 > anda açıksa portu kapar, bu sunucu hiç açılmaz ve skorların **sessizce** kaydedilmez.
-> Bu sete 8897 ayrıldı. Başka bir sette çalışıyorsan onun kendi portunu kullan.
+> Bu sete 8889 ayrıldı. Başka bir sette çalışıyorsan onun kendi portunu kullan.
 
 **Sunucu kapalıyken ne olur:** hiçbir şey kaybolmaz. Sonuç tarayıcının belleğinde
 kuyruğa alınır, sunucuyu açıp herhangi bir testi yeniden açtığında gönderilir.

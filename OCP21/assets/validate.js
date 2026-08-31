@@ -24,8 +24,12 @@ for (const f of files.sort()) {
     if (q.opts && new Set(q.opts).size !== q.opts.length) errs.push('S' + n + ': yinelenen şık');
     if (q.a && q.opts && !q.a.every(x => Number.isInteger(x) && x >= 0 && x < q.opts.length)) errs.push('S' + n + ': geçersiz cevap indeksi');
     if (q.a && new Set(q.a).size !== q.a.length) errs.push('S' + n + ': yinelenen cevap indeksi');
-    if (q.a && q.a.length > 1 && !/Choose (TWO|THREE)/i.test(q.q)) errs.push('S' + n + ': çoklu cevap ama (Choose TWO) yok');
-    if (q.a && q.a.length === 1 && /Choose (TWO|THREE)/i.test(q.q)) errs.push('S' + n + ': (Choose TWO) yazıyor ama tek cevap');
+    // Kaç şık işaretleneceği soru metninde YAZILI olmalı. Anlatım Türkçe olan
+    // setlerde "(İki tanesini seç.)" doğaldır; sınav dili İngilizce olanlarda
+    // "(Choose TWO.)". İkisi de kabul edilir — biri zorunlu.
+    const sayiIsareti = /Choose (TWO|THREE)/i.test(q.q) || /tanesini seç/i.test(q.q);
+    if (q.a && q.a.length > 1 && !sayiIsareti) errs.push('S' + n + ': çoklu cevap ama kaç tane seçileceği yazmıyor — "(Choose TWO.)" ya da "(İki tanesini seç.)" ekle');
+    if (q.a && q.a.length === 1 && sayiIsareti) errs.push('S' + n + ': çoklu seçim işareti var ama tek cevap');
   });
   if (Q.back && !fs.existsSync(path.join(path.dirname(f), Q.back))) errs.push('back linki kırık: ' + Q.back);
   totalQ += Q.questions.length;
