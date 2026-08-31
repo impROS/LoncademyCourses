@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genel deneme — Vibe Coding 201 — Günlük iş akışları</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  "id": "final",
+  "code": "Genel deneme",
+  "title": "Vibe Coding 201 — Günlük iş akışları — 29 soru, 36 dakika",
+  "back": "son-tekrar.md",
+  "backLabel": "Son tekrara dön",
+  "mode": "exam",
+  "pass": 80,
+  "time": 2160,
+  "passNote": "bu setin eşiği %80",
+  "notes": [
+    "Sorular konu testlerinin kopyası değildir: aynı bilgi, farklı senaryo.",
+    "Takıldığın soruyu geç; soru başına ortalama 74 saniyen var.",
+    "Zayıf alan raporundaki konu kodlarına dönerek çalış."
+  ],
+  "questions": [
+    {
+      "topic": "1.1 Özellik akışı",
+      "q": "\"Bir uç nokta eklemesini istedim, sekiz dosya değişti.\" Planda eksik olan neydi?",
+      "opts": [
+        "Kapsam dışı listesi",
+        "Doğrulama adımı",
+        "Uç durum listesi",
+        "Dosya adlarının yazılması"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kapsam kaçması, kapsam dışının yazılmamasının doğrudan sonucudur.</b> Planın en çok atlanan ve yazması en kolay parçası budur. Ayrıca uygulama isteminde bir kapsam kilidi bulunmalıdır: \"plandaki dosyaların dışına çıkma\"."
+    },
+    {
+      "topic": "1.1 Özellik akışı",
+      "q": "Keşif aşamasında ajanın anlattığı mevcut durumda bir hata fark ettin. Ne yaparsın ve neden?",
+      "opts": [
+        "Hemen düzeltirsin; aksi hâlde hata plana ve oradan koda taşınır",
+        "Not alıp uygulama aşamasında düzeltirsin",
+        "Yok sayarsın; kod yazarken kendisi fark eder",
+        "Keşfi baştan başlatırsın"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Hatanın yakalandığı aşama, düzeltme maliyetini belirler:</b> anlatıda bir cümle, planda bir madde, kodda bir yeniden yazım, üretimde bir olay müdahalesi. Keşif aşamasının çıktısının metin olmasının sebebi de bu — metin okumak ucuzdur."
+    },
+    {
+      "topic": "1.1 Özellik akışı",
+      "q": "Küçük ve kapsamı net bir değişiklik için plan aşamasını atlamanın ölçütü nedir?",
+      "opts": [
+        "Değişikliği tek cümleyle tarif edebiliyorsan",
+        "Değişiklik üç dosyadan azsa",
+        "Değişiklik 50 satırdan azsa",
+        "Testler zaten varsa"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ölçüt belirsizliktir, büyüklük değil.</b> Küçük bir değişiklik bile tanımadığın bir kodda belirsizse aşamalar korunur. Planın bedeli ekstra tur ve token; bu bedel ancak belirsizlik varken karşılığını verir."
+    },
+    {
+      "topic": "1.1 Özellik akışı",
+      "q": "Bir uygulama isteminde bulunması gereken üç şey hangileridir?",
+      "opts": [
+        "Plana referans, doğrulama, kapsam kilidi",
+        "Model, çaba düzeyi, izin kipi",
+        "Dosya listesi, satır sayısı, süre sınırı",
+        "Rol, ton, çıktı biçimi"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Plana referans ne yapılacağını, doğrulama bitişin nasıl ölçüleceğini, kapsam kilidi ise nereye dokunulmayacağını belirler.</b> \"Plandaki dosyaların dışına çıkma; gerekirse önce sor\" cümlesi kapsam kaçmasını doğrudan engeller."
+    },
+    {
+      "topic": "1.2 Var olan kod",
+      "q": "Ajan bir kod bloğundaki tuhaf görünen bir koşulu \"gereksiz\" diye kaldırdı ve eski bir hata geri geldi. Bunu önleyecek istem eklentisi hangisidir?",
+      "opts": [
+        "\"Önce her satırın git geçmişine bakıp neden eklendiğini anla; bir hata düzeltmesiyse dokunma\"",
+        "\"Daha dikkatli ol\"",
+        "\"Daha az satır değiştir\"",
+        "\"Kod kalitesini artır\""
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Gariplik çoğu zaman bir düzeltmenin izidir ve gerekçesi kodda değil geçmişte yazılıdır.</b> \"Dikkatli ol\" ölçülemez; \"az satır değiştir\" bazen bastırmayı teşvik eder; \"kalite artır\" ise tam tersine temizlik davranışını davet eder."
+    },
+    {
+      "topic": "1.2 Var olan kod",
+      "q": "Ajanın yazdığı kod projenin geri kalanına hiç benzemiyor. En etkili düzeltme nedir?",
+      "opts": [
+        "Kalıbı uygulayan somut bir dosyayı örnek göstermek",
+        "Kural dosyasında kalıbı ayrıntılı tarif etmek",
+        "Daha yüksek çaba düzeyi seçmek",
+        "Biçimlendirici çalıştırmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Model, gördüğü örneğe benzetmekte soyut kurala uymaktan çok daha iyidir.</b> Bir örnek dosya adı yirmi satırlık tarifin yerini tutar — ve kural dosyanı da şişirmez. Biçimlendirici yalnızca yüzeysel biçimi düzeltir, yapı ve adlandırma kalıbını değil."
+    },
+    {
+      "topic": "1.2 Var olan kod",
+      "q": "\"Kod ne yapması gerektiğini söyler\" ifadesi neden yanlıştır?",
+      "opts": [
+        "Kod ne yaptığını söyler; ne yapması gerektiğini testler söyler",
+        "Kod hiçbir şey söylemez, yalnızca çalışır",
+        "Kod yalnızca yorumlarla anlaşılır",
+        "Kod ve testler her zaman aynı şeyi söyler"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Test bir niyet beyanıdır; kod o niyeti gerçekleştirme denemesidir.</b> Çelişkide niyet doğru kabul edilir, yani hata koddadır. Bu, \"test geçsin diye testi değiştirme\" kuralının teorik temelidir."
+    },
+    {
+      "topic": "1.2 Var olan kod",
+      "q": "Ajanın \"bu ölü kod\" diyerek bir fonksiyonu kaldırmasının riski nedir?",
+      "opts": [
+        "Yansıma ya da yapılandırma yoluyla çağrılıyor olabilir; statik arama bunu göstermez",
+        "Kod satır sayısı ölçümleri bozulur",
+        "Git geçmişi silinir",
+        "Ölü kod kaldırmak her zaman güvenlidir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Statik arama dinamik çağrıları bulamaz.</b> Ad üzerinden yansımayla, bir yapılandırma dosyasından ya da dış bir sistemden çağrılan kod \"kullanılmıyor\" görünür. Kaldırma, mevcut değişikliğin yan ürünü olarak değil ayrı ve dikkatli bir iş olarak ele alınır."
+    },
+    {
+      "topic": "1.3 Hata ayıklama",
+      "q": "Bir hata düzeltmesinden sonra ekip \"artık hiç hata mesajı almıyoruz\" diyor. Bu neyin işaretidir?",
+      "opts": [
+        "Geniş bir yakalama bloğu eklenmiş; gerçek hatalar da yutuluyor",
+        "Düzeltme başarılı olmuş",
+        "Günlük düzeyi yanlış ayarlanmış",
+        "Testler devre dışı bırakılmış"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>\"Artık hiç hata yok\" neredeyse her zaman bir bastırma işaretidir.</b> Geniş yakalama, hedeflenen hatayla birlikte ilgisiz ve gerçekten önemli hataları da yutar. Sistem sağlıklı göründüğü için sorun aylarca fark edilmeyebilir."
+    },
+    {
+      "topic": "1.3 Hata ayıklama",
+      "q": "Ajan bir hata için testi ve düzeltmeyi birlikte yazdı; test ilk çalıştırmada geçti. Hangi bilgi eksik kaldı?",
+      "opts": [
+        "Testin gerçekten o hatayı yakalayıp yakalamadığı",
+        "Testin çalışma süresi",
+        "Kod kapsamı oranı",
+        "Değişikliğin satır sayısı"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bir testin bir şey ölçtüğünü ancak başarısız olabildiğini görerek bilirsin.</b> Düzeltilmiş kodda yazılan test elbette geçer; bozuk kodda kırılıp kırılmayacağı sınanmamıştır. Sırayı dayatan ifade: \"önce başarısız testi yaz ve kırmızı olduğunu göster\"."
+    },
+    {
+      "topic": "1.3 Hata ayıklama",
+      "q": "Bir hatada iki farklı teori denendi, ikisi de tutmadı. Üçüncü teoriye geçmeden önce doğru hamle nedir?",
+      "opts": [
+        "Bağlamı temizleyip iki denemeyi birer satırda özetleyerek yeniden başlamak",
+        "Aynı oturumda üçüncü teoriyi denemek",
+        "Daha büyük modele geçip aynı oturumda devam etmek",
+        "Sorunu tamamen bırakmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İki başarısız teoriden sonra oturum, işe yaramadığı kanıtlanmış yollarla doludur</b> ve bunlar her turda tekrar gönderilir. Değerli olan bilgi, o bilgiyi üreten konuşma değil: \"gövde boş değil, geliyor\" gibi tek satırlık elemeler sayfalarca turun yerini tutar."
+    },
+    {
+      "topic": "1.3 Hata ayıklama",
+      "q": "Bastırma kalıplarından hangisi en sinsidir ve neden?",
+      "opts": [
+        "Varsayılan değerle örtme; hiçbir iz bırakmaz ve yanlış veriyi doğru gibi akıtır",
+        "Testi atlama; diff'te görünür",
+        "Boş yakalama bloğu; kolayca fark edilir",
+        "Denetimi kapatma; bir yorum satırı bırakır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Diğer kalıplar bir iz bırakır — atlama işareti, boş blok, bastırma yorumu.</b> `?? 0` gibi bir varsayılan ise tamamen normal görünür; ne hata mesajı ne işaret kalır, ve yanlış veri sisteme sessizce girer."
+    },
+    {
+      "topic": "1.3 Hata ayıklama",
+      "q": "Ham bir günlük dosyasını ajana okutmanın zararı nedir?",
+      "opts": [
+        "Onbinlerce satır bağlama girer ve sonraki her turda tekrar gönderilir",
+        "Ajan günlük dosyalarını okuyamaz",
+        "Günlük okumak izin sistemini devre dışı bırakır",
+        "Günlük dosyaları şifrelidir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bağlam birikimlidir:</b> bir kez giren büyük çıktı oturumun geri kalanında sabit bir yük olur. Doğrusu filtrelenmiş komut vermektir — ve `4.3`'te bunu kalıcı olarak çözen hook yazılır."
+    },
+    {
+      "topic": "2.1 Test",
+      "q": "Ajana \"test kapsamını %85'e çıkar\" hedefi vermenin riski nedir?",
+      "opts": [
+        "Hedefe en kısa yol çok sayıda zayıf iddialı test yazmaktır",
+        "Kapsam araçları ajan tarafından çalıştırılamaz",
+        "Kapsam ölçümü çok yavaştır",
+        "Kapsam hedefi izin sistemini tetikler"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ölçülen şey hedef hâline gelince, ölçüyü en ucuza yükselten yol seçilir.</b> Kapsam yalnızca hangi satırların çalıştırıldığını ölçer, doğru çalıştığını değil. Daha iyi hedef: \"şu davranış listesindeki her madde için bir test\"."
+    },
+    {
+      "topic": "2.1 Test",
+      "q": "Testsiz bir modülde değişiklik yapılacak. Dondurma aşamasında ajanın hangi davranışına izin verilmemelidir?",
+      "opts": [
+        "Yanlış bulduğu mevcut davranışı düzeltmesine",
+        "Birden çok test dosyası oluşturmasına",
+        "Test adlarını Türkçe yazmasına",
+        "Var olan testleri okumasına"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bugünkü davranış hatalı bile olsa önce yazılı hâle gelmeli.</b> Dondurma sırasında \"düzeltme\" yapılırsa ortaya çıkan testler kodun bugün yaptığını değil, ajanın doğru sandığını yansıtır — ve güvenlik ağı sahte olur."
+    },
+    {
+      "topic": "2.1 Test",
+      "q": "\"Küçük bir değişiklik yaptım, 40 test kırıldı.\" Bu hangi test kusurunun belirtisidir?",
+      "opts": [
+        "Testlerin uygulamayı aynalaması",
+        "Zayıf iddia",
+        "Aşırı sahteleme",
+        "Yetersiz kapsam"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Davranışı sınayan testler, uygulama değiştiğinde kırılmaz — davranış değiştiğinde kırılır.</b> Kırılan test sayısının değişikliğin büyüklüğüyle orantısız olması, testlerin iç adımlara bağlandığının göstergesidir."
+    },
+    {
+      "topic": "2.1 Test",
+      "q": "Bir testin gerçekten bir şey ölçtüğünü kanıtlamanın en kesin yolu nedir?",
+      "opts": [
+        "Kodu bilerek bozup testin kırıldığını görmek",
+        "Kapsam raporunda ilgili satırın işaretli olduğunu görmek",
+        "Test adının davranışı doğru tarif ettiğini doğrulamak",
+        "Testin hızlı çalıştığını ölçmek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Mutasyon mantığı:</b> kod bozulduğunda kırılmayan test, o davranışı korumuyordur. Kapsam raporu yalnızca satırın çalıştığını söyler; iyi bir test adı yararlıdır ama iddianın gücünü kanıtlamaz."
+    },
+    {
+      "topic": "2.2 İnceleme",
+      "q": "Ajan diff'inde \"sessizce değişen davranış\" kontrolünde neye bakılır?",
+      "opts": [
+        "İstenmeyen bir varsayılan, sıralama ya da dönüş tipi değişikliğine",
+        "Yeni eklenen yorum satırlarına",
+        "Değişen dosya sayısına",
+        "Kod satırlarının uzunluğuna"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>En zor yakalanan değişiklikler hata üretmeyen ama davranışı kaydıranlardır.</b> Bir varsayılanın değişmesi, listenin sıralamasının farklılaşması ya da bir fonksiyonun artık boş nesne döndürmesi — hepsi derlenir, testler bile geçebilir, ama sistem farklı davranır."
+    },
+    {
+      "topic": "2.2 İnceleme",
+      "q": "Bir ekip, kodu yazan oturuma \"bir de sen incele\" diyor. Bu yaklaşımın sorunu nedir?",
+      "opts": [
+        "Yazan bağlam kendi gerekçesini bilir; taze bir bağlam gerekir",
+        "Aynı oturumda inceleme aracı kullanılamaz",
+        "İnceleme farklı bir model gerektirir",
+        "Aynı oturumda bağlam dolu olduğu için diff okunamaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Fark teknik değil bilgiseldir.</b> Yazan bağlam \"bu satırı şu yüzden böyle yazdım\"ı biliyor ve o gerekçe kusuru gizleyen şeyin ta kendisi olabilir. Belirleyici olan farklı model değil, farklı <b>bağlam</b>."
+    },
+    {
+      "topic": "2.2 İnceleme",
+      "q": "Ajan kodunda insan koduna göre **daha seyrek** görülen hata türü hangisidir?",
+      "opts": [
+        "Girinti ve biçim tutarsızlığı",
+        "Var olmayan bir işlev çağırmak",
+        "Kapsam dışına taşmak",
+        "Hatayı sessizce bastırmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ajan kodunda yüzeysel kalite genelde yüksektir</b> ve bu bir tuzaktır: düzgün görünen kod daha az dikkatle okunur. İnsan kodunda dağınık biçim aceleyi işaret eden bir ipucudur; ajan kodunda o ipucu yoktur."
+    },
+    {
+      "topic": "2.2 İnceleme",
+      "q": "Ajanın **prensipte** inceleyemeyeceği alan hangisidir?",
+      "opts": [
+        "Bu değişikliğin gerçekten istenen ürün kararı olup olmadığı",
+        "Çağrılan bir fonksiyonun var olup olmadığı",
+        "Testlerin geçip geçmediği",
+        "Kodun derlenip derlenmediği"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Niyet, kabul edilebilir risk ve öncelik, ajanın erişiminde olmayan bir bağlam gerektirir</b> — ürün hedefleri, iş kısıtları, takvim. Bu \"ajan yeterince iyi değil\" demek değil, <i>bilgi orada değil</i> demektir."
+    },
+    {
+      "topic": "2.3 Git",
+      "q": "Ajanın attığı commit'lerde sürekli tümleştirme iş akışları çalışmıyor. Bu durumun en doğru açıklaması nedir?",
+      "opts": [
+        "İş akışlarının kendi kendini sonsuz tetiklemesini önleyen bilinçli bir davranıştır",
+        "Commit imzaları geçersizdir",
+        "Ajan commit'leri ayrı bir dala gider",
+        "Test altyapısı ajan commit'lerini desteklemez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Otomasyonun kendi ürettiği olayla yeniden tetiklenmesi klasik bir döngü riskidir</b> ve öntanımlı davranış bunu keser. Bunu bilmek pratik bir tanı sağlar: bu belirtiyle karşılaşınca iş akışı dosyasında saatlerce hata aramaya gerek yoktur."
+    },
+    {
+      "topic": "2.3 Pull request",
+      "q": "Pull request açıklamasında diff'ten **okunamayan** parça hangisidir?",
+      "opts": [
+        "Değişikliğin neden yapıldığı",
+        "Hangi dosyalara dokunulduğu",
+        "Kaç satır eklendiği",
+        "Hangi fonksiyonların değiştiği"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Diff \"ne\" sorusunu zaten cevaplar; cevaplayamadığı soru \"neden\".</b> Gerekçe yalnızca değişikliği yapanın bilgisindedir ve yazılmazsa kalıcı olarak kaybolur. Bu yüzden açıklamanın işi, diff'te olmayanı söylemektir."
+    },
+    {
+      "topic": "2.3 Git",
+      "q": "Ajanla çalışırken hangi alışkanlık \"ajanın söylediğini değil yaptığını\" görmeni sağlar?",
+      "opts": [
+        "Diff'i kendin okumak",
+        "Her iş için dal açmak",
+        "Sık commit atmak",
+        "Temiz ağaçla başlamak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Diff, iddia ile gerçeklik arasındaki farkı gösteren tek araç.</b> Diğer üçü koşulları hazırlar — dal ana dalı korur, sık commit geri alma noktası üretir, temiz başlangıç kaynağı netleştirir — ama hiçbiri değişikliğin içeriğini göstermez."
+    },
+    {
+      "topic": "2.3 Depoda ajan",
+      "q": "Depoya bağlı çalışan bir ajanda tetikleyen kişinin yetkisinin denetlenmesi ve bot hesapların dışlanması hangi iki riski kapatır? (İki tanesini seç.)",
+      "opts": [
+        "Rastgele birinin ajanı çalıştırması",
+        "Ajanın kendi yorumuyla kendini sonsuz tetiklemesi",
+        "Bağlamın hızla dolması",
+        "Testlerin yavaş çalışması"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Yazma yetkisi şartı yetkisiz tetiklemeyi, bot denetimi ise hem yetkisiz otomasyonu hem sonsuz döngüyü engeller.</b> Bunlar, dışarıdan yazılabilen içeriğin ajana ulaştığı bir yüzeyde ilk savunma katmanıdır."
+    },
+    {
+      "topic": "2.4 Toplu dönüşüm",
+      "q": "300 dosyada bir fonksiyon adını değiştirmek gerekiyor. Doğru araç seçimi ve gerekçesi nedir?",
+      "opts": [
+        "Deterministik bir kod dönüştürücü; ajan daha pahalı ve sessiz sapma riski taşır",
+        "Ajanla kabuk döngüsü; en esnek yöntem",
+        "Ajanla tek oturum; en hızlı yöntem",
+        "Ajanla paralel yayma; en ölçeklenebilir yöntem"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ayırt edici soru: bu değişikliği düzenli ifadeyle güvenle yapabilir miyim?</b> Evetse ajan yanlış araçtır. Risk, ortalama başarıda değil dağılımın kuyruğunda: 300 dosyanın 297'sini doğru yapıp 3'ünde \"iyileştirme\" yapabilir ve bunu fark etmezsin."
+    },
+    {
+      "topic": "2.4 Toplu dönüşüm",
+      "q": "Toplu bir dönüşümde testler geçti ve derleme başarılı. Yine de yapılması gereken doğrulama hangisidir?",
+      "opts": [
+        "Rastgele seçilen birkaç dosyayı elle okumak",
+        "Testleri ikinci kez çalıştırmak",
+        "Kapsam raporu üretmek",
+        "Diff'i tek commit'te toplamak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Otomatik denetimler \"bozulmadı\" der, \"doğru yapıldı\" demez.</b> Dönüşümün istenen biçimde uygulanıp uygulanmadığını yalnızca örneklem incelemesi gösterir — ve bu katman en çok atlanandır."
+    },
+    {
+      "topic": "2.4 Toplu dönüşüm",
+      "q": "Toplu bir dönüşümde pilot aşamasını atlamak neden ölçekle **çarpan** bir hata üretir?",
+      "opts": [
+        "İstemdeki tek bir eksik, dosya sayısı kadar tekrarlanır",
+        "Pilot olmadan ajan çalışmayı reddeder",
+        "Pilot aşaması bağlamı temizler",
+        "Pilot olmadan testler çalıştırılamaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İki dosyada iki küçük düzeltme, iki yüz dosyada iki yüz hatadır.</b> Pilot, istemi düzeltmenin en ucuz olduğu andır — sonrasında her düzeltme yapılmış işi geri almayı da gerektirir. Ve pilotun tek amacı diff'i okumaktır; okunmuyorsa aşama yapılmamıştır."
+    },
+    {
+      "topic": "2.4 Toplu dönüşüm",
+      "q": "Sessiz kırpmaya karşı ajanın raporuna bağlı **olmayan** savunma nedir?",
+      "opts": [
+        "Beklenen ve gerçekleşen sayıları kendin karşılaştırmak",
+        "Her dosya için tek satır rapor istemek",
+        "Atlama sebebini yazmasını istemek",
+        "Sonunda toplam sayı vermesini istemek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Diğer üçü istem tarafındaki savunmalardır ve ajanın dürüst raporlamasına dayanır.</b> Liste satır sayısı ile başarılı rapor sayısını karşılaştırmak ise bağımsız bir denetimdir: iki sayı tutmuyorsa iş bitmemiştir, ajan ne derse desin."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

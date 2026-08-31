@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-1",
+  code: "Proje kuralları · 2.1",
+  title: "CLAUDE.md",
+  back: "2.1-claude-md.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ne olduğu",
+      q: "Kural dosyasına \"Asla .env dosyasını düzenleme\" yazdın. Bu ifadenin niteliği nedir?",
+      opts: [
+        "Bir ricadır; genelde uyulur ama garanti değildir",
+        "Bir zorlamadır; ajan bu dosyayı hiçbir koşulda düzenleyemez",
+        "Yalnızca ilk oturumda geçerli bir kısıttır",
+        "İzin kuralına dönüştürülerek otomatik uygulanır"
+      ],
+      a: [0],
+      why: "<b>Kural dosyası bağlamdır, zorlama katmanı değildir.</b> Model onu okur ve genelde uyar; ama uyacağının garantisi yoktur. Kesinlik isteyen bir kural, dosya yazımından önce çalışan bir hook ya da bir engelleme izin kuralı olmalıdır. Kural dosyası her oturumda okunur, ilk oturumla sınırlı değildir."
+    },
+    {
+      topic: "Ne yazılır",
+      q: "Bir satırın kural dosyasında yer alıp almayacağına karar verirken sorulacak tek soru hangisidir?",
+      opts: [
+        "Bu satırı silsem ajan hata yapar mı?",
+        "Bu satır ekibin hepsi için geçerli mi?",
+        "Bu satır kodda başka yerde yazıyor mu?",
+        "Bu satır 80 karakterden kısa mı?"
+      ],
+      a: [0],
+      why: "<b>Ölçüt davranış değişikliğidir.</b> Ajan o satır olmadan da doğru davranıyorsa satır yalnızca bağlam harcar. Ekip kapsamı ve kod tekrarı ikincil sorulardır; satır uzunluğu tamamen ilgisizdir."
+    },
+    {
+      topic: "Ne yazılır",
+      q: "Aşağıdakilerden hangi ikisi kural dosyasına **yazılmamalıdır**? (İki tanesini seç.)",
+      opts: [
+        "Dilin standart biçim kuralları",
+        "Dosya dosya kod tabanı tarifi",
+        "Tahmin edilemeyecek özel test komutu",
+        "Zorunlu bir ortam değişkeni gibi ortam tuhaflığı"
+      ],
+      a: [0, 1],
+      why: "<b>Model dilin standartlarını zaten biliyor; kod tabanının yapısını da okuyarak bulabiliyor.</b> İkisi de \"silsem hata yapar mı?\" testini geçemez. Özel komutlar ve ortam tuhaflıkları ise ajanın kendi başına bulamayacağı, tam da yazılması gereken bilgilerdir."
+    },
+    {
+      topic: "Şişme paradoksu",
+      q: "Ajan kural dosyandaki bir maddeye ısrarla uymuyor. En olası sebep ve doğru hamle hangisidir?",
+      opts: [
+        "Dosya çok uzun ve kural gürültüde kayboluyor; dosyayı budamak gerekir",
+        "Kural yeterince vurgulu yazılmamış; büyük harfle tekrar yazmak gerekir",
+        "Model çok küçük; daha büyük modele geçmek gerekir",
+        "Kural dosyası yanlış konumda; kök dizine taşımak gerekir"
+      ],
+      a: [0],
+      why: "<b>Uzun dosya, içindeki kuralların görmezden gelinmesine yol açar.</b> Refleks olarak yapılan şey — kuralı daha uzun ve vurgulu yazmak — dosyayı büyüterek durumu kötüleştirir. Model büyütmek gürültü sorununu çözmez; konum ise yükleniyorsa zaten doğrudur (bunu `/context` ile doğrularsın)."
+    },
+    {
+      topic: "Şişme paradoksu",
+      q: "Vurgu (\"ÖNEMLİ:\") kullanımı hakkında hangisi doğrudur?",
+      opts: [
+        "Kıt bir kaynaktır; her satır vurgulanırsa hiçbiri öne çıkmaz",
+        "Ne kadar çok satır vurgulanırsa uyum o kadar artar",
+        "Vurgu kural dosyasında hiçbir etki yapmaz",
+        "Vurgu, kuralı zorlama katmanına taşır"
+      ],
+      a: [0],
+      why: "<b>Tek bir kurala eklenen vurgu işe yarar, çünkü ayırt eder.</b> Her satır vurgulanınca ayırt edicilik kaybolur. Vurgu gerçek bir etki yaratır ama kuralın niteliğini değiştirmez: bağlam olan bir şey vurguyla zorlamaya dönüşmez."
+    },
+    {
+      topic: "Konum ve yükleme",
+      q: "Farklı kapsamlardaki kural dosyaları (kurumsal, kullanıcı, proje, yerel) nasıl davranır?",
+      opts: [
+        "Birikirler; hepsi bağlama girer",
+        "En dar kapsamlı olan diğerlerini ezer",
+        "Yalnızca en yakın olanı yüklenir",
+        "Kurumsal olan diğerlerinin yüklenmesini engeller"
+      ],
+      a: [0],
+      why: "<b>Kural dosyaları toplamsaldır, üzerine yazmaz.</b> Bu yüzden çelişen iki talimat bıraktığında model birini keyfî olarak seçebilir — çelişkileri temizlemek senin sorumluluğun. Ezme davranışı skill ve alt ajan gibi <i>ada göre</i> çözülen mekanizmalarda görülür."
+    },
+    {
+      topic: "Konum ve yükleme",
+      q: "Alt dizindeki bir kural dosyası ne zaman bağlama girer?",
+      opts: [
+        "Ajan o dizindeki bir dosyaya dokunduğunda",
+        "Her oturumun başında, diğerleriyle birlikte",
+        "Yalnızca açıkça içe aktarılırsa",
+        "Hiçbir zaman; yalnızca kök dizindeki okunur"
+      ],
+      a: [0],
+      why: "<b>Açılışta yüklenenler, çalışma dizininden yukarı doğru olanlardır.</b> Alt dizindekiler talep üzerine, o dizine dokunulduğunda gelir. Bu, büyük depolarda bağlam tasarrufu sağlayan bir davranıştır — ve sıkıştırma sonrası neden \"kaybolmuş\" görünebileceklerini de açıklar."
+    },
+    {
+      topic: "İçe aktarma",
+      q: "`@docs/git-yonergesi.md` biçiminde içe aktarma ne kazandırır?",
+      opts: [
+        "Düzen kazandırır; bağlam tasarrufu sağlamaz çünkü dosya açılışta yüklenir",
+        "Bağlam tasarrufu sağlar; dosya yalnızca gerektiğinde yüklenir",
+        "Dosyayı zorlama katmanına taşır",
+        "Dosyanın ekip tarafından görülmesini engeller"
+      ],
+      a: [0],
+      why: "<b>İçe aktarılan dosya açılışta genişletilir ve bağlama girer.</b> Yani uzun bir kural dosyasını parçalara bölmek okunabilirliği artırır ama maliyeti düşürmez. Gerçek tasarruf için yola kapsanmış kural dosyaları ya da talep üzerine yüklenen skill kullanılır."
+    },
+    {
+      topic: "İçe aktarma",
+      q: "Kural dosyasında bir yol adını içe aktarmadan yalnızca anmak istiyorsun. Ne yaparsın?",
+      opts: [
+        "Ters tırnak içine alırsın",
+        "Başına ters eğik çizgi koyarsın",
+        "Büyük harfle yazarsın",
+        "Mümkün değildir, her yol içe aktarılır"
+      ],
+      a: [0],
+      why: "<b>İçe aktarma ayrıştırması kod aralıklarını ve kod bloklarını atlar.</b> Ters tırnak içine alınan metin düz metin olarak kalır. Bu, README ya da bir yapılandırma dosyasından söz ederken istemeden onu bağlama sokmayı önler."
+    },
+    {
+      topic: "Kurma ve doğrulama",
+      q: "Kural dosyanın gerçekten yüklendiğini nasıl doğrularsın?",
+      opts: [
+        "/context çalıştırıp bellek dosyaları listesine bakarak",
+        "Ajana \"kural dosyamı okudun mu?\" diye sorarak",
+        "/permissions çalıştırarak",
+        "Dosyayı yeniden kaydederek"
+      ],
+      a: [0],
+      why: "<b>/context yüklenen bellek dosyalarını listeler</b> — dosya orada görünmüyorsa ajan onu görmüyordur. Ajana sormak güvenilir değildir: cevabı bir iddiadır, gözlem değil. /permissions izin kurallarına bakar, kural dosyalarına değil."
+    },
+    {
+      topic: "Kurma ve doğrulama",
+      q: "`/init` çıktısını olduğu gibi bırakmak neden kötü fikirdir?",
+      opts: [
+        "Çoğunlukla koddan çıkarılabilecek içerik üretir; asıl değer çıkarılamayan bilgidedir",
+        "Üretilen dosya yanlış konuma yazılır",
+        "Üretilen dosya git tarafından yok sayılır",
+        "`/init` var olan dosyayı siler"
+      ],
+      a: [0],
+      why: "<b>`/init` kod tabanını inceleyip bulabildiklerini yazar</b> — dizin yapısı, bağımlılıklar, mimari özet. Bunlar tam olarak \"silsem hata yapar mı?\" testini geçemeyen içeriktir, çünkü ajan onları zaten okuyarak bulabilir. `/init` var olan dosyayı ezmez, iyileştirme önerir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Ajan, kural dosyamda cevabı yazan bir şeyi bana soruyor.\" En olası teşhis?",
+      opts: [
+        "İfade belirsiz; ölçülebilir biçimde yeniden yazılmalı",
+        "Dosya çok uzun",
+        "Dosya yüklenmiyor",
+        "Model soruları rastgele üretiyor"
+      ],
+      a: [0],
+      why: "<b>İki farklı belirti, iki farklı teşhis:</b> kurala <i>uyulmuyorsa</i> dosya muhtemelen uzundur; dosyada yazan bir şey <i>soruluyorsa</i> ifade belirsizdir. \"Formatı düzgün yap\" yerine \"2 boşluk girinti kullan\" gibi ölçülebilir yazmak bunu çözer. Yüklenmiyor olsaydı `/context` bunu gösterirdi."
+    },
+    {
+      topic: "Uygulama",
+      q: "Kural dosyasında bakımcılar için not bırakmanın bağlam harcamayan yolu nedir?",
+      opts: [
+        "Blok düzeyinde HTML yorumu kullanmak",
+        "Notu kod bloğu içine yazmak",
+        "Notu ayrı bir dosyaya alıp içe aktarmak",
+        "Notu dosyanın en altına koymak"
+      ],
+      a: [0],
+      why: "<b>Blok düzeyindeki HTML yorumları bağlama girmeden ayıklanır.</b> Kod bloğu içindeki yorumlar korunur, yani bağlam harcar. İçe aktarma da dosyayı bağlama sokar. Konum (üst/alt) hiçbir şeyi değiştirmez."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Kural dosyası her isteğe binen sabit bir vergidir; şişmesi kuralların görmezden gelinmesine yol açar",
+        "Ne kadar çok kural yazılırsa ajan o kadar iyi çalışır",
+        "Kural dosyası, izin sisteminin yerine geçebilecek bir zorlama katmanıdır",
+        "Kural dosyası yalnızca yeni başlayan ekipler için gereklidir"
+      ],
+      a: [0],
+      why: "<b>Maliyet ve uyum aynı yöne çalışır: kısa dosya hem ucuz hem etkilidir.</b> Daha çok kural yazmak ters teper; kural dosyası zorlama katmanı değildir; ve deneyimli ekipler de kural dosyasından yararlanır — çünkü ajanın koddan çıkaramayacağı bilgi her ekipte vardır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

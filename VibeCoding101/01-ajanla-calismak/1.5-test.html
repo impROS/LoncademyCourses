@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.5 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-5",
+  code: "Temeller · 1.5",
+  title: "Doğrulama refleksi",
+  back: "1.5-dogrulama-refleksi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Denetim nedir",
+      q: "Bir şeyin \"denetim\" sayılması için taşıması gereken özellik nedir?",
+      opts: [
+        "Konuşmaya geri dönen, okunabilir bir geçti/kaldı sinyali üretmesi",
+        "Bir test çerçevesi kullanması",
+        "Sürekli tümleştirme hattında çalışması",
+        "İnsan tarafından yazılmış olması"
+      ],
+      a: [0],
+      why: "<b>Belirleyici olan, ajanın sonucu okuyup ona göre davranabilmesi.</b> Bu yüzden derleme çıkış kodu, lint çıktısı, karşılaştırma betiği ve ekran görüntüsü de denetimdir. Test çerçevesi kullanmak ya da hatta çalışmak şart değil; kim yazdığı da önemli değil."
+    },
+    {
+      topic: "Denetim nedir",
+      q: "\"Bütün testler geçiyor\" ile \"uygulama çalışıyor\" arasındaki farkı hangi denetim kapatır?",
+      opts: [
+        "Uygulamayı gerçekten ayağa kaldırıp deneme",
+        "Daha fazla birim testi yazma",
+        "Tip denetleyiciyi çalıştırma",
+        "Lint kurallarını sıkılaştırma"
+      ],
+      a: [0],
+      why: "<b>Test kapsamı gerçek kullanımı kapsamayabilir</b>: derlenen, testleri geçen ama açılmayan bir uygulama tamamen mümkündür. Çalıştırıp denemek testin yerine değil <i>üstüne</i> gelir. Daha fazla birim testi, tip denetimi ve lint aynı katmanda kalır; çalışma zamanını sınamaz."
+    },
+    {
+      topic: "Sıkılık düzeyleri",
+      q: "Dört doğrulama düzeyinden hangisi bugün, hiçbir kurulum olmadan işe yarar?",
+      opts: [
+        "İstemin içine kabul ölçütü yazmak",
+        "Durdurma olayında çalışan hook kurmak",
+        "Oturum hedefi tanımlamak",
+        "İkinci bir inceleyici bağlam çalıştırmak"
+      ],
+      a: [0],
+      why: "<b>\"…çalıştır ve çıktıyı göster\" beş kelimedir ve hemen işe yarar.</b> Diğer üçü daha kesin ama kurulum ister: hook yapılandırması, hedef tanımı ya da ayrı bir inceleyici çağrısı. Günlük işte birinci düzey, gözetimsiz işte üçüncü ve dördüncü düzey kullanılır."
+    },
+    {
+      topic: "Sıkılık düzeyleri",
+      q: "Hangi iki düzey, başında durmadığın bir işin doğru bitmesini sağlar? (İki tanesini seç.)",
+      opts: [
+        "Durdurma hook'u",
+        "İkinci göz incelemesi",
+        "İstemin içine kabul ölçütü yazmak",
+        "Ajana daha kibar davranmak"
+      ],
+      a: [0, 1],
+      why: "<b>Hook deterministiktir: betiği geçmeden tur bitemez.</b> <b>İkinci göz</b> ise taze bir bağlamda sonucu denetler, yani işi yapan tarafın kendi kendini not vermesini engeller. İstem içi ölçüt yardımcıdır ama modelin uyumuna bağlıdır; nezaket ölçülebilir bir etki değildir."
+    },
+    {
+      topic: "Sıkılık düzeyleri",
+      q: "Durdurma hook'u kurarken hangi riske dikkat edilmelidir?",
+      opts: [
+        "Betik hiç geçmezse ajan turu bitiremez",
+        "Hook'lar bağlamı hızla doldurur",
+        "Hook'lar yalnızca sürekli tümleştirme ortamında çalışır",
+        "Hook'lar izin kurallarını devre dışı bırakır"
+      ],
+      a: [0],
+      why: "<b>Geçmesi imkânsız bir betik ajanı kilitler.</b> Araçlar genelde belli sayıda engellemeden sonra hook'u geçersiz kılar, ama tasarımda betiğin gerçekten geçebilir olduğundan emin olmak gerekir. Hook çıktı döndürmedikçe bağlam maliyeti yok denecek kadar azdır ve izin kurallarını kaldırmaz."
+    },
+    {
+      topic: "Kanıt isteme",
+      q: "Ajan \"düzelttim, çalışıyor\" dedi. En yararlı takip cümlesi hangisidir?",
+      opts: [
+        "\"Ne çalıştırdın, ne döndü? Komutu ve çıktısını göster.\"",
+        "\"Emin misin?\"",
+        "\"Bir daha kontrol et.\"",
+        "\"Tamam, birleştiriyorum.\""
+      ],
+      a: [0],
+      why: "<b>Kanıt istemek, ikinci bir iddia istemekten farklıdır.</b> \"Emin misin?\" ve \"bir daha kontrol et\" yalnızca aynı kanıyı tekrarlatır. Doğrulamasız birleştirmek ise tam olarak kaçınılmak istenen sonuçtur. Kanıt okumak, işi kendin baştan yapmaktan da hızlıdır."
+    },
+    {
+      topic: "Kök sebep",
+      q: "Aşağıdakilerden hangileri \"denetimi geçirir ama sorunu çözmez\" kalıbına örnektir? (İki tanesini seç.)",
+      opts: [
+        "Başarısız testi atlanacak şekilde işaretlemek",
+        "Hatayı boş bir yakalama bloğuyla yutmak",
+        "Hatayı yeniden üreten bir test yazıp sonra düzeltmek",
+        "Kök sebebi bulup ilgili işlevi düzeltmek"
+      ],
+      a: [0, 1],
+      why: "<b>Testi atlamak ve hatayı sessizce yutmak, sinyali susturur ama davranışı düzeltmez.</b> Üçüncü ve dördüncü şık tam da doğru yaklaşımdır: önce hatayı görünür kıl, sonra kaynağını düzelt. Bu ayrım istemde tek cümleyle kapatılır: \"kök sebebi düzelt, bastırma\"."
+    },
+    {
+      topic: "Kök sebep",
+      q: "İstemine hangi cümleyi eklemek belirti bastırmayı en doğrudan engeller?",
+      opts: [
+        "\"Kök sebebi düzelt, hatayı bastırma; testi değiştireceksen önce nedenini açıkla.\"",
+        "\"Dikkatli ol ve iyi kod yaz.\"",
+        "\"Mümkün olduğunca az satır değiştir.\"",
+        "\"Bu çok önemli bir düzeltme.\""
+      ],
+      a: [0],
+      why: "<b>Yasak davranışı adıyla anmak ve bir gerekçe şartı koymak</b>, ajanın kolay çıkış yolunu kapatır. \"Dikkatli ol\" ve \"önemli\" ölçülemez; \"az satır değiştir\" ise tam tersine bastırmayı teşvik edebilir, çünkü hatayı yutmak genelde en kısa değişikliktir."
+    },
+    {
+      topic: "İkinci göz",
+      q: "Kodu yazan oturum onu neden tarafsız inceleyemez?",
+      opts: [
+        "Kendi gerekçesini biliyor; değişikliği o gerekçenin ışığında değerlendirir",
+        "Aynı oturumda inceleme aracı kullanılamaz",
+        "Bağlam dolu olduğu için dosyaları okuyamaz",
+        "İnceleme yalnızca farklı bir modelle mümkündür"
+      ],
+      a: [0],
+      why: "<b>Taze bir bağlam yalnızca değişikliği ve ölçütü görür</b>, onu üreten akıl yürütmeyi değil — bu yüzden sonucu kendi başına değerlendirir. Teknik bir engel yok; farklı model şart değil, farklı <i>bağlam</i> şart."
+    },
+    {
+      topic: "İkinci göz",
+      q: "İnceleyici 14 bulgu bildirdi. Doğru yaklaşım hangisidir?",
+      opts: [
+        "Doğruluğu ya da yazılı gereksinimleri etkileyenleri ayıklamak, gerisini isteğe bağlı saymak",
+        "On dördünü de uygulamak, inceleyici tarafsızdır",
+        "Hiçbirini uygulamamak, inceleyiciler abartır",
+        "Bulguları ikinci bir inceleyiciye tekrar incelettirmek"
+      ],
+      a: [0],
+      why: "<b>Eksik aramaya gönderilen inceleyici, iş sağlam olsa bile eksik bulur</b> — çünkü ondan istenen budur. Hepsini uygulamak aşırı mühendisliğe götürür: gereksiz soyutlama, savunmacı kod, olmayacak durumlar için testler. Hepsini yok saymak da bilgiyi çöpe atar. Filtre doğruluk ölçütüdür."
+    },
+    {
+      topic: "İkinci göz",
+      q: "İnceleyiciye verilecek en iyi yönerge hangisidir?",
+      opts: [
+        "\"Biçim tercihlerini değil, doğruluğu etkileyen eksikleri raporla\"",
+        "\"Bulabildiğin her sorunu listele\"",
+        "\"Kodu daha iyi hâle getirecek her öneriyi yaz\"",
+        "\"Kodu onayla ve geç\""
+      ],
+      a: [0],
+      why: "<b>İnceleyicinin çıktısını, ona verdiğin ölçüt belirler.</b> \"Her sorun\" ve \"her öneri\" istemek, aşırı mühendisliği doğrudan davet eder. Onaylatmaya göndermek ise incelemenin amacını ortadan kaldırır — taze bağlamın değeri, sonucu bağımsız değerlendirmesidir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Doğrulamayı sonra ben yaparım\" yaklaşımının en önemli sonucu nedir?",
+      opts: [
+        "Döngü sende kapanır; gözetimsiz çalışma imkânsızlaşır ve her hata seni bekler",
+        "Maliyet artar ama kalite değişmez",
+        "Ajan daha az tur harcar, bu iyidir",
+        "Hiçbir sonucu yoktur, ikisi eşdeğerdir"
+      ],
+      a: [0],
+      why: "<b>Doğrulama halkası sen olduğunda, ajanın ilerleyebileceği hız senin dikkat sürene bağlanır.</b> Denetim ajanda olduğunda ise iş, sen bakmadan da doğru bitebilir. Tur sayısındaki azalma gerçek olabilir ama kazanç değil: sınanmamış kod üretmenin ucuz görünen biçimidir."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir hata bildirimini düzelttirirken \"önce hatayı gösteren başarısız bir test yaz\" demenin faydası nedir?",
+      opts: [
+        "Hatayı yeniden üretilebilir kılar ve düzeltmenin işe yaradığını kanıtlar",
+        "Ajanın daha az tur harcamasını sağlar",
+        "Testin kod kapsamını artırır",
+        "Hatanın kök sebebini otomatik bulur"
+      ],
+      a: [0],
+      why: "<b>Başarısız test, hem hatanın var olduğunun hem de düzeltmenin işe yaradığının kanıtıdır.</b> Kapsam artışı yan faydadır; tur sayısı genelde azalmaz, artar. Kök sebebi otomatik bulmaz — ama bulunduğunda doğrulanabilir kılar."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Doğrulayamadığın şeyi teslim etme",
+        "Yeterince iyi bir model doğrulamaya gerek bırakmaz",
+        "Her değişiklik için dört doğrulama düzeyinin dördü de kurulmalıdır",
+        "Doğrulama, ajanın değil geliştiricinin sorumluluğudur"
+      ],
+      a: [0],
+      why: "<b>Bütün konu bu tek cümlenin etrafında.</b> Dört düzeyin hepsini her işe kurmak gereksiz maliyettir; düzey işin riskine göre seçilir. Doğrulamanın geliştiricide kalması ise tam olarak kaçınılmak istenen durum — amaç, döngüyü ajanda kapatabilmek."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

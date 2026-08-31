@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genel deneme — Vibe Coding 101 — Temeller</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  "id": "final",
+  "code": "Genel deneme",
+  "title": "Vibe Coding 101 — Temeller — 36 soru, 45 dakika",
+  "back": "son-tekrar.md",
+  "backLabel": "Son tekrara dön",
+  "mode": "exam",
+  "pass": 80,
+  "time": 2700,
+  "passNote": "bu setin eşiği %80",
+  "notes": [
+    "Sorular konu testlerinin kopyası değildir: aynı bilgi, farklı senaryo.",
+    "Takıldığın soruyu geç; soru başına ortalama 75 saniyen var.",
+    "Zayıf alan raporundaki konu kodlarına dönerek çalış."
+  ],
+  "questions": [
+    {
+      "topic": "00.1 Genel bakış",
+      "q": "Bir ekip, ajanla üretilen kodu kimse okumadan üretime alıyor ve buna \"vibe coding\" diyor. Terimin tarihçesi açısından en doğru değerlendirme hangisidir?",
+      "opts": [
+        "Terim atılacak projeler için tarif edilmişti; yaşayacak yazılım için önerilen şey yüksek denetimli ajan mühendisliğidir",
+        "Terim tam olarak bu kullanımı tarif ediyordu, ekip doğru uyguluyor",
+        "Terim yalnızca belirli dillerde geçerlidir",
+        "Terim hiçbir zaman gerçek bir çalışma biçimini tarif etmedi"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Terimi ortaya atan kişi bunu hafta sonu projeleri için tarif etti ve sonradan yerine \"ajan mühendisliği\"ni önerdi.</b> Ayrımı özetleyen kelime <i>denetim</i>: aynı araçlar, farklı beklenti."
+    },
+    {
+      "topic": "00.1 Genel bakış",
+      "q": "Bu setin \"büyük fikri\" olarak verilen cümle hangisidir?",
+      "opts": [
+        "Kod yazmanın maliyeti düştü; kodun doğru olduğunu bilmenin maliyeti düşmedi",
+        "Yeterince iyi bir istem yazarsan doğrulamaya gerek kalmaz",
+        "Ajanlar artık insanlardan daha az hata yapıyor",
+        "Bağlam penceresi büyüdükçe tüm sorunlar çözülür"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Otuz iki konunun tamamı bu cümlenin bir sonucu.</b> Diğer üç şık setin karşı çıktığı varsayımlar: iyi istem doğrulamanın yerine geçmez, hata oranı karşılaştırması bu setin iddiası değildir, ve büyük pencere sessiz bozulmayı kaldırmaz — erteler."
+    },
+    {
+      "topic": "00.2 Kurulum",
+      "q": "Bu setin kurulum bölümü, kurulum komutunu bilerek yazmıyor. Gerekçesi nedir?",
+      "opts": [
+        "Paket adları ve kurulum yolu değişir; resmî kaynağa gitme alışkanlığı kalıcıdır",
+        "Komut çok uzun olduğu için",
+        "Kurulum işletim sistemine göre değiştiği için",
+        "Kurulum ücretli olduğu için"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Buraya yazılan komut altı ay sonra yanlış olur.</b> Setin `5.3` konusu bunu genelleştiriyor: birincil kaynağa gitmek bir alışkanlık, ezberlenen komut ise geçici bir bilgi. İşletim sistemi farkı gerçek bir etken ama asıl gerekçe eskime."
+    },
+    {
+      "topic": "00.3 Maliyet temeli",
+      "q": "Bir geliştirici sabah açtığı oturumu öğlene kadar açık bırakıp tek satırlık bir soru soruyor ve kotasından beklenmedik bir düşüş görüyor. İki sebep hangileridir? (İki tanesini seç.)",
+      "opts": [
+        "Soru, o güne kadarki tüm konuşma geçmişini taşıdı",
+        "Uzun aradan sonraki ilk istek istem önbelleğini ıskaladı",
+        "Kısa istemler daha pahalı işlenir",
+        "Boştaki oturumlar sabit bir ücret üretir"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Her istek konuşmanın tamamını taşır</b> ve <b>önbelleğin bir ömrü vardır</b>: ara verildiğinde ilk istek tüm geçmişi yeniden işletir. İstem uzunluğu ile işleme maliyeti arasında ters bir ilişki yoktur; sabit bir bekleme ücreti de yoktur."
+    },
+    {
+      "topic": "1.1 Ajan döngüsü",
+      "q": "Bir oturumda `npm test` çalıştırıldı ve 3000 satırlık çıktı geldi. Bu çıktının sonraki turlara etkisi nedir?",
+      "opts": [
+        "Bağlamda kalır ve sonraki her turda yeniden gönderilir",
+        "Yalnızca o turda kullanılır",
+        "Otomatik olarak özetlenir",
+        "Diske yazılır, bağlama girmez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bağlam birikir, akmaz.</b> Bir kez giren büyük çıktı, oturumun geri kalanında sabit bir yük olur — maliyeti, hızı ve sessiz bozulmayı birlikte etkiler. Otomatik özetleme yalnızca pencere dolmaya yaklaştığında devreye girer."
+    },
+    {
+      "topic": "1.1 Ajan döngüsü",
+      "q": "Bir ekip \"göç dosyaları asla değiştirilmesin\" kuralını her yere yazdı ama ajan bir kez değiştirdi. Kesin çözüm hangi katmandadır?",
+      "opts": [
+        "Hook — deterministik katman",
+        "Kural dosyası — daha vurgulu yazmak",
+        "Skill — yordamı ayrıntılandırmak",
+        "Alt ajan — ayrı bağlamda denetletmek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kural dosyası, skill ve alt ajan talimatları bağlamdır: genelde çalışır, garanti vermez.</b> Deterministik katman hook, izin kuralları ve kum havuzudur. \"Tutması şartsa\" bir kural bunlardan birine yazılır."
+    },
+    {
+      "topic": "1.1 Ajan döngüsü",
+      "q": "Ajan döngüsünde \"bitti\" kararını kim verir ve bunun sonucu nedir?",
+      "opts": [
+        "Model verir; dışarıdan ölçüt konmazsa \"bitmiş görünüyor\" tek sinyaldir",
+        "Kullanıcı verir; her tur onay ister",
+        "Test takımı verir; testler geçince biter",
+        "Araç verir; belirlenen tur sayısında biter"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Döngü, model araç çağırmayı bırakıp cevap yazdığında biter.</b> Bu tek gerçek, setin doğrulama vurgusunun kaynağı: dışarıdan bir bitiş ölçütü koymazsan modelin kanısına güvenmiş olursun."
+    },
+    {
+      "topic": "1.1 Ajan döngüsü",
+      "q": "Bir oturum, sen hiçbir şey yazmadan önce hangi kalemlerle dolu başlar? (İki tanesini seç.)",
+      "opts": [
+        "Kural dosyaları ve otomatik bellek dizini",
+        "MCP araç adları ve skill açıklamaları",
+        "Okunacak dosyaların tam içeriği",
+        "Testlerin son çalıştırma sonuçları"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Sabit yük: sistem talimatı, kural dosyaları, bellek indeksi, ortam ve git bilgisi, MCP araç adları, skill açıklamaları.</b> Dosya içerikleri ancak okunduğunda girer; test sonuçları ise komut çalıştırıldığında. Bu yüzden `/context` ilk gün bile boş göstermez."
+    },
+    {
+      "topic": "1.2 İstem yazma",
+      "q": "\"auth modülünde bir hata var, düzelt\" isteminde hangi iki parça eksiktir? (İki tanesini seç.)",
+      "opts": [
+        "Kısıt — neyin yapılmaması gerektiği",
+        "Kabul ölçütü — bitişin nasıl ölçüleceği",
+        "Hedef — ne olmasının istendiği",
+        "Kaynak — nereye bakılacağı"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Hedef (hata düzeltme) ve kaynak (auth modülü) verilmiş, ama zayıf.</b> Asıl eksikler kısıt ve kabul ölçütü: ajan testi değiştirerek \"düzeltebilir\" ve çalıştırmadan bitmiş sayabilir. Bu iki eksik, en pahalı sonuçları üretir."
+    },
+    {
+      "topic": "1.2 İstem yazma",
+      "q": "Büyük bir özelliğe başlarken ajanın sana sorular sorup bir belirtim yazmasını istedin. Uygulamaya neden temiz bir oturumda başlanır?",
+      "opts": [
+        "Belirtim diskte; tartışma turları bağlamı doldurmuş durumda",
+        "Aynı oturumda belirtim okunamaz",
+        "Yeni oturum daha güçlü model kullanır",
+        "Belirtim yalnızca yeni oturumda geçerli olur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bir bağlam kararı.</b> Belirtime ulaşmak için konuşma geçmişine gerek yok — dosyada. Soru-cevap turları ise bağlamın büyük kısmını doldurmuş durumda; temiz pencere + yazılı belirtim daha iyi bir başlangıçtır."
+    },
+    {
+      "topic": "1.2 İstem yazma",
+      "q": "\"Takvim bileşeni ekle\" isteminde en kritik eksik nedir?",
+      "opts": [
+        "Var olan kalıbın gösterilmemesi; ajan projenin yazma biçimini tahmin etmez",
+        "İsteğin çok kısa olması",
+        "Bileşen adının belirtilmemesi",
+        "Teknoloji seçiminin yazılmaması"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ajan kod tabanındaki yazılmamış kalıpları tahmin etmez.</b> \"Ana sayfadaki bileşenlere bak, X iyi bir örnek, aynı kalıbı izle\" demek, yirmi satırlık bir biçim tarifinden daha etkilidir — ve mimari kaymayı doğrudan önler."
+    },
+    {
+      "topic": "1.2 İstem yazma",
+      "q": "Hangi durumda belirsiz bir istem doğru araçtır?",
+      "opts": [
+        "Yanlış anlaşılmanın maliyeti düşükken — keşif, öğrenme, varsayım sınama",
+        "Zaman kısıtlı olduğunda",
+        "Model güçlü olduğunda",
+        "Hiçbir zaman"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ayırt edici soru: yanlış anlaşılmanın maliyeti ne?</b> Üç durumda da değişiklik istenmiyor, bilgi isteniyor — ve yanlış anlaşılmanın bedeli bir turdan ibaret. Kesinlik, pahalı olduğu yerde erdemdir; keşifte körlüktür."
+    },
+    {
+      "topic": "1.3 Bağlam",
+      "q": "Bir geliştirici \"model bugün kötü, sabah çok daha iyiydi\" diyor. Bu belirtinin en olası açıklaması ve çözümü nedir?",
+      "opts": [
+        "Bağlam doldu ve sessiz bozulma başladı; bağlamı temizlemek gerekir",
+        "Sunucu tarafında model değiştirildi; beklemek gerekir",
+        "Kota doldu; plan yükseltmek gerekir",
+        "Kural dosyası bozuldu; yeniden yazmak gerekir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bozulma sessizdir: hata mesajı vermez, yalnızca kalite düşer.</b> Model gün ortasında değişmez; kota dolduğunda açık bir uyarı gelir. Belirtiler dolaylıdır — talimat kaçırma, az önce düzeltilen hatanın tekrarı."
+    },
+    {
+      "topic": "1.3 Bağlam",
+      "q": "Uzun bir oturumda sıkıştırma gerçekleşti. Aşağıdakilerden hangisi **kalıcı olarak** kaybolur?",
+      "opts": [
+        "Yalnızca sohbette söylenmiş, hiçbir dosyaya yazılmamış talimatlar",
+        "Ana kural dosyasının içeriği",
+        "Otomatik bellek notları",
+        "Plan modunda yazılan plan"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Diskte olan geri gelir, yalnızca konuşmada olan özete karışır.</b> Kural dosyası, otomatik bellek ve plan diskten yeniden yüklenir. Buradan çıkan kural: kalıcı olması gereken talimatı sohbette bırakma."
+    },
+    {
+      "topic": "1.3 Bağlam",
+      "q": "Sıkıştırma sonrası, oturumda okunan dosyalarla ilgili ne olur?",
+      "opts": [
+        "Yalnızca son değiştirilenlerden birkaçı yeniden okunur",
+        "Tümü yeniden okunur",
+        "Hiçbiri yeniden okunmaz",
+        "Yalnızca ilk okunan dosya korunur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Sınırlı sayıda dosya geri okunur, hepsi değil.</b> Bu yüzden uzun bir oturumdan sonra ajan \"hangi dosyalarda çalışıyorduk\" bilgisini kısmen kaybedebilir. Yönlendirmeli sıkıştırma bu kaybı azaltır: neyin korunacağını sen söylersin."
+    },
+    {
+      "topic": "1.3 Bağlam",
+      "q": "Bir geliştirici \"1 milyon tokenlık pencere kullanıyorum, bağlam yönetimine gerek yok\" diyor. İki hata hangileridir? (İki tanesini seç.)",
+      "opts": [
+        "Bozulma ortadan kalkmaz, yalnızca ertelenir",
+        "Dolan geniş pencere daha pahalıdır; her istek o yükü taşır",
+        "Geniş pencereli modeller sıkıştırma yapamaz",
+        "Geniş pencere yalnızca okuma araçlarını etkiler"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Bozulma doluluk oranıyla ilgilidir, mutlak sayıyla değil</b> — büyük pencere de dolarken bozulur. Ve dolu geniş pencere her istekte taşınır, yani maliyeti doğrudan artırır. Geniş pencere bağlam yönetimini gereksiz değil, <i>daha değerli</i> kılar."
+    },
+    {
+      "topic": "1.4 İzinler",
+      "q": "Bir ekip en yüksek izin kipinde çalışıyor ama ayarlarında bir engelleme kuralı var. Bu kural işler mi ve neden?",
+      "opts": [
+        "Evet; engelleme kuralları her kipte geçerlidir",
+        "Hayır; en üst kip tüm kuralları devre dışı bırakır",
+        "Yalnızca hedef dosya varsa işler",
+        "Yalnızca yönetilen ayarlardan geliyorsa işler"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>En üst kipte anlamını yitiren şey izin <i>verme</i> kurallarıdır</b> — zaten her şey serbesttir. Engelleme bağımsız bir katmandır ve kip yükseldikçe daha da değerli hâle gelir: serbestliğin içindeki tek sabit sınırdır."
+    },
+    {
+      "topic": "1.4 Plan modu",
+      "q": "\"Plan modundayız, güvendeyiz\" diyen bir ekibe verilecek en doğru düzeltme nedir?",
+      "opts": [
+        "Plan modu belirsizliği azaltır; güvenlik izin kipi ve kum havuzundan gelir",
+        "Plan modu yeterlidir, ek önlem gerekmez",
+        "Plan modu yalnızca büyük değişikliklerde güvenlidir",
+        "Plan modu izin kurallarını da devreye alır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İki farklı soru: ne yapılacak, ne yapılabilir.</b> Plan modu birincisiyle ilgilenir ve değişiklikleri erteler — gerçek bir kısıt ama yetki modeli değil. Plan modundayken de okuma yapılır ve dış içerik görülebilir."
+    },
+    {
+      "topic": "1.4 İzinler",
+      "q": "Bir izin listesinde `Bash(git push*)` yazıyor. Bu desenin sorunu nedir?",
+      "opts": [
+        "Boşluk olmadığı için `git push-something` gibi başka komutlar da eşleşebilir",
+        "Yıldız karakteri izin listelerinde kullanılamaz",
+        "Bu desen hiçbir komutu kapsamaz",
+        "Bu desen engelleme kurallarını geçersiz kılar"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Desende boşluk anlamlıdır.</b> `Bash(git push *)` yalnızca \"git push \" ile başlayanları kapsar; boşluksuz biçim adı o önekle başlayan başka komutları da içine alabilir. İzin listesi bir güvenlik sınırıdır — kazara genişleyen desen, onayladığını sandığından fazlasını serbest bırakır."
+    },
+    {
+      "topic": "1.4 İzinler",
+      "q": "Otomasyonda kaybolan güvenlik davranışı hangisidir?",
+      "opts": [
+        "Güven onayı sorulmaz; depodaki ayarlar ve bağlantı tanımları sorulmadan devreye girebilir",
+        "Engelleme kuralları uygulanmaz",
+        "Kum havuzu devre dışı kalır",
+        "Çalışma dizini sınırı kalkar"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Etkileşimsiz kipte soracak kimse yoktur</b>, dolayısıyla ilk kez çalıştırılan bir depoda güven diyaloğu görünmez. Engelleme kuralları, kum havuzu ve dizin sınırı çalışmaya devam eder. Karşılık: çıplak başlatma ve dar izin listesi."
+    },
+    {
+      "topic": "1.5 Doğrulama",
+      "q": "Bir ekip, ajan tur bitirmeden testlerin geçmesini **garanti** altına almak istiyor. Hangi çözüm bunu sağlar?",
+      "opts": [
+        "Durdurma olayında çalışan bir hook",
+        "Kural dosyasına \"her zaman test çalıştır\" yazmak",
+        "İsteme \"testleri unutma\" eklemek",
+        "Bir skill oluşturup çağırmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Yalnızca hook deterministiktir: olayında çalışır ve turu engelleyebilir.</b> Diğer üçü bağlamdır. ⚠️ Kurarken dikkat: geçmesi imkânsız bir betik ajanı kilitler — önce elle çalıştırıp geçtiğini doğrula."
+    },
+    {
+      "topic": "1.5 Doğrulama",
+      "q": "Bir inceleyici alt ajan 18 bulgu bildirdi, üçü gerçek sorun. En doğru çıkarım nedir?",
+      "opts": [
+        "Bulgu ölçütü fazla geniş verilmiş; ölçütü daraltıp yeniden incelet",
+        "Kod kötü yazılmış",
+        "İnceleyici modeli yetersiz",
+        "Bulguların hepsi uygulanmalı"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bulgu sayısı kalite değil, ölçüt genişliği göstergesidir.</b> \"Bulabildiğin her sorunu listele\" isteğinin karşılığıdır bu liste. \"Yalnızca doğruluğu etkileyen eksikleri raporla\" dendiğinde aynı kod için gelen liste çok daha kısa olur."
+    },
+    {
+      "topic": "1.5 Doğrulama",
+      "q": "Bir ekip \"testleri de yazsın dedik, kabul ölçütü koyduk\" diyor. Bu neden yetersizdir?",
+      "opts": [
+        "Yazılan ama çalıştırılmayan test döngüyü kapatmaz",
+        "Ajanlar test yazmakta güvenilmezdir",
+        "Testler bağlamı gereksiz doldurur",
+        "Test yazmak kabul ölçütü değil kısıttır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kabul ölçütü, ajanın çalıştırıp sonucunu okuyabileceği bir şey olmalı.</b> Yazılıp koşulmayan test yalnızca daha fazla koddur. İstemde eksik olan beş kelime: \"çalıştır ve çıktıyı göster\"."
+    },
+    {
+      "topic": "1.5 Doğrulama",
+      "q": "Doğrulama düzeylerinden hangisi \"gözetimsiz çalışmayı mümkün kılan\" gruba girer?",
+      "opts": [
+        "Durdurma hook'u ve ikinci göz incelemesi",
+        "İstem içine kabul ölçütü yazmak",
+        "Kural dosyasına doğrulama talimatı eklemek",
+        "Daha yüksek çaba düzeyi seçmek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Düzey yükseldikçe senin dikkatine bağımlılık azalır — kazanç budur.</b> İstem içi ölçüt bugün işe yarar ama modelin uyumuna bağlıdır; hook deterministiktir ve ikinci göz bağımsız bir değerlendirme yapar. Çaba düzeyi bir maliyet/kalite ayarıdır, doğrulama katmanı değil."
+    },
+    {
+      "topic": "2.1 Kural dosyası",
+      "q": "Bir kural dosyasında \"Değişkenlere anlamlı isimler ver\" satırı var ve ajan bu kural olmadan da doğru davranıyor. Bu satır için doğru karar nedir?",
+      "opts": [
+        "Silinmeli; \"silsem hata yapar mı\" testini geçemiyor",
+        "Korunmalı; doğru bir kural",
+        "Vurgulanmalı; daha etkili olur",
+        "Bir skill'e taşınmalı"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ölçüt doğruluk değil, davranış değişikliği.</b> Ajan o satır olmadan da doğru davranıyorsa satır yalnızca bağlam harcar — ve dosyayı uzatarak diğer kuralların kaybolmasına katkıda bulunur."
+    },
+    {
+      "topic": "2.1 Kural dosyası",
+      "q": "Ekip, uzun kural dosyasını beş parçaya bölüp `.claude/rules/` altına taşıdı ama hiçbirine yol kapsamı yazmadı. Bağlam maliyeti ne olur?",
+      "opts": [
+        "Aynı kalır; yalnızca bakım düzeni kazanılır",
+        "Beşte birine iner",
+        "İkiye katlanır",
+        "Kurallar artık yüklenmez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Tasarrufu bölme değil kapsamlama sağlar.</b> Yol kapsamı olmayan kural dosyası her oturumda tamamıyla yüklenir. Bölmek yine değerlidir: konular ayrılır, çakışmalar görünür hâle gelir, ekip ayrı ayrı bakım yapar."
+    },
+    {
+      "topic": "2.1 Kural dosyası",
+      "q": "Bir ekip, ajanın uymadığı kuralı büyük harfle ve üç kez tekrar yazdı. Sonuç neden kötüleşir?",
+      "opts": [
+        "Dosya uzar ve vurgu değersizleşir; her satır vurgulanınca hiçbiri öne çıkmaz",
+        "Büyük harf ayrıştırma hatasına yol açar",
+        "Tekrarlar çelişki olarak algılanır",
+        "Kural dosyaları tekrarı desteklemez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Şişme paradoksu:</b> uyulmayan kuralın sebebi genelde dosyanın uzunluğudur, doğru hamle budamaktır. Vurgu tek bir kural için işe yarar çünkü ayırt eder; kıtlıkla çalışan bir kaynaktır."
+    },
+    {
+      "topic": "2.1 Kural dosyası",
+      "q": "`@docs/yonerge.md` biçiminde içe aktarma ne kazandırır?",
+      "opts": [
+        "Düzen kazandırır; bağlam tasarrufu sağlamaz çünkü dosya açılışta yüklenir",
+        "Bağlam tasarrufu sağlar; dosya yalnızca gerektiğinde yüklenir",
+        "Dosyayı zorlama katmanına taşır",
+        "Dosyanın ekip tarafından görülmesini engeller"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İçe aktarılan dosya açılışta genişletilir ve bağlama girer.</b> Bölmek okunabilirliği artırır ama maliyeti düşürmez. Gerçek tasarruf için yola kapsanmış kural dosyaları ya da talep üzerine yüklenen skill kullanılır."
+    },
+    {
+      "topic": "2.2 Kapsanmış kurallar",
+      "q": "Uzun bir oturumda sıkıştırmadan sonra, yola kapsanmış bir kuralın uygulanmayı bıraktığı fark edildi. Kritikse doğru çözüm nedir?",
+      "opts": [
+        "Yol kapsamını kaldırmak ya da kuralı ana kural dosyasına taşımak",
+        "Daha fazla desen eklemek",
+        "Kuralı bir skill'e dönüştürmek",
+        "Sıkıştırmayı devre dışı bırakmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kapsanmış kurallar mesaj geçmişine girer ve sıkıştırmada özetlenir; geri gelmeleri için tetikleyici dosyanın tekrar okunması gerekir.</b> Kapsamsız kurallar ve ana kural dosyası ise diskten koşulsuz yeniden yüklenir. Bedeli: her oturumda bağlam."
+    },
+    {
+      "topic": "2.2 Kapsanmış kurallar",
+      "q": "Bir geliştirici kapsanmış bir kural yazdı ama `/context` ekranında görmüyor. İlk kontrol edilecek şey nedir?",
+      "opts": [
+        "Eşleşen bir dosyaya henüz dokunulup dokunulmadığı",
+        "Dosyanın salt okunur olup olmadığı",
+        "Kural dosyasının git'e işlenip işlenmediği",
+        "Modelin kural dosyalarını destekleyip desteklemediği"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kapsanmış kural, desene eşleşen bir dosya okunduğunda yüklenir</b> — bu bir arıza değil, tasarlanmış davranıştır. Tetikleyici gerçekleşmediyse kural bağlamda görünmez ve bu beklenen sonuçtur."
+    },
+    {
+      "topic": "2.2 Kapsanmış kurallar",
+      "q": "Bir kural dosyasına `paths` ön bilgisi yazılmazsa ne olur?",
+      "opts": [
+        "Her oturumda koşulsuz yüklenir; sıkıştırma sonrası diskten geri gelir",
+        "Hiç yüklenmez",
+        "Yalnızca kök dizindeki dosyalara uygulanır",
+        "Ajan hangi dosyalara uygulanacağını tahmin eder"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kapsamsızlık \"her zaman geçerli\" demektir</b> ve bu bilinçli bir seçim olabilir: sıkıştırmadan sağ çıkması gereken kritik kurallar için tam olarak istenen davranış budur. Bedeli her oturumda bağlam."
+    },
+    {
+      "topic": "2.3 AGENTS.md",
+      "q": "Bir depoda özenli bir `AGENTS.md` var ama Claude Code kullanan geliştiriciler kurallara uyulmadığından şikâyetçi. Windows kullanan bir ekip için önerilecek çözüm hangisidir?",
+      "opts": [
+        "`CLAUDE.md` içine `@AGENTS.md` içe aktarması eklemek",
+        "`AGENTS.md`'yi `CLAUDE.md`'ye sembolik bağla bağlamak",
+        "`AGENTS.md`'yi yeniden adlandırmak",
+        "Kuralları her isteme kopyalamak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Claude Code `AGENTS.md` okumaz; bağlanması gerekir.</b> İki yöntemden sembolik bağ Windows'ta yönetici yetkisi ya da geliştirici kipi ister — bu yüzden karışık işletim sistemi kullanan ekiplerde içe aktarma daha güvenlidir ve altına araca özgü ek yazmaya da izin verir."
+    },
+    {
+      "topic": "2.3 Taşınabilirlik",
+      "q": "Üç farklı ajan aracı kullanan bir ekip, kurulumunu taşınabilir yapmak istiyor. Hangi katman **hiç taşınmaz**?",
+      "opts": [
+        "Hook'lar, alt ajan tanımları ve skill çağırma biçimleri",
+        "Derleme ve test komutları",
+        "Kod biçimi kuralları",
+        "Mimari kararlar"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Gerçekçi beklenti: talimat taşınır, otomasyon taşınmaz.</b> Komutlar ve kurallar düz metindir; her araç okuyabilir. Hook, alt ajan ve çağırma biçimleri ise her aracın kendi mekanizmasıdır ve ortak bir biçimleri yoktur."
+    },
+    {
+      "topic": "2.3 AGENTS.md",
+      "q": "İç içe talimat dosyaları olan bir tek depoda hangisi geçerlidir?",
+      "opts": [
+        "Düzenlenen dosyaya en yakın olan; ve hepsinin üstünde kullanıcının anlık isteği",
+        "Depo kökündeki, çünkü en kapsayıcıdır",
+        "En son değiştirilmiş olan",
+        "Hepsi eşit ağırlıkla birleştirilir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>\"En yakın kazanır\" kuralı, alt projelerin kendi kurallarını koyabilmesini sağlar.</b> Kök dosya her zaman kazansaydı alt proje ayrımı anlamsız olurdu. Kullanıcının anlık isteği ise yazılı kuralı geçer — esnek ama sıkıştırmadan sağ çıkmayan bir üstünlük."
+    },
+    {
+      "topic": "2.4 Bellek",
+      "q": "Bir geliştiricide ajan sürekli testleri atlıyor, takım arkadaşında atlamıyor. İkisinin de deposu ve ayarları aynı. En olası sebep nedir?",
+      "opts": [
+        "Otomatik bellekte, tek seferlik bir isteğin kalıcı tercihe dönüşmesi",
+        "Farklı model sürümleri",
+        "Farklı işletim sistemleri",
+        "Ağ gecikmesi farkı"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bellek makineye özgüdür ve depoya işlenmez.</b> \"Bu sefer testleri atla\" gibi bir istek genel tercih olarak kaydedilmiş olabilir. Kontrol sırası: depo kuralları → yerel ayar → bellek; üçüncüsü neredeyse her zaman farklıdır."
+    },
+    {
+      "topic": "2.4 Bellek",
+      "q": "Otomatik belleğin **kasten** kaydetmediği bilgi türü hangisidir ve neden?",
+      "opts": [
+        "Koddan çıkarılabilecek mimari ve dosya yolları; eskiyen not aktif olarak zarar verir",
+        "Kullanıcı tercihleri; kişisel veri sayıldığı için",
+        "Proje kararları; ekiple paylaşılamadığı için",
+        "Dış kaynak adresleri; erişilemez olabildiği için"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İki gerekçe var ve ikincisi daha önemli:</b> tekrar değersizdir (ajan her oturumda okuyabilir) ve <b>eskiyen bilgi zararlıdır</b> — \"şu fonksiyon şurada\" notu, dosya taşındığında ajanı yanlış yöne yollar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

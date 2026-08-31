@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-3",
+  code: "Kendi aletin · 1.3",
+  title: "Hook",
+  back: "1.3-hooklar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Hook nedir",
+      q: "Hook'u kural dosyasından ayıran belirleyici özellik nedir?",
+      opts: [
+        "Olayında istisnasız çalışır ve eylemi engelleyebilir",
+        "Daha ayrıntılı yazılabilir",
+        "Depoya işlenebilir",
+        "Kurumsal ayarlarda tanımlanabilir"
+      ],
+      a: [0],
+      why: "<b>Fark garantidir.</b> Kural dosyası bağlamdır: model okur, genelde uyar, ama sapabilir. Hook yapılandırmada yaşar ve yaşam döngüsü olayında kesin çalışır. Depoya işlenmek ve kurumsal ayar, kural dosyaları için de geçerlidir."
+    },
+    {
+      topic: "Hook nedir",
+      q: "\"Hook bağlam harcar\" ifadesi doğru mudur?",
+      opts: [
+        "Hayır; yapılandırma bağlam dışındadır. Yalnızca hook bir çıktı döndürürse o çıktı bağlama girer",
+        "Evet; hook tanımları her oturumda yüklenir",
+        "Evet; hook'lar kural dosyalarından daha çok yer kaplar",
+        "Hayır; hook çıktıları da bağlama girmez"
+      ],
+      a: [0],
+      why: "<b>Hook'un en büyük gizli avantajı bu:</b> talimat ya da yapılandırma bağlamın dışında durur. Bu yüzden \"bağlam maliyeti ~sıfır\" denir. Ama gürültülü bir hook — her çalıştığında çıktı yazan — bu avantajı kaybettirir."
+    },
+    {
+      topic: "Ne zaman hook",
+      q: "Hook yazma kararının tek sorusu nedir?",
+      opts: [
+        "Bu her seferinde, istisnasız olmalı mı?",
+        "Bu kural ekibi ilgilendiriyor mu?",
+        "Bu işlem ne kadar sürüyor?",
+        "Bu talimat kaç satır?"
+      ],
+      a: [0],
+      why: "<b>İstisnasızlık, hook'un varlık sebebi.</b> \"Genelde olsun\" yeterliyse kural dosyası ya da skill daha ucuz ve daha esnektir. Ekip kapsamı, süre ve uzunluk bu kararı belirlemez."
+    },
+    {
+      topic: "Ne zaman hook",
+      q: "Hook mantığının üç zamanı hangileridir?",
+      opts: [
+        "Öncesinde engelle, sonrasında tepki ver, bitişte kapıyı tut",
+        "Başlat, izle, raporla",
+        "Oku, yaz, doğrula",
+        "Planla, uygula, incele"
+      ],
+      a: [0],
+      why: "<b>Olay adları araca göre değişir ama mantık aynıdır.</b> Araç çağrısından önce engelleme ya da girdi değiştirme; sonrasında biçimlendirme, lint, bildirim; tur bitişinde ise doğrulamanın geçmesini şart koşma."
+    },
+    {
+      topic: "Hook türleri",
+      q: "Kesin engelleme istiyorsan hangi hook türünü kullanmalısın ve neden?",
+      opts: [
+        "`command` — çünkü `prompt` ve `agent` türlerinin kararını model verir",
+        "`prompt` — çünkü bağlamı en iyi o değerlendirir",
+        "`agent` — çünkü en kapsamlı denetimi o yapar",
+        "`http` — çünkü dış sistem daha güvenilirdir"
+      ],
+      a: [0],
+      why: "<b>Hook'un çalışması her türde garanti, ama kararı garanti değil.</b> `prompt` ve `agent` türleri bir modele sorar; model \"bu güvenli\" diyebilir. Deterministik bir engelleme istiyorsan kararı da deterministik olmalı — yani bir betik."
+    },
+    {
+      topic: "Hook türleri",
+      q: "Aşağıdakilerden hangi ikisi geçerli hook türüdür? (İki tanesini seç.)",
+      opts: [
+        "Bir adrese HTTP isteği atan tür",
+        "Bağlı bir dış aracı çağıran tür",
+        "Bir git commit'i oluşturan özel tür",
+        "Bir kural dosyası yükleyen tür"
+      ],
+      a: [0, 1],
+      why: "<b>Beş tür var: komut, HTTP isteği, dış araç çağrısı, modele istem ve yardımcı ajan.</b> Commit atmak ya da kural yüklemek ayrı türler değildir — bunlar bir `command` hook'unun yapabileceği işlerdir."
+    },
+    {
+      topic: "Engelleme",
+      q: "Kabuk hook'unda hangi çıkış kodu sert engelleme yapar?",
+      opts: [
+        "2",
+        "0",
+        "1",
+        "127"
+      ],
+      a: [0],
+      why: "<b>2 = sert engelleme, geçersiz kılınamaz.</b> 0 başarılı demektir ve standart çıktıdaki JSON okunur; diğer kodlar engellemeyen hata sayılır. Bu ayrımı bilmemek, \"hook yazdım ama engellemiyor\" durumunun en sık sebebidir."
+    },
+    {
+      topic: "Engelleme",
+      q: "Çıkış kodu 0 olduğunda hook ne yapabilir?",
+      opts: [
+        "Standart çıktıya JSON yazarak izin kararı verebilir, bağlam ekleyebilir ya da aracın girdisini değiştirebilir",
+        "Hiçbir şey; yalnızca başarılı sayılır",
+        "Yalnızca günlüğe yazabilir",
+        "Yalnızca eylemi engelleyebilir"
+      ],
+      a: [0],
+      why: "<b>Sıfır çıkış kodu, hook'un ince denetim yapabildiği moddur.</b> JSON çıktısıyla izin verilebilir/reddedilebilir, ajana ek bağlam gönderilebilir ve — en güçlüsü — çağrılacak aracın girdisi yeniden yazılabilir."
+    },
+    {
+      topic: "Girdi değiştirme",
+      q: "Bir hook'un aracın girdisini değiştirebilmesi hangi soruna kalıcı çözüm getirir?",
+      opts: [
+        "Hacimli komut çıktılarının (günlük, test) bağlamı doldurması",
+        "İzin sorularının çokluğu",
+        "Kural dosyasının uzunluğu",
+        "Modelin yanlış araç seçmesi"
+      ],
+      a: [0],
+      why: "<b>Filtrelemeyi her seferinde istemde hatırlamak yerine bir kez yapılandırırsın.</b> Hook, `npm test` çağrısını yalnızca başarısızlıkları gösterecek biçimde yeniden yazar; ajan her zaman filtrelenmiş çıktıyı alır. Bu, günlük tuzağının kalıcı çözümüdür."
+    },
+    {
+      topic: "Tuzaklar",
+      q: "\"Durdurma hook'u koydum, ajan hiç tur bitiremiyor.\" Teşhis ve önlem nedir?",
+      opts: [
+        "Betik geçemiyor; ayara eklemeden önce elle çalıştırıp geçtiğini doğrulamalıydın",
+        "Durdurma olayında hook kullanılamaz",
+        "Hook zaman aşımına uğruyor",
+        "Çıkış kodu yanlış seçilmiş"
+      ],
+      a: [0],
+      why: "<b>Geçmesi imkânsız bir kapı ajanı kilitler.</b> Araçlar genelde belli sayıda engellemeden sonra hook'u geçersiz kılar, ama tasarımda betiğin gerçekten geçebilir olduğundan emin olmak gerekir — testler zaten kırıkken test kapısı koymak klasik hatadır."
+    },
+    {
+      topic: "Tuzaklar",
+      q: "\"Hook koydum, bağlam beklenmedik biçimde hızlı doluyor.\" En olası sebep?",
+      opts: [
+        "Hook çıktı yazıyor ve bu çıktı bağlama giriyor",
+        "Hook tanımı her oturumda yükleniyor",
+        "Hook eşleştiricisi çok dar",
+        "Hook zaman aşımına uğruyor"
+      ],
+      a: [0],
+      why: "<b>Hook'un bağlam maliyeti ancak çıktı döndürdüğünde oluşur.</b> Her düzenlemede lint çıktısını olduğu gibi geri veren bir hook, bağlamı hızla doldurur. Çözüm: sessiz çalışmak ve yalnızca gerçekten ajanın bilmesi gerekeni yazmak."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Tanımadığın bir depoyu klonlayıp içinde ajan başlatmanın hook açısından riski nedir?",
+      opts: [
+        "Deponun ayar dosyasındaki hook'lar senin makinende kod çalıştırabilir",
+        "Hook'lar deponun kendisini değiştirebilir",
+        "Hook'lar bağlamı doldurabilir",
+        "Hook'lar izin kurallarını devre dışı bırakabilir"
+      ],
+      a: [0],
+      why: "<b>Hook'lar kod çalıştırır ve proje ayarlarında tanımlanabilir.</b> Etkileşimsiz kipte güven onayı da sorulmaz. Savunmalar: ayar dosyalarına bakmak ya da hook/eklenti/bağlantı yüklemesini atlayan çıplak başlatma bayrağını kullanmak."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir ekip \"`.env` asla düzenlenmesin\" kuralını hem kural dosyasına yazdı hem hook kurdu. Bu gereksiz bir tekrar mı?",
+      opts: [
+        "Hayır; kural dosyası niyeti açıklar, hook uygulamayı garanti eder",
+        "Evet; hook varken kural dosyası satırı gereksizdir",
+        "Evet; ikisi çakışır ve öngörülemez davranış üretir",
+        "Hayır; kural dosyası hook'un çalışması için gereklidir"
+      ],
+      a: [0],
+      why: "<b>İkisi farklı işler yapar.</b> Kural dosyasındaki satır, ajanın o yola hiç yönelmemesini sağlar ve engellenince neden engellendiğini anlamasına yardım eder; hook ise yöneldiğinde kapıyı kapatır. Çakışma yoktur; hook kural dosyasına bağımlı da değildir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Tutması şart olan hiçbir kural, modelin uyum kararına bırakılmaz",
+        "Mümkün olan her kural hook'a dönüştürülmelidir",
+        "Hook'lar kural dosyalarının daha güçlü bir biçimidir",
+        "Hook'lar yalnızca kurumsal ekipler için anlamlıdır"
+      ],
+      a: [0],
+      why: "<b>Ayrım \"şart mı, tercih mi\" sorusunda.</b> Her kuralı hook'a çevirmek gereksiz karmaşa üretir ve bakım yükü getirir. Hook, kural dosyasının güçlü biçimi değil — <i>farklı bir katman</i>: biri yönlendirir, diğeri zorlar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

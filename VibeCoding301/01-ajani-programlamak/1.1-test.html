@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-1",
+  code: "Kendi aletin · 1.1",
+  title: "Skill yazmak",
+  back: "1.1-skill-yazma.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ne zaman skill",
+      q: "Karar üçlüsünde skill nerede durur?",
+      opts: [
+        "Bazen gereken yordam ve başvurular için",
+        "Her zaman geçerli kurallar için",
+        "Belirli dosyalarla çalışırken geçerli kısıtlar için",
+        "İstisnasız uygulanması gereken kurallar için"
+      ],
+      a: [0],
+      why: "<b>Her zaman → ana kural dosyası; bazı dosyalarda → kapsanmış kural; bazen → skill; kesinlikle → hook.</b> Skill'in ayırt edici özelliği talep üzerine yüklenmesidir: uzun bir başvuru metni, gerekene kadar neredeyse bedavadır."
+    },
+    {
+      topic: "Ne zaman skill",
+      q: "Aşağıdakilerden hangi ikisi skill yazma tetikleyicisidir? (İki tanesini seç.)",
+      opts: [
+        "Aynı istemi üçüncü kez yazıyor olman",
+        "Kural dosyandaki bir bölümün çok adımlı yordama dönüşmesi",
+        "Ajanın bir kurala uymaması",
+        "Bir eylemin istisnasız engellenmesi gerekmesi"
+      ],
+      a: [0, 1],
+      why: "<b>Tekrar ve yordamlaşma, skill'in iki klasik tetikleyicisi.</b> Kurala uyulmaması genelde kural dosyasının uzunluğuna işaret eder (şişme paradoksu); istisnasız engelleme ise hook'un işidir — skill bağlamdır, garanti vermez."
+    },
+    {
+      topic: "SKILL.md yapısı",
+      q: "Skill'i çağırmak için yazacağın komut adı nereden gelir?",
+      opts: [
+        "Skill'in bulunduğu klasörün adından",
+        "SKILL.md dosyasının ilk başlığından",
+        "`description` alanının ilk kelimesinden",
+        "Dosya oluşturulma sırasından"
+      ],
+      a: [0],
+      why: "<b>Klasör adı komut adı olur</b> — `.claude/skills/uc-nokta-ekle/` klasörü `/uc-nokta-ekle` komutunu üretir. Bu yüzden klasör adı kısa, ayırt edici ve yazması kolay seçilir."
+    },
+    {
+      topic: "description alanı",
+      q: "`description` alanı neden en önemli alandır?",
+      opts: [
+        "Ajan bu metne bakarak skill'i ne zaman kendiliğinden çağıracağına karar verir",
+        "Skill listesinde alfabetik sıralamayı belirler",
+        "Skill'in bağlam maliyetini belirler",
+        "Argümanların sırasını tanımlar"
+      ],
+      a: [0],
+      why: "<b>Seçim tamamen açıklamaya dayanır.</b> Belirsiz yazılırsa skill ya hiç çağrılmaz ya alakasız yerde devreye girer. Bu yüzden kullanım durumu — \"kullanıcı şunu dediğinde\" — açıklamanın başına yazılır."
+    },
+    {
+      topic: "description alanı",
+      q: "\"Skill'i yazdım ama kendiliğinden hiç kullanmıyor.\" En olası sebep?",
+      opts: [
+        "`description` belirsiz; ne zaman kullanılacağı yazmıyor",
+        "Skill klasörü yanlış yerde",
+        "Skill dosyası çok uzun",
+        "Ajan skill'leri yalnızca komutla çağırabilir"
+      ],
+      a: [0],
+      why: "<b>Kendiliğinden çağırma, açıklamanın kullanıcının isteğiyle eşleşmesine dayanır.</b> \"Değişiklikleri özetler\" yerine \"kullanıcı 'ne değişti' ya da 'commit mesajı' dediğinde kullan\" yazmak seçimi doğrudan iyileştirir. Yanlış konumdaki skill hiç görünmez — komutla da çağrılamaz, yani belirti farklı olurdu."
+    },
+    {
+      topic: "Dinamik bağlam",
+      q: "Skill içindeki `` !`git diff HEAD` `` satırı ne yapar?",
+      opts: [
+        "Komut çalıştırılır ve çıktısı skill içeriğine gömülür",
+        "Ajana o komutu çalıştırmasını önerir",
+        "Komutu izin listesine ekler",
+        "Skill'in yalnızca git deposunda çalışmasını sağlar"
+      ],
+      a: [0],
+      why: "<b>Dinamik bağlam enjeksiyonu:</b> ajan skill içeriğini görmeden önce komut çalıştırılır ve satır çıktıyla değiştirilir. Böylece skill, güncel diff'le birlikte gelir — ajanın ayrıca bir tur harcayıp diff istemesine gerek kalmaz."
+    },
+    {
+      topic: "Ön bilgi alanları",
+      q: "Dağıtım yapan bir skill için hangi ön bilgi alanı kullanılmalı ve neden?",
+      opts: [
+        "`disable-model-invocation: true` — ajan kendiliğinden çağıramaz, ayrıca açıklaması bağlama girmez",
+        "`user-invocable: false` — yalnızca ajan çağırsın",
+        "`context: fork` — ayrı bağlamda çalışsın",
+        "`allowed-tools` — dağıtım araçlarına izin versin"
+      ],
+      a: [0],
+      why: "<b>Yan etkili işlerde tetikleyici sen olmalısın.</b> Bu alan hem kendiliğinden çağrılmayı engeller hem bir bonus verir: skill'in açıklaması artık her oturumda yüklenmez, yani bedava olur. `user-invocable: false` tam tersini yapardı."
+    },
+    {
+      topic: "Ön bilgi alanları",
+      q: "Skill'e argüman geçirmek için kullanılan yer tutuculardan hangisi **yoktur**?",
+      opts: [
+        "`$SKILL_NAME`",
+        "`$ARGUMENTS`",
+        "`$0` ve `$1`",
+        "Adlandırılmış `$ad`"
+      ],
+      a: [0],
+      why: "<b>`$ARGUMENTS` hepsini, `$0`/`$1` sıraya göre tekil argümanı, `$ad` ise `arguments` ön bilgisinde tanımlanan adlandırılmış argümanı verir.</b> Skill'in kendi adını veren bir yer tutucu bu üçlünün parçası değildir."
+    },
+    {
+      topic: "Bağlam maliyeti",
+      q: "\"Skill bedavadır\" cümlesi neden yanlıştır?",
+      opts: [
+        "Gövdesi talep üzerine yüklenir ama açıklaması her oturumda bağlama girer",
+        "Skill'ler her oturumda tamamen yüklenir",
+        "Skill'ler diğer mekanizmalardan daha pahalıdır",
+        "Skill'ler yalnızca ücretli planlarda çalışır"
+      ],
+      a: [0],
+      why: "<b>Otuz skill, otuz açıklama demektir.</b> Gövde gerçekten talep üzerine gelir — asıl kazanç budur — ama açıklamalar sabit bir yük oluşturur. Sayı arttıkça hem bağlam maliyeti hem ajanın yanlış skill seçme riski artar."
+    },
+    {
+      topic: "Bağlam maliyeti",
+      q: "Uzun bir skill yazarken kritik talimatları dosyanın başına koymanın sebebi nedir?",
+      opts: [
+        "Sıkıştırmada skill gövdesi kırpılırken başı korunur",
+        "Ajan dosyanın yalnızca ilk yarısını okur",
+        "Baştaki satırlar daha yüksek öncelikle işlenir",
+        "Markdown ayrıştırıcısı sondan başlar"
+      ],
+      a: [0],
+      why: "<b>Yeniden eklenen skill gövdeleri bir üst sınıra göre kırpılır ve kırpma sondan yapılır.</b> Uzun bir oturumda, dosyanın altına yazılmış kritik bir kural sessizce kaybolabilir. Ajan ilk çağrıda dosyanın tamamını okur; sorun sıkıştırma sonrasında ortaya çıkar."
+    },
+    {
+      topic: "Skill ve diğerleri",
+      q: "Skill ile hook arasındaki temel fark nedir?",
+      opts: [
+        "Skill bağlamdır ve ajan yorumlar; hook deterministiktir ve olayında kesin çalışır",
+        "Skill daha hızlı çalışır",
+        "Hook yalnızca kurumsal ayarlarda tanımlanabilir",
+        "Skill yalnızca komutla, hook yalnızca otomatik çağrılır"
+      ],
+      a: [0],
+      why: "<b>Belirleyici fark garanti.</b> Skill içindeki adımlar bir talimattır; ajan uygular ama sapabilir. Hook, yaşam döngüsü olayında istisnasız çalışır ve gerekirse eylemi engeller. Bu yüzden \"tutması şartsa\" kural hook olur."
+    },
+    {
+      topic: "Kaçınılacaklar",
+      q: "\"Her zaman geçerli olan kuralları da skill'e taşıyalım, bağlam tasarrufu olur.\" Bu yaklaşımın hatası nedir?",
+      opts: [
+        "Her zaman gerekli olan bir bilgi çağrılmayabilir; kural dosyasında olmalı",
+        "Skill'ler kural içeremez",
+        "Skill'ler yalnızca argümanla çalışır",
+        "Kural dosyaları skill'lerden daha ucuzdur"
+      ],
+      a: [0],
+      why: "<b>Skill'in kazancı talep üzerine yüklenmesi; riski de aynı şey.</b> Her oturumda geçerli olması gereken bir kural, çağrılmadığında yok demektir. Tasarruf, o bilginin gerçekten <i>ara sıra</i> gerekli olmasından gelir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Skill alakasız bir soruda devreye girdi.\" Doğru düzeltme hangisidir?",
+      opts: [
+        "`description`'ı daraltmak ya da yan etkiliyse kendiliğinden çağrılmayı kapatmak",
+        "Skill'i silmek",
+        "Skill dosyasını kısaltmak",
+        "Ajanın modelini değiştirmek"
+      ],
+      a: [0],
+      why: "<b>Çok geniş bir açıklama, ilgisiz isteklerle eşleşir.</b> Daraltmak seçim doğruluğunu artırır; yan etkili bir skill söz konusuysa kendiliğinden çağrılmayı tamamen kapatmak daha güvenlidir. Dosya uzunluğu seçimi etkilemez — seçim yalnızca açıklamaya bakar."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Skill, yalnızca kullanıldığında bağlama giren bilgidir; uzun başvuru gerekene kadar neredeyse bedavadır",
+        "Skill'ler kural dosyalarının yerini alacak daha modern bir mekanizmadır",
+        "Ne kadar çok skill yazılırsa ajan o kadar yetenekli olur",
+        "Skill'ler bir eylemin kesin olarak yapılmasını garanti eder"
+      ],
+      a: [0],
+      why: "<b>Talep üzerine yükleme, skill'in var oluş sebebi.</b> Kural dosyasının yerini almaz — farklı bir sorunu çözer. Sayı arttıkça açıklamalar birikir ve seçim zorlaşır; ve skill hâlâ bağlamdır, garanti vermez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

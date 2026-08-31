@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-4",
+  code: "İş akışları · 2.1",
+  title: "Test yazdırmak",
+  back: "2.1-test-yazdirma.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Testin ajan için anlamı",
+      q: "Testin ajanla çalışırken kazandığı ek değer nedir?",
+      opts: [
+        "Ajanın kendi döngüsünü kapatabileceği makine-okunur bir bitiş ölçütü olması",
+        "Kod kapsamını ölçmesi",
+        "İnceleme süresini kısaltması",
+        "Belgelendirme yerine geçmesi"
+      ],
+      a: [0],
+      why: "<b>Klasik değeri regresyon yakalamaktı; yeni değeri döngüyü kapatmak.</b> Ajan testi çalıştırıp sonucunu okuyabildiği için, doğrulama halkası sen olmaktan çıkarsın. Bu, ajanla çalışan projelerde test yazmanın önceliğini kalite kaygısından önce <i>işleyiş</i> kaygısına taşır."
+    },
+    {
+      topic: "Kırmızı-yeşil",
+      q: "Kırmızı-yeşil akışında her adımda \"göster\" talebi bulunmasının sebebi nedir?",
+      opts: [
+        "İddia değil kanıt kuralının bu işe uyarlanmış hâli olması",
+        "Çıktının günlüğe kaydedilmesi gerektiği",
+        "Ajanın adımları atlamasını teknik olarak engellemesi",
+        "Test koşucusunun bunu zorunlu kılması"
+      ],
+      a: [0],
+      why: "<b>\"Kırmızıydı, sonra yeşil oldu\" bir iddia; çıktının kendisi kanıt.</b> Gösterme talebi olmadan ajan adımları yaptığını söyleyip geçebilir. Teknik bir zorlama değildir — bu bir istem; kesinlik isteniyorsa durdurma hook'u gerekir."
+    },
+    {
+      topic: "Kırmızı-yeşil",
+      q: "Ajan testi ve düzeltmeyi birlikte yazdığında hangi bilgi kaybolur?",
+      opts: [
+        "Testin gerçekten bir şey ölçüp ölçmediği",
+        "Değişikliğin kaç satır olduğu",
+        "Testin çalışma süresi",
+        "Kod kapsamı oranı"
+      ],
+      a: [0],
+      why: "<b>Bir testin bir şey ölçtüğünü ancak başarısız olabildiğini görerek bilirsin.</b> Düzeltilmiş kodda yazılan test elbette geçer — ama bozuk kodda kırılıp kırılmayacağı hiç sınanmamıştır. Diğer şıklar bu sırayla ilgisiz ölçümlerdir."
+    },
+    {
+      topic: "Test kusurları",
+      q: "\"Uygulamayı aynalayan\" testin zararı nedir?",
+      opts: [
+        "Kod değişince test de değişmek zorunda kalır; hiçbir şeyi korumaz",
+        "Çalışması yavaştır",
+        "Kapsam oranını düşürür",
+        "Sahte nesne kullanımını zorunlu kılar"
+      ],
+      a: [0],
+      why: "<b>Testin işi davranışı korumaktır; uygulamanın adımlarını tekrar eden bir test, uygulama değiştiğinde birlikte değişir</b> ve dolayısıyla hiçbir regresyonu yakalayamaz. \"Küçük bir değişiklik yaptım, 40 test kırıldı\" belirtisi genelde budur."
+    },
+    {
+      topic: "Test kusurları",
+      q: "Aşağıdakilerden hangi ikisi ajanın yazdığı testlerde aranması gereken kusurdur? (İki tanesini seç.)",
+      opts: [
+        "Zayıf iddia (\"tanımlı mı\" düzeyinde denetim)",
+        "Her bağımlılığın sahtelenmiş olması",
+        "Test adlarının uzun olması",
+        "Testlerin ayrı bir dosyada olması"
+      ],
+      a: [0, 1],
+      why: "<b>Zayıf iddia, yanlış değerin de testi geçmesine izin verir; aşırı sahteleme ise gerçekte hiçbir şeyin çalışmadığı bir kurgu yaratır.</b> Uzun test adları ve ayrı test dosyası kusur değil, çoğu zaman iyi uygulamalardır."
+    },
+    {
+      topic: "Test kusurları",
+      q: "Sahte nesne (mock) kullanımı için doğru sınır hangisidir?",
+      opts: [
+        "Yalnızca dış sistemler için",
+        "Her bağımlılık için, hız kazanmak amacıyla",
+        "Hiçbir zaman kullanılmamalı",
+        "Yalnızca birim testlerinde, her sınıf için"
+      ],
+      a: [0],
+      why: "<b>Sahteleme, denetimin dışındaki şeyleri (ağ, saat, ödeme sağlayıcı) öngörülebilir kılmak içindir.</b> Kendi kodunu sahtelemeye başladığında sınadığın şey giderek kurgunun kendisi olur. Tamamen yasaklamak da pratik değildir; ölçüt \"dış sistem mi?\" sorusudur."
+    },
+    {
+      topic: "Kapsam yanılgısı",
+      q: "Kapsam oranı neyi ölçer?",
+      opts: [
+        "Hangi satırların çalıştırıldığını",
+        "Hangi satırların doğru çalıştığını",
+        "Uç durumların denendiğini",
+        "İddiaların anlamlı olduğunu"
+      ],
+      a: [0],
+      why: "<b>Kapsam yalnızca çalıştırmayı ölçer.</b> Bir satırı çalıştırıp hiçbir şey iddia etmeyen bir test kapsamı yükseltir ama güven üretmez. Doğruluk, uç durumlar ve iddia kalitesi kapsam ölçümünün göremediği şeylerdir."
+    },
+    {
+      topic: "Kapsam yanılgısı",
+      q: "Ajana kapsam hedefi vermek neden özellikle risklidir ve yerine ne verilmelidir?",
+      opts: [
+        "Hedefe en kısa yol çok sayıda zayıf iddialı test yazmaktır; yerine davranış listesi verilmeli",
+        "Kapsam ölçümü çok yavaştır; yerine tek bir uçtan uca test verilmeli",
+        "Ajanlar kapsam araçlarını çalıştıramaz; yerine elle sayım yapılmalı",
+        "Kapsam hedefi izin sistemini tetikler; yerine hook kullanılmalı"
+      ],
+      a: [0],
+      why: "<b>Bu, bastırma kalıbının test tarafındaki karşılığı:</b> ölçülen şey hedef hâline gelince, ölçüyü en ucuza yükselten yol seçilir. \"Şu davranış listesindeki her madde için bir test\" hedefi ise doğrudan istenen sonucu tarif eder."
+    },
+    {
+      topic: "Testsiz kod",
+      q: "Testsiz bir modülde değişiklik yapacaksın. Doğru sıra hangisidir?",
+      opts: [
+        "Önce mevcut davranışı sınayan testler yaz, sonra değişikliği yap",
+        "Önce değişikliği yap, sonra yeni davranış için test yaz",
+        "Önce modülü yeniden yaz, sonra test ekle",
+        "Test yazmadan değişikliği yapıp elle doğrula"
+      ],
+      a: [0],
+      why: "<b>Mevcut davranış yazılı hâle gelmeden yapılan değişiklikte, neyin bozulduğunu bilemezsin.</b> Önce dondurmak bir güvenlik ağı kurar. Yeniden yazmak, korunacak davranış bilinmeden yapılan en riskli hamledir."
+    },
+    {
+      topic: "Testsiz kod",
+      q: "Mevcut davranışı dondururken ajanın hangi davranışına izin verilmemelidir?",
+      opts: [
+        "Yanlış bulduğu davranışı düzeltmesine",
+        "Test adlarını Türkçe yazmasına",
+        "Birden çok test dosyası oluşturmasına",
+        "Var olan testleri okumasına"
+      ],
+      a: [0],
+      why: "<b>Bugünkü davranış hatalı bile olsa önce yazılı hâle gelmeli.</b> Ajan dondurma sırasında \"düzeltme\" yaparsa, ortaya çıkan testler kodun bugün yaptığını değil, ajanın doğru sandığını yansıtır — ve güvenlik ağı sahte olur. Hataları not al, ayrı bir iş olarak ele al."
+    },
+    {
+      topic: "Doğrulama",
+      q: "Bir testin gerçekten bir şey ölçtüğünü kanıtlamanın en kesin yolu nedir?",
+      opts: [
+        "Kodu bilerek bozup testin kırıldığını görmek",
+        "Kapsam raporunda o satırın işaretli olduğunu görmek",
+        "Testin çalışma süresini ölçmek",
+        "Test adının davranışı doğru tarif ettiğini doğrulamak"
+      ],
+      a: [0],
+      why: "<b>Mutasyon mantığı:</b> kod bozulduğunda kırılmayan test, o davranışı korumuyordur. Kapsam raporu yalnızca satırın çalıştığını söyler; süre ilgisizdir; iyi bir test adı yararlıdır ama iddianın gücünü kanıtlamaz."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Testler geçiyor ama hata üretimde çıktı.\" En olası teşhis?",
+      opts: [
+        "İddialar zayıf; yanlış değer de testi geçiyor",
+        "Testler çok yavaş çalışıyor",
+        "Test dosyası yanlış konumda",
+        "Kapsam oranı düşük"
+      ],
+      a: [0],
+      why: "<b>Yeşil bir takım, ancak iddiaları kadar güçlüdür.</b> \"Hata vermedi mi\" ya da \"tanımlı mı\" düzeyinde denetimler neredeyse her durumda geçer. Düşük kapsam da bir sebep olabilir ama tarif edilen belirti — <i>geçen</i> testlere rağmen hata — zayıf iddiaya daha çok işaret eder."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Küçük bir değişiklik yaptım, 40 test kırıldı.\" Bu hangi test kusurunun belirtisidir?",
+      opts: [
+        "Testlerin uygulamayı aynalaması",
+        "Zayıf iddia",
+        "Her zaman yeşil testler",
+        "Yetersiz kapsam"
+      ],
+      a: [0],
+      why: "<b>Davranışı sınayan testler, uygulama değiştiğinde kırılmaz — davranış değiştiğinde kırılır.</b> Kırılan test sayısının değişikliğin büyüklüğüyle orantısız olması, testlerin iç adımlara bağlandığının göstergesidir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Test, ajanın çalıştırabildiği ölçüde değerlidir; senin okuduğun ölçüde değil",
+        "Test sayısı arttıkça kalite artar",
+        "Kapsam oranı, test kalitesinin en iyi göstergesidir",
+        "Ajanlar test yazmakta güvenilmezdir, testler elle yazılmalıdır"
+      ],
+      a: [0],
+      why: "<b>Testin makine tarafından çalıştırılabilir olması, ajan iş akışının tamamını mümkün kılan özellik.</b> Sayı ve kapsam kalite göstergesi değildir. Ajanlar test yazmakta oldukça iyidir — yeter ki sıra dayatılsın ve dört kusur denetlensin."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

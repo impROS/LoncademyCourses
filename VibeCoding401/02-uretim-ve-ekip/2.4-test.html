@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.4 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-4",
+  code: "Üretim ve ekip · 2.4",
+  title: "Maliyet yönetimi",
+  back: "2.4-maliyet-yonetimi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Maliyeti ne belirler",
+      q: "\"Büyük model pahalıdır\" cümlesi neden eksiktir?",
+      opts: [
+        "Model seçimi bir çarpandır; çarpılan şey bağlamın büyüklüğüdür",
+        "Büyük modeller aslında daha ucuzdur",
+        "Model seçimi maliyeti hiç etkilemez",
+        "Fiyatlar sürekli değiştiği için karşılaştırma yapılamaz"
+      ],
+      a: [0],
+      why: "<b>Şişmiş bağlamla küçük model de pahalıya gelir.</b> Bu yüzden azaltma stratejilerinin ilk üçü model seçimiyle değil, bağlamla ilgilidir. Model seçimi anlamlı bir kaldıraçtır ama tek başına belirleyici değildir."
+    },
+    {
+      topic: "Maliyeti ne belirler",
+      q: "İstem önbelleğinin maliyet üzerindeki etkisi nedir?",
+      opts: [
+        "Değişmeyen önek yeniden işlenmez, çok daha ucuza okunur; ama bir ömrü vardır",
+        "Tüm istekleri ücretsiz hâle getirir",
+        "Yalnızca kurumsal planlarda çalışır",
+        "Bağlam büyüklüğünü küçültür"
+      ],
+      a: [0],
+      why: "<b>Önbellek tekrarı ucuzlatır ama bağlamı küçültmez.</b> Ömrü kritik ayrıntı: uzun bir aradan sonraki ilk istek önbelleği ıskalar ve tüm geçmişi yeniden işler — \"sabah açık bıraktım, öğlen bir şey sordum, kota uçtu\" durumunun mekanizması budur."
+    },
+    {
+      topic: "Uzun oturum",
+      q: "Boşta duran bir oturumun harcama yapmasının sebeplerinden hangi ikisi doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Zamanlanmış görevlerin aralığı geldiğinde çalışması",
+        "Başka bir oturumdan gelen mesajın yeni tur başlatması",
+        "Bağlamın kendiliğinden büyümesi",
+        "Modelin arka planda eğitilmesi"
+      ],
+      a: [0, 1],
+      why: "<b>Boşta olmak bağlantısız olmak demek değil.</b> Zamanlanmış görevler, oturumlar arası mesajlar ve hedef denetimleri, sen klavyeye dokunmadan tur başlatabilir — ve her tur tüm bağlamı taşır. Bağlam kendiliğinden büyümez; model arka planda eğitilmez."
+    },
+    {
+      topic: "Uzun oturum",
+      q: "Sıkıştırma ile temizleme arasındaki maliyet farkı nedir?",
+      opts: [
+        "Sıkıştırma özetlediği konuşmayı okur, yani kendisi büyük bir istektir; temizlemek bedavadır",
+        "İkisi de bedavadır",
+        "Temizlemek daha pahalıdır çünkü bağlam yeniden kurulur",
+        "İkisi de aynı maliyeti üretir"
+      ],
+      a: [0],
+      why: "<b>Çoğu kişiyi şaşırtan ayrıntı.</b> Sıkıştırma bir model çağrısıdır ve girdisi tüm konuşmadır — büyük bir bağlamı sıkıştırmak büyük bir istektir. Temiz bir başlangıç istiyorsan temizlemek hem daha ucuz hem daha temizdir."
+    },
+    {
+      topic: "Azaltma",
+      q: "En yüksek etkili azaltma stratejisi hangisidir?",
+      opts: [
+        "İlgisiz işler arasında bağlamı temizlemek",
+        "Kural dosyasını kısaltmak",
+        "Kullanılmayan bağlantıları kapatmak",
+        "Plan modunu doğru yerde kullanmak"
+      ],
+      a: [0],
+      why: "<b>Temizlemek bağlamı sıfırlar ve bedavadır</b> — tek bir eylemle en büyük değişken kalemi ortadan kaldırır. Diğerleri de gerçek kazanç sağlar ama etkileri daha küçük ve daha kademelidir."
+    },
+    {
+      topic: "Azaltma",
+      q: "Azaltma stratejileri listesinde \"daha az kullan\" maddesinin bulunmaması ne anlatır?",
+      opts: [
+        "Amaç kullanımı kısmak değil, aynı işi daha az bağlamla yapmak",
+        "Kullanım miktarı maliyeti etkilemez",
+        "Daha az kullanmak imkânsızdır",
+        "Kullanım kısıtı yalnızca kurumsal ortamda geçerlidir"
+      ],
+      a: [0],
+      why: "<b>Kullanımı kısmak, aracın değerinden vazgeçmektir — çözüm değil.</b> Listedeki her strateji aynı işi daha ucuza yapmayı hedefler: bağlamı temiz tutmak, hacimli çıktıyı devretmek, işe uygun model seçmek."
+    },
+    {
+      topic: "Azaltma",
+      q: "Hacimli komut çıktılarının maliyetini kalıcı olarak düşürmenin yolu nedir?",
+      opts: [
+        "Hook ile komut girdisini filtreleyecek biçimde yeniden yazmak",
+        "Her seferinde istemde filtrelemeyi hatırlamak",
+        "Daha küçük model kullanmak",
+        "Çıktıyı bir dosyaya yazdırmak"
+      ],
+      a: [0],
+      why: "<b>Hatırlamaya dayanan çözümler unutulur; yapılandırma unutulmaz.</b> Hook, komutu yalnızca gerekli kısmı gösterecek biçimde yeniden yazar ve bu her oturumda, ekip ayarına konursa herkeste çalışır. Dosyaya yazdırmak, ajan dosyayı okursa aynı maliyeti üretir."
+    },
+    {
+      topic: "Ölçme",
+      q: "`/usage` ekranında bakılması gereken üç şeyden biri **değildir**?",
+      opts: [
+        "Modelin parametre sayısı",
+        "Önbellek isabeti",
+        "Kullanımın skill, alt ajan ve bağlantılara dağılımı",
+        "Uzun bağlam gibi davranış işaretleri"
+      ],
+      a: [0],
+      why: "<b>Üç şey ölçülür: önbellek isabeti (oturum çok mu bölünüyor), dağılım (ne tüketiyor), davranış işaretleri (hangi alışkanlık pahalı).</b> Parametre sayısı bir model özelliğidir ve kullanım ekranında yer almaz."
+    },
+    {
+      topic: "Ölçme",
+      q: "Ekranda gösterilen maliyet rakamı hakkında hangisi doğrudur?",
+      opts: [
+        "Yerel olarak hesaplanan bir tahmindir; kesin rakam faturadadır",
+        "Faturayla birebir aynıdır",
+        "Yalnızca kurumsal planlarda gösterilir",
+        "Yalnızca oturum sonunda hesaplanır"
+      ],
+      a: [0],
+      why: "<b>Tahmin, token sayımlarından yerel olarak hesaplanır</b> — sözleşmeli fiyatlar, bölgesel farklar ve plan detayları bu hesabı kaydırabilir. Karar vermek için yeterince iyi, muhasebe için değil."
+    },
+    {
+      topic: "Ekip ölçeği",
+      q: "Ekip ölçeğinde en sık atlanan iki maliyet kalemi hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Zamanlanmış ve otomatik çalıştırmalar",
+        "Alt ajan ve takım kullanımı",
+        "Kural dosyalarının uzunluğu",
+        "Test çalıştırma sıklığı"
+      ],
+      a: [0, 1],
+      why: "<b>İkisi de görünmez biçimde birikir.</b> Bir kişinin kurduğu düzenli görev ay sonunda tek başına belirgin bir kalem olabilir; alt ajan kullanımı ise her ek çalışanla yaklaşık orantılı büyür. Kural dosyası uzunluğu gerçek bir etkendir ama görünür ve kolay düzeltilir."
+    },
+    {
+      topic: "Ekip ölçeği",
+      q: "Kaçak bir otomasyon çalıştırmasının maliyet üretmesini ne engeller?",
+      opts: [
+        "Tur sınırı ve zaman aşımı",
+        "Harcama raporları",
+        "Kişi başına dağılım analizi",
+        "Önbellek isabetini artırmak"
+      ],
+      a: [0],
+      why: "<b>Raporlar olan biteni gösterir, sınırlar ise olmasını engeller.</b> Tur sınırı ve zaman aşımı, **301 · *Otomasyon ve SDK*** konusunda öğrenilen gözetimsiz çalıştırma kısıtlarının maliyet tarafındaki karşılığıdır — zararı değil, süreyi ve harcamayı sınırlar."
+    },
+    {
+      topic: "Değeri ölçme",
+      q: "Yalnızca maliyeti ölçmenin sakıncası nedir?",
+      opts: [
+        "\"Ucuz ama işe yaramayan\" bir kurulumu iyi sanabilirsin",
+        "Maliyet ölçümü her zaman yanlıştır",
+        "Maliyet ölçmek çok zaman alır",
+        "Maliyet, kalite ile ters orantılıdır"
+      ],
+      a: [0],
+      why: "<b>Tek boyutlu optimizasyon yanlış hedefe götürür.</b> `1.2`'deki dörtlü burada da geçerli: tur sayısı, düzeltme sayısı, geçen süre ve maliyet. Daha pahalı ama üç kat az düzeltme gerektiren bir kurulum, toplamda daha ucuz olabilir."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir geliştirici \"tek satırlık bir soru sordum, kotam beklenmedik şekilde düştü\" diyor. Ona ne önerirsin?",
+      opts: [
+        "İlgisiz işler arasında bağlamı temizlemesini; o soru tüm geçmişi taşımış",
+        "Daha küçük bir model seçmesini",
+        "Daha kısa istemler yazmasını",
+        "Önbelleği devre dışı bırakmasını"
+      ],
+      a: [0],
+      why: "<b>Uzun bir oturumda \"ucuz soru\" diye bir şey yoktur</b> — her istek konuşmanın tamamını taşır. İstem uzunluğu bu tabloda ihmal edilebilir; model küçültmek çarpanı düşürür ama asıl sorunu çözmez; önbellek ise maliyeti azaltan tarafta."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Maliyeti model değil, bağlamın büyüklüğü ve alışkanlıklar belirler",
+        "En ucuz model her zaman tercih edilmelidir",
+        "Maliyet yönetimi yalnızca kurumsal ekipler için anlamlıdır",
+        "Kullanımı azaltmak tek gerçek çözümdür"
+      ],
+      a: [0],
+      why: "<b>Alışkanlıklar, model seçiminden daha büyük bir kaldıraç.</b> En ucuz model kötü sonuç verirse tekrarlar pahalıya gelir; maliyet yönetimi bireysel kullanımda da geçerlidir; ve amaç kullanımı kısmak değil, aynı işi daha az bağlamla yapmaktır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

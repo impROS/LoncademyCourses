@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-2",
+  code: "Temeller · 1.2",
+  title: "İstem yazma",
+  back: "1.2-istem-yazma.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İsteğin dört parçası",
+      q: "\"sunucu.js'e önbellek ekle\" isteminde eksik olan parça hangisidir ve sonucu ne olur?",
+      opts: [
+        "Kabul ölçütü yok; ajan \"bitmiş görünüyor\" noktasında durur",
+        "Hedef yok; ajan ne yapacağını hiç bilemez",
+        "Kaynak yok; ajan dosyayı bulamaz",
+        "Kısıt yok; bu istemde başka eksik yoktur"
+      ],
+      a: [0],
+      why: "Hedef (önbellek ekle) ve kaynak (sunucu.js) verilmiş. <b>Eksik olan kabul ölçütü</b>: bittiğini nasıl anlayacağı söylenmemiş, dolayısıyla döngü modelin kanısıyla kapanır. Kısıt da zayıf ama asıl belirleyici eksik, bitişi ölçen şeyin olmamasıdır."
+    },
+    {
+      topic: "İsteğin dört parçası",
+      q: "İstemin dört parçası hangileridir?",
+      opts: [
+        "Hedef, kaynak, kısıt, kabul ölçütü",
+        "Rol, görev, biçim, ton",
+        "Bağlam, örnek, sıcaklık, uzunluk",
+        "Giriş, gelişme, sonuç, özet"
+      ],
+      a: [0],
+      why: "<b>Hedef</b> ne olacağını, <b>kaynak</b> nereye bakılacağını, <b>kısıt</b> neyin yapılmayacağını, <b>kabul ölçütü</b> bitişin nasıl ölçüleceğini söyler. Diğer şıklar genel yazı ya da model ayarı kalıpları; bu setin ölçtüğü şey bunlar değil."
+    },
+    {
+      topic: "Kaynağı gösterme",
+      q: "\"Bu sınıfın arayüzü neden bu kadar garip?\" sorusunu ajana sormanın daha iyi biçimi hangisidir?",
+      opts: [
+        "\"Bu sınıfın git geçmişine bak ve arayüzün nasıl bu hâle geldiğini özetle\"",
+        "\"Bu sınıfı baştan tasarla, daha temiz olsun\"",
+        "\"Bu sınıfın garip olduğunu kabul ediyor musun?\"",
+        "\"Tüm projeyi oku ve bu sınıf hakkındaki her şeyi anlat\""
+      ],
+      a: [0],
+      why: "<b>Cevap bir yerde yazılıysa ajanı oraya yolla.</b> Git geçmişi tam olarak bu soruyu cevaplayan kaynaktır. Yeniden tasarım farklı bir istektir; onay sorusu bilgi üretmez; \"tüm projeyi oku\" ise kapsamsız keşiftir ve bağlamı doldurur."
+    },
+    {
+      topic: "Var olan kalıbı gösterme",
+      q: "Ajanın yazdığı kod projenin geri kalanına hiç benzemiyor. Bir sonraki istemde en etkili düzeltme hangisidir?",
+      opts: [
+        "Kod tabanından örnek bir dosya adı verip \"aynı kalıbı izle\" demek",
+        "\"Daha temiz kod yaz\" demek",
+        "Daha büyük bir model seçmek",
+        "Kural dosyasına \"iyi kod yaz\" satırı eklemek"
+      ],
+      a: [0],
+      why: "<b>Ajan kod tabanındaki yazılmamış kalıpları tahmin etmez.</b> Somut bir örnek dosya, yüz satırlık tarif etmekten daha etkilidir. \"Temiz\" ve \"iyi\" ölçülemez sıfatlardır; model büyütmek de projenin kendine özgü kalıbını bilinir kılmaz."
+    },
+    {
+      topic: "Belirtiyi tarif etme",
+      q: "Bir hata bildirimini ajana aktarırken hangi iki davranış işe yarar? (İki tanesini seç.)",
+      opts: [
+        "Hata metnini olduğu gibi yapıştırmak",
+        "Önce hatayı gösteren başarısız bir test yazmasını istemek",
+        "Hatanın nasıl düzeltileceğini tahmin edip dikte etmek",
+        "Hatayı kendi cümlelerinle özetleyip metni atlamak"
+      ],
+      a: [0, 1],
+      why: "<b>Hata metni tarif edilmez, yapıştırılır</b> — özet, ayırt edici ayrıntıyı düşürür. <b>Başarısız test</b> ise hatayı yeniden üretilebilir kılar ve düzeltmenin işe yaradığını kanıtlar. Çözümü dikte etmek, ajanın kök sebebi bulmasını engelleyip belirtiyi bastırmasına yol açar."
+    },
+    {
+      topic: "Bağlamı verme yolları",
+      q: "Ajana bağlam vermenin yollarından hangisi iki taraflıdır ve dikkat ister?",
+      opts: [
+        "Ajanın kendi bağlamını toplaması — esnektir ama çektiği her şey bağlama girer",
+        "Hata metnini yapıştırmak — çok yer kaplar",
+        "Dosyayı adıyla vermek — ajanı yanıltabilir",
+        "Ekran görüntüsü paylaşmak — model görüntüleri okuyamaz"
+      ],
+      a: [0],
+      why: "<b>\"Şu komutu çalıştır ve bak\" demek esnektir</b>, ama getirdiği her şey bağlama girer ve orada kalır; kapsamı sen daraltmalısın. Hata metni ve dosya adı vermek doğrudan tasarruftur; görüntü paylaşmak ise arayüz işlerinde en hızlı anlatım yoludur."
+    },
+    {
+      topic: "Belirtim çıkarma",
+      q: "Büyük bir özelliğe başlarken \"bana ayrıntılı sorular sor ve SPEC.md yaz\" demenin ardından neden yeni bir oturum açılır?",
+      opts: [
+        "Tartışma turları bağlamda birikmiştir; uygulama temiz pencerede daha iyi gider",
+        "Belirtim dosyası ancak yeni oturumda okunabilir",
+        "Aynı oturumda dosya yazma izni verilmez",
+        "Model, aynı oturumda kendi yazdığı belirtimi uygulayamaz"
+      ],
+      a: [0],
+      why: "<b>Belirtim artık diskte</b>, dolayısıyla ona ulaşmak için konuşma geçmişine gerek yok. Soru-cevap turları ise bağlamın büyük kısmını doldurmuş durumda. Temiz pencere + yazılı belirtim, uzun bir tartışma geçmişinden daha iyi bir başlangıçtır. Teknik bir engel yok; bu bir bağlam kararı."
+    },
+    {
+      topic: "Belirtim çıkarma",
+      q: "İyi bir belirtimde bulunması gereken üç özellikten biri **değildir**?",
+      opts: [
+        "Uygulamanın hangi sırayla kodlanacağının satır satır dökümü",
+        "Dokunulacak dosya ve arayüzlerin adıyla sayılması",
+        "Kapsam dışının açıkça yazılması",
+        "Uçtan uca bir doğrulama adımı"
+      ],
+      a: [0],
+      why: "<b>Belirtim ne olacağını tarif eder, adım adım nasıl yazılacağını değil.</b> Satır satır dikte, ajanın kendi yolunu bulma yeteneğini boşa çıkarır ve belirtimi kırılganlaştırır. Diğer üçü belirtimin işe yaramasını sağlayan asıl unsurlardır."
+    },
+    {
+      topic: "Belirsiz istem",
+      q: "Belirsiz bir istem hangi durumda doğru araçtır?",
+      opts: [
+        "Yanlış anlaşılmanın maliyeti düşükken, örneğin keşif ve öğrenmede",
+        "Zaman kısıtlı olduğunda, çünkü yazması hızlıdır",
+        "Ajan güçlü bir modelse, çünkü eksiği kendisi tamamlar",
+        "Hiçbir zaman; her istem kesin olmalıdır"
+      ],
+      a: [0],
+      why: "<b>Ayırt edici soru: yanlış anlaşılmanın maliyeti ne?</b> Ucuzsa belirsizlik bilgi getirir — ajanın yorumu senin varsayımını sınar. Pahalıysa kesinleştirilir. Yazma hızı ya da model gücü bu kararı belirlemez; güçlü model de kafandakini göremez."
+    },
+    {
+      topic: "Belirsiz istem",
+      q: "Tanımadığın bir kod tabanında \"loglama nasıl çalışıyor?\" diye sormak hangi kullanıma örnektir?",
+      opts: [
+        "Öğrenme ve keşif — kıdemli bir geliştiriciye sormakla aynı",
+        "Kötü istem — kaynak belirtilmemiş",
+        "Kabul ölçütü eksik bir uygulama isteği",
+        "Belirtim çıkarma adımı"
+      ],
+      a: [0],
+      why: "<b>Kod tabanına alışma sürecinde bu tam olarak doğru istemdir</b> ve özel bir kalıp gerektirmez. Kabul ölçütü ya da kaynak eksikliği burada kusur değil: değişiklik istenmiyor, bilgi isteniyor ve yanlış anlaşılmanın maliyeti sıfır."
+    },
+    {
+      topic: "Yaygın hatalar",
+      q: "\"Basit bir doğrulama istedim, ajan üç paket kurdu.\" Bir sonraki istemde ne eklenmeliydi?",
+      opts: [
+        "\"Yalnızca hâlihazırdaki bağımlılıkları kullan, yeni paket ekleme\" kısıtı",
+        "Daha ayrıntılı bir hedef tanımı",
+        "Kabul ölçütü olarak test çalıştırma talebi",
+        "İlgili dosyanın adı"
+      ],
+      a: [0],
+      why: "<b>Yapılmaması gereken şey söylenmediğinde ajan en kısa yoldan gider</b> — ve bir paket kurmak çoğu zaman en kısa yoldur. Bu bir <b>kısıt</b> eksikliğidir. Hedef, kabul ölçütü ve dosya adı bu belirtiyi açıklamaz."
+    },
+    {
+      topic: "Yaygın hatalar",
+      q: "\"Testleri de yaz\" demek neden yeterli bir kabul ölçütü değildir?",
+      opts: [
+        "Yazılan ama çalıştırılmayan test döngüyü kapatmaz",
+        "Ajanlar test yazarken sık hata yapar",
+        "Testler bağlamı gereksiz doldurur",
+        "Test yazmak kabul ölçütü değil, kısıttır"
+      ],
+      a: [0],
+      why: "<b>Kabul ölçütü, ajanın çalıştırıp sonucunu okuyabileceği bir şey olmalı.</b> Yazılıp koşulmayan test yalnızca daha fazla koddur; hatayı yakalamaz. İstemde \"çalıştır ve sonucu göster\" yoksa elinde yine bir iddia kalır."
+    },
+    {
+      topic: "İstem uzunluğu",
+      q: "\"Uzun istem = iyi istem\" yaklaşımının hatası nedir?",
+      opts: [
+        "İyi olan eksiksizliktir; dolgu cümleler belirsizliği kapatmadan bağlam harcar",
+        "Uzun istemler model tarafından kırpılır",
+        "Uzun istemler yanıt süresini üç katına çıkarır",
+        "Uzunluk her zaman iyidir, bu yaklaşımda hata yoktur"
+      ],
+      a: [0],
+      why: "<b>Ölçüt uzunluk değil, dört parçanın kapatılması.</b> Nezaket kalıpları, tekrar ve süsleme belirsizliği azaltmaz ama bağlamda yer tutar. Kırpılma ya da üç kat yavaşlama gibi mekanik iddialar bu konunun söylediği şey değil."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "İyi istem yaratıcı değil, eksiksizdir",
+        "Doğru sihirli cümleyi bulmak sonucu belirler",
+        "İstem ne kadar kibar olursa sonuç o kadar iyidir",
+        "En iyi istem, ajana hiçbir kısıt koymayan istemdir"
+      ],
+      a: [0],
+      why: "<b>Sorun cümlenin büyüsü değil, ajanın senin kafandakini görememesi.</b> Bu yüzden çözüm ezber kalıp değil, belirsizliği sistemli kapatmak. Kısıtsız istem ise tam tersine en çok düzeltme getiren biçimdir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

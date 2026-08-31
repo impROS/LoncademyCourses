@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-2",
+  code: "Üretim ve ekip · 2.2",
+  title: "Gizlilik ve veri",
+  back: "2.2-gizlilik-ve-veri.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ne gider",
+      q: "Uzak bir modelle çalışırken aşağıdakilerden hangisi **gitmez**?",
+      opts: [
+        "Ajanın hiç okumadığı dosyalar",
+        "Ajanın okuduğu dosyalar",
+        "Çalıştırılan komutların çıktısı",
+        "Kural dosyaları ve bellek"
+      ],
+      a: [0],
+      why: "<b>Okunmayan dosya bağlama girmez, dolayısıyla modele de gitmez.</b> Kontrolün büyük kısmı tam burada: ajanın neyi okuyabildiğini belirlemek. Bu yüzden engelleme kuralları yalnızca güvenlik değil, gizlilik aracıdır da."
+    },
+    {
+      topic: "Ne gider",
+      q: "Gizlilik açısından en çok atlanan giden kalem hangisidir ve neden tehlikelidir?",
+      opts: [
+        "Komut çıktıları; `env` çalıştırmak tüm gizli değerleri gönderir",
+        "Kural dosyaları; uzun oldukları için",
+        "Ortam bilgisi; dizin adını içerdiği için",
+        "Skill açıklamaları; sayıları fazla olduğu için"
+      ],
+      a: [0],
+      why: "<b>Dosya okuma bilinçli bir eylem gibi görünür ama komut çalıştırmak öyle görünmez.</b> `env`, bir yapılandırma dökümü ya da bir veritabanı sorgusu, tek adımda büyük miktarda hassas veriyi bağlama ve oradan modele taşıyabilir."
+    },
+    {
+      topic: "Saklama ve eğitim",
+      q: "\"Saklanıyor mu?\", \"eğitimde kullanılıyor mu?\" ve \"kim erişebiliyor?\" soruları hakkında hangisi doğrudur?",
+      opts: [
+        "Üçü ayrı sorudur ve cevapları plana, sözleşmeye göre değişir",
+        "Üçü aynı ayarla belirlenir",
+        "Üçünün cevabı tüm sağlayıcılarda aynıdır",
+        "Üçü de yalnızca kurumsal planlarda geçerlidir"
+      ],
+      a: [0],
+      why: "<b>Sık karıştırılan üç ayrı boyut.</b> Bir sağlayıcı isteği kısa süre saklayıp eğitimde hiç kullanmayabilir; erişim kısıtları da ayrı bir konudur. Tüketici planı, kurumsal plan ve bulut sağlayıcı üzerinden kullanım farklı davranır."
+    },
+    {
+      topic: "Saklama ve eğitim",
+      q: "\"Sıfır veri saklama\" hakkında hangi yaygın varsayım yanlıştır?",
+      opts: [
+        "Kendiliğinden açık olduğu varsayımı",
+        "İçeriğin işlendikten sonra saklanmadığı anlamına geldiği",
+        "Kurumsal sözleşmelerde geçtiği",
+        "Bir yapılandırma seçeneği olduğu"
+      ],
+      a: [0],
+      why: "<b>Bu bir yapılandırma; öntanımlı davranış değil.</b> Tanımı doğrudur ve kurumsal sözleşmelerde geçer — ama \"biz zaten sıfır veri saklamadayız\" varsayımı doğrulanmadan yapılırsa yanlış bir güvence üretir. Doğru refleks aracın veri işleme sayfasını okumaktır."
+    },
+    {
+      topic: "Nerede çalışıyor",
+      q: "Uzaktan denetim (telefondan/tarayıcıdan yereldeki oturuma bağlanma) ile bulut oturumu arasındaki fark nedir?",
+      opts: [
+        "Uzaktan denetimde kod ve dosya erişimi yerelde kalır; bulut oturumunda depo uzak ortama kopyalanır",
+        "İkisi de kodu buluta kopyalar",
+        "İkisi de kodu yerelde tutar",
+        "Fark yalnızca arayüzdedir"
+      ],
+      a: [0],
+      why: "<b>Kod nerede çalışıyor sorusu, model isteği nereye gidiyor sorusundan ayrıdır.</b> Uzaktan denetimde yürütme yereldedir ve yalnızca oturum trafiği geçer; bulut oturumunda ise depo gerçekten uzak bir ortama alınır. Kurumsal değerlendirmede bu ayrım belirleyicidir."
+    },
+    {
+      topic: "Nerede çalışıyor",
+      q: "Bulut sağlayıcı üzerinden kullanımın ayırt edici yanı nedir?",
+      opts: [
+        "Kod yerelde çalışır, model istekleri sizin bulut hesabınızdan geçer",
+        "Kod da model de sağlayıcıda çalışır",
+        "Hiçbir istek dışarı çıkmaz",
+        "Yalnızca ücretsiz planlarda kullanılabilir"
+      ],
+      a: [0],
+      why: "<b>Yürütme yerelde kalırken faturalama ve veri akışı kurumun kendi bulut hesabından geçer</b> — bu, veri yerleşimi ve sözleşme açısından farklı bir tablo oluşturur. Kurumsal ortamlarda tercih edilmesinin sebebi budur."
+    },
+    {
+      topic: "Pratik korumalar",
+      q: "Hassas dosyaların okunmasını engellemenin doğru yolu hangisidir?",
+      opts: [
+        "İzin kurallarında engelleme tanımlamak",
+        "Dosyaları `.gitignore`'a eklemek",
+        "Dosya adlarını değiştirmek",
+        "Kural dosyasına \"bu dosyaları okuma\" yazmak"
+      ],
+      a: [0],
+      why: "<b>Engelleme kuralları her kipte geçerlidir ve deterministiktir.</b> `.gitignore` yalnızca sürüm denetimini etkiler, ajanın okumasını engellemez. Kural dosyasına yazmak bir ricadır — ve gizlilik ricayla kurulmaz."
+    },
+    {
+      topic: "Pratik korumalar",
+      q: "Bir engelleme kural kümesine `Bash(env)` eklemenin gerekçesi nedir?",
+      opts: [
+        "Komut çıktısı da modele gider; `env` tüm ortam değişkenlerini açığa çıkarır",
+        "`env` komutu sistemi yavaşlatır",
+        "`env` komutu izin sistemini bozar",
+        "`env` komutu bağlam penceresini aşar"
+      ],
+      a: [0],
+      why: "<b>Dosya okumayı engellemek yeterli değil</b> — aynı bilgi bir komutun çıktısıyla da bağlama girebilir. Kapsamlı bir gizlilik yapılandırması hem okuma yollarını hem çıktı üreten komutları kapsar."
+    },
+    {
+      topic: "Pratik korumalar",
+      q: "Aşağıdakilerden hangi ikisi pratik gizlilik korumasıdır? (İki tanesini seç.)",
+      opts: [
+        "Gerçek veri yerine anonim örnek veriyle çalışmak",
+        "MCP bağlantısını salt okunur ve dar kapsamlı tutmak",
+        "Daha küçük bir model seçmek",
+        "Bağlamı sık sık temizlemek"
+      ],
+      a: [0, 1],
+      why: "<b>İkisi de gönderilen verinin niteliğini ve miktarını doğrudan sınırlar.</b> Model boyutu neyin gönderildiğini değiştirmez; bağlam temizlemek ise iyi bir alışkanlıktır ama zaten gönderilmiş veriyi geri almaz."
+    },
+    {
+      topic: "Kişisel veri",
+      q: "Kod tabanında kişisel veri bulunabilecek yerlerden hangisi **değildir**?",
+      opts: [
+        "Bağımlılık listesi",
+        "Gerçek kayıtlardan kopyalanmış test verileri",
+        "Hata izleme kayıtları ve günlükler",
+        "Veritabanı dökümleri"
+      ],
+      a: [0],
+      why: "<b>Bağımlılık listesi paket adları ve sürümlerinden oluşur.</b> Diğer üçü klasik kişisel veri kaynaklarıdır — özellikle test verileri, çünkü çoğu zaman üretimden kopyalanmıştır ve kimse bunu belgelemez."
+    },
+    {
+      topic: "Kişisel veri",
+      q: "Kişisel veri konusunda en pratik önlem nedir?",
+      opts: [
+        "Anonimleştirilmiş örnek veriyle çalışmak; gerekiyorsa alanları maskelemek",
+        "Yalnızca yerel modeller kullanmak",
+        "Verileri şifreleyip öyle okutmak",
+        "Kural dosyasına uyarı yazmak"
+      ],
+      a: [0],
+      why: "<b>Teknik önlemden önce gelen bir tasarım kararı.</b> Hiç okutulmayan veri hiçbir risk taşımaz. Şifreli veri okutmak işe yaramaz (ajan onu çözemez ya da çözerse koruma kalkar); kural dosyasındaki uyarı ise bir ricadır."
+    },
+    {
+      topic: "Sınırlar",
+      q: "Bu konunun kişisel veri düzenlemeleri hakkındaki tutumu nedir?",
+      opts: [
+        "Hukuki tavsiye vermez; kurumsal kullanımda uyum tarafına danışılmasını söyler",
+        "Tüm düzenlemelerin gereklerini listeler",
+        "Düzenlemelerin ajan kullanımını kapsamadığını belirtir",
+        "Yalnızca Avrupa düzenlemelerini ele alır"
+      ],
+      a: [0],
+      why: "<b>Düzenlemeler ülkeye ve sektöre göre değişir ve zamanla güncellenir.</b> Bir öğrenme setinin doğru tutumu, kavramı ve refleksi öğretip somut hukuki değerlendirmeyi uzmanına bırakmaktır. Bu, `⚠️ Doğrulanmalı` işaretlerinin mantığıyla aynıdır."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Tüm depomuz modele gönderiliyor\" endişesine en doğru cevap nedir?",
+      opts: [
+        "Yalnızca ajanın okuduğu dosyalar gider; okuma yüzeyini sen belirlersin",
+        "Evet, tüm depo her oturumda gönderilir",
+        "Hiçbir dosya gönderilmez, yalnızca istem gider",
+        "Yalnızca değişen dosyalar gönderilir"
+      ],
+      a: [0],
+      why: "<b>Ne tamamı gider ne hiçbiri.</b> Okunan dosyalar, komut çıktıları, kural dosyaları ve bellek gider. Bu yüzden `/context` çıktısı, \"ne gitti\" sorusunun en yakın ölçüsüdür — ve engelleme kuralları en doğrudan kontrol aracıdır."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ajanın okuduğu her şey gider, okumadığı gitmez; kontrolün neyi okuttuğunda",
+        "Uzak modellerle çalışmak kurumsal ortamda mümkün değildir",
+        "Sıfır veri saklama tüm gizlilik sorunlarını çözer",
+        "Gizlilik tamamen sağlayıcının sorumluluğudur"
+      ],
+      a: [0],
+      why: "<b>Kontrolün yeri belirlenince geri kalan her şey uygulama ayrıntısı olur.</b> Kurumsal kullanım mümkündür (yapılandırma ve sözleşmeyle); sıfır veri saklama önemli ama tek boyut değildir; ve okuma yüzeyini belirlemek devredilemez biçimde sende kalır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

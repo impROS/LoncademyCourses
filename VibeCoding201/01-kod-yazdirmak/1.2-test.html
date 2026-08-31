@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-2",
+  code: "İş akışları · 1.2",
+  title: "Var olan koda dokunmak",
+  back: "1.2-var-olan-koda-dokunmak.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Neden böyle",
+      q: "Ajan bir kod bloğundaki tuhaf görünen bir koşulu \"gereksiz\" diye sildi ve eski bir hata geri geldi. Hangi adım atlanmıştı?",
+      opts: [
+        "Satırın neden eklendiğini git geçmişinden sormak",
+        "Daha büyük bir model seçmek",
+        "Değişikliği plan modunda yapmak",
+        "Testleri silmeden önce yedeklemek"
+      ],
+      a: [0],
+      why: "<b>Gariplik çoğu zaman bir hata düzeltmesinin izidir</b>, ve gerekçesi kodda değil geçmişte yazılıdır. \"Neden böyle olmuş?\" sorusu bu tuzağı doğrudan kapatır. Model boyutu bu bilgiyi üretmez; plan modu değişikliği erteler ama gerekçeyi öğretmez."
+    },
+    {
+      topic: "Neden böyle",
+      q: "Var olan bir kodun gerekçesini anlamak için hangi kaynaklar kullanılır? (İki tanesini seç.)",
+      opts: [
+        "Git geçmişi ve commit mesajları",
+        "Testler",
+        "Değişken adlarının uzunluğu",
+        "Dosyanın son değiştirilme tarihi"
+      ],
+      a: [0, 1],
+      why: "<b>Git geçmişi \"ne zaman ve neden\", testler ise \"korunması gereken davranış\" bilgisini verir.</b> Değişken adları niyeti kısmen taşır ama gerekçeyi anlatmaz; dosya tarihi tek başına hiçbir sebep bilgisi içermez."
+    },
+    {
+      topic: "Kod ve testler",
+      q: "\"Kod ne yaptığını söyler, testler ne yapması gerektiğini\" ilkesine göre ikisi çeliştiğinde ne çıkarılır?",
+      opts: [
+        "Hata koddadır",
+        "Hata testtedir",
+        "İkisi de güncellenmelidir",
+        "Çelişki mümkün değildir; testler koddan üretilir"
+      ],
+      a: [0],
+      why: "<b>Test, kodun korumak zorunda olduğu davranışın yazılı hâlidir</b> — bir niyet beyanıdır. Kod ise o niyeti gerçekleştirme denemesidir. Çelişkide niyet doğru kabul edilir. Bu tam olarak, ajanın \"test geçsin diye testi değiştirme\" refleksinin neden yasaklandığını açıklar."
+    },
+    {
+      topic: "Küçük diff",
+      q: "Küçük diff kuralının en önemli faydası hangisidir?",
+      opts: [
+        "Hata izole kalır ve geri alması ucuzdur",
+        "Daha az token harcanır",
+        "Ajan daha hızlı çalışır",
+        "Commit sayısı azalır"
+      ],
+      a: [0],
+      why: "<b>Asıl kazanç izlenebilirlik.</b> 800 satırlık bir değişiklikte sorunun nerede olduğunu bulmak çok zordur; küçük bir değişiklikte hata zaten oradadır. Küçük diff genelde <i>daha çok</i> commit üretir, ve token tasarrufu garanti değildir."
+    },
+    {
+      topic: "Küçük diff",
+      q: "\"İlgisiz iyileştirme yapma, gördüğünü ayrıca söyle\" cümlesi neden \"iyileştirme yapma\"dan daha iyidir?",
+      opts: [
+        "Fikri yasaklamaz, yalnızca ayırır; öneriyi alır, işi ayrı yürütürsün",
+        "Ajanın daha az token harcamasını sağlar",
+        "Ajanın yeniden adlandırma yapmasını teknik olarak engeller",
+        "İki cümle her zaman tek cümleden daha etkilidir"
+      ],
+      a: [0],
+      why: "<b>Ajan kod tabanında gerçek sorunlar görebilir; o bilgiyi çöpe atmak israftır.</b> Ayırma, hem mevcut değişikliği küçük tutar hem bilgiyi korur. Teknik bir engelleme değildir — bu bir istem, yani rica; kesinlik isteniyorsa inceleme adımı ya da hook gerekir."
+    },
+    {
+      topic: "Kalıbı izletme",
+      q: "Ajanın projenin mevcut kalıbına uygun kod yazması için en etkili yöntem nedir?",
+      opts: [
+        "Kalıbı uygulayan somut bir dosya ya da fonksiyonu örnek göstermek",
+        "Kalıbı kural dosyasında ayrıntılı tarif etmek",
+        "Daha yüksek çaba düzeyi seçmek",
+        "Değişiklikten sonra biçimlendirici çalıştırmak"
+      ],
+      a: [0],
+      why: "<b>Model, gördüğü örneğe benzetmekte tarif edilen soyut kurala uymaktan çok daha iyidir.</b> Bir örnek dosya adı, yirmi satırlık biçim tarifinden daha çok iş görür. Biçimlendirici yalnızca yüzeysel biçimi düzeltir, adlandırma ve yapı kalıbını değil."
+    },
+    {
+      topic: "Kalıbı izletme",
+      q: "Tipli dillerde kod zekâsı (dil sunucusu) kullanmanın ajan açısından iki faydası nedir? (İki tanesini seç.)",
+      opts: [
+        "Sembol aramada metin taramasından daha doğru sonuç",
+        "Daha az dosya okunduğu için daha az bağlam tüketimi",
+        "Testlerin otomatik yazılması",
+        "İzin sorularının ortadan kalkması"
+      ],
+      a: [0, 1],
+      why: "<b>\"Bu sembol nerede tanımlı?\" sorusunu dile sormak, grep sonuçları arasından doğru olanı bulmaya çalışmaktan hem daha kesin hem daha ucuzdur.</b> Tek bir tanıma-gitme çağrısı, birkaç aday dosyayı okumanın yerini alır. Test yazma ve izinlerle ilgisi yoktur."
+    },
+    {
+      topic: "Git güvenlik ağı",
+      q: "Ajanla çalışırken git alışkanlıklarından hangisi \"ajanın söylediğini değil yaptığını görmeni\" sağlar?",
+      opts: [
+        "`git diff` ile değişikliği kendin okumak",
+        "Dal açmak",
+        "Sık commit atmak",
+        "Temiz ağaçla başlamak"
+      ],
+      a: [0],
+      why: "<b>Diff, iddia ile gerçeklik arasındaki farkı gösteren tek araç.</b> Dal açmak ana dalı korur, temiz başlamak neyin ajandan geldiğini netleştirir, sık commit geri alma noktası üretir — üçü de değerlidir ama hiçbiri değişikliğin içeriğini sana göstermez."
+    },
+    {
+      topic: "Git güvenlik ağı",
+      q: "Ajan `npm install` çalıştırıp bir bağımlılık ekledi. Geri sarma (kontrol noktası) bu değişikliği geri alır mı?",
+      opts: [
+        "Hayır; kontrol noktaları kabuk komutlarıyla yapılan değişiklikleri kapsamaz",
+        "Evet; tüm dosya sistemi değişiklikleri kapsanır",
+        "Yalnızca aynı oturum içindeyse alır",
+        "Yalnızca paket dosyası git'te izleniyorsa alır"
+      ],
+      a: [0],
+      why: "<b>Kontrol noktaları yalnızca ajanın dosya düzenleme araçlarıyla yaptığı değişiklikleri izler.</b> Kabuk komutları ve dış süreçler kapsam dışıdır. Bu, kontrol noktalarının git'in yerine geçmediğinin en somut örneğidir; ikisi birlikte kullanılır."
+    },
+    {
+      topic: "Temizlik tuzağı",
+      q: "\"Erken soyutlama\" temizlik tuzağının riski nedir?",
+      opts: [
+        "Benzer görünen iki kullanım aslında aynı sebeple aynı olmayabilir",
+        "Kod satır sayısı artar",
+        "Testler yavaşlar",
+        "Biçimlendirici bozulur"
+      ],
+      a: [0],
+      why: "<b>Tekrar her zaman kusur değildir.</b> Bugün aynı görünen iki kod parçası, farklı sebeplerle var olabilir ve yarın ayrı yönlere evrilebilir. Erkenden ortak bir soyutlamaya bağlamak, ikisini birbirine kilitler ve sonraki değişikliği zorlaştırır."
+    },
+    {
+      topic: "Temizlik tuzağı",
+      q: "Ajanın \"bu ölü kod\" diyerek bir fonksiyonu kaldırmasının riski nedir?",
+      opts: [
+        "Yansıma ya da yapılandırma yoluyla çağrılıyor olabilir; statik arama bunu göstermez",
+        "Ölü kod kaldırmak her zaman güvenlidir, risk yoktur",
+        "Kod satır sayısı düşer ve ölçümler bozulur",
+        "Git geçmişi silinir"
+      ],
+      a: [0],
+      why: "<b>Statik arama, dinamik çağrıları bulamaz.</b> Ad üzerinden yansımayla, yapılandırma dosyasından ya da dış bir sistemden çağrılan kod \"kullanılmıyor\" görünür. Bu yüzden kaldırma işlemi ayrı, dikkatli bir iş olarak ele alınmalıdır — mevcut değişikliğin yan ürünü olarak değil."
+    },
+    {
+      topic: "Uygulama",
+      q: "Tanımadığın bir modülde küçük bir davranış değişikliği yapacaksın. En uygun ilk adım hangisidir?",
+      opts: [
+        "Plan modunda ilgili kodu ve testlerini okutup ne yaptığını anlattırmak",
+        "Doğrudan değişikliği isteyip sonucu incelemek",
+        "Modülü baştan yazdırmak",
+        "Tüm test takımını çalıştırıp beklemek"
+      ],
+      a: [0],
+      why: "<b>Anlamadan değiştirmemek bu konunun ana kuralı.</b> Doğrudan değişiklik istemek, ajanın da senin de anlamadığınız bir kodda çalışması demektir. Baştan yazmak küçük diff kuralının tam tersi. Test çalıştırmak yararlıdır ama mevcut davranışın <i>gerekçesini</i> öğretmez."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Ajan bir fonksiyonu yeniden adlandırdı, çağıran yerler kırıldı.\" Bunu önleyecek istem cümlesi hangisidir?",
+      opts: [
+        "\"En küçük değişiklikle çöz; ilgisiz yeniden adlandırma ve biçim düzeltmesi yapma\"",
+        "\"Daha dikkatli ol\"",
+        "\"Yalnızca tek dosyaya dokun\"",
+        "\"Kod kalitesini artır\""
+      ],
+      a: [0],
+      why: "<b>Kapsam kilidi, yasaklanan davranışı adıyla anar.</b> \"Dikkatli ol\" ölçülemez; \"tek dosya\" kısıtı meşru çok dosyalı değişiklikleri de engeller ve asıl sorunu (ilgisiz değişiklik) adlandırmaz; \"kalite artır\" ise tam tersine temizlik davranışını teşvik eder."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Var olan kodda değişikliğin ölçüsü küçüklüğüdür, güzelliği değil",
+        "Var olan kod her fırsatta temizlenmelidir",
+        "Var olan koda dokunmak yerine yeniden yazmak daha güvenlidir",
+        "Ajanlar var olan kodda kullanılmamalıdır"
+      ],
+      a: [0],
+      why: "<b>Küçüklük, izlenebilirlik ve geri alınabilirlik demektir</b> — yaşayan bir kod tabanında güzellikten daha değerli iki özellik. Sürekli temizlik ve yeniden yazma, tam olarak bu konunun uyardığı tuzaklar; ajanlar ise var olan kodda son derece kullanışlıdır, yeter ki gerekçe önce anlaşılsın."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.4 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-4",
+  code: "Temeller · 1.4",
+  title: "İzinler, plan modu ve kum havuzu",
+  back: "1.4-izinler-ve-plan-modu.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İki eksen",
+      q: "İzin kipi ile kum havuzu arasındaki temel fark nedir?",
+      opts: [
+        "Kip sorup sormamayı, kum havuzu neye erişilebileceğini belirler",
+        "Kip yerel, kum havuzu uzak oturumlar içindir",
+        "Kip kullanıcıya, kum havuzu kuruma aittir",
+        "İkisi aynı ayarın farklı adlarıdır"
+      ],
+      a: [0],
+      why: "<b>İki eksen bağımsızdır ve birlikte kullanılır.</b> Onay akışını kip belirler; bir komut çalıştığında neye ulaşabileceğini işletim sistemi düzeyinde kum havuzu belirler. Bu ayrımı kaçırmak, \"onaylıyorum ama neye erişiyor bilmiyorum\" durumunun kaynağıdır."
+    },
+    {
+      topic: "İki eksen",
+      q: "Ajanın onayınla aşılabilen ve aşılamayan sınırları hangileridir? (İki tanesini seç.)",
+      opts: [
+        "İzin kipinin sorduğu onaylar aşılabilir",
+        "Kum havuzunun dosya ve ağ sınırı aşılamaz",
+        "Engelleme kuralları onayla aşılabilir",
+        "Çalışma dizini sınırı hiçbir koşulda genişletilemez"
+      ],
+      a: [0, 1],
+      why: "<b>Kip bir onay akışıdır: sen evet dersen eylem olur.</b> Kum havuzu ise işletim sistemi tarafından zorlanır; model ya da kullanıcı onayı onu aşamaz. Engelleme kuralları onayla aşılmaz — her kipte geçerlidir. Çalışma dizini sınırı ise ek dizin tanımlayarak genişletilebilir."
+    },
+    {
+      topic: "İzin kipleri",
+      q: "`auto` kipi hakkında hangisi doğrudur?",
+      opts: [
+        "Ayrı bir sınıflandırıcı model eylemleri gözden geçirir ve riskli olanları engeller",
+        "Her eylemi istisnasız onaylar",
+        "Yalnızca okuma araçlarını serbest bırakır",
+        "Kullanıcı onaylarını kaydedip sonraki oturumlarda tekrarlar"
+      ],
+      a: [0],
+      why: "<b>`auto`, onay işini senden alıp ayrı bir modele verir</b>; kapsam kayması ve dış içeriğin yönlendirdiği eylemler engellenir. \"Her şeye evet\" değildir — ama tek savunma katmanın da olmamalıdır. Yalnızca okuma serbestisi Manual kipin davranışıdır."
+    },
+    {
+      topic: "İzin kipleri",
+      q: "Bir ekip `bypassPermissions` kullanıyor ama ayarlarında `.env` okumasını engelleyen bir kural var. Bu kural işler mi?",
+      opts: [
+        "Evet — engelleme kuralları her kipte geçerlidir",
+        "Hayır — en üst kip tüm kuralları devre dışı bırakır",
+        "Yalnızca dosya gerçekten varsa işler",
+        "Yalnızca kural yönetilen ayarlardan geliyorsa işler"
+      ],
+      a: [0],
+      why: "<b>Engelleme kuralları en yüksek kipte bile geçerlidir</b>; anlamını yitiren şey izin <i>verme</i> kurallarıdır, çünkü zaten her şey serbesttir. Dosyanın var olup olmaması kuralın yürürlüğünü değiştirmez. Kuralın kaynağı önceliği etkiler ama bu davranışı değiştirmez."
+    },
+    {
+      topic: "Plan modu",
+      q: "Plan modunu \"güvenlik önlemi\" saymak neden hatalıdır?",
+      opts: [
+        "Plan modu belirsizliği azaltır; yetkiyi izin kipi ve kum havuzu belirler",
+        "Plan modu aslında dosyaları değiştirebilir",
+        "Plan modu yalnızca büyük projelerde çalışır",
+        "Plan modu izin kurallarını devre dışı bırakır"
+      ],
+      a: [0],
+      why: "<b>İki farklı problem: ne yapılacağı ve ne yapılabileceği.</b> Plan modu birincisiyle ilgilenir — okur, anlatır, plan çıkarır. Güvenlik ikinci problemdir ve çözümü izin kipi ile kum havuzudur. Plan modu izin kurallarını kaldırmaz."
+    },
+    {
+      topic: "Plan modu",
+      q: "Hangi durumda plan modu kullanmak gereksiz ek yüktür?",
+      opts: [
+        "Değişikliği tek cümleyle tarif edebiliyorsan",
+        "Birden çok dosyaya dokunacaksan",
+        "Kodu tanımıyorsan",
+        "Geri alması pahalı bir karar varsa"
+      ],
+      a: [0],
+      why: "<b>Ölçüt tek cümle kuralıdır.</b> Planın bedeli ekstra tur ve token; bu bedel ancak belirsizlik varken karşılığını verir. Diğer üç durum tam olarak belirsizliğin yüksek olduğu, planın kazandırdığı durumlardır."
+    },
+    {
+      topic: "İzin kuralları",
+      q: "`Bash(git diff*)` deseni neden risklidir?",
+      opts: [
+        "Boşluk olmadığı için `git diff-index` gibi başka komutlar da eşleşir",
+        "Yıldız karakteri desende kullanılamaz",
+        "Yalnızca tam eşleşme yapar, hiçbir komutu kapsamaz",
+        "Engelleme kurallarını geçersiz kılar"
+      ],
+      a: [0],
+      why: "<b>Desende boşluk anlamlıdır.</b> `Bash(git diff *)` yalnızca \"git diff \" ile başlayanları kapsar; boşluksuz biçim `git diff-index` gibi farklı komutları da içine alır. Yıldız desteklenir; kurallar engellemeleri geçersiz kılmaz."
+    },
+    {
+      topic: "İzin kuralları",
+      q: "Onay yorgunluğunu azaltmak için hangisi doğru yaklaşımdır?",
+      opts: [
+        "Güvendiğin komutları adıyla izin listesine eklemek",
+        "`Bash(*)` kuralı yazmak",
+        "En üst izin kipine geçmek",
+        "İzin sorularını okumadan onaylamayı alışkanlık hâline getirmek"
+      ],
+      a: [0],
+      why: "<b>Noktasal izin, hem soruları azaltır hem denetimi korur.</b> `Bash(*)` izin sistemini kapatmanın uzun yoludur. En üst kipe geçmek yalıtılmış ortam dışında tehlikelidir. Okumadan onaylamak ise zaten kaçınılmak istenen sonuçtur."
+    },
+    {
+      topic: "Sınırlar",
+      q: "Manual kipte ajanın dosya yazma sınırı nedir?",
+      opts: [
+        "Başlatıldığı klasör ve altı; üst dizinlere açık izin olmadan yazamaz",
+        "Kullanıcının ev dizininin tamamı",
+        "Sınır yoktur, tüm dosya sistemi",
+        "Yalnızca git deposunun içi"
+      ],
+      a: [0],
+      why: "<b>Çalışma dizini sınırı öntanımlı bir korumadır.</b> Üst dizine yazmak açık izin ister; dışarıyı okumak için de Manual kipte sorar. Ev dizininin tamamı ya da tüm dosya sistemi öntanımlı erişim alanı değildir; git deposu olup olmaması da sınırı belirlemez."
+    },
+    {
+      topic: "Sınırlar",
+      q: "İçerik çeken kabuk komutlarının (`curl`, `wget` gibi) neden kendiliğinden onaylanmadığı hangi riskle açıklanır?",
+      opts: [
+        "İstem enjeksiyonu: dışarıdan gelen içerik ajana talimat taşıyabilir",
+        "Ağ komutları çok yavaş çalışır",
+        "Bu komutlar bağlamı gereğinden fazla doldurur",
+        "Sertifika doğrulaması yapılamaz"
+      ],
+      a: [0],
+      why: "<b>Dışarıdan gelen her içerik veridir, komut değildir</b> — ama model bunu kendiliğinden ayırt etmez. Bu yüzden dış içerik getiren komutlar öntanımlı olarak onaya tabidir. Hız, bağlam ve sertifika konuları gerçek olabilir ama bu kararın gerekçesi değildir."
+    },
+    {
+      topic: "Otomasyon riski",
+      q: "Etkileşimsiz kipte (betikten çalıştırma) hangi güvenlik davranışı kaybolur?",
+      opts: [
+        "Güven onayı sorulmaz; depodaki ayarlar ve bağlantı tanımları sorulmadan devreye girebilir",
+        "Engelleme kuralları uygulanmaz",
+        "Kum havuzu devre dışı kalır",
+        "Çalışma dizini sınırı kalkar"
+      ],
+      a: [0],
+      why: "<b>Etkileşimsiz kipte soracak kimse yoktur</b>, dolayısıyla ilk kez çalıştırılan bir depoda güven diyaloğu görünmez. Bu yüzden otomasyonda \"çıplak\" başlatma ve dar bir izin listesi kullanılır. Engelleme kuralları, kum havuzu ve dizin sınırı çalışmaya devam eder."
+    },
+    {
+      topic: "Otomasyon riski",
+      q: "CI ortamında ajan çalıştırırken en uygun kip ve yaklaşım hangisidir?",
+      opts: [
+        "`dontAsk` kipi ile açık ve dar bir izin listesi",
+        "`auto` kipi, çünkü sınıflandırıcı her şeyi halleder",
+        "`bypassPermissions`, çünkü CI zaten yalıtılmıştır",
+        "Manual kip, çünkü en güvenlisidir"
+      ],
+      a: [0],
+      why: "<b>`dontAsk`, izin verilmeyen her şeyi reddeder</b> — kilitli otomasyon için doğru taban budur. `auto` sınıflandırıcıya dayanır ve insansız ortamda tek dayanak olmamalıdır. `bypassPermissions` yalnızca gerçekten yalıtılmış ortamda ve bilinçli bir kararla kullanılır. Manual kipte soracak kimse olmadığı için iş ilerlemez."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir geliştirici \"plan modundayım, ajan bir şey bozamaz\" diyor. Bu cümledeki hata ne?",
+      opts: [
+        "Plan modu değişiklikleri durdurur ama yetki modeli değildir; asıl koruma kip ve kum havuzudur",
+        "Plan modu yoktur, yalnızca izin kipleri vardır",
+        "Plan modu dosya yazmayı serbest bırakır",
+        "Plan modunda tüm komutlar sorulmadan çalışır"
+      ],
+      a: [0],
+      why: "<b>Plan modu değişiklikleri plan onaylanana kadar durdurur</b> — bu gerçek bir kısıttır, ama tasarım amacı belirsizliği azaltmaktır ve yetki modelinin yerine geçmez. Kalıcı koruma izin kuralları ve kum havuzuyla kurulur."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "İzin kipi sorup sormamayı, kum havuzu yapabilmeyi belirler; ikisi bağımsızdır",
+        "En güvenli çalışma biçimi her zaman Manual kiptir",
+        "İzin sistemi yeterince iyi ayarlanırsa doğrulamaya gerek kalmaz",
+        "Plan modu diğer tüm koruma katmanlarının yerine geçer"
+      ],
+      a: [0],
+      why: "<b>İki ekseni ayırmak, hem soru yorgunluğundan hem aşırı serbestlikten çıkış yolu.</b> Manual kip her durumda en iyi seçim değildir — okumadan onaylamaya götürebilir. İzin sistemi doğruluğu değil yetkiyi yönetir; plan modu ise başka bir problemin aracıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

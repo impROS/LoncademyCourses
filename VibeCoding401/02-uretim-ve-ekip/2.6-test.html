@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.6 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-6",
+  code: "Üretim ve ekip · 2.6",
+  title: "Sınırlar",
+  back: "2.6-sinirlar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Tek ölçüt",
+      q: "Bu setin tamamını tek bir eksende toplayan ölçüt nedir?",
+      opts: [
+        "Çıktıyı doğrulayabiliyor musun",
+        "Görev ne kadar karmaşık",
+        "Kod tabanı ne kadar büyük",
+        "Model ne kadar güçlü"
+      ],
+      a: [0],
+      why: "<b>Ajan, doğrulamanın mümkün olduğu yerde işe yarar.</b> Karmaşıklık ve büyüklük zorluk göstergeleridir ama belirleyici değildir: karmaşık ama test edilebilir bir iş, basit ama doğrulanamayan bir işten çok daha uygundur."
+    },
+    {
+      topic: "Tek ölçüt",
+      q: "\"Uzman bilgisi gerektiriyor ama bende yok\" sınıfındaki bir doğrulama için ajan ne kadar uygundur?",
+      opts: [
+        "Riskli; kodu değerlendiremiyorsan üretmiş olman bir şey ifade etmez",
+        "Çok uygun; ajan uzmanlığı sağlar",
+        "Tamamen uygunsuz; hiçbir koşulda kullanılmaz",
+        "Uygun; testler bu boşluğu kapatır"
+      ],
+      a: [0],
+      why: "<b>Elinde okunabilir ama sınanmamış bir metin olur.</b> Bu, \"tamamen yasak\" değil \"riskli\" sınıfıdır: doğrulamayı mümkün kılmanın bir yolu varsa (uzman incelemesi, test yazmak, kapsamı daraltmak) o adım işin asıl kısmıdır."
+    },
+    {
+      topic: "Güçlü alanlar",
+      q: "Ajanın en yüksek getirili kullanım alanlarından biri hangisidir?",
+      opts: [
+        "Tanımadığın bir kod tabanını keşfetmek",
+        "Özgün algoritma tasarlamak",
+        "Derin başarım optimizasyonu yapmak",
+        "Ürün önceliklerini belirlemek"
+      ],
+      a: [0],
+      why: "<b>Keşif, hem düşük riskli hem yüksek kazançlı:</b> kıdemli birine soracağın soruları sorabilirsin ve yanlış cevabın maliyeti bir turdur. Diğer üçü, bu konunun zayıf alanlar listesinde yer alıyor."
+    },
+    {
+      topic: "Zayıf alanlar",
+      q: "\"Yazılmamış alan kısıtları\" ve \"ürün kararları\" hangi ortak sebebi paylaşır?",
+      opts: [
+        "Ajan yalnızca görebildiğiyle çalışır; bu bilgiler bağlamında yok",
+        "İkisi de matematiksel akıl yürütme gerektirir",
+        "İkisi de çok uzun bağlam gerektirir",
+        "İkisi de yalnızca kıdemli geliştiricilerin yapabileceği işlerdir"
+      ],
+      a: [0],
+      why: "<b>Bir kural kimsenin kafasındaysa ya da bir öncelik toplantıda konuşulduysa, o bilgi ajanın erişiminde değildir.</b> Bu bir yetenek sınırı değil, bir bilgi sınırı — ve çözümü kısmen elinde: yazılmamış kuralları yaz."
+    },
+    {
+      topic: "Zayıf alanlar",
+      q: "Belirsiz bir gereksinimle çalışırken ajan ne yapar?",
+      opts: [
+        "Belirsizliği kapatmaz; bir yorum seçer ve ona göre ilerler",
+        "Belirsizliği tespit edip durur",
+        "Her zaman soru sorar",
+        "En güvenli yorumu seçer"
+      ],
+      a: [0],
+      why: "<b>Netleştirme senin işin (**101 · *İstem yazma***).</b> Ajan çoğu zaman soru sormadan bir yorum seçer ve ilerler — bu yorum senin kastettiğin olmayabilir. \"En güvenli yorum\" diye bir garanti de yoktur; genelde en kısa yol seçilir."
+    },
+    {
+      topic: "Zayıf alanlar",
+      q: "Testsiz eski kodda ajanla çalışmanın sorunu nedir ve doğru sıra hangisidir?",
+      opts: [
+        "Doğrulama zinciri yoktur; önce mevcut davranış testlerle dondurulur",
+        "Eski kod okunamaz; önce yeniden yazılır",
+        "Eski kod çok uzundur; önce bölünür",
+        "Sorun yoktur; testler sonradan eklenir"
+      ],
+      a: [0],
+      why: "<b>Doğrulama olmadan neyin bozulduğunu bilemezsin.</b> **201 · *Test yazdırmak*** konusundaki üç adım burada geçerli: önce mevcut davranışı sınayan testler yaz, oku, sonra değiştir. Yeniden yazmak, korunacak davranış bilinmeden yapılan en riskli hamledir."
+    },
+    {
+      topic: "Kullanma durumları",
+      q: "Aşağıdakilerden hangi ikisi \"kullanma\" durumudur? (İki tanesini seç.)",
+      opts: [
+        "Çıktıyı değerlendirecek bilgin yoksa",
+        "İş tamamen mekanikse ve düzenli ifadeyle güvenle yapılabiliyorsa",
+        "Kod tabanı büyükse",
+        "Görev birden çok dosyaya dokunuyorsa"
+      ],
+      a: [0, 1],
+      why: "<b>Birincisinde doğrulama zinciri kopar; ikincisinde deterministik araç daha kesin, hızlı ve ucuzdur.</b> Kod tabanının büyüklüğü ve dokunulan dosya sayısı ajanı elemez — tam tersine, bu tür işlerde ajan sıkça değerlidir."
+    },
+    {
+      topic: "Kullanma durumları",
+      q: "\"Öğrenmek istediğin konuda kullanmama\" durumu neden bir sınır değil bir tercihtir?",
+      opts: [
+        "Teknik bir engel yoktur; iş biter ama öğrenme olmayabilir — karar sana aittir",
+        "Ajanlar öğretim materyali üretemez",
+        "Öğrenme sırasında ajan kullanımı yasaktır",
+        "Öğrenirken doğrulama imkânsızdır"
+      ],
+      a: [0],
+      why: "<b>Diğer dört durum bir risk ya da uygunsuzluk barındırır; bu ise bir hedef seçimidir.</b> Ajan öğrenmede çok yararlı da olabilir (açıklama, keşif, soru sorma). Belirleyici olan, senin o an ne istediğin: iş mi bitsin, sen mi öğren."
+    },
+    {
+      topic: "Beceri körelmesi",
+      q: "Beceri körelmesi riskinin mekanizması nedir?",
+      opts: [
+        "Doğrulama zinciri okuma ve değerlendirme becerine dayanır; o beceri kullanılarak korunur, ajan ise kullanımı azaltır",
+        "Ajanlar kötü kod öğretir",
+        "Ajan kullanmak hafızayı zayıflatır",
+        "Ajan kullanan geliştiriciler daha az kod okur"
+      ],
+      a: [0],
+      why: "<b>Döngüsel bir risk:</b> setin tüm güvencesi senin denetleyebilmene dayanıyor, ama denetleme becerisi ancak kullanılarak korunuyor. Sonuç: bir süre sonra okuma yüzeyselleşir ve inceleme bir onaya dönüşür."
+    },
+    {
+      topic: "Beceri körelmesi",
+      q: "Körelmeyi ölçen tek soru hangisidir?",
+      opts: [
+        "Bu kodu ajan olmadan yazabilir miydim?",
+        "Bu kodu ne kadar sürede yazdım?",
+        "Bu kod testlerden geçti mi?",
+        "Bu kod kaç satır?"
+      ],
+      a: [0],
+      why: "<b>Cevap uzun süredir hayırsa, o alanda denetleme yetkinliğini kaybediyorsun demektir.</b> Süre, test durumu ve satır sayısı işin çıktısını ölçer; bu soru ise senin yetkinliğini. Üretim becerisi ile denetim becerisi birlikte düşer."
+    },
+    {
+      topic: "Beceri körelmesi",
+      q: "Beceri körelmesine karşı önerilen denge uygulamalarından biri **değildir**?",
+      opts: [
+        "Ajan kullanımını tamamen bırakmak",
+        "Zaman zaman kodu kendin yazmak",
+        "Ajan kodunu göz gezdirmek yerine satır satır okumak",
+        "Yeni bir alanı önce kendin öğrenmek"
+      ],
+      a: [0],
+      why: "<b>Karşılık yasak değil denge.</b> Tamamen bırakmak, aracın gerçek kazançlarından vazgeçmektir. Önerilenler kullanımı sürdürürken beceriyi koruyan alışkanlıklar: kendin yazmak, satır satır okumak, açıklatıp doğrulamak, yeni alanı önce kendin öğrenmek, ara sıra ajansız çalışmak."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Kod çalışıyor gibi ama ne yaptığını tam anlamıyorum.\" Doğru hamle nedir?",
+      opts: [
+        "Açıklattırıp doğrulamak; anlamıyorsan kullanmamak",
+        "Testler geçtiği için birleştirmek",
+        "Daha büyük modele yeniden yazdırmak",
+        "Kodu olduğu gibi bırakıp not düşmek"
+      ],
+      a: [0],
+      why: "<b>Doğrulama zinciri kopmuş durumda</b> — testler geçse bile neyi ölçtüklerini değerlendiremezsin. Açıklattırmak bir başlangıçtır ama açıklamayı da doğrulaman gerekir. Anlaşılmayan kod, sorumluluğunu üstlendiğin kod olamaz."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Ajan alan kuralımızı bilmiyordu\" durumunda kalıcı çözüm nedir?",
+      opts: [
+        "Kuralı yazılı hâle getirmek: kural dosyası ya da kapsanmış kural",
+        "Daha güçlü model kullanmak",
+        "Her istemde kuralı tekrarlamak",
+        "O alanda ajan kullanmamak"
+      ],
+      a: [0],
+      why: "<b>Ajan yalnızca görebildiğiyle çalışır; yazılmamış kural görünmez.</b> Model gücü bu boşluğu kapatmaz. Her istemde tekrarlamak işe yarar ama unutulur ve sıkıştırmadan sağ çıkmaz — kalıcı çözüm `02`'nin konusu."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ajanın işe yaradığı yer, doğrulamanın mümkün olduğu yerdir",
+        "Ajanlar karmaşık işlerde kullanılmamalıdır",
+        "Ajanların sınırları zamanla tamamen ortadan kalkacaktır",
+        "Sınırları bilmek yalnızca kurumsal ekipler için önemlidir"
+      ],
+      a: [0],
+      why: "<b>Tek ölçüt, hem güçlü hem zayıf alanları açıklıyor.</b> Karmaşıklık belirleyici değil — doğrulanabilirlik belirleyici. Sınırların bir kısmı (yazılmamış bilgi, ürün kararları) bilgi erişimiyle ilgili ve model gelişimiyle kapanmaz; ve sınır bilgisi bireysel kullanımda da aynı derecede önemlidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

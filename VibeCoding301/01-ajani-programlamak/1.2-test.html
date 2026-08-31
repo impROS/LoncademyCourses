@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-2",
+  code: "Kendi aletin · 1.2",
+  title: "Subagent",
+  back: "1.2-subagent.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ne için kullanılır",
+      q: "Subagent kullanmanın asıl kazancı nedir?",
+      opts: [
+        "Bağlam yalıtımı: iş başka bir pencerede yapılır, sana özet döner",
+        "Paralel çalışma sayesinde hız",
+        "Daha az token harcaması",
+        "Daha güçlü model kullanabilmesi"
+      ],
+      a: [0],
+      why: "<b>Ana pencere temiz kalır</b> — onlarca dosya yardımcının bağlamında okunur, seninkinde değil. Paralellik bir yan faydadır; token tasarrufu ise garanti değildir, çünkü her yardımcı kendi giriş/çıkış maliyetini üretir. Model gücü yapılandırmaya bağlıdır, mekanizmanın kendisine değil."
+    },
+    {
+      topic: "Ne için kullanılır",
+      q: "Bir işi subagent'a devredip devretmeme kararının ayırt edici sorusu nedir?",
+      opts: [
+        "Ara sonuçları bir daha kullanacak mıyım?",
+        "Bu iş kaç dakika sürer?",
+        "Bu iş kaç dosyaya dokunur?",
+        "Bu iş paralelleştirilebilir mi?"
+      ],
+      a: [0],
+      why: "<b>Ara sonuçlar sana lazımsa devretme</b> — çünkü yardımcının gördükleri sana gelmez, yalnızca özet gelir. Süre ve dosya sayısı yardımcı ipuçlarıdır ama belirleyici değildir: kısa ama ara adımları önemli bir iş, ana bağlamda kalmalıdır."
+    },
+    {
+      topic: "Devretmenin bedeli",
+      q: "Subagent kullanmanın bedeli nedir?",
+      opts: [
+        "Yardımcının gördüklerini kaybedersin; elinde yalnızca özet kalır",
+        "Ana oturum donar ve bekler",
+        "İzin kuralları uygulanmaz",
+        "Kural dosyaları yüklenmez"
+      ],
+      a: [0],
+      why: "<b>Özet, ayrıntı düşürebilir.</b> Yardımcı bir hata yaptıysa ya da önemli bir gözlemi özete koymadıysa senin haberin olmaz. Bu yüzden kritik kararlar özete değil, istenen kanıta dayandırılmalıdır. İzin kuralları ve kural dosyaları yardımcıda da geçerlidir."
+    },
+    {
+      topic: "Yardımcının bağlamı",
+      q: "Sıfırdan başlayan bir subagent'ın bağlamında aşağıdakilerden hangisi **yoktur**?",
+      opts: [
+        "Ana konuşmanın geçmişi",
+        "Kural dosyaları",
+        "Kendi sistem talimatı",
+        "Ana ajanın yazdığı görev metni"
+      ],
+      a: [0],
+      why: "<b>Yardımcı senin konuşmanı görmez.</b> Bu yalıtımın tanımıdır ve kazancın kaynağıdır. Kural dosyaları, kendi sistem talimatı ve görev metni ise başlangıç bağlamına dâhildir. Pratik sonuç: görev metnini yazarken yardımcının hiçbir şey bilmediğini varsay."
+    },
+    {
+      topic: "Yardımcının bağlamı",
+      q: "Görev metnine \"az önce konuştuğumuz gibi devam et\" yazmanın sonucu ne olur?",
+      opts: [
+        "Yardımcı neyi kastettiğini bilemez; konuşmayı görmüyor",
+        "Yardımcı ana konuşmayı otomatik olarak yükler",
+        "Görev metni reddedilir",
+        "Yardımcı ana ajana geri soru sorar"
+      ],
+      a: [0],
+      why: "<b>Yalıtım iki yönlüdür:</b> yardımcının okudukları sana gelmediği gibi, senin konuşman da ona gitmez. Bu yüzden görev metni kendi kendine yeter olmalıdır — dosya adları, ölçütler ve beklenen çıktı biçimi açıkça yazılır."
+    },
+    {
+      topic: "Fork",
+      q: "Konuşmanın tamamını devralan yardımcı türünün (fork) iki özelliği hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Sıfırdan başlamaz, o ana kadarki bağlamı devralır",
+        "Önbelleği paylaştığı için daha ucuza gelir",
+        "Ana oturumun bağlamını temizler",
+        "Yalnızca salt okunur araçlarla çalışabilir"
+      ],
+      a: [0, 1],
+      why: "<b>Bağlamı paylaşmak, istem önbelleğini de paylaşmak demektir</b> — yani aynı önek yeniden işlenmez. Bu, konuşmanın doğal devamı niteliğindeki yan işler için onu sıfırdan başlayan bir yardımcıdan ucuz kılar. Ana bağlamı temizlemez ve araç kısıtı yoktur."
+    },
+    {
+      topic: "Tanımlama",
+      q: "Bir inceleme yardımcısının tanımında `tools` alanını daraltmanın somut faydası nedir?",
+      opts: [
+        "Yazma aracı verilmezse yanlışlıkla dosya değiştiremez",
+        "Daha hızlı çalışır",
+        "Daha az token harcar",
+        "Daha iyi özet üretir"
+      ],
+      a: [0],
+      why: "<b>En az yetki ilkesinin en kolay uygulandığı yer.</b> İnceleme yapan bir yardımcının yazma aracına ihtiyacı yoktur; olmayınca \"incelerken düzeltmeye kalkma\" riski tamamen ortadan kalkar — talimatla değil, yapısal olarak."
+    },
+    {
+      topic: "Tanımlama",
+      q: "Subagent tanım dosyasının yapısı nasıldır?",
+      opts: [
+        "YAML ön bilgisi yapılandırma, markdown gövdesi sistem talimatı olur",
+        "Tamamı JSON biçiminde yazılır",
+        "Ön bilgi sistem talimatı, gövde yapılandırma olur",
+        "Yalnızca ön bilgiden oluşur, gövde kullanılmaz"
+      ],
+      a: [0],
+      why: "<b>Ön bilgi kimliği ve kısıtları (ad, açıklama, araçlar, model) tanımlar; gövde ise yardımcının sistem talimatıdır</b> — yani ne yapacağını, hangi ölçütlere bakacağını ve neyi raporlayacağını anlatan metin. İkisi olmadan yardımcı ne seçilebilir ne yönlendirilebilir."
+    },
+    {
+      topic: "Çağırma",
+      q: "Belirli bir yardımcının çalıştığını **garantilemek** için hangi yöntem kullanılır?",
+      opts: [
+        "Yardımcıyı doğrudan adıyla anmak",
+        "Doğal dille \"bir subagent kullan\" demek",
+        "Yardımcının açıklamasını uzatmak",
+        "Yardımcıyı ayrı bir dosyaya taşımak"
+      ],
+      a: [0],
+      why: "<b>Doğal dil isteği bir yönlendirmedir; ajan hangi yardımcıyı seçeceğine kendisi karar verir.</b> Adıyla anmak seçimi belirsizlikten çıkarır. Açıklamayı uzatmak seçim olasılığını artırabilir ama garanti vermez."
+    },
+    {
+      topic: "Sınırlar ve maliyet",
+      q: "\"Subagent kullanınca token tasarrufu olur\" ifadesi doğru mudur?",
+      opts: [
+        "Garanti değil; her yardımcı kendi penceresini açar. Kesin olan kazanç ana bağlamın temiz kalmasıdır",
+        "Evet; yardımcılar her zaman daha az token harcar",
+        "Hayır; subagent kullanmak her zaman daha pahalıdır",
+        "Evet; yardımcılar ana bağlamı paylaştığı için tekrar yoktur"
+      ],
+      a: [0],
+      why: "<b>Beş yardımcı, beş ayrı giriş/çıkış maliyeti demektir.</b> Toplam token bazen artar. Ama ana pencere temiz kaldığı için oradaki her tur daha ucuz ve daha kaliteli olur. Kazanç kaliteden gelir; tasarruf duruma göre değişir."
+    },
+    {
+      topic: "Sınırlar ve maliyet",
+      q: "Paralel çalışan iki yardımcı dosya yazacaksa hangi önlem gerekir?",
+      opts: [
+        "Her birinin ayrı bir çalışma kopyasında çalışması",
+        "İkisinin de aynı modeli kullanması",
+        "İkisine de salt okunur araç verilmesi",
+        "Aralarında mesajlaşma kurulması"
+      ],
+      a: [0],
+      why: "<b>Aynı dizinde eşzamanlı yazma, birbirini ezmeye yol açar</b> — bu, büyük dönüşümlerdeki paralel yayma sorununun aynısı. Ayrı çalışma kopyaları her yardımcıya kendi dosya alanını verir. Salt okunur araç bir çözüm değil, işi yapılamaz kılmaktır."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Yardımcı ne yapacağını anlamadı ve alakasız bir çıktı üretti.\" En olası teşhis?",
+      opts: [
+        "Görev metni eksik yazılmış; yardımcı konuşmayı görmüyor",
+        "Yardımcının modeli yetersiz",
+        "Yardımcının araç listesi çok dar",
+        "Ana bağlam dolu"
+      ],
+      a: [0],
+      why: "<b>Yardımcının tek girdisi kendi sistem talimatı ve verilen görev metnidir.</b> Ana konuşmadaki bağlama gönderme yapan bir görev metni, yardımcı için anlamsızdır. Dar araç listesi işi engelleyebilir ama \"anlamadı\" belirtisini üretmez."
+    },
+    {
+      topic: "Uygulama",
+      q: "Hangi durumda subagent kullanmamak doğrudur?",
+      opts: [
+        "Ajanla birlikte düşünerek adım adım ilerlediğin bir işte",
+        "Onlarca dosyanın taranacağı bir araştırmada",
+        "Bağımsız bir doğrulama gerektiğinde",
+        "Hacimli günlük analizi gerektiğinde"
+      ],
+      a: [0],
+      why: "<b>Birlikte düşünerek ilerlediğin işte ara adımlar tam olarak ihtiyacın olan şeydir</b> — devretmek onları görünmez kılar. Diğer üç durum devretmenin klasik kullanım alanları: çok okuma, bağımsız göz ve hacimli çıktı."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Kazanç hız değil bağlam yalıtımı; bedeli ise yardımcının gördüklerini kaybetmen",
+        "Her iş mümkün olduğunca subagent'a devredilmelidir",
+        "Subagent'lar paralel çalışma için tasarlanmış bir hız aracıdır",
+        "Subagent kullanımı token maliyetini her zaman düşürür"
+      ],
+      a: [0],
+      why: "<b>Kazanç ve bedel birlikte anlaşılmalı.</b> Her işi devretmek, gözünü kapatarak çalışmak demektir; hız bir yan fayda; maliyet ise duruma göre artabilir. Doğru kullanım, ara sonuçlara ihtiyacın olmadığı işleri seçmektir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

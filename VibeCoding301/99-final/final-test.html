@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genel deneme — Vibe Coding 301 — Kendi aletini yapmak</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  "id": "final",
+  "code": "Genel deneme",
+  "title": "Vibe Coding 301 — Kendi aletini yapmak — 24 soru, 30 dakika",
+  "back": "son-tekrar.md",
+  "backLabel": "Son tekrara dön",
+  "mode": "exam",
+  "pass": 80,
+  "time": 1800,
+  "passNote": "bu setin eşiği %80",
+  "notes": [
+    "Sorular konu testlerinin kopyası değildir: aynı bilgi, farklı senaryo.",
+    "Takıldığın soruyu geç; soru başına ortalama 75 saniyen var.",
+    "Zayıf alan raporundaki konu kodlarına dönerek çalış."
+  ],
+  "questions": [
+    {
+      "topic": "1.1 Skill",
+      "q": "Bir ekip dağıtım yapan bir skill yazdı. Hangi ön bilgi alanı kullanılmalı ve ek faydası nedir?",
+      "opts": [
+        "Kendiliğinden çağrılmayı kapatan alan; ayrıca açıklaması bağlama girmez",
+        "Ayrı bağlamda çalıştıran alan; ayrıca daha hızlı olur",
+        "Araç izni veren alan; ayrıca izin sorusu çıkmaz",
+        "Model belirleyen alan; ayrıca maliyet düşer"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Yan etkili işlerde tetikleyici insan olmalıdır.</b> Bu alan hem kendiliğinden çağrılmayı engeller hem bir bonus verir: skill'in açıklaması artık her oturumda yüklenmez, yani bağlam açısından bedava olur."
+    },
+    {
+      "topic": "1.1 Skill",
+      "q": "Uzun bir skill'in sonundaki kritik bir kural, uzun oturumlarda uygulanmıyor. Sebep ve çözüm nedir?",
+      "opts": [
+        "Sıkıştırmada gövde kırpılıyor ve başı korunuyor; kritik kuralları üste taşı",
+        "Skill dosyası çok uzun ve hiç yüklenmiyor; böl",
+        "Ajan dosyanın ilk yarısını okuyor; kısalt",
+        "Markdown ayrıştırıcısı sondan başlıyor; sırayı değiştir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İlk çağrıda sorun yoktur — dosya bütün olarak okunur.</b> Sorun sıkıştırma sonrasında ortaya çıkar: yeniden eklenen gövdeler bir üst sınıra göre sondan kesilir. Bu yüzden skill'ler tersten yazılır: önce kurallar, sonra ayrıntı."
+    },
+    {
+      "topic": "1.1 Skill",
+      "q": "\"Skill bedavadır\" ifadesinin hatası nedir?",
+      "opts": [
+        "Gövdesi talep üzerine yüklenir ama açıklaması her oturumda bağlama girer",
+        "Skill'ler her oturumda tamamen yüklenir",
+        "Skill'ler diğer mekanizmalardan pahalıdır",
+        "Skill'ler yalnızca ücretli planlarda çalışır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Otuz skill, otuz açıklama demektir.</b> Gövde gerçekten talep üzerine gelir — asıl kazanç budur — ama açıklamalar sabit bir yük oluşturur. Sayı arttıkça hem bağlam maliyeti hem yanlış skill seçme riski artar."
+    },
+    {
+      "topic": "1.2 Subagent",
+      "q": "Bir geliştirici, ajanla birlikte adım adım düşünerek ilerlediği bir işi alt ajana devretti ve sonuçtan memnun kalmadı. Neden?",
+      "opts": [
+        "Ara sonuçlar tam olarak ihtiyacı olan şeydi; devretmek onları görünmez kıldı",
+        "Alt ajanlar bu tür işlerde daha yavaştır",
+        "Alt ajanlar kural dosyalarını yüklemez",
+        "Alt ajanlar yalnızca okuma yapabilir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ayırt edici soru: ara sonuçları bir daha kullanacak mıyım?</b> Cevap evetse devretme — yardımcının gördükleri sana gelmez, yalnızca özet gelir. Devretmenin bedeli tam olarak budur."
+    },
+    {
+      "topic": "1.2 Subagent",
+      "q": "Bir inceleme yardımcısının tanımında araç listesini daraltmanın somut faydası nedir?",
+      "opts": [
+        "Yazma aracı olmayınca yanlışlıkla dosya değiştiremez — talimatla değil yapısal olarak",
+        "Daha hızlı çalışır",
+        "Daha az token harcar",
+        "Daha iyi özet üretir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>En az yetki ilkesinin en kolay uygulandığı yer.</b> \"İncelerken düzeltmeye kalkma\" bir ricadır; yazma aracının olmaması bir imkânsızlıktır. Aynı mantık kendi MCP sunucunda da geçerli: sunulmayan yetenek kötüye kullanılamaz."
+    },
+    {
+      "topic": "1.2 Subagent",
+      "q": "Bir alt ajana \"az önce konuştuğumuz gibi devam et\" demenin sonucu nedir?",
+      "opts": [
+        "Yardımcı neyi kastettiğini bilemez; ana konuşmayı görmüyor",
+        "Yardımcı ana konuşmayı otomatik yükler",
+        "Görev metni reddedilir",
+        "Yardımcı ana ajana geri soru sorar"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Yalıtım iki yönlüdür:</b> yardımcının okudukları sana gelmediği gibi, senin konuşman da ona gitmez. Görev metni kendi kendine yeter olmalı — dosya adları, ölçütler ve beklenen çıktı biçimi açıkça yazılır."
+    },
+    {
+      "topic": "1.2 Subagent",
+      "q": "Konuşmanın tamamını devralan yardımcı türünün (fork) maliyet avantajı nereden gelir?",
+      "opts": [
+        "Bağlamı paylaştığı için istem önbelleğini de paylaşır",
+        "Daha küçük model kullanmak zorundadır",
+        "Daha az tur harcar",
+        "Ana bağlamı temizler"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Aynı önek yeniden işlenmez.</b> Bu, konuşmanın doğal devamı niteliğindeki yan işler için onu sıfırdan başlayan bir yardımcıdan ucuz kılar. Model ve tur sayısıyla ilgili bir kısıt yoktur."
+    },
+    {
+      "topic": "1.3 Hook",
+      "q": "Bir hook yazıldı, hata mesajı standart hataya yazılıyor ama eylem engellenmiyor. En olası sebep nedir?",
+      "opts": [
+        "Betik sıfırdan farklı ama 2 olmayan bir kodla çıkıyor",
+        "Hook yanlış olaya bağlanmış",
+        "Hook dosyası çalıştırılabilir değil",
+        "Mesaj standart çıktıya yazılmalıydı"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Sert engellemenin çıkış kodu 2'dir.</b> `0` başarılı sayılır ve standart çıktıdaki JSON okunur; diğer kodlar engellemeyen hata olarak değerlendirilir. Mesaj gereklidir ama belirleyici olan çıkış kodudur."
+    },
+    {
+      "topic": "1.3 Hook",
+      "q": "Bir ekip, ajanın her test çalıştırmasında yalnızca başarısızlıkları görmesini kalıcı olarak sağlamak istiyor. Hangi mekanizma kullanılır?",
+      "opts": [
+        "Araç kullanımından önce çalışıp komut girdisini yeniden yazan bir hook",
+        "Kural dosyasına \"testleri filtreleyerek çalıştır\" yazmak",
+        "Her isteme filtreleme talimatı eklemek",
+        "Test komutunu bir skill'e taşımak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Hook'un girdi değiştirme yeteneği, günlük ve test çıktısı tuzağının kalıcı çözümüdür.</b> Hatırlamaya dayanan çözümler unutulur; yapılandırma unutulmaz — ve proje ayarına konursa ekipte herkeste çalışır."
+    },
+    {
+      "topic": "1.3 Hook",
+      "q": "Hook'un bağlam maliyeti hakkında hangisi doğrudur?",
+      "opts": [
+        "Yapılandırma bağlam dışındadır; yalnızca hook çıktı döndürürse o çıktı bağlama girer",
+        "Hook tanımları her oturumda yüklenir",
+        "Hook'lar kural dosyalarından daha çok yer kaplar",
+        "Hook çıktıları da bağlama girmez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Hook'un en büyük gizli avantajı bu:</b> talimat bağlamın dışında durur. Ama gürültülü bir hook — her çalıştığında lint çıktısını olduğu gibi geri veren — bu avantajı kaybettirir. Sessiz çalış, yalnızca gerekliyi yaz."
+    },
+    {
+      "topic": "1.3 Hook",
+      "q": "Kesin engelleme için `prompt` ya da `agent` türü hook yerine `command` türü önerilmesinin sebebi nedir?",
+      "opts": [
+        "Hook'un çalışması her türde garanti ama kararı garanti değil; `prompt` ve `agent` bir modele sorar",
+        "`command` daha hızlı çalışır",
+        "`prompt` ve `agent` türleri artık desteklenmiyor",
+        "`command` daha az bağlam harcar"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Model \"bu güvenli\" diyebilir.</b> Deterministik bir engelleme istiyorsan kararın da deterministik olması gerekir — yani bir betik. `prompt` ve `agent` türleri yargı gerektiren denetimler için değerlidir, kesin engelleme için değil."
+    },
+    {
+      "topic": "2.1 MCP",
+      "q": "Bir ekip sekiz MCP sunucusu bağladı ve ajan bazen yanlış aracı çağırıyor, oturumlar ağır başlıyor. En doğru hamle nedir?",
+      "opts": [
+        "Kullanılmayan sunucuları kapatmak ve kapsamı daraltmak",
+        "Daha geniş bağlam penceresi olan modele geçmek",
+        "Araç aramayı devre dışı bırakmak",
+        "Tüm sunucuları proje kapsamına taşımak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Her iki belirti de bağlı araç sayısına bağlı.</b> Kapalı bir sunucu ne araç adı ekler ne veri döndürür — yüzeyi ve bağlamı birlikte küçültür. Araç aramayı kapatmak durumu kötüleştirir: o zaman tam tanımlar da yüklenir."
+    },
+    {
+      "topic": "2.1 MCP",
+      "q": "Yerel bir MCP sunucusu eklerken `--` ayırıcısını unutmanın sonucu nedir?",
+      "opts": [
+        "Sunucunun bayrakları ajanın bayrakları sanılır ve komut hata verir",
+        "Sunucu uzak taşımayla eklenir",
+        "Sunucu kullanıcı kapsamına eklenir",
+        "Sunucu eklenir ama hiç başlatılamaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>`--` işareti, o noktadan sonrasının sunucunun komutu olduğunu söyler.</b> Onsuz, sunucuya ait bir bayrak ajanın kendi seçeneği olarak ayrıştırılmaya çalışılır. Kurulumda en sık takılınan yer burasıdır ve hata mesajı yanıltıcı olabilir."
+    },
+    {
+      "topic": "2.1 MCP",
+      "q": "MCP kullanımında hangi önlem hem saldırı yüzeyini hem bağlam maliyetini birlikte düşürür?",
+      "opts": [
+        "Kullanılmayan sunucuları kapatmak",
+        "Belirteçleri düzenli değiştirmek",
+        "Sunucuyu proje kapsamına almak",
+        "Uzak yerine yerel taşıma kullanmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kapalı bir sunucu ne araç adı ekler ne veri döndürür.</b> Diğer önlemler değerlidir ama tek boyutta çalışır: belirteç yönetimi güvenliği, kapsam paylaşımı, taşıma türü bağlantı biçimini ilgilendirir."
+    },
+    {
+      "topic": "2.2 MCP sunucusu",
+      "q": "Kendi MCP aracını tasarlarken en çok atlanan ilke hangisidir ve atlanınca ne olur?",
+      "opts": [
+        "Küçük çıktı; tek çağrı bağlamı zehirleyebilir",
+        "Anlamlı hata; ajan çöker",
+        "Dar kapsam; sunucu yavaşlar",
+        "Güvenli varsayılan; araç listelenemez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Aracın döndürdüğü her şey ajanın bağlamına girer ve orada kalır.</b> Tüm tabloyu döndüren bir araç, tek çağrıda oturumu kullanılamaz hâle getirebilir. Bu yüzden bağlamadan önce en büyük olası çıktıyı ölçmek gerekir."
+    },
+    {
+      "topic": "2.2 MCP sunucusu",
+      "q": "Kendi MCP sunucunda enjeksiyona karşı en güçlü tek savunma nedir?",
+      "opts": [
+        "Yıkıcı işlemleri hiç sunmamak",
+        "Girdi şemasını sıkılaştırmak",
+        "Çıktıyı sayfalamak",
+        "Yerel taşıma kullanmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Sunulmayan bir aracı hiçbir enjeksiyon çağıramaz.</b> Diğer önlemler var olan bir yeteneğin kötüye kullanımını sınırlamaya çalışır; sunmamak yeteneği tamamen ortadan kaldırır — en az yetki ilkesinin en katı biçimi."
+    },
+    {
+      "topic": "2.2 MCP sunucusu",
+      "q": "Bir MCP aracının açıklamasını yazarken hangi kural geçerlidir?",
+      "opts": [
+        "Ne yaptığını değil, ne zaman kullanılacağını yaz — ajan seçimi buna dayanır",
+        "Teknik ayrıntıyı olabildiğince çok yaz",
+        "Kısa tut, tek kelime yeterlidir",
+        "İç mimariyi yansıtan bir ad kullan"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bu, skill `description` kuralının aynısı: seçim metne bakılarak yapılır.</b> \"Veri işlemleri\" hiçbir isteğe net eşleşmez; \"sipariş kimliğiyle tek siparişin durumunu döner\" net bir tetikleyici verir. İç mimariye göre adlandırma (`db_query_v2`) ajana bir şey söylemez."
+    },
+    {
+      "topic": "2.3 Eklenti",
+      "q": "Bir eklenti kurmadan önce sorulması gereken sorulardan hangi ikisi doğrudur? (İki tanesini seç.)",
+      "opts": [
+        "Hangi hook'ları var ve ne yapıyorlar?",
+        "Hangi MCP sunucularını bağlıyor?",
+        "Kaç yıldızı var?",
+        "Kaç satır kod içeriyor?"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Eklenti kurmak kod çalıştırmayı kabul etmektir:</b> hook'lar makinende çalışır, sunucular yetkilerinle konuşur. Yıldız sayısı popülerlik ölçer, güvenlik değil; satır sayısı da anlamlı bir sinyal vermez — küçük bir betik de zararlı olabilir."
+    },
+    {
+      "topic": "2.3 Eklenti",
+      "q": "Ad çakışması koruması nerede vardır, nerede yoktur?",
+      "opts": [
+        "Eklenti skill'lerinde vardır; yerel `.claude/` tanımlarında yoktur",
+        "Yerelde vardır, eklentilerde yoktur",
+        "İkisinde de vardır",
+        "İkisinde de yoktur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Eklentilerde niteleme sayesinde iki eklenti aynı adı kullanabilir.</b> Yerel tanımlarda ise aynı adlı iki skill sessiz bir üzerine yazmaya yol açar ve hangisinin kazandığı öncelik sırasına bağlıdır. Pratik önlem: yerelde ayırt edici adlar kullan."
+    },
+    {
+      "topic": "2.3 Eklenti",
+      "q": "Kendi eklentin için \"sürprizi olmasın\" ilkesinin somut karşılığı nedir?",
+      "opts": [
+        "Hangi hook'ların hangi olaylarda çalıştığını ve ne yetki istendiğini belgelemek",
+        "Eklentiyi mümkün olduğunca küçük tutmak",
+        "Sürüm numarası kullanmak",
+        "Yalnızca ekip içinde dağıtmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ölçüt kişisel: sen başkasının eklentisini kurarken ne bilmek isterdin?</b> Küçük tutmak ve sürüm vermek iyi uygulamalardır ama sürprizi doğrudan ortadan kaldırmaz — belgeleme kaldırır."
+    },
+    {
+      "topic": "2.4 Otomasyon",
+      "q": "Bir CI adımında `claude -p` ile çalıştırılan iş hiçbir şey yapmadan bitiyor. En olası sebep nedir?",
+      "opts": [
+        "Başlangıç izin kipi Manual; izin verilmemiş ve soracak kimse yok",
+        "Ağ bağlantısı yok",
+        "Model seçilmemiş",
+        "Çıktı biçimi yanlış"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Etkileşimsiz kipte başlangıç kipi Manual'dir.</b> Yazma ve komut çalıştırma onay ister; onay verecek kimse olmayınca eylem gerçekleşmez. Çözüm: izin kipini ve dar bir araç listesini açıkça vermek."
+    },
+    {
+      "topic": "2.4 Otomasyon",
+      "q": "\"Bende geçti, CI'da düştü\" durumunda otomasyon açısından en olası sebep nedir?",
+      "opts": [
+        "Çıplak başlatılmamış; yereldeki hook, skill ve sunucular sonucu etkilemiş",
+        "CI'da daha küçük model kullanılıyor",
+        "CI'da bağlam penceresi daha dar",
+        "CI'da izin kuralları devre dışı"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Öntanımlı etkileşimsiz çalıştırma, etkileşimli oturumun yüklediği her şeyi yükler:</b> hook, skill, eklenti, sunucu, bellek, kural dosyaları. Senin kurulumun sonucu iyileştirmiş, boş CI ortamı iyileştirmemiş olabilir. Çıplak başlatma her iki tarafı aynı temele oturtur."
+    },
+    {
+      "topic": "2.4 Otomasyon",
+      "q": "Betiklerin ajan çıktısını güvenilir biçimde okuması için hangi yaklaşım kullanılır?",
+      "opts": [
+        "JSON çıktı biçimi ve bir şema vermek",
+        "Düz metni düzenli ifadeyle ayrıştırmak",
+        "Akış biçimini satır satır okumak",
+        "Çıktıyı dosyaya yazdırıp elle kontrol etmek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Model çıktı biçimini değiştirir; şema değiştirmez.</b> Şema verildiğinde sonuç, o şemaya uyan yapılandırılmış bir nesne olarak döner. Akış biçimi canlı ilerleme göstermek içindir, sonucu ayrıştırmak için değil."
+    },
+    {
+      "topic": "2.4 Otomasyon",
+      "q": "`dontAsk` izin kipi ne yapar?",
+      "opts": [
+        "İzin verilmeyen her şeyi reddeder",
+        "Her şeyi sormadan onaylar",
+        "Soruları sıraya alıp sonunda sorar",
+        "Yalnızca okuma araçlarını serbest bırakır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>\"Sorma\" ifadesi \"onayla\" değil \"reddet\" anlamına gelir</b> — kilitli otomasyon için doğru taban budur. İzin verdiğin araçlar çalışır, geri kalan her şey durur. Her şeyi onaylayan kip bambaşka bir ayardır ve yalnızca yalıtılmış ortamda kullanılır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

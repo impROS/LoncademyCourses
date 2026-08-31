@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-6",
+  code: "İş akışları · 2.3",
+  title: "Git, commit ve pull request",
+  back: "2.3-git-ve-pr.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Git alışkanlıkları",
+      q: "Ajanla çalışırken hangi alışkanlık \"ajanın söylediğini değil yaptığını\" görmeni sağlar?",
+      opts: [
+        "Diff'i kendin okumak",
+        "Her iş için ayrı dal açmak",
+        "Küçük ve sık commit atmak",
+        "Temiz ağaçla başlamak"
+      ],
+      a: [0],
+      why: "<b>Diff, iddia ile gerçeklik arasındaki farkı gösteren tek araç.</b> Diğer üçü de gereklidir — dal ana dalı korur, küçük commit geri alma noktası üretir, temiz başlangıç kaynağı netleştirir — ama hiçbiri değişikliğin içeriğini sana göstermez."
+    },
+    {
+      topic: "Git alışkanlıkları",
+      q: "Kontrol noktası ile git arasındaki kapsam farkı nedir?",
+      opts: [
+        "Kontrol noktası oturum içi ve yalnızca dosya düzenleme araçlarını kapsar; git kalıcı ve her değişikliği kapsar",
+        "Kontrol noktası kalıcı, git oturum içidir",
+        "İkisi de aynı değişiklikleri kapsar, yalnızca arayüzleri farklıdır",
+        "Kontrol noktası yalnızca git deposu dışında çalışır"
+      ],
+      a: [0],
+      why: "<b>Ajan `npm install` çalıştırdıysa ya da bir dosyayı `sed` ile değiştirdiyse, geri sarma bunu geri getirmez.</b> Kontrol noktası hızlı ve oturum içi bir kolaylıktır; kalıcı ve eksiksiz kayıt git'tir. İkisi birlikte kullanılır."
+    },
+    {
+      topic: "Commit",
+      q: "Ajana commit mesajı yazdırırken \"depodaki son commit mesajlarının biçimini örnek al\" demenin sebebi nedir?",
+      opts: [
+        "Projenin commit geleneğini tahmin etmez; gösterilmesi gerekir",
+        "Ajan eski commit'leri okuyamaz",
+        "Mesajın daha kısa olmasını sağlar",
+        "Git bunu zorunlu kılar"
+      ],
+      a: [0],
+      why: "<b>Kalıbı izletme kuralı burada da geçerli:</b> model, gördüğü örneğe benzetmekte soyut kurala uymaktan çok daha iyidir. Her ekibin kendi commit geleneği vardır (önek kullanımı, kip, uzunluk) ve bunlar kodda yazılı değildir."
+    },
+    {
+      topic: "Commit",
+      q: "\"Her şeyi ekle ve commit'le\" demenin riski nedir?",
+      opts: [
+        "Ortam dosyaları ve geçici çıktılar da commit'e girebilir",
+        "Commit mesajı otomatik oluşturulmaz",
+        "Git geçmişi bozulur",
+        "Ajan commit atmayı reddeder"
+      ],
+      a: [0],
+      why: "<b>Ajan neyi commit'lediğini kendi başına süzmez.</b> Yerel ayar dosyaları, günlükler, geçici çıktılar ve en kötüsü gizli değer içeren dosyalar bu yolla girebilir. Doğrusu: commit'ten önce `git status` okumak ve eklenecek dosyaları adıyla söylemek."
+    },
+    {
+      topic: "Pull request",
+      q: "İyi bir pull request açıklamasında diff'ten **okunamayan** parça hangisidir?",
+      opts: [
+        "Neden değiştirildiği",
+        "Ne değiştiği",
+        "Hangi dosyalara dokunulduğu",
+        "Kaç satır eklendiği"
+      ],
+      a: [0],
+      why: "<b>Diff \"ne\" sorusunu zaten cevaplar; cevaplayamadığı soru \"neden\".</b> Dosya listesi ve satır sayısı doğrudan diff'ten okunur. Gerekçe ise yalnızca yazan kişinin (ya da ajanın yönlendirildiği isteğin) bilgisindedir ve yazılmazsa kalıcı olarak kaybolur."
+    },
+    {
+      topic: "Pull request",
+      q: "Pull request açıklamasında \"kapsam dışı bıraktıklarım\" bölümü hangi soruyu önler?",
+      opts: [
+        "\"Bunu neden yapmamış?\"",
+        "\"Bu değişiklik ne kadar sürdü?\"",
+        "\"Testler geçiyor mu?\"",
+        "\"Hangi modeli kullandın?\""
+      ],
+      a: [0],
+      why: "<b>İnceleyen kişi, eksik gördüğü şeyin unutulduğunu mu yoksa bilinçli olarak dışarıda bırakıldığını mı bilemez.</b> Kapsam dışını yazmak bu belirsizliği kaldırır ve incelemeyi hızlandırır — aynı bilgi plan aşamasında da aynı işi görüyordu."
+    },
+    {
+      topic: "Depoda çalışan ajan",
+      q: "Depoya bağlı çalışan bir ajanın açtığı yeni güvenlik yüzeyi nedir?",
+      opts: [
+        "Sorun kaydı ve yorum metinlerini herkes yazabilir; ajan bunları okur",
+        "Ajanın deponun tamamını okuyabilmesi",
+        "Ajanın commit atabilmesi",
+        "Ajanın testleri çalıştırabilmesi"
+      ],
+      a: [0],
+      why: "<b>Dışarıdan yazılabilen ve ajan tarafından okunan her metin bir istem enjeksiyonu yüzeyidir.</b> Açık bir depoda sorun kaydı açmak herkese açıktır. Deponun okunması, commit atılması ve test çalıştırılması ise ajanın zaten beklenen işlevleridir."
+    },
+    {
+      topic: "Depoda çalışan ajan",
+      q: "Bu tür kurulumlarda uygulanan denetimlerden hangi ikisi doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Tetikleyen kişinin depoya yazma yetkisi olması şartı",
+        "Bot hesapların tetikleyememesi",
+        "Ajanın yalnızca ana dalda çalışabilmesi",
+        "Sorun kayıtlarının otomatik kapatılması"
+      ],
+      a: [0, 1],
+      why: "<b>Yazma yetkisi şartı, rastgele birinin ajanı çalıştırmasını engeller; bot denetimi ise hem yetkisiz otomasyonu hem sonsuz döngüyü önler</b> (ajanın kendi yorumunun kendisini tekrar tetiklemesi). Dal kısıtı ve kayıt kapatma bu denetim kümesinin parçası değildir."
+    },
+    {
+      topic: "Depoda çalışan ajan",
+      q: "Ajanın attığı commit'lerde sürekli tümleştirme iş akışlarının çalışmaması neden bir arıza değildir?",
+      opts: [
+        "İş akışlarının kendi kendini sonsuz tetiklemesini önleyen bilinçli bir davranıştır",
+        "Ajan commit'leri geçersiz imzalıdır",
+        "Ajan commit'leri ayrı bir dala gider",
+        "Testler ajan commit'lerini desteklemez"
+      ],
+      a: [0],
+      why: "<b>Otomasyonun kendi ürettiği olayla yeniden tetiklenmesi klasik bir döngü riskidir</b> ve öntanımlı davranış bunu keser. Bunu bilmek pratik bir tanı sağlar: \"testler ajanın commit'inde neden çalışmadı?\" sorusunun cevabı genelde budur, bir yapılandırma hatası değil."
+    },
+    {
+      topic: "Gizli değerler",
+      q: "Ajan iş akışlarında kimlik doğrulama bilgileri nasıl saklanır?",
+      opts: [
+        "Depo dışında sır olarak saklanır ve iş akışına değişkenle geçirilir",
+        "İş akışı dosyasına doğrudan yazılır",
+        "Kural dosyasında saklanır",
+        "Ajanın belleğine kaydedilir"
+      ],
+      a: [0],
+      why: "<b>Depoya yazılan her şey, depoyu okuyabilen herkese açıktır</b> — ve git geçmişinden silmek zordur. Kural dosyası da depoya işlenir, dolayısıyla aynı sorunu taşır. Ajan belleği ise ne güvenli ne paylaşılabilir bir saklama yeridir."
+    },
+    {
+      topic: "Kimlik ve dürüstlük",
+      q: "Ajan üretimi bir değişikliğin öyle olduğunun belli olmasının iki gerekçesi nedir? (İki tanesini seç.)",
+      opts: [
+        "İnceleyen kişi ajan koduna özgü kontrolleri açmalı",
+        "Kaynağı gizlemek sonradan güven kaybettirir",
+        "Yasal olarak zorunludur",
+        "Git bunu teknik olarak gerektirir"
+      ],
+      a: [0, 1],
+      why: "<b>Ajan kodu farklı yerlerde hatalıdır</b> — uydurulmuş arayüz, bastırılmış hata, kapsam taşması — ve inceleyenin dikkatini oraya yöneltmesi gerekir. İkincisi bir ekip kültürü meselesidir. Evrensel bir yasal zorunluluk yoktur; git de böyle bir şey talep etmez."
+    },
+    {
+      topic: "Uygulama",
+      q: "`gh` gibi bir komut satırı aracı kurulu değilse ne olur?",
+      opts: [
+        "Ajan yetkisiz istekler atar ve hız sınırına takılır",
+        "Ajan pull request açmayı tamamen reddeder",
+        "Ajan yerel git komutlarını da kullanamaz",
+        "Değişiklikler ana dala doğrudan gönderilir"
+      ],
+      a: [0],
+      why: "<b>Ajan yine de deneyebilir ama kimlik doğrulanmamış isteklerle</b>, ve bunlar hızla sınıra takılır. Kurulu bir komut satırı aracı hem kimlik doğrulamayı hem bağlam verimliliğini sağlar — ajan zaten bu araçları bilir."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir commit'e `.env` dosyasının girdiğini fark ettin. Bunu önleyecek en doğrudan alışkanlık hangisidir?",
+      opts: [
+        "Commit'ten önce `git status` okumak ve eklenecek dosyaları adıyla söylemek",
+        "Daha küçük modele geçmek",
+        "Plan modunda çalışmak",
+        "Commit mesajını kendin yazmak"
+      ],
+      a: [0],
+      why: "<b>Sorun mesajda değil, kapsamda.</b> Neyin ekleneceğini adıyla söylemek ve önce durumu okumak bu hatayı doğrudan engeller. Kalıcı çözüm için ayrıca dosyayı sürüm denetiminin dışında tutmak ve okumasını engelleyen bir kural koymak gerekir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ajanın ürettiği her değişiklik geri alınabilir ve izlenebilir olmalı; bunun tek garantisi git",
+        "Ajanlar git komutlarını insanlardan daha iyi kullanır",
+        "Pull request açmak ajanların en güçlü olduğu iştir",
+        "Depoya bağlı ajan kurulumları her ekip için önerilir"
+      ],
+      a: [0],
+      why: "<b>Geri alınabilirlik ve izlenebilirlik, ajanla hızlı çalışmayı güvenli kılan iki özellik.</b> Kontrol noktaları bunun bir kısmını sağlar ama tamamını değil. Depoya bağlı kurulumlar güçlüdür ama güvenlik yüzeyi açar; her ekip için otomatik bir öneri değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

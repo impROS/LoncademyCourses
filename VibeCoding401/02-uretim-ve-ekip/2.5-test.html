@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.5 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-5",
+  code: "Üretim ve ekip · 2.5",
+  title: "Ekipçe kullanım",
+  back: "2.5-ekipce-kullanim.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ne paylaşılır",
+      q: "Aşağıdakilerden hangisi ekiple **hiçbir zaman** paylaşılmaz?",
+      opts: [
+        "Otomatik bellek",
+        "Yola kapsanmış kural dosyaları",
+        "Ortak hook yapılandırması",
+        "MCP sunucu tanımları"
+      ],
+      a: [0],
+      why: "<b>Otomatik bellek makineye özgüdür ve depoya işlenmez.</b> Ajanın senden öğrendiği bir tercih takım arkadaşında yoktur — bu, ekipteki en sinsi tutarsızlık kaynağı. Ekipte geçerli olması gereken her şey depoda yaşamalıdır."
+    },
+    {
+      topic: "Ne paylaşılır",
+      q: "MCP sunucu tanımları proje kapsamında paylaşılırken hangi kısıt geçerlidir?",
+      opts: [
+        "Gizli değerler depoya yazılmaz; ortam değişkeni genişletmesi kullanılır",
+        "Yalnızca yerel taşıma kullanılabilir",
+        "Sunucu sayısı üçle sınırlıdır",
+        "Sunucular yalnızca yöneticiler tarafından tanımlanabilir"
+      ],
+      a: [0],
+      why: "<b>Depoya yazılan her şey depoyu okuyabilen herkese açıktır</b> ve git geçmişinden silmek zordur. Tanım paylaşılır, kimlik bilgisi paylaşılmaz — değer ortamda durur, dosyada değişken adı bulunur."
+    },
+    {
+      topic: "Bende çalışıyor",
+      q: "\"Bende çalışıyor ama arkadaşımda çalışmıyor\" durumunda üçlü kontrolde neredeyse her zaman farklı olan hangisidir?",
+      opts: [
+        "Otomatik bellek",
+        "Depodaki kural dosyaları",
+        "Proje ayarları",
+        "Kurulu araç sürümü"
+      ],
+      a: [0],
+      why: "<b>Depodaki kurallar ve proje ayarları git üzerinden aynıdır; bellek ise makineye özgüdür ve kişiden kişiye tamamen farklıdır.</b> Bu yüzden kontrol sırası: depo kuralları → yerel ayar → bellek. Üçüncüsü genelde cevaptır."
+    },
+    {
+      topic: "Zorunlu kılmak",
+      q: "Bir ayarın kurumsal olarak zorunlu kılınıp kılınmayacağını belirleyen ölçüt nedir?",
+      opts: [
+        "Bir kişinin yanlış ayarı başkasını riske atıyor mu",
+        "Ayarın ne kadar teknik olduğu",
+        "Ayarı kaç kişinin kullandığı",
+        "Ayarın maliyeti etkileyip etkilemediği"
+      ],
+      a: [0],
+      why: "<b>Zorunluluk, ortak riski yönetmek içindir.</b> Hassas yolları engelleyen kurallar bu tanıma girer; model tercihi ya da kısayollar girmez. Ölçütü genişletmek, gereksiz kilitlemeye ve dolayısıyla gizli kullanıma yol açar."
+    },
+    {
+      topic: "Zorunlu kılmak",
+      q: "Fazla zorunluluğun geri tepmesi ne şekilde olur?",
+      opts: [
+        "İnsanlar aracı kişisel yapılandırmalarıyla kullanır ve görünürlük kaybolur",
+        "Araç yavaşlar",
+        "Ayarlar birbiriyle çakışır",
+        "Maliyet artar"
+      ],
+      a: [0],
+      why: "<b>Kilitlenmiş bir kurulum, kullanımı ortadan kaldırmaz — görünmez kılar.</b> Ve görünmeyen kullanım hem ölçülemez hem denetlenemez. Bu yüzden zorunluluk kümesi dar ve gerekçeli tutulur."
+    },
+    {
+      topic: "İnceleme politikası",
+      q: "İnceleme politikasında yazılması gereken üç karardan biri **değildir**?",
+      opts: [
+        "Hangi modelin kullanılacağı",
+        "Ajan üretimi kodun nasıl işaretleneceği",
+        "Ne düzeyde inceleme gerekeceği",
+        "Neyin otomatik onaya bırakılmayacağı"
+      ],
+      a: [0],
+      why: "<b>Model seçimi bir maliyet ve kalite tercihidir, inceleme politikasının konusu değil.</b> Politika üç soruyu cevaplar: nasıl işaretlenir, nasıl incelenir, neye asla otomatik onay verilmez."
+    },
+    {
+      topic: "İnceleme politikası",
+      q: "Ajan üretimi kod için dengeli inceleme kuralı hangisidir?",
+      opts: [
+        "İnsan üretimi kodla aynı inceleme, artı beş ek kontrol",
+        "Her satırın elle yeniden yazılması",
+        "Testler geçiyorsa doğrudan birleştirme",
+        "Yalnızca kıdemli geliştiricilerin incelemesi"
+      ],
+      a: [0],
+      why: "<b>İki uçtan da kaçınılır:</b> \"testler geçti, birleştir\" doğrulanmamış kodu üretime taşır; her satırı yeniden yazmak ise aracın değerini yok eder ve insanları gizli kullanıma iter. Beş ek kontrol, ajan kodunun farklı hata dağılımına karşılık gelir."
+    },
+    {
+      topic: "İnceleme politikası",
+      q: "Otomatik onaya bırakılmaması gereken eylemler hangi ölçütle belirlenir?",
+      opts: [
+        "Geri dönülemez ve dışa dönük olmaları",
+        "Uzun sürmeleri",
+        "Birden çok dosyaya dokunmaları",
+        "Testlerinin olmaması"
+      ],
+      a: [0],
+      why: "<b>`2.1`'deki ölçütün ekip politikasına yazılmış hâli:</b> \"Yanlış olsaydı geri alabilir miydim?\" Üretime dağıtım, veri silme, dışarıya mesaj gönderme ve gizli değer paylaşma bu tanıma girer — süre ve dosya sayısı girmez."
+    },
+    {
+      topic: "Yaygınlaştırma",
+      q: "Yaygınlaştırma sırası nasıl olmalıdır?",
+      opts: [
+        "Pilot → ölçüm → kurulum → politika → açılış → düzenli gözden geçirme",
+        "Açılış → pilot → ölçüm → politika",
+        "Politika → açılış → kurulum → ölçüm",
+        "Kurulum → açılış → pilot → politika"
+      ],
+      a: [0],
+      why: "<b>Kurulum ve politika, açılıştan önce gelmeli.</b> Aksi hâlde herkes kendi kurulumunu icat eder ve bunları sonradan birleştirmek baştan yapmaktan zordur. Pilot grubun işi tam olarak bu kurulumu ve politikayı üretmektir."
+    },
+    {
+      topic: "Yaygınlaştırma",
+      q: "Pilot grubun çıktısı ne **değildir**?",
+      opts: [
+        "Araç kararı",
+        "Depoya yazılacak kurallar",
+        "İnceleme politikası",
+        "Ölçüm verileri"
+      ],
+      a: [0],
+      why: "<b>Araç kararı `1.2`'nin konusu ve farklı bir çerçeveyle verilir</b> — eksen tablosu, taşınma maliyeti, ölçüm. Pilotun işi, seçilmiş araçla nasıl çalışılacağını çıkarmaktır: kurulum, politika ve ölçüm verisi."
+    },
+    {
+      topic: "Yeni katılan",
+      q: "Ekibe yeni katılan biri için ajanlı çalışmanın en büyük kazancı ve riski nedir?",
+      opts: [
+        "Kazanç: keşifle kod tabanını hızlı tanıma. Risk: ajan çıktısını denetleyecek deneyimin henüz olmaması",
+        "Kazanç: daha hızlı kod yazma. Risk: daha yüksek maliyet",
+        "Kazanç: daha az soru sorma. Risk: ekipten kopma",
+        "Kazanç: test yazma kolaylığı. Risk: bağlam yönetimi bilmemesi"
+      ],
+      a: [0],
+      why: "<b>Keşif, öğrenmenin en verimli kısmı — kıdemli birine soracağı soruları ajana sorabilir.</b> Ama bu setin tüm doğrulama zinciri insan denetimine dayanır; denetleyecek deneyim yoksa zincir kopar. Çözüm: keşifte serbest, değişiklikte eşlik."
+    },
+    {
+      topic: "Yeni katılan",
+      q: "Yeni katılan birine öncelikle ne öğretilmelidir?",
+      opts: [
+        "Yöntemi: keşif, plan, uygulama, doğrulama akışı",
+        "Aracın tüm komutlarını",
+        "Hook yazmayı",
+        "MCP sunucusu yazmayı"
+      ],
+      a: [0],
+      why: "<b>Araç değil, yöntem öğretilir.</b> `03`'teki akış araç değişse de geçerli kalır ve doğrulama alışkanlığını kurar. Komut listesi ezberi, hook ve sunucu yazımı ise sonra gelir — ve zaten hazır kurulumla gelmelidir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Kısıtlar çok sıkı, insanlar kişisel hesaplarıyla kullanıyor.\" Bu durumun teşhisi nedir?",
+      opts: [
+        "Fazla zorunluluk görünürlüğü kaybettirmiş; zorunluluk kümesi daraltılmalı",
+        "Ekip eğitimsiz; daha çok eğitim gerekiyor",
+        "Araç yanlış seçilmiş; değiştirilmeli",
+        "Maliyet sınırı düşük ayarlanmış"
+      ],
+      a: [0],
+      why: "<b>Gizli kullanım, aşırı kısıtın klasik göstergesi</b> — ve en kötü sonucu doğurur: ne ölçebilirsin ne denetleyebilirsin. Ölçüte dönmek gerekir: yalnızca başkasını riske atan şeyler zorunlu kılınır."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ekipte geçerli olması gereken her şey depoda yaşamalı; makinende kalan senin kalır",
+        "Ekip kullanımında mümkün olan her ayar zorunlu kılınmalıdır",
+        "Ajan üretimi kod daha az inceleme gerektirir",
+        "Ekibe açılış, kurulumdan önce yapılmalıdır"
+      ],
+      a: [0],
+      why: "<b>Tek kaynak ilkesinin ekip ölçeğindeki hâli.</b> Anlatılan unutulur, makinede kalan paylaşılmaz — depodaki kalır. Aşırı zorunluluk geri teper; ajan kodu <i>farklı</i> inceleme ister, daha azını değil; ve açılış her zaman kurulumdan sonra gelir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

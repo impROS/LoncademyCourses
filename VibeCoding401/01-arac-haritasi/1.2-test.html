@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-2",
+  code: "Araç haritası · 1.2",
+  title: "Hangisi ne zaman",
+  back: "1.2-hangisi-ne-zaman.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Karar tablosu",
+      q: "Karar tablosunu tek başına kullanmak neden yetmez?",
+      opts: [
+        "Kendi işindeki en önemli iki eksenle birlikte okunmalıdır",
+        "Tablo sık güncelleniyor",
+        "Tablo yalnızca kurumsal ekipler için hazırlanmış",
+        "Tabloda tüm araçlar yer almıyor"
+      ],
+      a: [0],
+      why: "<b>Tablo bir başlangıç noktası, sonuç değil.</b> Aynı durumdaki iki kişi farklı eksenlere öncelik veriyorsa farklı araçlarda karar kılabilir. Bu yüzden `1.1`'de doldurulan eksen tablosu kararın ikinci yarısıdır."
+    },
+    {
+      topic: "Karar tablosu",
+      q: "Otomasyon ve sürekli tümleştirme ağırlıklı çalışan biri için hangi eksen belirleyicidir?",
+      opts: [
+        "Etkileşimsiz kipin gücü",
+        "Arayüz deneyimi",
+        "Ücretsiz katmanın genişliği",
+        "Model çeşitliliği"
+      ],
+      a: [0],
+      why: "<b>Otomasyon ağırlıklı bir iş akışının tamamı etkileşimsiz kipe dayanır</b> — çıktı biçimleri, izin kipi denetimi, çıplak başlatma, çıkış kodları. Arayüz deneyimi bu kullanımda neredeyse hiç devreye girmez."
+    },
+    {
+      topic: "Çoklu araç",
+      q: "Birden çok araç kullanmanın mantıklı olduğu bir durum hangisidir?",
+      opts: [
+        "Düzenleyicide tamamlama, terminalde ajan — farklı işler için farklı araçlar",
+        "Aynı görevi iki araçla yapıp sonuçları karşılaştırmak",
+        "Hangisinin daha hızlı olduğunu görmek için ikisini birden açık tutmak",
+        "Abonelik indirimlerinden yararlanmak"
+      ],
+      a: [0],
+      why: "<b>Ayrım işe göre olduğunda çoklu araç iyi bir kalıptır.</b> Aynı işi iki araçla yapmak fayda değil kafa karışıklığı üretir — hangisinde ne yaptığını takip edemezsin. Sürekli karşılaştırma da ölçüm değil, dikkat dağınıklığıdır."
+    },
+    {
+      topic: "Çoklu araç",
+      q: "Birden çok araç kullanmanın maliyetlerinden hangi ikisi doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Kurulum ikiye katlanır; otomasyon katmanı taşınmaz",
+        "Alışkanlık bölünür, kısayollar ve kipler karışır",
+        "Bağlam pencereleri birbirine karışır",
+        "Kural dosyaları çakışır ve hata verir"
+      ],
+      a: [0, 1],
+      why: "<b>Talimat taşınır ama hook, alt ajan ve eklenti taşınmaz</b> — yani her araç için ayrı kurulur ve ayrı bakılır. Kas hafızası da bölünür. Bağlam pencereleri araçlar arasında paylaşılmaz; kural dosyaları da birbirini görmez, çakışma olmaz."
+    },
+    {
+      topic: "Taşınma maliyeti",
+      q: "Araç değiştirirken aşağıdakilerden hangisi **taşınır**?",
+      opts: [
+        "MCP sunucuları",
+        "Hook'lar",
+        "Alt ajan tanımları",
+        "Kas hafızası"
+      ],
+      a: [0],
+      why: "<b>MCP ortak bir protokol olduğu için sunucular araç değişse de çalışmaya devam eder.</b> Bu, MCP tarafına yapılan yatırımı özellikle değerli kılar. Hook'lar ve alt ajan tanımları araca özgüdür; kas hafızası ise en çok küçümsenen taşınmaz maliyettir."
+    },
+    {
+      topic: "Taşınma maliyeti",
+      q: "\"Otomasyonunu tek yerde toplama\" tavsiyesinin gerekçesi nedir?",
+      opts: [
+        "Kritik bir doğrulama yalnızca hook olarak varsa araç değişince kaybolur",
+        "Hook'lar yavaş çalışır",
+        "Hook'lar bağlam harcar",
+        "Hook'lar ekiple paylaşılamaz"
+      ],
+      a: [0],
+      why: "<b>Hook'lar taşınmaz.</b> Testlerin geçmesini zorunlu kılan bir kapı yalnızca hook'ta yaşıyorsa, göç günü o güvence sessizce ortadan kalkar. Aynı denetimi sürekli tümleştirme hattında da tutmak, araçtan bağımsız bir taban sağlar."
+    },
+    {
+      topic: "Taşınma maliyeti",
+      q: "Araç değiştirmenin en çok küçümsenen maliyeti hangisidir?",
+      opts: [
+        "Kas hafızası: kısayollar, kipler, alışkanlıklar",
+        "Abonelik farkı",
+        "Kural dosyalarının yeniden yazılması",
+        "MCP sunucularının yeniden kurulması"
+      ],
+      a: [0],
+      why: "<b>Ölçülmesi zor olduğu için hesaba katılmaz ama haftalarca verim kaybettirir.</b> Abonelik farkı görünür ve genelde küçüktür; kural dosyaları büyük ölçüde taşınır; MCP sunucuları ise zaten taşınabilir."
+    },
+    {
+      topic: "Kararı yenileme",
+      q: "Aşağıdakilerden hangisi kararı yenilemek için **geçerli** bir sebeptir?",
+      opts: [
+        "İşinin niteliği değişti; otomasyon ağırlığı arttı",
+        "Yeni bir sürüm duyurusu çıktı",
+        "Sosyal ağda beğenilen bir kıyaslama gördün",
+        "Yeni aracın arayüzü daha güzel"
+      ],
+      a: [0],
+      why: "<b>Karar, ihtiyaç değiştiğinde yenilenir.</b> Otomasyon ağırlığının artması, `1.1`'deki eksen önceliklerini gerçekten değiştirir. Sürüm duyurusu, kıyaslama ve arayüz ise ihtiyacında bir değişikliği göstermez."
+    },
+    {
+      topic: "Kararı yenileme",
+      q: "Bu konuda \"ölçmek\" tam olarak ne demektir?",
+      opts: [
+        "Aynı türden birkaç görevi iki araçla yapıp tur, düzeltme, süre ve maliyeti kaydetmek",
+        "Kıyaslama puanlarını karşılaştırmak",
+        "İki aracın fiyatını karşılaştırmak",
+        "Ekip anketi yapmak"
+      ],
+      a: [0],
+      why: "<b>Ölçüm kendi işinde, kendi kod tabanında yapılır.</b> Beş görev, iki araç, dört sayı — bir sayfa yeter. Kıyaslama puanı senin projeni ölçmez; fiyat ise taşınma maliyetinin yanında küçük kalır."
+    },
+    {
+      topic: "Kararı yenileme",
+      q: "\"Göç maliyeti bir kerelik değil\" ifadesi ne anlatır?",
+      opts: [
+        "Kurulumu yeniden kurmak, ekibi taşımak ve yeni tuzakları öğrenmek zamana yayılır",
+        "Abonelik ücreti her ay ödenir",
+        "Eski araç lisansı iade edilmez",
+        "Göç sırasında veri kaybı olur"
+      ],
+      a: [0],
+      why: "<b>Göç bir gün değil, haftalar sürer</b>: hook'lar yeniden yazılır, ekip alışır, yeni aracın kendine özgü tuzakları öğrenilir. Bu yüzden belirgin bir kazanç yoksa <b>kalmak</b> doğru karardır."
+    },
+    {
+      topic: "Kilitlenmeyi azaltma",
+      q: "Kilitlenmeyi azaltmanın en ucuz ve en çok atlanan yolu hangisidir?",
+      opts: [
+        "Kurulumdaki araca özgü kısımları açıkça işaretlemek",
+        "İki aracı birden kullanmak",
+        "Tüm hook'ları kaldırmak",
+        "Yalnızca ücretsiz araçlar kullanmak"
+      ],
+      a: [0],
+      why: "<b>Bir belge satırı, göç günü ne yapacağını önceden söyler.</b> \"Bunlar yalnızca bu araçla çalışır\" diye işaretlenmiş bir bölüm, sürprizi ortadan kaldırır. Hook'ları kaldırmak güvenceyi kaybettirir; iki araç kullanmak kilitlenmeyi azaltmaz, maliyeti artırır."
+    },
+    {
+      topic: "Kilitlenmeyi azaltma",
+      q: "Yordamları düz metin olarak da tutmanın faydası nedir?",
+      opts: [
+        "Araç değişince yeniden paketlemek kolaylaşır",
+        "Bağlam maliyetini düşürür",
+        "Ajanın onları daha iyi anlamasını sağlar",
+        "Sürüm denetimini gereksiz kılar"
+      ],
+      a: [0],
+      why: "<b>Skill'lerde metin taşınır, çağırma biçimi değişir.</b> Yordamın kendisi düz metin olarak korunuyorsa, yeni aracın biçimine sarmak birkaç dakikalık iştir. Bağlam maliyeti ya da anlaşılabilirlik bu kararın konusu değil."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Diğer araç aylık 5 dolar ucuz, geçelim.\" Bu değerlendirmenin hatası nedir?",
+      opts: [
+        "Asıl maliyet taşınmadır: kurulum, ekip ve öğrenme",
+        "Fiyatlar sık değişir",
+        "Ucuz araçlar daha az yetenekli olur",
+        "Abonelik farkı vergiyle değişir"
+      ],
+      a: [0],
+      why: "<b>Görünür maliyet küçük, görünmeyen maliyet büyük.</b> Hook'ların yeniden yazılması, ekibin alışması ve yeni tuzakların öğrenilmesi, aylık birkaç dolarlık farkın çok üzerinde bir bedel üretir. Fiyat, karar eksenlerinden yalnızca biridir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Aracı işine göre seç, kurulumunu taşınabilir tut, kararı ölçüyle yenile",
+        "En iyi aracı seçip ona bağlı kalmak en verimli yoldur",
+        "Her yeni araç denenmelidir",
+        "Araç seçimi tamamen kişisel bir tercihtir"
+      ],
+      a: [0],
+      why: "<b>Üç parça birlikte çalışır:</b> işe göre seçmek doğru başlangıcı, taşınabilir kurulum düşük göç maliyetini, ölçümlü yenileme ise hevesli göçlerden korunmayı sağlar. Kilitlenmek ve sürekli göç etmek, aynı hatanın iki ucudur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

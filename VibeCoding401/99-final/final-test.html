@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genel deneme — Vibe Coding 401 — Üretim ve ekip</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  "id": "final",
+  "code": "Genel deneme",
+  "title": "Vibe Coding 401 — Üretim ve ekip — 31 soru, 39 dakika",
+  "back": "son-tekrar.md",
+  "backLabel": "Son tekrara dön",
+  "mode": "exam",
+  "pass": 80,
+  "time": 2340,
+  "passNote": "bu setin eşiği %80",
+  "notes": [
+    "Sorular konu testlerinin kopyası değildir: aynı bilgi, farklı senaryo.",
+    "Takıldığın soruyu geç; soru başına ortalama 75 saniyen var.",
+    "Zayıf alan raporundaki konu kodlarına dönerek çalış."
+  ],
+  "questions": [
+    {
+      "topic": "1.1 Araç haritası",
+      "q": "Aynı modeli kullanan iki araç neden farklı sonuç verir?",
+      "opts": [
+        "Harness farklıdır: bağlam yönetimi, yönlendirme katmanları, doğrulama desteği",
+        "Modeller aslında farklı sürümlerdir",
+        "Ağ gecikmesi farklıdır",
+        "Aynı model her zaman aynı sonucu verir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Harness, modelin etrafındaki her şey:</b> bağlamı nasıl doldurduğu, ne zaman sıkıştırdığı, hangi kuralları yüklediği, testi çalıştırıp sonucu okuyup okumadığı. Bu yüzden \"model gücü\" değerlendirme eksenleri arasında yer almaz."
+    },
+    {
+      "topic": "1.1 Araç haritası",
+      "q": "Bir aracı değerlendirirken sorulması gereken doğru soru hangisidir?",
+      "opts": [
+        "Hangi eksende farklılar ve o eksen benim işimde önemli mi",
+        "Kıyaslama sıralamasında kaçıncı",
+        "Kaç kullanıcısı var",
+        "Hangi modeli kullanıyor"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Tek boyutlu sıralama, işin hangi ekseninin önemli olduğunu tarif etmiyor.</b> Otomasyon ağırlıklı biri için etkileşimsiz kip, kurumsal bir ekip için veri işleme belirleyici olabilir. Kendi ihtiyacını tanımlamadan yapılan karşılaştırma popülerlik yarışına dönüşür."
+    },
+    {
+      "topic": "1.1 Kıyaslamalar",
+      "q": "Kıyaslamaların ölçmediği alanlardan biri hangisidir?",
+      "opts": [
+        "Kural, hook ve alt ajan kurulumunun etkisi",
+        "Depo sorunlarını çözme oranı",
+        "Genel havuzdaki görevlerde başarı",
+        "Farklı araçların aynı görevdeki karşılaştırması"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kıyaslamalar kurulumsuz çalışır</b> — oysa bu setin ilk dört bölümü tam olarak kurulumun farkını öğretiyor. Ayrıca senin kod tabanını, uzun oturum bağlamını, maliyeti ve ekip kullanımını da ölçmezler."
+    },
+    {
+      "topic": "1.2 Araç kararı",
+      "q": "Bir ekip yeni bir araca geçmeyi düşünüyor. Aşağıdakilerden hangisi **geçerli** bir yenileme sebebidir?",
+      "opts": [
+        "İşin niteliği değişti; otomasyon ağırlığı belirgin biçimde arttı",
+        "Yeni bir sürüm duyurusu yayımlandı",
+        "Sosyal ağda beğenilen bir kıyaslama paylaşıldı",
+        "Yeni aracın arayüzü daha modern"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Karar, ihtiyaç değiştiğinde yenilenir.</b> Geçerli sebeplerin ortak yanı, senin işin hakkında bir şey söylemeleri. Duyuru, kıyaslama ve arayüz araç hakkında bilgi verir ama ihtiyacında bir değişikliği göstermez."
+    },
+    {
+      "topic": "1.2 Taşınma",
+      "q": "Araç değiştirmeye hazırlanan bir ekip, kritik bir test denetiminin yalnızca hook'ta tanımlı olduğunu fark etti. Bunu önleyecek uygulama neydi?",
+      "opts": [
+        "Aynı denetimi sürekli tümleştirme hattında da tutmak",
+        "Hook'u kural dosyasına çevirmek",
+        "Hook'u bir skill'e taşımak",
+        "Hook'u kullanıcı ayarlarına almak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Hook'lar taşınmaz.</b> Yalnızca hook'ta yaşayan bir güvence, göç günü sessizce ortadan kalkar. Hat, araçtan bağımsız bir taban sağlar; hook ise hızlı geri bildirim verir. İkisi birlikte kullanılır."
+    },
+    {
+      "topic": "1.2 Araç kararı",
+      "q": "Araç değiştirirken taşınan katman hangisidir?",
+      "opts": [
+        "MCP sunucuları",
+        "Hook'lar",
+        "Alt ajan tanımları",
+        "Kas hafızası"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>MCP ortak bir protokol olduğu için sunucular araç değişse de çalışmaya devam eder</b> — bu, o tarafa yapılan yatırımı özellikle değerli kılar. Hook ve alt ajan tanımları araca özgüdür; kas hafızası ise en çok küçümsenen taşınmaz maliyettir."
+    },
+    {
+      "topic": "1.3 Kaynaklar",
+      "q": "Bir derleme listesinde işine yarayabilecek bir eklenti buldun. Doğru sonraki adım nedir?",
+      "opts": [
+        "Birincil kaynağına gidip içeriğini incelemek, sonra kurup kurmamaya karar vermek",
+        "Doğrudan kurup denemek",
+        "Yıldız sayısına bakmak",
+        "Alternatiflerini de kurup karşılaştırmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Liste keşfi tamamlar, kararı başlatır.</b> Listede yer almak bir inceleme sürecinden geçildiği anlamına gelmez — 2026'da bu yüzeyde kötü niyetli paket kampanyaları raporlandı. Birden çok alternatifi kurup denemek ise araç biriktirmeye götürür."
+    },
+    {
+      "topic": "1.3 Kaynaklar",
+      "q": "Değişiklik günlüğü okumanın haber takibinden daha değerli olmasının sebebi nedir?",
+      "opts": [
+        "Bir bayrağın eklenmesi ya da bir varsayılanın değişmesi haberlerde yer almaz ama davranışını etkiler",
+        "Değişiklik günlükleri daha kısadır",
+        "Haber akışları ücretlidir",
+        "Değişiklik günlükleri daha sık yayımlanır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Haberler büyük duyuruları taşır; günlük ise seni doğrudan etkileyen küçük değişiklikleri.</b> \"Bir davranış değişmiş, haberim olmadı\" durumunun panzehiri budur — haftada 15 dakikalık bir alışkanlık yeter."
+    },
+    {
+      "topic": "1.3 Kaynaklar",
+      "q": "Bir kaynağı değerlendirirken sorulan beş sorudan biri **değildir**?",
+      "opts": [
+        "Kaç kişi okumuş?",
+        "Ne zaman yazılmış?",
+        "Bir şey satıyor mu?",
+        "Sınırlarını söylüyor mu?"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Popülerlik bir kalite ölçütü değil.</b> Beş soru: tarih, satış amacı, ölçüm varlığı, sınırların belirtilmesi, kaynak gösterme. Üçünde takılan bir kaynak okumaya değmez."
+    },
+    {
+      "topic": "2.1 Güvenlik",
+      "q": "Bir sorun kaydını okuyan ajan, \"bu kayıtta şu işlemi yapmam isteniyor\" diyor. Doğru refleks nedir?",
+      "opts": [
+        "Talimatı alıntılatıp uygulatmamak ve \"kim istiyor?\" diye sormak",
+        "İsteği onaylayıp ilerlemek",
+        "Sorun kaydını kapatmak",
+        "Ajanı yeniden başlatmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Sorun kaydını herkes yazabilir; o istek senin isteğin değil.</b> \"Alıntıla, uygulama\" davranışı hem enjeksiyonu yakalar hem meşru istekleri kaybetmez — gerçekten yapılması gereken bir şeyse sen onaylarsın."
+    },
+    {
+      "topic": "2.1 Güvenlik",
+      "q": "Güvenlik katmanlarından hangisi, diğerlerinin hepsi aşılsa bile zararın büyüklüğünü sınırlar?",
+      "opts": [
+        "En az yetki",
+        "İzin kuralları",
+        "Kum havuzu",
+        "Denetim izi"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Diğer katmanlar saldırıyı engellemeye çalışır; en az yetki başarılı bir saldırının ne yapabileceğini sınırlar.</b> Salt okunur bir veritabanı kullanıcısıyla çalışan ajan, enjeksiyon başarılı olsa bile veri silemez. Denetim izi ise olay sonrası içindir."
+    },
+    {
+      "topic": "2.1 Güvenlik",
+      "q": "İstem enjeksiyonunun yamayla kapanmamasının teknik sebebi nedir?",
+      "opts": [
+        "Model, talimat ile veriyi yapısal olarak ayırt edemiyor; ikisi aynı akışta geliyor",
+        "Araç üreticileri bu konuda çalışmıyor",
+        "Şifreleme standartları yetersiz",
+        "Modeller çok büyük olduğu için denetlenemiyor"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ayrımın yapısal bir dayanağı yok</b> — bu bir uygulama hatası değil, mimari bir özellik. Araçlar azaltıcı katmanlar ekliyor (izin sistemi, ağ komutlarının otomatik onaylanmaması, ayrı bağlamda getirme, sınıflandırıcı denetimi) ama hiçbiri tam değil."
+    },
+    {
+      "topic": "2.1 Güvenlik",
+      "q": "Bir eylemin insan onayı gerektirip gerektirmediğini belirleyen ölçüt nedir?",
+      "opts": [
+        "\"Yanlış olsaydı geri alabilir miydim?\"",
+        "\"Bu eylem ne kadar sürer?\"",
+        "\"Bu eylem kaç dosyaya dokunur?\"",
+        "\"Bu eylem testlerden geçer mi?\""
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Geri alınabilirlik, otomatik onayın sınırını çizen ölçüt.</b> Üretime dağıtım, veri silme, para hareketi, dışarıya mesaj gönderme ve gizli değer paylaşma bu tanıma girer. Riskli ama geri alınabilir çok iş vardır — belirleyici olan risk değil, geri alınabilirlik."
+    },
+    {
+      "topic": "2.2 Gizlilik",
+      "q": "Bir ekip hassas dosyaların okunmasını engelledi ama gizli değerler yine bağlama girdi. En olası yol nedir?",
+      "opts": [
+        "Bir komut çıktısı — örneğin ortam değişkenlerini listeleyen bir komut",
+        "Kural dosyası içeriği",
+        "Git durumu bloğu",
+        "Skill açıklamaları"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Dosya okumayı engellemek yeterli değil</b> — aynı bilgi bir komutun çıktısıyla da gidebilir. Kapsamlı bir gizlilik yapılandırması hem okuma yollarını hem çıktı üreten komutları kapsar."
+    },
+    {
+      "topic": "2.2 Gizlilik",
+      "q": "\"Tüm depomuz modele gönderiliyor\" endişesine en doğru cevap nedir?",
+      "opts": [
+        "Yalnızca ajanın okuduğu dosyalar, komut çıktıları ve kural dosyaları gider; okuma yüzeyini sen belirlersin",
+        "Evet, tüm depo her oturumda gönderilir",
+        "Hiçbir dosya gönderilmez, yalnızca istem gider",
+        "Yalnızca değişen dosyalar gönderilir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ne tamamı gider ne hiçbiri.</b> Kontrolün büyük kısmı okuma yüzeyini belirlemekte — bu yüzden engelleme kuralları yalnızca güvenlik değil gizlilik aracıdır da. `/context` çıktısı \"ne gitti\" sorusunun en yakın ölçüsüdür."
+    },
+    {
+      "topic": "2.2 Gizlilik",
+      "q": "Uzaktan denetim (telefondan yereldeki oturuma bağlanma) ile bulut oturumu arasındaki fark nedir?",
+      "opts": [
+        "Uzaktan denetimde kod ve dosya erişimi yerelde kalır; bulut oturumunda depo uzak ortama kopyalanır",
+        "İkisi de kodu buluta kopyalar",
+        "İkisi de kodu yerelde tutar",
+        "Fark yalnızca arayüzdedir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>\"Kod nerede çalışıyor\" sorusu, \"model isteği nereye gidiyor\" sorusundan ayrıdır.</b> Uzaktan denetimde yürütme yereldedir ve yalnızca oturum trafiği geçer. Kurumsal değerlendirmede bu ayrım belirleyicidir."
+    },
+    {
+      "topic": "2.3 Lisans",
+      "q": "Ajanın ürettiği kodda bir telif satırı bulundu. Ne **yapılmaz**?",
+      "opts": [
+        "Satırı silip devam etmek",
+        "Kaynağını araştırmak",
+        "İncelemede işaretlemek",
+        "Kodun kullanılıp kullanılamayacağını değerlendirmek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İzi silmek riski kaldırmaz, yalnızca gizler</b> — ve sonradan bulunması hâlinde durumu daha kötü hâle getirir. Doğru davranış üç adımlı: araştır, işaretle, kararı bilerek ver."
+    },
+    {
+      "topic": "2.3 Lisans",
+      "q": "\"İnsan yazarlığı\" ilkesine göre telif koruması nasıl belirlenir?",
+      "opts": [
+        "Bir insanın ifadesel unsurlar üzerinde yaratıcı denetim kurduğu ölçüde",
+        "Kodu kimin çalıştırdığına göre",
+        "Kodun ne kadar özgün olduğuna göre",
+        "Kodun kaç satır olduğuna göre"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Belirleyici olan yaratıcı denetim</b> — bu yüzden yalnızca istem yazmak genelde yeterli sayılmaz. Buna karşılık `03`'teki çalışma biçimi (plan, inceleme, düzeltme, test) insan denetimini zaten kurar. ⚠️ Çerçeve ülkeye göre değişir."
+    },
+    {
+      "topic": "2.3 Lisans",
+      "q": "Lisans bulaşması sinyallerinden biri hangisidir?",
+      "opts": [
+        "Projeye yabancı biçimde alışılmadık derecede eksiksiz bir kod bloğu",
+        "Kodun Türkçe değişken adları içermesi",
+        "Kodun testlerinin yazılmış olması",
+        "Kodun uzun olması"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>\"Fazla hazır\" görünen kod, dört sinyalden biri.</b> Diğerleri: tanınmış bir algoritmanın birebir üretilmesi, kalmış telif satırı ya da yabancı yorum, belirli bir kütüphanenin iç yapısının taklidi. Değişken dili ve test varlığı bu konuyla ilgisizdir."
+    },
+    {
+      "topic": "2.4 Maliyet",
+      "q": "İlgisiz bir işe geçen bir geliştirici, bağlamı temizlemek yerine sıkıştırma yaptı. İki hata nedir? (İki tanesini seç.)",
+      "opts": [
+        "Sıkıştırma, özetlediği konuşmayı okuduğu için pahalı bir istektir",
+        "Özet, yeni işe yaramayacak geçmişi taşımaya devam eder",
+        "Sıkıştırma kural dosyalarını siler",
+        "Sıkıştırma bağlam penceresini kalıcı olarak daraltır"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Pahalı ve işe yaramaz.</b> Temizlemek bedavadır ve geçmişi tamamen siler; sıkıştırma ise bir model çağrısıdır ve elde işe yaramayan bir özet bırakır. Kural dosyaları sıkıştırmadan sonra diskten yeniden yüklenir."
+    },
+    {
+      "topic": "2.4 Maliyet",
+      "q": "Boşta duran bir oturumun harcama yapmasının sebeplerinden biri hangisidir?",
+      "opts": [
+        "Zamanlanmış görevlerin aralığı geldiğinde çalışması",
+        "Bağlamın kendiliğinden büyümesi",
+        "Modelin arka planda eğitilmesi",
+        "Bağlantının sabit bir ücret üretmesi"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Boşta olmak bağlantısız olmak demek değil.</b> Zamanlanmış görevler, oturumlar arası mesajlar ve hedef denetimleri, sen klavyeye dokunmadan tur başlatabilir — ve her tur tüm bağlamı taşır."
+    },
+    {
+      "topic": "2.4 Maliyet",
+      "q": "Maliyet azaltma stratejileri listesinde \"daha az kullan\" maddesinin bulunmaması ne anlatır?",
+      "opts": [
+        "Amaç kullanımı kısmak değil, aynı işi daha az bağlamla yapmak",
+        "Kullanım miktarı maliyeti etkilemez",
+        "Daha az kullanmak imkânsızdır",
+        "Kullanım kısıtı yalnızca kurumsal ortamda geçerlidir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Kullanımı kısmak, aracın değerinden vazgeçmektir — çözüm değil.</b> Listedeki her strateji aynı işi daha ucuza yapmayı hedefler. Amaç maliyeti değil, maliyet/değer oranını iyileştirmek."
+    },
+    {
+      "topic": "2.5 Ekip",
+      "q": "Bir ekipte kısıtlar o kadar sıkı ki geliştiriciler aracı kişisel hesaplarıyla kullanmaya başladı. Teşhis nedir?",
+      "opts": [
+        "Fazla zorunluluk görünürlüğü kaybettirmiş; zorunluluk kümesi daraltılmalı",
+        "Ekip eğitimsiz; daha çok eğitim gerekiyor",
+        "Araç yanlış seçilmiş; değiştirilmeli",
+        "Maliyet sınırı düşük ayarlanmış"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Gizli kullanım, aşırı kısıtın klasik göstergesidir</b> — ve en kötü sonucu doğurur: ne ölçebilirsin ne denetleyebilirsin. Ölçüte dönmek gerekir: yalnızca bir kişinin yanlış ayarıyla başkasını riske atan şeyler zorunlu kılınır."
+    },
+    {
+      "topic": "2.5 Ekip",
+      "q": "Bir ekip aracı tüm geliştiricilere açtı, sonra herkesin kendi kurulumunu yazdığını fark etti. Hangi adım atlanmıştı?",
+      "opts": [
+        "Açılıştan önce kurulumun ve politikanın yazılması",
+        "Araç kararının verilmesi",
+        "Maliyet sınırının konması",
+        "Eğitim materyalinin hazırlanması"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Yaygınlaştırma sırası: pilot → ölçüm → kurulum → politika → açılış → düzenli gözden geçirme.</b> Kurulum ve politika olmadan yapılan açılış, dağınık kurulumlar üretir — ve bunları sonradan birleştirmek baştan yapmaktan zordur."
+    },
+    {
+      "topic": "2.5 Ekip",
+      "q": "Bir ayarın kurumsal olarak zorunlu kılınıp kılınmayacağını belirleyen ölçüt nedir?",
+      "opts": [
+        "Bir kişinin yanlış ayarı başkasını riske atıyor mu",
+        "Ayarın ne kadar teknik olduğu",
+        "Ayarı kaç kişinin kullandığı",
+        "Ayarın maliyeti etkileyip etkilemediği"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Zorunluluk, ortak riski yönetmek içindir.</b> Hassas yolları engelleyen kurallar bu tanıma girer; model tercihi ya da kısayollar girmez. Ölçütü genişletmek gereksiz kilitlemeye ve dolayısıyla gizli kullanıma yol açar."
+    },
+    {
+      "topic": "2.5 Ekip",
+      "q": "Yeni ekibe katılan biri için önerilen yaklaşım hangisidir?",
+      "opts": [
+        "Keşifte serbest, değişiklikte inceleme eşliği; ve araç değil yöntem öğretilir",
+        "Ajan kullanımının ilk üç ay yasaklanması",
+        "Tüm araç komutlarının ezberletilmesi",
+        "Kendi kurulumunu sıfırdan kurması"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Keşif öğrenmenin en verimli kısmı ve düşük riskli; değişiklikte ise doğrulama zinciri insan denetimine dayandığı için eşlik gerekir.</b> Kurulum hazır gelmelidir — ilk günden aynı kurallarla başlasın."
+    },
+    {
+      "topic": "2.6 Sınırlar",
+      "q": "Bir geliştirici \"kod çalışıyor gibi ama ne yaptığını tam anlamıyorum\" diyor. Doğru hamle nedir?",
+      "opts": [
+        "Açıklattırıp doğrulamak; anlaşılmıyorsa kullanmamak",
+        "Testler geçtiği için birleştirmek",
+        "Daha büyük modele yeniden yazdırmak",
+        "Not düşüp olduğu gibi bırakmak"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Doğrulama zinciri kopmuş durumda</b> — testler geçse bile neyi ölçtüklerini değerlendiremezsin. Açıklattırmak bir başlangıçtır ama açıklamayı da doğrulaman gerekir. Anlaşılmayan kod, sorumluluğunu üstlenebileceğin kod değildir."
+    },
+    {
+      "topic": "2.6 Sınırlar",
+      "q": "Beceri körelmesini ölçen tek soru hangisidir ve cevap uzun süredir hayırsa ne anlama gelir?",
+      "opts": [
+        "\"Bu kodu ajan olmadan yazabilir miydim?\" — o alanda denetleme yetkinliğini kaybediyorsun",
+        "\"Bu kod kaç satır?\" — kod tabanı büyüyor",
+        "\"Bu kod testlerden geçti mi?\" — kalite düşüyor",
+        "\"Bu kodu ne kadar sürede yazdım?\" — verimlilik artıyor"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Sorunun gücü, üretim becerisi ile denetim becerisini birlikte ölçmesinde.</b> Yazamadığın kodu bir süre sonra değerlendiremez hâle gelirsin — ve setin tüm güvencesi o değerlendirmeye dayanıyor. Diğer sorular işin çıktısını ölçer, senin yetkinliğini değil."
+    },
+    {
+      "topic": "2.6 Sınırlar",
+      "q": "Ajanın işe yaradığı yeri belirleyen tek ölçüt nedir?",
+      "opts": [
+        "Çıktıyı doğrulayabiliyor musun",
+        "Görev ne kadar karmaşık",
+        "Kod tabanı ne kadar büyük",
+        "Model ne kadar güçlü"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Karmaşık ama test edilebilir bir iş, basit ama doğrulanamayan bir işten çok daha uygundur.</b> Bu ölçüt, hem güçlü hem zayıf alanları tek bir çerçevede açıklıyor — ve setin tamamını özetliyor."
+    },
+    {
+      "topic": "2.6 Sınırlar",
+      "q": "\"Yazılmamış alan kısıtları\" ve \"ürün kararları\" alanlarında ajanın zayıf olmasının ortak sebebi nedir?",
+      "opts": [
+        "Ajan yalnızca görebildiğiyle çalışır; bu bilgiler bağlamında yok",
+        "İkisi de matematiksel akıl yürütme gerektirir",
+        "İkisi de çok uzun bağlam gerektirir",
+        "İkisi de yalnızca kıdemli geliştiricilerin yapabileceği işlerdir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bir kural kimsenin kafasındaysa ya da bir öncelik toplantıda konuşulduysa, o bilgi ajanın erişiminde değildir.</b> Bu bir yetenek sınırı değil, bilgi sınırı — ve kısmen çözülebilir: yazılmamış kuralları yaz."
+    },
+    {
+      "topic": "2.6 Sınırlar",
+      "q": "Beceri körelmesine karşı önerilen denge uygulamalarından biri **değildir**?",
+      "opts": [
+        "Ajan kullanımını tamamen bırakmak",
+        "Zaman zaman kodu kendin yazmak",
+        "Ajan kodunu satır satır okumak",
+        "Yeni bir alanı önce kendin öğrenmek"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Karşılık yasak değil denge.</b> Tamamen bırakmak, aracın gerçek kazançlarından vazgeçmektir. Önerilenler kullanımı sürdürürken beceriyi koruyan alışkanlıklardır — ve ölçüt tek soru: \"bu kodu ajan olmadan yazabilir miydim?\""
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

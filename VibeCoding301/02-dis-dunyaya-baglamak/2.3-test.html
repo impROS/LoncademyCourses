@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-6",
+  code: "Kendi aletin · 2.3",
+  title: "Eklenti ve paylaşım",
+  back: "2.3-eklenti-ve-paylasim.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ne zaman paketlenir",
+      q: "Kurulumu eklenti olarak paketlemenin tetikleyicisi nedir?",
+      opts: [
+        "İkinci bir deponun aynı kurulumu istemesi",
+        "Kurulumun beş dosyayı geçmesi",
+        "Ekibe yeni birinin katılması",
+        "Kurulumda hook bulunması"
+      ],
+      a: [0],
+      why: "<b>Paketlemenin çözdüğü sorun kopyaların ayrışması.</b> Tek depoda kalan bir kurulum bu sorunu yaşamaz. Dosya sayısı, ekip değişikliği ya da hook varlığı tek başına paketlemeyi gerektirmez."
+    },
+    {
+      topic: "Ne zaman paketlenir",
+      q: "Erken paketlemenin zararı nedir?",
+      opts: [
+        "Kurulum kararlı hâle gelmeden sürüm yönetimi yükü kazanç getirmeden gelir",
+        "Eklentiler daha yavaş yüklenir",
+        "Skill'ler ad çakışması yaşar",
+        "Hook'lar çalışmaz"
+      ],
+      a: [0],
+      why: "<b>Sürekli değişen bir kurulumda her değişiklik bir sürüm kararı gerektirir</b> ve bu, tek depoda hızlıca düzeltebileceğin şeyleri yavaşlatır. Paketleme, kurulum oturduktan sonra kazandırır."
+    },
+    {
+      topic: "Ne paketlenir",
+      q: "Aşağıdakilerden hangisi eklentiye **konmaz**?",
+      opts: [
+        "Kural dosyaları",
+        "Skill'ler",
+        "Alt ajan tanımları",
+        "Hook'lar"
+      ],
+      a: [0],
+      why: "<b>Eklenti davranış taşır, proje bilgisi değil.</b> Kural dosyaları projenin komutlarını, mimarisini ve geleneklerini anlatır — bunlar o depoya aittir ve başka bir depoda anlamsız, hatta yanıltıcı olur."
+    },
+    {
+      topic: "Ad çakışması",
+      q: "Ad çakışması sorunu nerede çözülmüş, nerede çözülmemiştir?",
+      opts: [
+        "Eklenti skill'leri eklenti adıyla nitelenir; yerel `.claude/` tanımlarında böyle bir koruma yoktur",
+        "Yerelde çözülmüştür, eklentilerde çözülmemiştir",
+        "İkisinde de çözülmüştür",
+        "İkisinde de çözülmemiştir"
+      ],
+      a: [0],
+      why: "<b>Eklentilerde niteleme sayesinde iki eklenti aynı adı kullanabilir.</b> Yerel tanımlarda ise aynı adlı iki skill sessiz bir üzerine yazmaya yol açar — ve hangisinin kazandığı öncelik sırasına bağlıdır, yani fark etmesi zordur."
+    },
+    {
+      topic: "Dağıtım",
+      q: "Ekip içi paylaşım için en yaygın dağıtım biçimi hangisidir ve faydası nedir?",
+      opts: [
+        "Git deposu; kurulum tek yerden güncellenir",
+        "Yerel klasör; en hızlı kurulum",
+        "Pazar yeri; en geniş erişim",
+        "Elle kopyalama; en basit yöntem"
+      ],
+      a: [0],
+      why: "<b>Kurulumun bir depoda yaşaması ve projelerin ona işaret etmesi, ayrışmayı önleyen yapıdır.</b> Yerel klasör geliştirme içindir; pazar yeri keşfedilebilirlik ve çoklu eklenti sunumu için; elle kopyalama ise tam olarak kaçınılmak istenen şeydir."
+    },
+    {
+      topic: "Dağıtım",
+      q: "Sürüm kilitlemenin faydası nedir?",
+      opts: [
+        "Kurulumun beklenmedik biçimde değişmesini önler",
+        "Eklentinin daha hızlı yüklenmesini sağlar",
+        "Ad çakışmasını çözer",
+        "Hook'ların çalışmasını garanti eder"
+      ],
+      a: [0],
+      why: "<b>Kaynak depo güncellendiğinde kurulumun da değişmesi bazen istenmez</b> — özellikle üretim akışlarına bağlı bir kurulumda. Sürüm kilidi, güncellemeyi bilinçli bir karara dönüştürür."
+    },
+    {
+      topic: "Güvenlik",
+      q: "\"Eklenti kurmak dosya kopyalamaktır\" ifadesi neden yanlıştır?",
+      opts: [
+        "Kod çalıştırmayı kabul etmektir: hook'lar makinende çalışır, sunucular yetkilerinle konuşur, skill'ler ajanın davranışını değiştirir",
+        "Eklentiler diske hiç dosya yazmaz",
+        "Eklentiler yalnızca bulutta çalışır",
+        "Eklentiler kurulmadan da etkindir"
+      ],
+      a: [0],
+      why: "<b>Bir eklenti üç ayrı yüzeyi birden açar:</b> yürütme (hook), erişim (MCP sunucusu) ve davranış (skill). Bu yüzden kurulum kararı, bir paket yöneticisinden bağımlılık eklemekle aynı ciddiyette ele alınmalıdır."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Bir eklentiyi kurmadan önce sorulacak dört sorudan hangi ikisi doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Hangi hook'ları var ve ne yapıyorlar?",
+        "Hangi MCP sunucularını bağlıyor?",
+        "Kaç satır kod içeriyor?",
+        "Hangi programlama diliyle yazılmış?"
+      ],
+      a: [0, 1],
+      why: "<b>Hook'lar kod çalıştırır, sunucular yeni veri ve yetki yüzeyi açar</b> — ikisi de doğrudan risk taşır. Satır sayısı ve dil, güvenlik açısından anlamlı bir sinyal vermez; küçük bir betik de zararlı olabilir."
+    },
+    {
+      topic: "Güvenlik",
+      q: "2026'da eklenti ve skill dağıtım yüzeyinde raporlanan olayların öğrettiği kalıp nedir?",
+      opts: [
+        "Paket yöneticilerindeki tedarik zinciri riski, ajan eklentilerinde daha yüksek etkiyle geri döndü",
+        "Açık kaynak eklentiler kapalı olanlardan daha risklidir",
+        "Yerel eklentiler uzak olanlardan daha risklidir",
+        "Eklenti sistemleri güvenlik açısından çözülmüş bir alandır"
+      ],
+      a: [0],
+      why: "<b>Etki daha yüksek çünkü eklenti yalnızca kod değil, ajanının davranışını da değiştirir.</b> Bir kütüphane kötü niyetliyse kodunu etkiler; bir eklenti kötü niyetliyse ajanının ne yapacağını da etkiler. Açıklık ya da yerellik tek başına belirleyici değildir."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Popüler bir aracın adına çok benzeyen bir eklenti adı gördüğünde ne düşünmelisin?",
+      opts: [
+        "Yazım hatası yakalayan sahte paket olabilir; yazarı ve içeriği doğrula",
+        "Resmî bir çatal olmalı, güvenle kurulabilir",
+        "Ad benzerliği güvenlik açısından anlamsızdır",
+        "Popüler adın türevleri her zaman aynı ekip tarafından yayımlanır"
+      ],
+      a: [0],
+      why: "<b>Yazım hatası yakalama, paket ekosistemlerinde klasik ve hâlâ etkili bir yöntem.</b> Benzer ad, tanıdıklık hissi üretir ve denetim adımının atlanmasına yol açar. Doğrulama basittir: yazar kim, kaç zamandır sürdürülüyor, içinde ne var."
+    },
+    {
+      topic: "Kendi eklentin",
+      q: "\"Sürprizi olmayan eklenti\" ilkesinin somut karşılığı nedir?",
+      opts: [
+        "Hangi hook'ların hangi olaylarda çalıştığını ve ne yetki istendiğini açıkça belgelemek",
+        "Eklentiyi mümkün olduğunca küçük tutmak",
+        "Sürüm numarası kullanmak",
+        "Eklentiyi yalnızca ekip içinde dağıtmak"
+      ],
+      a: [0],
+      why: "<b>Kuran kişinin kurmadan önce ne olacağını bilmesi.</b> Küçük tutmak ve sürüm vermek iyi uygulamalardır ama sürprizi doğrudan ortadan kaldırmaz; belgeleme kaldırır. Ölçüt basit: sen başkasının eklentisini kurarken ne bilmek isterdin?"
+    },
+    {
+      topic: "Kendi eklentin",
+      q: "Kendi eklentinde \"yıkıcı işlem sunmama\" ilkesinin gerekçesi nedir?",
+      opts: [
+        "Sunulmayan bir aracı hiçbir enjeksiyon çağıramaz",
+        "Yıkıcı işlemler daha yavaş çalışır",
+        "Yıkıcı işlemler sürüm uyumsuzluğuna yol açar",
+        "Yıkıcı işlemler pazar yerlerinde yasaktır"
+      ],
+      a: [0],
+      why: "<b>Bu, `2.2`'deki en güçlü savunmanın eklenti düzeyindeki hâli.</b> Var olan bir yeteneği sınırlamaya çalışmak yerine, o yeteneği hiç sunmamak riski yapısal olarak ortadan kaldırır — en az yetki ilkesinin en katı biçimi."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Üç depoda üç farklı sürüm var, hangisi doğru bilmiyoruz.\" Teşhis ve çözüm?",
+      opts: [
+        "Kurulum kopyalanmış; paketleyip tek kaynaktan güncellemek gerekir",
+        "Sürüm kilidi kullanılmamış; kilitlemek gerekir",
+        "Ad çakışması olmuş; adları değiştirmek gerekir",
+        "Hook'lar çakışmış; hook'ları kaldırmak gerekir"
+      ],
+      a: [0],
+      why: "<b>Kopyalanan kurulum zamanla ayrışır</b> — her depoda küçük düzeltmeler yapılır ve hiçbiri diğerine yansımaz. Paketleme tam olarak bu sorunu çözer. Sürüm kilidi, ancak ortada paketlenmiş tek bir kaynak varsa anlamlıdır."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Kopyalanan kurulum ayrışır; paketlenen kurulum tek yerden güncellenir",
+        "Her kurulum en baştan eklenti olarak tasarlanmalıdır",
+        "Eklentiler kural dosyalarının yerini alır",
+        "Üçüncü taraf eklentiler hiçbir koşulda kurulmamalıdır"
+      ],
+      a: [0],
+      why: "<b>Tek kaynak ilkesi, bu setin **101 · *AGENTS.md*** konusunda de karşılaştığın temel fikri.</b> En baştan paketlemek erken optimizasyondur; eklentiler kural dosyalarının yerini almaz (farklı şey taşırlar); ve üçüncü taraf eklentiler denetlenerek kurulabilir — yasak değil, dikkat gerektiren bir karar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

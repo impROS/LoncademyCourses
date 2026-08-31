@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-1",
+  code: "Temeller · 1.1",
+  title: "Ajan döngüsü",
+  back: "1.1-ajan-dongusu.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Döngünün yapısı",
+      q: "Ajan döngüsünde bir araç çağrısının sonucu ne olur?",
+      opts: [
+        "Bağlama eklenir ve oturumun geri kalanında her turda tekrar gönderilir",
+        "Model tarafından okunur ve hemen bağlamdan atılır",
+        "Yalnızca o turda kullanılır, sonraki turlar onu göremez",
+        "Diskte saklanır, bağlama girmez"
+      ],
+      a: [0],
+      why: "<b>Araç sonucu bağlama eklenir ve orada kalır.</b> Bu, hem maliyetin hem de bağlam dolmasının ana kaynağı: 2000 satırlık bir test çıktısı, oturum boyunca her turda yeniden gönderilir. \"Kullanılıp atılır\" sanmak, geniş keşfin neden pahalı olduğunu göremenin en yaygın sebebi."
+    },
+    {
+      topic: "Döngünün yapısı",
+      q: "Model her turda bağlamın ne kadarını okur?",
+      opts: [
+        "Tamamını",
+        "Yalnızca son turda eklenen kısmı",
+        "Yalnızca kendi seçtiği ilgili bölümleri",
+        "Sıkıştırılmış özetini"
+      ],
+      a: [0],
+      why: "<b>Her turda bağlamın tamamı yeniden okunur.</b> Artımlı okuma diye bir şey yok. Bu, \"uzun oturumda tek satırlık soru bile ucuz değildir\" gerçeğinin sebebidir. Sıkıştırma yalnızca pencere dolmaya yaklaştığında devreye giren ayrı bir mekanizmadır."
+    },
+    {
+      topic: "Döngünün yapısı",
+      q: "Ajan döngüsü ne zaman biter?",
+      opts: [
+        "Model araç çağırmayı bırakıp cevap yazdığında",
+        "Belirlenmiş bir tur sayısı dolduğunda",
+        "Tüm testler geçtiğinde",
+        "Kullanıcı onay verdiğinde"
+      ],
+      a: [0],
+      why: "<b>Bitiş kararını modelin kendisi verir.</b> Dışarıdan bir bitiş ölçütü yoksa \"iş bitmiş görünüyor\" tek sinyaldir — ve bu setin doğrulama vurgusu tam buradan doğar. Tur sınırı ya da test durumu, ancak sen bunları açıkça bir kısıt olarak koyduğunda bitişi belirler."
+    },
+    {
+      topic: "Araçlar ve maliyet",
+      q: "Hangi iki araç kategorisi bağlamı en çok büyütür? (İki tanesini seç.)",
+      opts: [
+        "Dosya okuma",
+        "Kabuk komutu çıktısı",
+        "Dosya düzenleme",
+        "Ayrı bağlamda çalışan yardımcıya devretme"
+      ],
+      a: [0, 1],
+      why: "<b>Okuma dosya boyutu kadar, kabuk çıktısı ise sınırsız olabilir</b> — filtresiz bir test çalıştırması binlerce satır getirebilir. Düzenleme aracının maliyeti düşüktür (değişikliği yazar, dosyayı geri getirmez). Devretme ise tam tersine bağlamı <i>korur</i>: okuma yardımcının penceresinde kalır, ana konuşmaya yalnızca özet döner."
+    },
+    {
+      topic: "Araçlar ve maliyet",
+      q: "`npm test` çıktısını filtrelemeden almak neden yalnızca o turu değil, sonraki turları da etkiler?",
+      opts: [
+        "Çıktı bağlamda kalır ve sonraki her turda yeniden gönderilir",
+        "Test komutu her turda otomatik olarak yeniden çalıştırılır",
+        "Filtresiz çıktı modelin araç kullanımını devre dışı bırakır",
+        "Uzun çıktılar sıkıştırmayı kalıcı olarak kapatır"
+      ],
+      a: [0],
+      why: "<b>Bağlam biriken bir şeydir, akıp giden değil.</b> Bir kez giren büyük çıktı, oturumun geri kalanında sabit bir yük olur. Bu yüzden test çıktısını yalnızca başarısızlıkları gösterecek şekilde filtrelemek hem maliyeti hem sessiz bozulmayı doğrudan düşürür."
+    },
+    {
+      topic: "Oturum başlangıcı",
+      q: "Sen hiçbir şey yazmadan önce bağlamda bulunanlardan hangisinin boyutunu doğrudan sen belirlersin?",
+      opts: [
+        "Ana kural dosyası (CLAUDE.md)",
+        "Sistem talimatı",
+        "Ortam bilgisi (çalışma dizini, işletim sistemi)",
+        "Git durumu bloğu"
+      ],
+      a: [0],
+      why: "<b>Kural dosyasını sen yazarsın, uzunluğu senin elinde</b> — ve her isteğe binen sabit bir vergidir. Sistem talimatı, ortam bilgisi ve git durumunu araç koyar; boyutlarını sen belirlemezsin. Şişmiş bir kural dosyasının hem maliyet hem uyum sorunu yaratmasının sebebi budur."
+    },
+    {
+      topic: "Oturum başlangıcı",
+      q: "MCP sunucularının araç tanımları hakkında hangisi doğrudur?",
+      opts: [
+        "Başlangıçta yalnızca adları yüklenir; tam tanımlar gerektiğinde çekilir",
+        "Tüm tanımlar her oturumun başında tamamen yüklenir",
+        "Hiçbir zaman bağlama girmez, ajan onları dışarıdan sorgular",
+        "Yalnızca ilk kullanımdan sonraki oturumlarda yüklenir"
+      ],
+      a: [0],
+      why: "<b>Araç arama davranışı</b> sayesinde adlar yüklenir, ağır JSON tanımları ertelenir. Bu, çok sayıda sunucu bağlıyken bağlamı kurtaran şeydir. Hepsinin baştan yüklenmesi eski davranıştır; tanımların hiç bağlama girmemesi ise mümkün değil — model bir aracı çağırmak için tanımını görmek zorundadır."
+    },
+    {
+      topic: "Bitiş kararı",
+      q: "\"Yanlış pozitif bitiş\" kalıbının en sık görülen biçimi hangisidir?",
+      opts: [
+        "Kod yazılır ama hiç çalıştırılmadan teslim edilir",
+        "Ajan iş bittiği hâlde dönmeye devam eder",
+        "Ajan izin isteyip beklemede kalır",
+        "Ajan aynı dosyayı defalarca okur"
+      ],
+      a: [0],
+      why: "<b>Yanlış pozitif = bitmemişken bitmiş saymak</b>, ve en sık biçimi çalıştırılmamış koddur: \"çalışması gerekir\" diye teslim edilir. Bitmişken dönmeye devam etmek yanlış negatiftir ve daha nadirdir — genelde kapsamı belirsiz isteklerde görülür."
+    },
+    {
+      topic: "Bitiş kararı",
+      q: "Bir turun, bir betik geçmeden bitmesini **garanti altına almak** için hangisi kullanılır?",
+      opts: [
+        "Durdurma olayında çalışan bir hook",
+        "İstemin sonuna \"testleri çalıştırmayı unutma\" eklemek",
+        "Kural dosyasına \"her zaman test çalıştır\" yazmak",
+        "Plan modunda çalışmak"
+      ],
+      a: [0],
+      why: "<b>Hook deterministiktir: olay olunca çalışır ve turu engelleyebilir.</b> İstemdeki ve kural dosyasındaki cümleler <i>bağlamdır</i> — genelde işe yarar, ama garanti değildir. Plan modu ise bitişle değil, değişiklik öncesi belirsizlikle ilgilenir."
+    },
+    {
+      topic: "Deterministik ve olasılıksal",
+      q: "Aşağıdakilerden hangi ikisi deterministik, yani garanti katmandadır? (İki tanesini seç.)",
+      opts: [
+        "İzin kuralları",
+        "Kum havuzu sınırları",
+        "Kural dosyasındaki \"asla şunu yapma\" cümlesi",
+        "Skill içindeki adım listesi"
+      ],
+      a: [0, 1],
+      why: "<b>İzin kuralları ve kum havuzu istemci tarafından zorlanır</b>; modelin kanaatine bağlı değildir. Kural dosyası ve skill içeriği bağlamdır: model onları okur ve genelde uyar, ama uymama ihtimali her zaman vardır. Bu ayrım, \"tutması şartsa nereye yazmalıyım?\" sorusunun cevabıdır."
+    },
+    {
+      topic: "Deterministik ve olasılıksal",
+      q: "Bir ekip \".env dosyası asla düzenlenmesin\" kuralını kural dosyasına yazdı ama ajan yine de bir kez düzenledi. En doğru teşhis?",
+      opts: [
+        "Kural bir ricadır; zorlama isteniyorsa engelleyen bir hook gerekir",
+        "Kural yanlış biçimde yazılmış, büyük harfle yazılmalıydı",
+        "Ajanlar dosya adı `.` ile başlayan dosyaları göremez",
+        "Kural dosyaları yalnızca ilk oturumda geçerlidir"
+      ],
+      a: [0],
+      why: "<b>Kural dosyası bağlamdır, zorlama katmanı değildir.</b> Vurgu eklemek uyum ihtimalini artırabilir ama garanti vermez. Gizli dosyalar okunabilir; kural dosyaları da her oturumda okunur. Kesinlik isteyen her kural, aracın deterministik katmanına yazılmalıdır."
+    },
+    {
+      topic: "Tekrarlanabilirlik",
+      q: "Aynı istemi iki kez verdiğinde ajanın farklı araç sırası izlemesi ne anlama gelir?",
+      opts: [
+        "Normaldir; tekrarlanabilirliği umut değil doğrulama kurar",
+        "Ajanda bir yapılandırma hatası vardır",
+        "Bağlam bozulmuştur, temizlenmelidir",
+        "Model sürümü oturum ortasında değişmiştir"
+      ],
+      a: [0],
+      why: "<b>Modelin çıktısı olasılıksaldır</b>, dolayısıyla adım sırası da değişebilir. Bu bir arıza değil, aracın doğası. Tekrarlanabilir <i>sonuç</i> istiyorsan yolu tek tek dayatmak değil, sonucu ölçen bir doğrulama koymaktır — döngü hangi yoldan giderse gitsin aynı ölçütte biter."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Basit bir soru sordum ama ajan dakikalarca dosya okudu\" durumunun en olası sebebi ve çözümü hangisidir?",
+      opts: [
+        "İstek kapsamsızdı; dosyayı adıyla vermek keşfi daraltır",
+        "Model çok küçük seçilmişti; büyütmek gerekir",
+        "Bağlam penceresi doluydu; sıkıştırma bekleniyordu",
+        "Kum havuzu okuma erişimini yavaşlatıyordu"
+      ],
+      a: [0],
+      why: "<b>Kapsamsız istek geniş keşif turları doğurur</b> ve her okunan dosya bağlama girer. Çözüm modeli büyütmek değil, hedefi daraltmaktır: dosya adı, dizin, ilgili fonksiyon. Dolu bağlam yavaşlatabilir ama \"çok dosya okuma\" davranışını açıklamaz; kum havuzu ise erişimi kısıtlar, yavaşlatmaz."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ajan bir araç çağıran döngüdür ve durma kararını modelin kendisi verir",
+        "Ajan, istemi tek seferde koda çeviren bir metin üreticisidir",
+        "Ajanın davranışı tamamen deterministiktir, doğru ayarlarla tekrarlanabilir",
+        "Bağlam penceresi yeterince büyükse döngünün yapısı önemsizleşir"
+      ],
+      a: [0],
+      why: "<b>Döngü + modelin verdiği durma kararı</b>, bu konudaki her sonucun çıktığı yer. Tek seferlik üretim, tamamlama araçlarının davranışıdır. Tam determinizm mümkün değildir. Büyük pencere de yapıyı önemsizleştirmez: sonuçlar yine birikir, durma kararı yine modelindir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
