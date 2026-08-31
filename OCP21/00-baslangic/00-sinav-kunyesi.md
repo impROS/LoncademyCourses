@@ -178,6 +178,8 @@ Kısası: **voucher (Oracle) + Enthuware mock testleri**. Dumps siteleri sertifi
 4. Sınavda kaç doğru cevapla geçersin ve bu yüzde kaça denk gelir?
 5. Java 17'den 21'e eklenen ve sınavda kesin sorulacak dört konu hangileri?
 
+➡️ **Cevaplar:** [`cevaplar.md#00-sınav-künyesi-formatı-ve-trickler`](cevaplar.md#00-sınav-künyesi-formatı-ve-trickler) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## Sırada ne var

@@ -62,6 +62,7 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [Kayıt, satın alma ve sınav günü](00-baslangic/02-kayit-ve-satin-alma.md) | — | — |
 | 📖 | [Kavram sözlüğü](00-baslangic/03-kavram-sozlugu.md) | başvuru | — |
 | ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
+| 💡 | [Kendini kontrol cevapları](00-baslangic/cevaplar.md) | cevap | — |
 
 ### 01 — Temel Tipler, Metin ve Tarih/Saat
 | ✔ | Konu | Test | Skor |
@@ -69,12 +70,14 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [1.1 Primitifler, wrapper'lar, operatörler ve tip dönüşümleri](01-temel-tipler/1.1-primitifler-ve-operatorler.md) | [test](01-temel-tipler/1.1-test.html) | — |
 | [ ] | [1.2 String, StringBuilder ve text block'lar](01-temel-tipler/1.2-string-ve-stringbuilder.md) | [test](01-temel-tipler/1.2-test.html) | — |
 | [ ] | [1.3 Date-Time API](01-temel-tipler/1.3-date-time-api.md) | [test](01-temel-tipler/1.3-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](01-temel-tipler/cevaplar.md) | cevap | — |
 
 ### 02 — Akış Kontrolü
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [2.1 if/else, switch ve pattern matching](02-akis-kontrolu/2.1-if-switch-ve-pattern-matching.md) | [test](02-akis-kontrolu/2.1-test.html) | — |
 | [ ] | [2.2 Döngüler, break ve continue](02-akis-kontrolu/2.2-donguler.md) | [test](02-akis-kontrolu/2.2-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](02-akis-kontrolu/cevaplar.md) | cevap | — |
 
 ### 03 — Nesne Yönelimli Java
 | ✔ | Konu | Test | Skor |
@@ -87,12 +90,14 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [3.6 Arayüzler ve fonksiyonel arayüzler](03-nesne-yonelimli/3.6-arayuzler.md) | [test](03-nesne-yonelimli/3.6-test.html) | — |
 | [ ] | [3.7 Enum'lar](03-nesne-yonelimli/3.7-enumlar.md) | [test](03-nesne-yonelimli/3.7-test.html) | — |
 | [ ] | [3.8 İç sınıflar (nested classes)](03-nesne-yonelimli/3.8-ic-siniflar.md) | [test](03-nesne-yonelimli/3.8-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](03-nesne-yonelimli/cevaplar.md) | cevap | — |
 
 ### 04 — İstisnalar
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [4.1 Exception temelleri, try/catch/finally, multi-catch](04-istisnalar/4.1-exception-temelleri.md) | [test](04-istisnalar/4.1-test.html) | — |
 | [ ] | [4.2 try-with-resources ve custom exception'lar](04-istisnalar/4.2-try-with-resources.md) | [test](04-istisnalar/4.2-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](04-istisnalar/cevaplar.md) | cevap | — |
 
 ### 05 — Diziler ve Koleksiyonlar
 | ✔ | Konu | Test | Skor |
@@ -100,6 +105,7 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [5.1 Diziler ve `Arrays` API](05-koleksiyonlar/5.1-diziler.md) | [test](05-koleksiyonlar/5.1-test.html) | — |
 | [ ] | [5.2 List, Set, Map, Deque ve generics](05-koleksiyonlar/5.2-collections-api.md) | [test](05-koleksiyonlar/5.2-test.html) | — |
 | [ ] | [5.3 Sıralama ve Sequenced Collections (Java 21)](05-koleksiyonlar/5.3-siralama-ve-sequenced.md) | [test](05-koleksiyonlar/5.3-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](05-koleksiyonlar/cevaplar.md) | cevap | — |
 
 ### 06 — Lambda ve Streams
 | ✔ | Konu | Test | Skor |
@@ -108,12 +114,14 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [6.2 Stream oluşturma, ara işlemler ve Optional](06-lambda-ve-streams/6.2-stream-ve-ara-islemler.md) | [test](06-lambda-ve-streams/6.2-test.html) | — |
 | [ ] | [6.3 Terminal işlemler, reduction ve Collectors](06-lambda-ve-streams/6.3-terminal-ve-collectors.md) | [test](06-lambda-ve-streams/6.3-test.html) | — |
 | [ ] | [6.4 Primitif ve paralel stream'ler](06-lambda-ve-streams/6.4-primitif-ve-paralel.md) | [test](06-lambda-ve-streams/6.4-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](06-lambda-ve-streams/cevaplar.md) | cevap | — |
 
 ### 07 — Modüller ve Paketleme
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [7.1 Modül tanımlama, exports/requires, servisler](07-moduller/7.1-modul-tanimlama.md) | [test](07-moduller/7.1-test.html) | — |
 | [ ] | [7.2 Derleme, jar, jlink ve modüle geçiş](07-moduller/7.2-derleme-ve-migrasyon.md) | [test](07-moduller/7.2-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](07-moduller/cevaplar.md) | cevap | — |
 
 ### 08 — Eşzamanlılık
 | ✔ | Konu | Test | Skor |
@@ -121,17 +129,20 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [8.1 Thread'ler ve virtual thread'ler](08-eszamanlilik/8.1-threadler-ve-virtual-threads.md) | [test](08-eszamanlilik/8.1-test.html) | — |
 | [ ] | [8.2 ExecutorService, Callable ve Future](08-eszamanlilik/8.2-executor-service.md) | [test](08-eszamanlilik/8.2-test.html) | — |
 | [ ] | [8.3 Thread-safe kod: kilitler, atomic ve concurrent koleksiyonlar](08-eszamanlilik/8.3-thread-safety.md) | [test](08-eszamanlilik/8.3-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](08-eszamanlilik/cevaplar.md) | cevap | — |
 
 ### 09 — Java I/O
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [9.1 I/O stream'leri, konsol ve serialization](09-io/9.1-io-streams-ve-serialization.md) | [test](09-io/9.1-test.html) | — |
 | [ ] | [9.2 NIO.2: Path ve Files](09-io/9.2-nio2-path-ve-files.md) | [test](09-io/9.2-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](09-io/cevaplar.md) | cevap | — |
 
 ### 10 — Yerelleştirme
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [10.1 Locale, ResourceBundle ve biçimlendirme](10-yerellestirme/10.1-locale-ve-bicimlendirme.md) | [test](10-yerellestirme/10.1-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](10-yerellestirme/cevaplar.md) | cevap | — |
 
 ### 99 — Final
 | ✔ | Konu | Test | Skor |

@@ -215,6 +215,8 @@ Kod tahminlerini yazmadan önce IDE'nin uyarılarına bakma.
 3. `byte b = 10; b = b + 300;` neden derlenmez ama `b += 300;` neden derlenir?
 4. IDE'nin sınava hazırlıkta üç zararı ne?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-ortam-kurulumu-ve-çalışma-projesi`](cevaplar.md#01-ortam-kurulumu-ve-çalışma-projesi) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## Sırada ne var

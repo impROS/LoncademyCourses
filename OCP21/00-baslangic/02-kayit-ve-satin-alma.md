@@ -134,6 +134,8 @@ kendine baskı kurarsın; erken alman sınava hazır olmanı sağlamaz, sadece p
 4. Kimlikteki isim farklıysa ne olur?
 5. Kaldığın sınava en erken ne zaman tekrar girebilirsin?
 
+➡️ **Cevaplar:** [`cevaplar.md#02-kayıt-satın-alma-ve-sınav-günü`](cevaplar.md#02-kayıt-satın-alma-ve-sınav-günü) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## Sırada ne var
