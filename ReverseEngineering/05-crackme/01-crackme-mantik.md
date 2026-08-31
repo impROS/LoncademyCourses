@@ -204,6 +204,8 @@ brute-force et ya kontrolü patch'le.
 4. Bir dönüşümün "tersine çevrilebilir" olması ne demek, neden önemli?
 5. Oku/hesapla/zorla stratejileri arasında nasıl seçim yaparsın?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-lisans-kontrolü-mantığını-bulmak-ve-kırmak`](cevaplar.md#01-lisans-kontrolü-mantığını-bulmak-ve-kırmak) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

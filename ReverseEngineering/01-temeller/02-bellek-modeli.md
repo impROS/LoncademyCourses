@@ -209,6 +209,8 @@ tutuyorsa, `rdi` pointer'dır; `[rdi]` o adresteki byte'tır.
 4. `mov rax, rdi` ile `mov rax, [rdi]` arasındaki fark nedir?
 5. `sub rsp, 0x20` fonksiyonun başında ne yapıyor?
 
+➡️ **Cevaplar:** [`cevaplar.md#02-bellek-modeli-stack-heap-register-adres`](cevaplar.md#02-bellek-modeli-stack-heap-register-adres) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

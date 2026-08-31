@@ -215,6 +215,8 @@ Argüman kuralını bilince tanıdık çağrılar okunur hale gelir:
 4. `call strcmp` öncesi hangi register beklenen parolayı taşıyabilir?
 5. Neden derleyici argümanları çoğu zaman `[rbp-...]`'e kopyalar?
 
+➡️ **Cevaplar:** [`cevaplar.md#04-fonksiyon-çağrısı-system-v-abi-stack-frame-argümanlar`](cevaplar.md#04-fonksiyon-çağrısı-system-v-abi-stack-frame-argümanlar) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

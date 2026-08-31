@@ -204,6 +204,8 @@ Register operandı varsa genişlik ondan bellidir (`al`=byte, `eax`=dword). Sabi
 4. `test rax, rax` ne için kullanılır?
 5. `mov dword [rax], 1` neden `dword ptr` belirtir?
 
+➡️ **Cevaplar:** [`cevaplar.md#02-bellek-erişimi-adresleme-lea-flagler`](cevaplar.md#02-bellek-erişimi-adresleme-lea-flagler) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

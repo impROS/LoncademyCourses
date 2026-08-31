@@ -211,6 +211,8 @@ cevaplar. Üçü birlikte tam çözümdür.
 4. Bir dönüşümü statikte çözemediğinde ne yaparsın?
 5. Standart çözüm akışının altı adımını sırala.
 
+➡️ **Cevaplar:** [`cevaplar.md#03-statik--dinamik-birlikte-bir-binaryyi-baştan-sona-çözmek`](cevaplar.md#03-statik--dinamik-birlikte-bir-binaryyi-baştan-sona-çözmek) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

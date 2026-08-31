@@ -204,6 +204,8 @@ Bu strateji "her şeyi oku" yerine "doğru yere bak" refleksidir; hız buradan g
 4. Imports'ta `strcmp` görmek neden faydalı bir ipucudur?
 5. Yeni bir crackme'de neden `main`'i baştan okumak yerine string→xref kullanırsın?
 
+➡️ **Cevaplar:** [`cevaplar.md#03-string-xref-sabit-avı-ile-hızlı-yön-bulma`](cevaplar.md#03-string-xref-sabit-avı-ile-hızlı-yön-bulma) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

@@ -193,6 +193,8 @@ girip çıkmasını sağlar; overflow'da `ret`'in çektiği adresi ezmek her şe
 4. `mov rax, [rbx]` ile `lea rax, [rbx]` farkı?
 5. `call` komutu stack'e ne koyar, `ret` ne çeker?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-registerlar-ve-temel-komut-seti`](cevaplar.md#01-registerlar-ve-temel-komut-seti) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

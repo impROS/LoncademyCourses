@@ -67,6 +67,7 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [Sayı sistemleri, bit, byte, endianness](01-temeller/01-sayilar-bellek.md) | [test](01-temeller/01-test.html) | — |
 | [ ] | [Bellek modeli: stack, heap, register, adres](01-temeller/02-bellek-modeli.md) | [test](01-temeller/02-test.html) | — |
 | [ ] | [Kaynaktan binary'ye: derleme, linkleme, ELF](01-temeller/03-derleme-elf.md) | [test](01-temeller/03-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](01-temeller/cevaplar.md) | cevap | — |
 
 ### 02 — x86-64 assembly okuma *(%26)*
 | ✔ | Konu | Test | Skor |
@@ -75,6 +76,7 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [Bellek erişimi, adresleme, LEA, flag'ler](02-assembly/02-bellek-flag.md) | [test](02-assembly/02-test.html) | — |
 | [ ] | [Kontrol akışı: jump, cmp, döngü, if/switch](02-assembly/03-kontrol-akisi.md) | [test](02-assembly/03-test.html) | — |
 | [ ] | [Fonksiyon çağrısı: System V ABI, stack frame, argümanlar](02-assembly/04-fonksiyon-abi.md) | [test](02-assembly/04-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](02-assembly/cevaplar.md) | cevap | — |
 
 ### 03 — Statik analiz (Ghidra) *(%20)*
 | ✔ | Konu | Test | Skor |
@@ -82,6 +84,7 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [Disassembler vs decompiler; Ghidra'ya giriş](03-statik/01-ghidra-giris.md) | [test](03-statik/01-test.html) | — |
 | [ ] | [Decompile okuma, tip/isim düzeltme, veri akışı](03-statik/02-decompile-okuma.md) | [test](03-statik/02-test.html) | — |
 | [ ] | [String, xref, sabit avı ile hızlı yön bulma](03-statik/03-string-xref.md) | [test](03-statik/03-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](03-statik/cevaplar.md) | cevap | — |
 
 ### 04 — Dinamik analiz (GDB / pwndbg) *(%18)*
 | ✔ | Konu | Test | Skor |
@@ -89,6 +92,7 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [GDB + pwndbg temelleri: breakpoint, adımlama, register](04-dinamik/01-gdb-temel.md) | [test](04-dinamik/01-test.html) | — |
 | [ ] | [Bellek/stack inceleme, watch, canlı veri takibi](04-dinamik/02-bellek-inceleme.md) | [test](04-dinamik/02-test.html) | — |
 | [ ] | [Statik + dinamik birlikte: bir binary'yi baştan sona çözmek](04-dinamik/03-birlikte-analiz.md) | [test](04-dinamik/03-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](04-dinamik/cevaplar.md) | cevap | — |
 
 ### 05 — Crackme, keygen, patching *(%12)*
 | ✔ | Konu | Test | Skor |
@@ -96,12 +100,14 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [Lisans kontrolü mantığını bulmak ve kırmak](05-crackme/01-crackme-mantik.md) | [test](05-crackme/01-test.html) | — |
 | [ ] | [Keygen yazmak: algoritmayı tersine çevirmek](05-crackme/02-keygen.md) | [test](05-crackme/02-test.html) | — |
 | [ ] | [Binary patching ve anti-debug'a ilk bakış](05-crackme/03-patching-antidebug.md) | [test](05-crackme/03-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](05-crackme/cevaplar.md) | cevap | — |
 
 ### 06 — RE'den exploit'e köprü *(%8)*
 | ✔ | Konu | Test | Skor |
 |---|---|---|---|
 | [ ] | [Buffer overflow'u RE gözüyle görmek](06-exploit/01-overflow-gozu.md) | [test](06-exploit/01-test.html) | — |
 | [ ] | [pwntools + ret2win: ilk kontrollü exploit](06-exploit/02-pwntools-ret2win.md) | [test](06-exploit/02-test.html) | — |
+| 💡 | [Kendini kontrol cevapları](06-exploit/cevaplar.md) | cevap | — |
 
 ### 99 — Final
 | ✔ | Konu | Test | Skor |

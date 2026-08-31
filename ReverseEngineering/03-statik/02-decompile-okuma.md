@@ -180,6 +180,8 @@ tüm ilerlemen orada olur — bu yüzden proje-tabanlıdır.
 4. `CONCAT44` gibi bir ifade gördüğünde ne düşünürsün?
 5. Rename işlemi programın çalışmasını değiştirir mi?
 
+➡️ **Cevaplar:** [`cevaplar.md#02-decompile-okuma-tipisim-düzeltme-veri-akışı`](cevaplar.md#02-decompile-okuma-tipisim-düzeltme-veri-akışı) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

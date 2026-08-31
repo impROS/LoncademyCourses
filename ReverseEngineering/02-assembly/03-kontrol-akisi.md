@@ -215,6 +215,8 @@ tarzı zincirler böyle görünür.
 4. Bir döngüyü disassembly'de nasıl tanırsın?
 5. `jmp [rax*8 + 0x4020]` sana ne söyler?
 
+➡️ **Cevaplar:** [`cevaplar.md#03-kontrol-akışı-jump-cmp-döngü-ifswitch`](cevaplar.md#03-kontrol-akışı-jump-cmp-döngü-ifswitch) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

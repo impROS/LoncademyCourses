@@ -203,6 +203,8 @@ Bu dörtlü, hiçbir aracı açmadan binary hakkında %50 fikir verir.
 4. "Stripped" bir binary neyi kaybeder, neyi korur?
 5. Neden `-O0` binary'si RE için `-O3`'ten kolaydır?
 
+➡️ **Cevaplar:** [`cevaplar.md#03-kaynaktan-binaryye-derleme-linkleme-elf`](cevaplar.md#03-kaynaktan-binaryye-derleme-linkleme-elf) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

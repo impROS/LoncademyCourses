@@ -218,6 +218,8 @@ Brute-force sadece arama uzayı küçükse (birkaç karakter) pratiktir; büyük
 4. Hangi işlemler tersine çevrilemez ve o zaman ne yaparsın?
 5. Keygen "Correct" vermiyorsa ilk kontrol edeceğin şey nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#02-keygen-yazmak-algoritmayı-tersine-çevirmek`](cevaplar.md#02-keygen-yazmak-algoritmayı-tersine-çevirmek) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

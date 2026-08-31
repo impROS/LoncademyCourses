@@ -189,6 +189,8 @@ Bu beş adım, çoğu basit crackme'yi araç açıldıktan 5 dakika sonra çöz�
 4. Statik analiz hangi durumda gerçek mantığı gösteremez?
 5. Listing ve Decompiler panelleri arasındaki ilişki nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-disassembler-vs-decompiler-ghidraya-giriş`](cevaplar.md#01-disassembler-vs-decompiler-ghidraya-giriş) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

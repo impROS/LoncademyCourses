@@ -213,6 +213,8 @@ temeli (Bölüm 5).
 4. PIE bir binary'de neden sabit adrese breakpoint koymak sorunludur?
 5. `si` ile bir `call printf`'e girersen ne olur, doğrusu ne?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-gdb--pwndbg-temelleri`](cevaplar.md#01-gdb--pwndbg-temelleri) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

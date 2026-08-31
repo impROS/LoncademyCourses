@@ -211,6 +211,8 @@ Karakterler de sayıdır. `0x41` = `'A'`, `0x61` = `'a'`, `0x30` = `'0'`.
 4. `'z'` ile `'a'` arasında kaç değer var? `'z'`'nin hex'i tahminen ne?
 5. `dword` kaç byte, `qword` kaç byte? `eax` hangisi?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-sayı-sistemleri-bit-byte-endianness`](cevaplar.md#01-sayı-sistemleri-bit-byte-endianness) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

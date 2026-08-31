@@ -209,6 +209,8 @@ Bu kalıp, "statikte anlamadım" dediğin dönüşümleri **gözünle görerek**
 4. `bt` bir watchpoint durağında ne söyler?
 5. Yerel bir değişkene watchpoint koymanın riski nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#02-bellekstack-inceleme-watch-canlı-veri-takibi`](cevaplar.md#02-bellekstack-inceleme-watch-canlı-veri-takibi) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

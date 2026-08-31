@@ -228,6 +228,8 @@ rm -f /tmp/pat /tmp/pat.bak /tmp/pat_cracked /tmp/pat.c
 4. ptrace tabanlı anti-debug nasıl çalışır ve nasıl atlatılır?
 5. Program GDB altında ve dışında farklı davranıyorsa ne düşünürsün?
 
+➡️ **Cevaplar:** [`cevaplar.md#03-binary-patching-ve-anti-debuga-ilk-bakış`](cevaplar.md#03-binary-patching-ve-anti-debuga-ilk-bakış) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test
