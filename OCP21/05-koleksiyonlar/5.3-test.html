@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.3 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-5.3",
+  code: "Koleksiyonlar · 5.3",
+  title: "Sıralama ve Sequenced Collections",
+  back: "5.3-siralama-ve-sequenced.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Comparator zinciri",
+      q: "<pre>record K(String ad, int yas) {}\nList&lt;K&gt; l = new ArrayList&lt;&gt;(List.of(\n    new K(\"Ali\",30), new K(\"Veli\",25),\n    new K(\"Ayse\",30), new K(\"Zeynep\",25)));\n\nl.sort(Comparator.comparingInt(K::yas).thenComparing(K::ad).reversed());</pre>What is the first element after sorting?",
+      opts: [
+        "Ayse (30)",
+        "Ali (30)",
+        "Veli (25)",
+        "Zeynep (25)"
+      ],
+      a: [0],
+      why: "<code>reversed()</code> <b>kendinden önceki tüm zinciri</b> ters çevirir. Düz sıra (yaş, sonra ad) <code>Veli/25, Zeynep/25, Ali/30, Ayse/30</code>'dur; tamamı ters çevrilince başa <b>Ayse/30</b> geçer. <br>Karşılaştır: <code>...reversed().thenComparing(K::ad)</code> yazsaydın yaş ters, ad düz olurdu ve ilk eleman <b>Ali/30</b> olurdu."
+    },
+    {
+      topic: "Comparator zinciri",
+      q: "<pre>l.sort(Comparator.comparingInt(K::yas).reversed().thenComparing(K::ad));</pre>Using the same data, which statement describes the result?",
+      opts: [
+        "Age descending; within the same age, name ascending.",
+        "Age descending; within the same age, name descending.",
+        "Age ascending; within the same age, name descending.",
+        "Age ascending; within the same age, name ascending."
+      ],
+      a: [0],
+      why: "<code>reversed()</code> yalnızca <b>o noktaya kadarki</b> zincire uygulanır; sonrasında eklenen <code>thenComparing</code> <b>düz</b> kalır. Sonuç: yaş azalan, eşitlikte ad artan. <br><b>Kanca:</b> Zinciri soldan sağa oku ve <code>reversed()</code>'i \"buraya kadarki her şeyi çevir\" diye düşün — sadece son adımı değil."
+    },
+    {
+      topic: "Comparable",
+      q: "Which is the correct signature of the method declared by <code>Comparable&lt;T&gt;</code>?",
+      opts: [
+        "int compareTo(T o)",
+        "int compare(T a, T b)",
+        "boolean compareTo(T o)",
+        "int compareTo(T a, T b)"
+      ],
+      a: [0],
+      why: "<code>Comparable.compareTo</code> <b>tek</b> parametre alır ve <code>this</code> ile onu karşılaştırır; <code>Comparator.compare</code> ise <b>iki</b> parametre alır (nesnenin dışındadır). Dönüş tipi her ikisinde de <b><code>int</code></b>'tir. <br><b>Kanca:</b> \"Comparable içeriden bakar (bir argüman), Comparator dışarıdan (iki argüman).\""
+    },
+    {
+      topic: "Comparable",
+      q: "<pre>class K { int x; }\nSet&lt;K&gt; s = new TreeSet&lt;&gt;();\ns.add(new K());\ns.add(new K());</pre>What is the result?",
+      opts: [
+        "A ClassCastException is thrown at runtime.",
+        "Compilation fails.",
+        "The set contains two elements.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>TreeSet</code> elemanları sıralamak zorundadır; comparator verilmediyse elemanların <code>Comparable</code> olmasını bekler. <code>K</code> uygulamadığı için ekleme sırasında <b>ClassCastException</b> atılır. <br>Kod <b>derlenir</b>, çünkü <code>TreeSet</code>'in tip parametresinde <code>Comparable</code> kısıtı yoktur. İlk <code>add</code> genelde geçer, karşılaştırma gerektiren ikincisinde patlar."
+    },
+    {
+      topic: "Sıralama metotları",
+      q: "<pre>List&lt;String&gt; l = new ArrayList&lt;&gt;(List.of(\"b\", \"a\"));\nList&lt;String&gt; r = l.sort(Comparator.naturalOrder());</pre>What is the result?",
+      opts: [
+        "Compilation fails because List.sort returns void.",
+        "The code compiles and r is [a, b].",
+        "The code compiles and r is null.",
+        "An UnsupportedOperationException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>List.sort</code> listeyi <b>yerinde</b> sıralar ve <code>void</code> döner — <code>Arrays.sort</code> gibi (5.1). <br>Yeni bir koleksiyon isteyen <code>stream().sorted(...).toList()</code> kullanır; o kaynağı <b>değiştirmez</b>. Not: liste <code>List.of</code> ile üretilseydi çalışma zamanında <code>UnsupportedOperationException</code> alırdın."
+    },
+    {
+      topic: "Sıralama metotları",
+      q: "<pre>int[] a = {3, 1, 2};\nArrays.sort(a, Comparator.naturalOrder());</pre>What is the result?",
+      opts: [
+        "Compilation fails because a Comparator cannot be used with a primitive array.",
+        "The code compiles and sorts ascending.",
+        "The code compiles and sorts descending.",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>Comparator</code> generic bir arayüzdür ve yalnızca <b>nesne</b> tipleriyle çalışır; <code>int[]</code> için <code>Arrays.sort(int[])</code> dışında aşırı yükleme <b>yoktur</b>. <br>Comparator kullanmak istiyorsan diziyi <code>Integer[]</code> yapman gerekir. Aynı kısıt <code>Collections.sort</code> için de geçerlidir — primitif koleksiyon zaten olmaz."
+    },
+    {
+      topic: "Sequenced Collections",
+      q: "Which types implement SequencedCollection or SequencedMap in Java 21? (Choose TWO.)",
+      opts: [
+        "LinkedHashMap",
+        "TreeSet",
+        "HashSet",
+        "HashMap"
+      ],
+      a: [0, 1],
+      why: "<b>Sıra kavramı olan</b> her koleksiyon yeni arayüzleri uygular: <code>List</code>, <code>Deque</code>, <code>LinkedHashSet</code>, <code>TreeSet</code> (<code>SortedSet</code>), <code>LinkedHashMap</code>, <code>TreeMap</code> (<code>SortedMap</code>). <br><code>HashSet</code> ve <code>HashMap</code> hiçbir sıra <b>garantisi vermediği</b> için dışarıda kalır — üzerlerinde <code>getFirst()</code> çağırmak <b>derleme hatasıdır</b>."
+    },
+    {
+      topic: "Sequenced Collections",
+      q: "<pre>SequencedCollection&lt;Integer&gt; l = new ArrayList&lt;&gt;(List.of(1, 2, 3));\nl.addFirst(0);\nSystem.out.println(l.getLast() + \" \" + l.reversed());</pre>What is the result?",
+      opts: [
+        "3 [3, 2, 1, 0]",
+        "0 [3, 2, 1, 0]",
+        "3 [0, 1, 2, 3]",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>addFirst(0)</code> listeyi <code>[0, 1, 2, 3]</code> yapar; <code>getLast()</code> son elemanı verir → <b>3</b>. <code>reversed()</code> ters sıralı bir <b>görünüm</b> döner → <code>[3, 2, 1, 0]</code>. <br>Java 21 öncesinde bunlar için <code>l.get(l.size()-1)</code> ve <code>Collections.reverse(kopya)</code> gerekiyordu — JEP 431 tam olarak bunu düzeltti."
+    },
+    {
+      topic: "Sequenced Collections",
+      q: "<pre>SequencedSet&lt;String&gt; s = new TreeSet&lt;&gt;(List.of(\"b\", \"a\"));\ns.addFirst(\"z\");</pre>What is the result?",
+      opts: [
+        "An UnsupportedOperationException is thrown at runtime.",
+        "The code compiles and s becomes [z, a, b].",
+        "Compilation fails because TreeSet is not a SequencedSet.",
+        "The set becomes [a, b, z]."
+      ],
+      a: [0],
+      why: "<code>TreeSet</code> <b>SequencedSet'tir</b> (okuma tarafı çalışır: <code>getFirst</code>, <code>reversed</code>) ama sırasını <b>karşılaştırıcı</b> belirler — konumlu ekleme anlamsız olurdu, bu yüzden <code>addFirst</code>/<code>addLast</code> <b>UnsupportedOperationException</b> atar. <br>Aynı kısıt <code>TreeMap.putFirst</code> için de geçerlidir; <code>LinkedHashSet</code>/<code>LinkedHashMap</code>'te ise bu metotlar <b>çalışır</b>."
+    },
+    {
+      topic: "Sequenced Collections",
+      q: "<pre>System.out.print(new ArrayList&lt;String&gt;().getFirst());</pre>What is the result?",
+      opts: [
+        "A NoSuchElementException is thrown at runtime.",
+        "null is printed.",
+        "Compilation fails.",
+        "An IndexOutOfBoundsException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Boş bir <code>SequencedCollection</code> üzerinde <code>getFirst()</code>/<code>getLast()</code> <b>NoSuchElementException</b> atar — <code>null</code> dönmez. <br><b>Karşılaştır:</b> <code>SequencedMap.firstEntry()</code> boş map'te <b><code>null</code></b> döner. Aynı ailedeki iki metot, iki farklı boşluk davranışı — sınav bunu yan yana sorar."
+    },
+    {
+      topic: "Sequenced Collections",
+      q: "<pre>List&lt;Integer&gt; kaynak = new ArrayList&lt;&gt;(List.of(1, 2, 3));\nList&lt;Integer&gt; ters = kaynak.reversed();\nkaynak.add(4);\nSystem.out.println(ters);</pre>What is the result?",
+      opts: [
+        "[4, 3, 2, 1]",
+        "[3, 2, 1]",
+        "[1, 2, 3, 4]",
+        "A ConcurrentModificationException is thrown."
+      ],
+      a: [0],
+      why: "<code>reversed()</code> bir <b>görünüm (view)</b> döner, kopya değil: kaynak değiştiğinde ters görünüm de <b>anında</b> yansıtır. <br>Bu, <code>Map.keySet()</code> ve <code>Arrays.asList</code> ile aynı \"görünüm\" felsefesidir. Bağımsız bir kopya istiyorsan <code>new ArrayList&lt;&gt;(kaynak.reversed())</code> yazmalısın."
+    },
+    {
+      topic: "SequencedMap",
+      q: "<pre>SequencedMap&lt;String,Integer&gt; m = new LinkedHashMap&lt;&gt;();\nm.put(\"b\", 2);\nm.put(\"c\", 3);\nm.putFirst(\"a\", 1);\nSystem.out.println(m);</pre>What is the result?",
+      opts: [
+        "{a=1, b=2, c=3}",
+        "{b=2, c=3, a=1}",
+        "An UnsupportedOperationException is thrown at runtime.",
+        "{a=1, c=3, b=2}"
+      ],
+      a: [0],
+      why: "<code>LinkedHashMap</code> ekleme sırasını korur ve <code>putFirst</code> girdiyi <b>en başa</b> yerleştirir → <code>{a=1, b=2, c=3}</code>. <br><code>TreeMap</code>'te aynı çağrı <b>UnsupportedOperationException</b> atardı, <code>HashMap</code>'te ise metot hiç <b>bulunmaz</b> (derleme hatası)."
+    },
+    {
+      topic: "SequencedMap",
+      q: "Which SequencedMap method removes and returns the first entry?",
+      opts: [
+        "pollFirstEntry()",
+        "firstEntry()",
+        "removeFirst()",
+        "getFirst()"
+      ],
+      a: [0],
+      why: "<code>pollFirstEntry()</code> ilk girdiyi <b>alır ve siler</b>; <code>firstEntry()</code> yalnızca <b>okur</b>. <br><code>removeFirst()</code> ve <code>getFirst()</code> <code>SequencedCollection</code>'a aittir — <code>SequencedMap</code> <code>Collection</code>'ı genişletmez, kendi <code>*Entry</code> adlı metot ailesini kullanır."
+    },
+    {
+      topic: "Comparator",
+      q: "<pre>List&lt;String&gt; l = new ArrayList&lt;&gt;(Arrays.asList(\"b\", null, \"a\"));\nl.sort(Comparator.nullsFirst(Comparator.naturalOrder()));\nSystem.out.println(l);</pre>What is the result?",
+      opts: [
+        "[null, a, b]",
+        "[a, b, null]",
+        "A NullPointerException is thrown at runtime.",
+        "[null, b, a]"
+      ],
+      a: [0],
+      why: "<code>nullsFirst</code> null değerleri <b>en başa</b> koyar ve kalanları sarmaladığı comparator ile sıralar → <code>[null, a, b]</code>. <br>Sarmalamadan doğrudan <code>naturalOrder()</code> kullansaydın <b>NullPointerException</b> alırdın. Listenin <code>Arrays.asList</code> ile kurulduğuna dikkat: <code>List.of</code> null'ı zaten kabul etmezdi (5.2)."
+    },
+    {
+      topic: "Comparable",
+      q: "Why should you use <code>Integer.compare(a, b)</code> instead of <code>a - b</code> inside compareTo?",
+      opts: [
+        "Because the subtraction can overflow and produce the wrong sign.",
+        "Because subtraction is not allowed inside compareTo.",
+        "Because a - b returns a boolean.",
+        "Because Integer.compare is the only method TreeSet accepts."
+      ],
+      a: [0],
+      why: "Büyük değerlerde <code>a - b</code> <code>int</code> aralığını <b>taşabilir</b> ve işaret ters dönebilir — örneğin <code>Integer.MIN_VALUE - 1</code> pozitif çıkar. Bu, sıralamayı sessizce bozar ve <code>TreeSet</code>'te veri kaybına yol açar. <br><code>Integer.compare</code> taşma yapmadan doğru işareti üretir. Çıkarma <b>yasak değildir</b>, sadece güvenli değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

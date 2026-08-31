@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>s1 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "s1",
+  code: "Beceriler · s1",
+  title: "Reading: strateji ve soru tipleri",
+  back: "s1-reading.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe. Bazı sorular kısa metin parçaları içerir.",
+  questions: [
+    {
+      topic: "Okuma stratejisi",
+      q: "You have 15 minutes and a 900-word article with six questions. What should you do FIRST?",
+      opts: ["Skim the text for its overall structure, then read the questions.", "Read the whole text slowly from beginning to end.", "Look up every unfamiliar word before starting.", "Answer the questions from general knowledge and check later."],
+      a: [0],
+      why: "Önce <b>skim</b>: metnin haritasını 60–90 saniyede çıkarırsın, sonra soruları okuyup ilgili bölgeye scan yaparsın. Metni baştan sona yavaş okumak süreyi bitirir ve okuduğunun çoğu zaten sorulmaz."
+    },
+    {
+      topic: "Okuma stratejisi",
+      q: "Which technique is appropriate for finding a specific date in a long text?",
+      opts: ["Scanning", "Skimming", "Close reading", "Summarising"],
+      a: [0],
+      why: "<b>Scanning</b> belirli bir biçimi (rakam, büyük harfli isim) aramaktır. <code>Skimming</code> genel fikri verir ama tek bir tarihi bulmak için gereğinden yavaştır."
+    },
+    {
+      topic: "Paraphrase tanıma",
+      q: "Text: 'Attendance fell sharply after the fee was introduced.' Which option paraphrases this?",
+      opts: ["Far fewer people came once visitors had to pay.", "The fee was introduced because attendance was low.", "Attendance was sharp before the fee.", "People complained about the new fee."],
+      a: [0],
+      why: "<b>fell sharply → far fewer people</b>, <b>fee introduced → visitors had to pay</b>: aynı bilgi farklı kelimelerle. İkinci şık sebep-sonucu tersine çevirir; bu, sınavların en sevdiği tuzaklardan biridir."
+    },
+    {
+      topic: "Word-spotting tuzağı",
+      q: "Text: 'The programme was popular with students, although it was expensive to run.' Which option is the BEST answer to 'What does the writer say about the programme?'",
+      opts: ["Students liked it, but it cost a lot.", "The programme was popular.", "The programme was expensive.", "The programme was cancelled because of the cost."],
+      a: [0],
+      why: "İki yarım doğru bir tam doğru etmez: metin hem beğeniyi hem maliyeti söylüyor, doğru şık ikisini birden taşır. İkinci ve üçüncü şıklar metindeki kelimeleri tekrar ettikleri için doğru <i>görünür</i> — bu word-spotting tuzağıdır."
+    },
+    {
+      topic: "Tuzak şıklar",
+      q: "Which option is most likely to be WRONG in a B2 reading task, regardless of the text?",
+      opts: ["Governments always benefit from such policies.", "Some governments have benefited from such policies.", "The policy had mixed results in two countries.", "Researchers disagree about the long-term effects."],
+      a: [0],
+      why: "<code>always</code> gibi mutlak ifadeler akademik metinlerin dilinde neredeyse hiç yer almaz; metinler <i>tend to, in most cases, some</i> gibi hedge ifadeler kullanır. Mutlak şık gördüğünde önce ona şüpheyle bak."
+    },
+    {
+      topic: "True / False / Not Given",
+      q: "Text: 'Trials were conducted in Iceland, Spain and the UK.' Statement: 'Trials were also conducted in Germany.' The answer is:",
+      opts: ["Not Given", "False", "True", "Partly true"],
+      a: [0],
+      why: "<b>Not Given</b> — metin Almanya hakkında hiçbir şey söylemiyor. <code>False</code> ancak metin açıkça çürütürse (<i>no trials took place outside Europe's north</i> gibi) doğru olurdu. Sessizlik yanlışlama değildir."
+    },
+    {
+      topic: "True / False / Not Given",
+      q: "Text: 'The firm cut the working week while keeping pay unchanged.' Statement: 'The firm reduced its employees' pay.' The answer is:",
+      opts: ["False", "Not Given", "True", "Not enough information"],
+      a: [0],
+      why: "<b>False</b> — metin maaşın değişmediğini açıkça söylüyor, yani ifadeyi doğrudan çürütüyor. Bir önceki soruyla birlikte okunduğunda False ↔ Not Given ayrımı netleşir."
+    },
+    {
+      topic: "Bağlamdan kelime tahmini",
+      q: "'The evidence was inconclusive, so a further study was commissioned.' The word 'inconclusive' most probably means:",
+      opts: ["not giving a definite answer", "extremely convincing", "published too late", "very expensive"],
+      a: [0],
+      why: "<code>in-</code> öneki olumsuzluk katar ve <i>so a further study was commissioned</i> ifadesi ilk çalışmanın yeterli olmadığını gösterir. Sözlük olmadan iki ipucu yeterlidir: önek ve sonuç cümlesi."
+    },
+    {
+      topic: "Bağlamdan kelime tahmini",
+      q: "'Although the scheme was well funded, it was hampered by poor planning.' 'Hampered' most probably means:",
+      opts: ["held back", "strongly supported", "widely praised", "quickly completed"],
+      a: [0],
+      why: "<code>Although</code> bir zıtlık kurar: iyi finanse edilmiş <i>ama</i> ... . Zıtlık bağlacı, bilinmeyen kelimenin olumsuz olduğunu garanti eder. Bağlaç okumak kelime bilmekten daha hızlıdır."
+    },
+    {
+      topic: "Gapped text",
+      q: "The sentence after a gap begins: 'However, this optimism proved short-lived.' The missing sentence most probably:",
+      opts: ["expressed a hopeful prediction", "described a serious failure", "gave statistical definitions", "introduced a new speaker"],
+      a: [0],
+      why: "<code>However</code> zıtlık, <code>this optimism</code> ise geriye gönderme yapar: boşlukta iyimser bir beklenti olmalıdır. Gapped text sorularında ipucu anlamda değil, <b>bağlaç ve zamirlerde</b>dir."
+    },
+    {
+      topic: "Gapped text",
+      q: "Which two clues are most useful when choosing a sentence for a gap? (Choose TWO.)",
+      opts: ["Reference words such as 'this', 'they', 'such measures'", "Linking words such as 'however', 'as a result'", "The overall length of the missing sentence", "Whether the sentence contains difficult vocabulary"],
+      a: [0, 1],
+      why: "Gönderme sözcükleri ve bağlaçlar, boşluğun iki yanıyla mantıksal bağı kurar. Cümlenin uzunluğu ya da içindeki kelimelerin zorluğu tesadüfidir ve hiçbir şey kanıtlamaz."
+    },
+    {
+      topic: "Multiple matching",
+      q: "In a 'which section mentions…' task, the most efficient approach is to:",
+      opts: ["read the questions first, then scan the sections for matches", "read every section in full in order, then look at the questions", "answer in the order the sections appear", "choose the section with the most similar vocabulary"],
+      a: [0],
+      why: "Multiple matching soruları metin sırasını izlemez, bu yüzden önce soruları bilmek gerekir. Son şık word-spotting tuzağını tarif eder: benzer kelime, benzer <i>anlam</i> demek değildir."
+    },
+    {
+      topic: "Yazarın tutumu",
+      q: "'Remarkably, the scheme survived three changes of government.' The writer's attitude is best described as:",
+      opts: ["surprised", "indifferent", "hostile", "apologetic"],
+      a: [0],
+      why: "<code>Remarkably</code> bir tutum zarfıdır ve şaşkınlık bildirir. Tutum sorularında cevabı taşıyan şey genellikle tek bir zarf ya da sıfattır: <i>unfortunately, allegedly, surprisingly, rightly</i>."
+    },
+    {
+      topic: "Doğrulama alışkanlığı",
+      q: "You have narrowed a question down to two options that both seem sensible. What should decide it?",
+      opts: ["Which one you can support with a specific sentence in the text", "Which one sounds more academic", "Which one matches what you already know about the topic", "Which one repeats more words from the passage"],
+      a: [0],
+      why: "Tek geçerli ölçüt metindeki <b>kanıt cümlesi</b>dir. Genel kültür, akademik ton ya da kelime tekrarı sınavda kanıt sayılmaz — üçü de klasik çeldirici gerekçelerdir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

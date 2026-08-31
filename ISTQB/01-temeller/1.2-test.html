@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-1-2",
+  code: "Fundamentals of Testing · 1.2",
+  title: "Test Neden Gerekli? Hata, Kusur, Arıza",
+  back: "1.2-test-neden-gerekli.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Error-defect-failure zinciri",
+      q: "A programmer misunderstands a business rule while writing code. What is this misunderstanding called?",
+      opts: ["An error", "A defect", "A failure", "A root cause"],
+      a: [0],
+      why: "<b>Error insanın kafasındaki yanlış anlamadır.</b> Bu yanlış anlama koda yansırsa <i>defect</i> olur, kod çalışıp yanlış davranırsa <i>failure</i> olur. Kanca: <b>E</b>rror = <b>E</b>lin/kafan."
+    },
+    {
+      topic: "Error-defect-failure zinciri",
+      q: "Which statement is TRUE about defects and failures?",
+      opts: [
+        "A defect does not necessarily lead to a failure",
+        "Every defect leads to at least one failure",
+        "A failure always indicates that a defect exists in the code",
+        "Defects can only be found by dynamic testing"
+      ],
+      a: [0],
+      why: "<b>Kusurlu kod hiç çalıştırılmazsa veya o koşul hiç oluşmazsa arıza görünmez.</b> İkinci ve üçüncü şıklar <code>every</code> / <code>always</code> içeriyor ve ikisi de yanlış: çevresel koşullar da defect olmadan failure üretebilir. Dördüncü şık statik testi yok sayıyor."
+    },
+    {
+      topic: "Error-defect-failure zinciri",
+      q: "Which of the following can cause a failure WITHOUT any defect being present in the software?",
+      opts: [
+        "Electromagnetic radiation affecting the hardware",
+        "An incorrect comparison operator in the source code",
+        "A missing null check in a method",
+        "An ambiguous requirement that was implemented literally"
+      ],
+      a: [0],
+      why: "<b>Çevresel koşullar (radyasyon, elektromanyetik alan, kirlilik, güç dalgalanması, donanım arızası) yazılımda kusur olmadan arıza üretebilir.</b> Diğer üç şık kodda veya iş ürününde duran birer <i>defect</i>tir."
+    },
+    {
+      topic: "Error-defect-failure zinciri",
+      q: "A user reports that the invoice total is wrong on screen. In ISTQB terminology, what has the user observed?",
+      opts: ["A failure", "A defect", "An error", "A root cause"],
+      a: [0],
+      why: "<b>Çalışma anında dışarıdan gözlemlenen yanlış davranış = failure.</b> Kullanıcı kodu görmüyor, dolayısıyla defect'i doğrudan gözleyemez. Kanca: <b>F</b>ailure = <b>F</b>arkedilen."
+    },
+    {
+      topic: "Root cause",
+      q: "Analysis shows that three separate defects all originated from the same ambiguous requirement, which was never reviewed. The ambiguous, unreviewed requirement is BEST described as:",
+      opts: ["The root cause", "A failure", "A defect in the code", "An environmental condition"],
+      a: [0],
+      why: "<b>Kök neden, kusurları doğuran en derin sebeptir</b> ve genelde bir süreç/iletişim eksikliğidir — burada review edilmemiş belirsiz gereksinim. Koddaki satırlar defect'tir; kök neden onların kaynağıdır."
+    },
+    {
+      topic: "Root cause",
+      q: "Why is root cause analysis valuable in addition to fixing individual defects?",
+      opts: [
+        "Because addressing the root cause can prevent a whole class of similar defects in the future",
+        "Because it removes the need for regression testing",
+        "Because it guarantees that no further defects will be introduced",
+        "Because it replaces the need for confirmation testing"
+      ],
+      a: [0],
+      why: "<b>Kök neden analizi önleyicidir</b> — süreçteki eksiği kapatırsan aynı sınıftan kusurlar bir daha oluşmaz. İkinci ve dördüncü şıklar test aktivitelerini gereksiz kılmaz. Üçüncü şıkta <code>guarantee</code> var: mutlak ifade, ele."
+    },
+    {
+      topic: "QA ve test",
+      q: "Which statement BEST describes the relationship between quality assurance and testing?",
+      opts: [
+        "Quality assurance is process-oriented and preventive, while testing is product-oriented and part of quality control",
+        "Testing is a form of quality assurance because both aim to improve quality",
+        "Quality assurance is product-oriented, while testing focuses on the development process",
+        "Quality assurance and testing are two names for the same activity"
+      ],
+      a: [0],
+      why: "<b>QA süreçle, QC (ve içindeki test) ürünle ilgilenir.</b> İkinci şık en yakın çeldirici ve tam olarak sınavın yakalamak istediği hata: test QA'nın değil <b>QC</b>'nin bir parçasıdır. Kanca: <b>QA = süreç, QC = ürün.</b>"
+    },
+    {
+      topic: "QA ve test",
+      q: "A team introduces a mandatory peer review step for every user story before it enters a sprint, in order to reduce the number of defects created. This measure is MOST accurately described as:",
+      opts: [
+        "Quality assurance, because it changes the process to prevent defects",
+        "Quality control, because it inspects the product",
+        "Debugging, because it removes defects",
+        "Regression testing, because it protects against side effects"
+      ],
+      a: [0],
+      why: "<b>Süreci değiştirip kusurun oluşmasını önleyen tedbir QA'dır.</b> Buradaki review'ın kendisi bir statik test aktivitesidir, ama sorunun konusu <i>zorunlu adım haline getirme kararı</i> — yani süreç müdahalesi. Soruda <code>MOST accurately</code> olması, birden fazla şıkkın kısmen savunulabilir olduğunu haber veriyor."
+    },
+    {
+      topic: "Testin katkıları",
+      q: "Why does the cost of fixing a defect increase the later it is detected? (Choose TWO.)",
+      opts: [
+        "More work products may already be based on the defective one and must be changed",
+        "A larger amount of retesting and regression testing is usually required",
+        "Defects found late are always more technically complex than defects found early",
+        "Testing tools become more expensive in later phases of the project"
+      ],
+      a: [0, 1],
+      why: "<b>Geç bulunan kusur hem daha çok iş ürününü kirletmiştir hem daha geniş yeniden test gerektirir.</b> Üçüncü şık <code>always</code> içeriyor ve yanlış — geç bulunan kusur teknik olarak basit de olabilir, pahalı olmasının sebebi karmaşıklık değil <i>yayılma</i>. Dördüncü şık uydurma."
+    },
+    {
+      topic: "Testin katkıları",
+      q: "Which of the following is a contribution of testing to success described in the syllabus?",
+      opts: [
+        "Testers involved early in requirements review can help prevent defects from being introduced",
+        "Testing removes all defects before the software goes to production",
+        "Testing replaces the need for quality assurance processes",
+        "Testing guarantees that stakeholders will accept the product"
+      ],
+      a: [0],
+      why: "<b>Testerın erken katılımı kusur önleyicidir</b> — belirsiz gereksinimi sorgulamak kusurun hiç oluşmamasını sağlar. Diğer üç şık sırasıyla <code>all</code>, <i>replaces</i> ve <code>guarantees</code> içeren aşırı iddialardır."
+    },
+    {
+      topic: "Error-defect-failure zinciri",
+      q: "The code contains the line <code>if (total &gt; 500)</code> where the specification requires 500 to be included. No one has yet ordered exactly 500. Which of the following is true at this moment? (Choose TWO.)",
+      opts: [
+        "A defect exists in the code",
+        "No failure has occurred yet",
+        "A failure has already occurred",
+        "There is no defect because nothing has gone wrong"
+      ],
+      a: [0, 1],
+      why: "<b>Kusur kodda duruyor ama tetiklenmediği için arıza yok.</b> Bu, 'her defect failure üretmez' ilkesinin doğrudan örneğidir. Dördüncü şık kusurun varlığını gözlemlenebilirliğe bağlıyor — yanlış; kusur gözlenmeden de vardır."
+    },
+    {
+      topic: "Testin katkıları",
+      q: "In a regulated industry, an organization must be able to demonstrate that its software was tested according to a defined standard. Which objective of testing does this address?",
+      opts: [
+        "Complying with contractual, legal or regulatory requirements",
+        "Debugging the software efficiently",
+        "Reducing the number of testers required",
+        "Replacing the need for a test plan"
+      ],
+      a: [0],
+      why: "<b>Uyumluluk müfredatta sayılan geçerli bir test hedefidir.</b> Regüle sektörlerde test, kusur bulmanın ötesinde bir <i>kanıt üretme</i> işlevi görür. Diğer şıklar hedef değil."
+    },
+    {
+      topic: "Kusur maliyeti",
+      q: "At which point is a defect generally the CHEAPEST to remove?",
+      opts: [
+        "During review of the requirements, before any code is written",
+        "During system testing",
+        "During acceptance testing",
+        "Immediately after release to production"
+      ],
+      a: [0],
+      why: "<b>En ucuz kusur, hiç koda dönüşmemiş kusurdur</b> — sadece dokümanı düzeltirsin, yeniden geliştirme ve yeniden test gerekmez. Bu, 2.1'de göreceğin <i>shift left</i> ilkesinin gerekçesidir."
+    },
+    {
+      topic: "QA ve test",
+      q: "Which of the following pairs correctly matches the focus of each concept?",
+      opts: [
+        "Quality control: product · Quality assurance: process",
+        "Quality control: process · Quality assurance: product",
+        "Quality control: prevention · Quality assurance: correction",
+        "Quality control: requirements · Quality assurance: source code"
+      ],
+      a: [0],
+      why: "<b>QC ürüne, QA sürece bakar; QC düzeltici, QA önleyicidir.</b> İkinci ve üçüncü şıklar tam tersini söylüyor. Test QC'nin içindedir. Kanca: <b>C</b>ontrol = <b>C</b>isim (ürün)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

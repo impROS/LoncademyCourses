@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-6.1",
+  code: "Lambda & Streams · 6.1",
+  title: "Lambda, Fonksiyonel Arayüzler ve Method Reference",
+  back: "6.1-lambda-ve-fonksiyonel-arayuzler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Arayüz eşleme",
+      q: "Which functional interface does the lambda <code>() -&gt; 42</code> match?",
+      opts: [
+        "Supplier&lt;Integer&gt;",
+        "Consumer&lt;Integer&gt;",
+        "Function&lt;Void,Integer&gt;",
+        "Predicate&lt;Integer&gt;"
+      ],
+      a: [0],
+      why: "Parametre <b>almayan</b> ve değer <b>döndüren</b> tek arayüz <code>Supplier&lt;T&gt;</code>'dir (<code>T get()</code>). <br><code>Consumer</code> parametre alır ve <code>void</code> döner; <code>Predicate</code> parametre alıp <code>boolean</code> döner; <code>Function&lt;Void,Integer&gt;</code> teknik olarak var ama <b>bir parametre bekler</b> — <code>() -&gt; 42</code> ona uymaz. <b>Kanca:</b> \"Supplier verir, Consumer alır.\""
+    },
+    {
+      topic: "Arayüz eşleme",
+      q: "Which interfaces can the lambda <code>(a, b) -&gt; a + b</code> be assigned to, given both parameters and the result are Integer? (Choose TWO.)",
+      opts: [
+        "BinaryOperator&lt;Integer&gt;",
+        "BiFunction&lt;Integer,Integer,Integer&gt;",
+        "UnaryOperator&lt;Integer&gt;",
+        "BiConsumer&lt;Integer,Integer&gt;"
+      ],
+      a: [0, 1],
+      why: "<code>BinaryOperator&lt;T&gt;</code>, <code>BiFunction&lt;T,T,T&gt;</code>'nin <b>aynı tipli özel hâlidir</b>; ikisi de iki parametre alıp bir değer döner. <br><code>UnaryOperator</code> <b>tek</b> parametre alır; <code>BiConsumer</code> ise değer <b>döndürmez</b> ve <code>a + b</code> bir deyim ifadesi olmadığı için ona da uymaz."
+    },
+    {
+      topic: "Arayüz eşleme",
+      q: "What are the signatures of <code>IntFunction&lt;R&gt;</code> and <code>ToIntFunction&lt;T&gt;</code>?",
+      opts: [
+        "IntFunction takes an int and returns R; ToIntFunction takes T and returns int.",
+        "IntFunction takes T and returns int; ToIntFunction takes an int and returns T.",
+        "Both take an int and return an int.",
+        "Both take an object and return an object."
+      ],
+      a: [0],
+      why: "Adlandırma kuralı: <b>başta</b> duran tip <b>girdiyi</b>, <code>To</code> öneki <b>çıktıyı</b> anlatır. <code>IntFunction&lt;R&gt;</code>: <code>int -&gt; R</code>. <code>ToIntFunction&lt;T&gt;</code>: <code>T -&gt; int</code>. <br>İkisi de kutulamayı önlemek için vardır. Aynı desen <code>LongFunction</code>/<code>ToLongFunction</code>, <code>DoubleFunction</code>/<code>ToDoubleFunction</code> için de geçerlidir."
+    },
+    {
+      topic: "andThen ve compose",
+      q: "<pre>Function&lt;Integer,Integer&gt; f = x -&gt; x + 1;\nFunction&lt;Integer,Integer&gt; g = x -&gt; x * 2;\nSystem.out.println(f.andThen(g).apply(5) + \" \" + f.compose(g).apply(5));</pre>What is the result?",
+      opts: [
+        "12 11",
+        "11 12",
+        "12 12",
+        "11 11"
+      ],
+      a: [0],
+      why: "<code>andThen</code>: <b>önce this (f)</b>, sonra argüman → <code>(5+1)*2 = 12</code>. <code>compose</code>: <b>önce argüman (g)</b>, sonra this → <code>(5*2)+1 = 11</code>. <br><b>Kanca:</b> \"<i>and then</i> = sonra; <i>compose</i> = önce.\" İkisi birbirinin tersidir ve sınav sürekli yer değiştirerek sorar."
+    },
+    {
+      topic: "Lambda sözdizimi",
+      q: "<pre>BinaryOperator&lt;Integer&gt; f = (int x, y) -&gt; x + y;</pre>What is the result?",
+      opts: [
+        "Compilation fails because if one parameter has an explicit type, all must have one.",
+        "The code compiles.",
+        "Compilation fails because BinaryOperator cannot use primitives.",
+        "Compilation fails because parentheses are not allowed with two parameters."
+      ],
+      a: [0],
+      why: "Lambda parametre listesinde ya <b>hepsi</b> açık tipli, ya <b>hepsi</b> <code>var</code>, ya <b>hepsi</b> çıkarımlı (tipsiz) olmalıdır — karışık yazım yasaktır. <br>Ayrıca burada <code>int</code> yazmak zaten yanlış olurdu: <code>BinaryOperator&lt;Integer&gt;</code> <code>Integer</code> bekler. İki parametrede parantez <b>zorunludur</b>."
+    },
+    {
+      topic: "Lambda sözdizimi",
+      q: "<pre>int x = 5;\nPredicate&lt;Integer&gt; p = x -&gt; x &gt; 3;</pre>What is the result?",
+      opts: [
+        "Compilation fails because the lambda parameter shadows a local variable.",
+        "The code compiles and p tests x &gt; 3.",
+        "Compilation fails because x is not effectively final.",
+        "The code compiles but always returns true."
+      ],
+      a: [0],
+      why: "Lambda kendi kapsamını açmaz; parametreleri <b>çevreleyen metodun yerel değişkenleriyle aynı adı</b> taşıyamaz → <i>variable x is already defined</i>. <br>Bu, anonim sınıflardan <b>farklıdır</b>: orada gölgeleme serbesttir. Effectively final kuralı burada devrede değil — sorun <b>ad çakışmasıdır</b>."
+    },
+    {
+      topic: "Lambda sözdizimi",
+      q: "<pre>int sayac = 0;\nRunnable r = () -&gt; System.out.println(sayac);\nsayac++;</pre>What is the result?",
+      opts: [
+        "Compilation fails because sayac is not effectively final.",
+        "The code compiles and prints 0.",
+        "The code compiles and prints 1.",
+        "Compilation fails because Runnable cannot capture variables."
+      ],
+      a: [0],
+      why: "Lambda yalnızca <b>effectively final</b> yerel değişkenleri yakalayabilir; <code>sayac++</code> bu niteliği bozar ve hata <b>lambda satırında</b> raporlanır (3.2, 3.8). <br>Bunu aşmanın yolu değişkeni tek elemanlı bir diziye veya <code>AtomicInteger</code>'a taşımaktır — ama bu genelde tasarım hatası işaretidir."
+    },
+    {
+      topic: "void uyumluluğu",
+      q: "Which of these compile? (Choose TWO.)",
+      opts: [
+        "Consumer&lt;String&gt; a = x -&gt; x.length();",
+        "Consumer&lt;String&gt; b = x -&gt; System.out.println(x);",
+        "Consumer&lt;String&gt; c = x -&gt; { return x.length(); };",
+        "Consumer&lt;String&gt; d = x -&gt; x.isEmpty() ? 1 : 2;"
+      ],
+      a: [0, 1],
+      why: "<b>İfade gövdeli</b> bir lambda, gövdesi bir <b>deyim ifadesi</b> ise (metot çağrısı, atama, <code>++</code>) <code>void</code> dönen bir SAM'e uyar — üretilen değer sessizce atılır. Bu yüzden <code>x.length()</code> de <code>println(x)</code> de geçerlidir. <br>Blok gövdede <b>açık <code>return</code></b> ve <b>koşul ifadesi</b> ise <code>void</code> ile uyumlu değildir."
+    },
+    {
+      topic: "Method reference",
+      q: "<pre>String metin = \"abcdef\";\nSupplier&lt;Integer&gt; a = metin::length;\nFunction&lt;String,Integer&gt; b = String::length;</pre>What is the result?",
+      opts: [
+        "Both lines compile.",
+        "Only the first line compiles.",
+        "Only the second line compiles.",
+        "Neither line compiles."
+      ],
+      a: [0],
+      why: "İkisi <b>farklı biçimlerdir</b>: <code>metin::length</code> <b>belirli bir nesnenin</b> metodudur — nesne zaten belli, parametre gerekmez → <code>Supplier</code>. <code>String::length</code> <b>rastgele bir nesnenin</b> metodudur — nesne parametre olarak gelir → <code>Function&lt;String,Integer&gt;</code>. <br><b>Kanca:</b> Sol taraf değişkense nesne belli, sınıf adıysa nesne parametredir."
+    },
+    {
+      topic: "Method reference",
+      q: "Which lambda is equivalent to <code>ArrayList::new</code> assigned to <code>Supplier&lt;List&lt;String&gt;&gt;</code>?",
+      opts: [
+        "() -&gt; new ArrayList&lt;String&gt;()",
+        "list -&gt; new ArrayList&lt;&gt;(list)",
+        "() -&gt; ArrayList.class",
+        "n -&gt; new ArrayList&lt;String&gt;(n)"
+      ],
+      a: [0],
+      why: "Constructor referansı, <b>hedef arayüzün imzasına uyan</b> constructor'ı seçer. <code>Supplier</code> parametre almadığı için <b>parametresiz</b> constructor kullanılır. <br>Aynı <code>ArrayList::new</code> yazımı <code>Function&lt;Integer,List&gt;</code>'e atansaydı <code>ArrayList(int)</code>, <code>Function&lt;Collection,List&gt;</code>'e atansaydı <code>ArrayList(Collection)</code> seçilirdi — <b>hedef tip belirler</b>."
+    },
+    {
+      topic: "Method reference",
+      q: "<pre>BiFunction&lt;String,String,Boolean&gt; f = String::startsWith;\nSystem.out.println(f.apply(\"javascript\", \"java\"));</pre>What is the result?",
+      opts: [
+        "true",
+        "false",
+        "Compilation fails because startsWith is not static.",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "\"Rastgele nesnenin metodu\" biçiminde <b>ilk parametre alıcı nesne</b>, kalanlar metodun argümanları olur: <code>f.apply(a, b)</code> → <code>a.startsWith(b)</code>. <br>Bu yüzden <code>String::startsWith</code> iki parametreli bir arayüze uyar — metodun <code>static</code> olmasına gerek yoktur."
+    },
+    {
+      topic: "Predicate zinciri",
+      q: "<pre>Predicate&lt;String&gt; bosDegil = s -&gt; !s.isEmpty();\nPredicate&lt;String&gt; uzun = s -&gt; s.length() &gt; 5;\nSystem.out.println(bosDegil.and(uzun).test(\"java\") + \" \" + bosDegil.or(uzun).test(\"java\"));</pre>What is the result?",
+      opts: [
+        "false true",
+        "true false",
+        "false false",
+        "true true"
+      ],
+      a: [0],
+      why: "\"java\" boş değildir (<code>true</code>) ama uzunluğu 5'ten büyük değildir (<code>false</code>). <code>and</code> → <b>false</b>, <code>or</code> → <b>true</b>. <br><code>and</code> ve <code>or</code> <b>kısa devre</b> yapar (1.1): <code>and</code>'de ilk koşul false olsaydı ikincisi hiç çalışmazdı."
+    },
+    {
+      topic: "Lambda ve exception",
+      q: "<pre>Function&lt;String,Integer&gt; f = s -&gt; { throw new java.io.IOException(); };</pre>What is the result?",
+      opts: [
+        "Compilation fails because Function.apply does not declare a checked exception.",
+        "The code compiles and throws at runtime.",
+        "Compilation fails because a lambda body cannot contain throw.",
+        "The code compiles but the exception is wrapped in a RuntimeException."
+      ],
+      a: [0],
+      why: "Lambda gövdesi, hedef SAM'in <b>bildirmediği</b> bir checked exception atamaz — <code>Function.apply</code> hiç <code>throws</code> bildirmez. <br><code>Callable.call()</code> <code>throws Exception</code> bildirdiği için aynı gövde ona atansaydı <b>derlenirdi</b>. Unchecked exception'lar her zaman serbesttir."
+    },
+    {
+      topic: "Lambda sözdizimi",
+      q: "Which lambda parameter lists are legal? (Choose TWO.)",
+      opts: [
+        "(var x, var y) -&gt; x + y",
+        "(x, y) -&gt; x + y",
+        "(var x, int y) -&gt; x + y",
+        "(int x, y) -&gt; x + y"
+      ],
+      a: [0, 1],
+      why: "Üç yazım stili vardır ve <b>karıştırılamaz</b>: tamamı çıkarımlı (<code>(x, y)</code>), tamamı <code>var</code>, tamamı açık tipli (<code>(int x, int y)</code>). <br>Son iki şık bu stilleri karıştırdığı için derlenmez. <code>var</code> lambda parametresinde <b>izinlidir</b> (Java 11+) — genelde annotation eklemek için kullanılır."
+    },
+    {
+      topic: "Arayüz eşleme",
+      q: "Which functional interface matches <code>s -&gt; s.isEmpty()</code> where s is a String?",
+      opts: [
+        "Predicate&lt;String&gt;",
+        "Consumer&lt;String&gt;",
+        "Supplier&lt;Boolean&gt;",
+        "UnaryOperator&lt;String&gt;"
+      ],
+      a: [0],
+      why: "Bir değer alıp <code>boolean</code> döndüren arayüz <code>Predicate&lt;T&gt;</code>'dir (<code>boolean test(T)</code>). <br>Teknik olarak <code>Function&lt;String,Boolean&gt;</code> de uyar ama kutulama yaptığı için <code>Predicate</code> tercih edilir — stream API'si de <code>filter</code>'da <code>Predicate</code> bekler. <code>UnaryOperator&lt;String&gt;</code> <code>String</code> döndürmeliydi."
+    },
+    {
+      topic: "this davranışı",
+      q: "Inside a lambda body, what does <code>this</code> refer to?",
+      opts: [
+        "The enclosing instance.",
+        "The lambda object itself.",
+        "It is a compilation error to use this inside a lambda.",
+        "null"
+      ],
+      a: [0],
+      why: "Lambda <b>yeni bir kapsam açmaz</b>: <code>this</code>, alanlar ve metotlar hepsi <b>çevreleyen sınıfa</b> aittir. <br>Anonim sınıfta ise <code>this</code> <b>anonim örneği</b> gösterir (3.8). Bu, lambda'nın anonim sınıfın kısaltması <b>olmadığını</b> gösteren en somut farktır ve sınavda sorulur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

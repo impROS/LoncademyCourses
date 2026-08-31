@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.4 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-6.4",
+  code: "Lambda & Streams · 6.4",
+  title: "Primitif ve Paralel Stream'ler",
+  back: "6.4-primitif-ve-paralel.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Tip dönüşümleri",
+      q: "<pre>List&lt;Integer&gt; l = IntStream.range(1, 4).toList();</pre>What is the result?",
+      opts: [
+        "Compilation fails because IntStream has no toList() method.",
+        "The code compiles and l is [1, 2, 3].",
+        "The code compiles and l is [1, 2, 3, 4].",
+        "Compilation fails because range returns a Stream&lt;Integer&gt;."
+      ],
+      a: [0],
+      why: "Primitif stream'lerde <code>toList()</code> <b>yoktur</b> — çünkü <code>List&lt;int&gt;</code> diye bir şey olamaz. Önce <b><code>boxed()</code></b> ile <code>Stream&lt;Integer&gt;</code>'a geçilmelidir: <code>IntStream.range(1,4).boxed().toList()</code>. <br><code>range</code> gerçekten <code>IntStream</code> döner ve üst sınırı <b>hariç</b> tutar, yani içerik <code>[1, 2, 3]</code> olurdu."
+    },
+    {
+      topic: "Tip dönüşümleri",
+      q: "<pre>int t = Stream.of(1, 2, 3).sum();</pre>What is the result?",
+      opts: [
+        "Compilation fails because Stream&lt;Integer&gt; has no sum() method.",
+        "The code compiles and t is 6.",
+        "Compilation fails because sum() returns long.",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>sum()</code>, <code>average()</code>, <code>max()</code> gibi <b>sayısal terminaller</b> yalnızca primitif stream'lerde vardır; <code>Stream&lt;Integer&gt;</code> genel bir nesne stream'idir. <br>Doğru yazım: <code>.mapToInt(Integer::intValue).sum()</code>. <b>Kanca:</b> Sayısal işlem istiyorsan önce primitif stream'e geç."
+    },
+    {
+      topic: "Tip dönüşümleri",
+      q: "Which method converts an IntStream to a Stream&lt;String&gt;?",
+      opts: [
+        "mapToObj",
+        "boxed",
+        "asObjectStream",
+        "map"
+      ],
+      a: [0],
+      why: "<code>mapToObj(IntFunction&lt;R&gt;)</code> her <code>int</code>'i istediğin nesneye çevirir → <code>Stream&lt;R&gt;</code>. <br><code>boxed()</code> yalnızca <code>Stream&lt;Integer&gt;</code> üretir (özel bir <code>mapToObj</code> sayılır); <code>map</code> primitif stream'de <code>IntUnaryOperator</code> alır ve yine <code>IntStream</code> döner; <code>asObjectStream</code> diye bir metot <b>yoktur</b>."
+    },
+    {
+      topic: "Primitif terminaller",
+      q: "<pre>System.out.println(IntStream.of().sum() + \" \" + IntStream.of().average());</pre>What is the result?",
+      opts: [
+        "0 OptionalDouble.empty",
+        "OptionalInt.empty OptionalDouble.empty",
+        "0 0.0",
+        "A NoSuchElementException is thrown."
+      ],
+      a: [0],
+      why: "<code>sum()</code> boş stream'de <b>0</b> döner — toplamanın etkisiz elemanı tanımlıdır. <code>average()</code> ise \"hiç eleman yoksa ortalama nedir\" sorusuna cevap veremediği için <b>OptionalDouble.empty</b> döner. <br>Aynı mantıkla <code>max()</code>/<code>min()</code> de <code>OptionalInt</code> döner. <b>Kanca:</b> Doğal bir varsayılanı olan işlem düz değer, olmayan Optional döner."
+    },
+    {
+      topic: "Primitif terminaller",
+      q: "<pre>double d = IntStream.of(1, 2).average();</pre>What is the result?",
+      opts: [
+        "Compilation fails because average() returns OptionalDouble.",
+        "The code compiles and d is 1.5.",
+        "Compilation fails because average() returns int.",
+        "The code compiles and d is 1.0."
+      ],
+      a: [0],
+      why: "<code>average()</code> <b>OptionalDouble</b> döner ve bu doğrudan <code>double</code>'a atanamaz. <br>Doğru yazım: <code>.average().getAsDouble()</code> veya <code>.average().orElse(0)</code>. Değer gerçekten 1.5'tir ama önce Optional'dan çıkarılması gerekir."
+    },
+    {
+      topic: "OptionalInt",
+      q: "<pre>int m = IntStream.of(1, 2).max().get();</pre>What is the result?",
+      opts: [
+        "Compilation fails because OptionalInt has getAsInt(), not get().",
+        "The code compiles and m is 2.",
+        "The code compiles and m is 1.",
+        "A NoSuchElementException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>OptionalInt</code>, <code>Optional&lt;T&gt;</code>'den <b>tamamen ayrı</b> bir sınıftır ve değer alma metodu <b><code>getAsInt()</code></b>'tir. <br>Aynı şekilde <code>OptionalLong.getAsLong()</code> ve <code>OptionalDouble.getAsDouble()</code>. Bu tipler kutulamayı önlemek için ayrı yazılmıştır; <code>Optional&lt;Integer&gt;</code>'a <b>atanamazlar</b>."
+    },
+    {
+      topic: "chars()",
+      q: "<pre>\"abc\".chars().forEach(System.out::print);</pre>What is the result?",
+      opts: [
+        "979899",
+        "abc",
+        "Compilation fails.",
+        "a b c"
+      ],
+      a: [0],
+      why: "<code>chars()</code> bir <b><code>IntStream</code></b> döner: karakterler <b>kod noktası</b> olarak akar ve <code>print(int)</code> aşırı yüklemesi çağrılır → <code>97</code>, <code>98</code>, <code>99</code>. <br>Karakter olarak yazdırmak için <code>.mapToObj(c -&gt; (char) c)</code> gerekir. Bu, 1.1'deki <code>'a' + 1 == 98</code> tuzağının stream hâlidir."
+    },
+    {
+      topic: "Paralel doğruluk",
+      q: "<pre>String a = Stream.of(\"a\",\"b\",\"c\").reduce(\"X\", String::concat);\nString b = Stream.of(\"a\",\"b\",\"c\").parallel().reduce(\"X\", String::concat);</pre>Which statement is correct?",
+      opts: [
+        "a is Xabc, but b may differ because \"X\" is not an identity for concatenation.",
+        "Both are Xabc because reduce is always deterministic.",
+        "Both throw an exception because reduce cannot be parallelised.",
+        "b is Xabc and a is unpredictable."
+      ],
+      a: [0],
+      why: "Paralel <code>reduce</code> veriyi parçalara böler ve <b>her parçaya identity'yi ayrı ayrı</b> uygular, sonra combiner ile birleştirir. <code>\"X\"</code> birleştirmenin etkisiz elemanı olmadığı için <code>XaXbXc</code> gibi bir sonuç çıkar. <br>Doğru identity <code>\"\"</code>'dir. <b>Bu hatanın sinsi yanı:</b> sıralı çalıştırmada doğru görünür, yalnızca paralelde bozulur."
+    },
+    {
+      topic: "Paralel doğruluk",
+      q: "<pre>List&lt;Integer&gt; l = new ArrayList&lt;&gt;();\nIntStream.range(0, 10000).parallel().forEach(l::add);\nSystem.out.println(l.size());</pre>Which statement is correct?",
+      opts: [
+        "The result is unpredictable; elements may be lost or an exception may be thrown.",
+        "The result is always 10000 because ArrayList.add is atomic.",
+        "Compilation fails.",
+        "The result is always 0 because parallel streams do not run forEach."
+      ],
+      a: [0],
+      why: "<code>ArrayList</code> <b>thread-safe değildir</b>; birden çok thread aynı anda <code>add</code> çağırınca iç dizi bozulur — eleman kaybı, <code>null</code> girdi veya <code>ArrayIndexOutOfBoundsException</code> görülebilir. <br>Doğru yol <b>yan etkisiz</b> toplamadır: <code>.boxed().toList()</code> veya <code>.collect(...)</code>. Bu, stream API'sinin temel tasarım kuralıdır."
+    },
+    {
+      topic: "Paralel davranış",
+      q: "Which operations preserve encounter order on a parallel stream? (Choose TWO.)",
+      opts: [
+        "forEachOrdered",
+        "findFirst",
+        "forEach",
+        "findAny"
+      ],
+      a: [0, 1],
+      why: "<code>forEachOrdered</code> ve <code>findFirst</code> <b>karşılaşma sırasını</b> korur — bu yüzden paralelde ek maliyet getirirler. <br><code>forEach</code> paralelde <b>herhangi bir sırayla</b> çalışır; <code>findAny</code> ise \"ilk bulunanı ver\" der ve <b>paralelde en hızlı</b> seçenektir. <b>Kanca:</b> \"Ordered ve First yavaş, Any hızlı.\""
+    },
+    {
+      topic: "Paralel kullanım",
+      q: "In which situation is a parallel stream LEAST likely to help?",
+      opts: [
+        "A small collection where each element performs a blocking I/O call.",
+        "A large int range with a CPU-intensive stateless computation.",
+        "A large ArrayList processed with a pure mapping function.",
+        "A large array reduced with a correct identity."
+      ],
+      a: [0],
+      why: "Paralellik <b>CPU çekirdeklerini</b> doldurmak içindir; I/O bekleyen işlerde thread'ler boşta bekler ve <code>ForkJoinPool.commonPool</code> tıkanır. Az eleman olması da paralelleştirme maliyetini kazancın üstüne çıkarır. <br>Diğer üç senaryo paralelliğin <b>ideal</b> kullanım alanıdır: çok eleman, kolay bölünen kaynak, yan etkisiz işlem."
+    },
+    {
+      topic: "Paralel API",
+      q: "<pre>Stream&lt;Integer&gt; s = Stream.of(1, 2).parallel().sequential();\nSystem.out.println(s.isParallel());</pre>What is the result?",
+      opts: [
+        "false",
+        "true",
+        "Compilation fails.",
+        "An IllegalStateException is thrown."
+      ],
+      a: [0],
+      why: "<code>parallel()</code> ve <code>sequential()</code> stream'in <b>çalışma kipini</b> değiştiren ara işlemlerdir ve <b>son çağrılan kazanır</b>. Burada en son <code>sequential()</code> çağrıldığı için stream sıralıdır. <br>Bu bayrak <b>tüm boru hattı için</b> geçerlidir — ortada <code>parallel()</code> yazıp sonra <code>sequential()</code> demek zincirin bir kısmını paralel yapmaz."
+    },
+    {
+      topic: "Primitif stream'ler",
+      q: "Which primitive stream types exist in the Java standard library? (Choose TWO.)",
+      opts: [
+        "IntStream",
+        "DoubleStream",
+        "CharStream",
+        "BooleanStream"
+      ],
+      a: [0, 1],
+      why: "Yalnızca üç primitif stream vardır: <b><code>IntStream</code></b>, <b><code>LongStream</code></b>, <b><code>DoubleStream</code></b>. <br><code>CharStream</code> ve <code>BooleanStream</code> <b>yoktur</b>: <code>char</code> değerleri <code>IntStream</code> üzerinden (<code>chars()</code>), <code>byte</code>/<code>short</code> da <code>int</code> üzerinden taşınır. Sınav var olmayan tip adlarını şık olarak koymayı sever (1.1)."
+    },
+    {
+      topic: "Primitif terminaller",
+      q: "<pre>var s = IntStream.of(4, 8, 1).summaryStatistics();\nSystem.out.println(s.getMin() + \" \" + s.getCount());</pre>What is the result?",
+      opts: [
+        "1 3",
+        "4 3",
+        "1 13",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>summaryStatistics()</code> tek geçişte <code>count</code>, <code>sum</code>, <code>min</code>, <code>max</code> ve <code>average</code> üretir. En küçük değer <b>1</b>, eleman sayısı <b>3</b>'tür (13 ise <code>getSum()</code> olurdu). <br><code>getCount()</code> <b><code>long</code></b> döner. Bu metot, aynı stream'i birden çok kez dolaşamama kısıtının (6.2) pratik çözümüdür."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-2-3",
+  code: "Testing Throughout the SDLC · 2.3",
+  title: "Bakım Testi",
+  back: "2.3-bakim-testi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Bakım testi nedir",
+      q: "Which statement about maintenance testing is correct?",
+      opts: [
+        "It is a context in which any test level and any test type may be applied",
+        "It is a test level that follows acceptance testing",
+        "It is a test type that replaces regression testing",
+        "It is only performed when defects are fixed"
+      ],
+      a: [0],
+      why: "<b>Bakım testi bir seviye veya tip değil, bir bağlamdır</b> — canlıdaki sisteme yapılan değişikliğin testidir ve içinde bileşen testinden kabul testine kadar her seviye yapılabilir. Dördüncü şık tetikleyicileri kusur düzeltmesine indirgiyor, ki bu yanlış."
+    },
+    {
+      topic: "Bakım tetikleyicileri",
+      q: "The organization upgrades the operating system on all production servers. No application code is changed. Is maintenance testing required?",
+      opts: [
+        "Yes, because a change in the operational environment is a trigger for maintenance testing",
+        "No, because the application code has not changed",
+        "No, because operating system upgrades are the responsibility of the vendor",
+        "Yes, but only confirmation testing is needed, not regression testing"
+      ],
+      a: [0],
+      why: "<b>İşletim ortamı değişikliği bakım testinin açık bir tetikleyicisidir.</b> Kod değişmese de davranış değişebilir. Dördüncü şık tersini söylüyor: burada düzeltilmiş bir kusur olmadığı için confirmation testing değil, esas olarak <b>regresyon</b> testi gerekir."
+    },
+    {
+      topic: "Bakım tetikleyicileri",
+      q: "A legacy system is being retired, but its data must be retained for ten years by law. What should be tested?",
+      opts: [
+        "Data archiving and the data restore procedures",
+        "Nothing, because the system is no longer in use",
+        "Only the performance of the replacement system",
+        "Only the user interface of the archive viewer"
+      ],
+      a: [0],
+      why: "<b>Emeklilik de bir bakım testi tetikleyicisidir.</b> Uzun süreli saklama gereksinimi varsa arşivlemenin ve arşivden <i>geri yüklemenin</i> çalıştığı test edilmelidir — arşivlenmiş ama geri yüklenemeyen veri, hiç arşivlenmemiş veriyle aynıdır."
+    },
+    {
+      topic: "Bakım tetikleyicileri",
+      q: "An application is migrated from an on-premise data center to a cloud platform. Besides testing that the application works in the new environment, what additional testing is required?",
+      opts: [
+        "Conversion testing of the migrated data",
+        "Only performance testing of the new environment",
+        "Only alpha testing with external users",
+        "No additional testing, because the code is unchanged"
+      ],
+      a: [0],
+      why: "<b>Göçte taşınan verinin doğruluğu ayrıca test edilir.</b> Uygulamanın yeni ortamda ayağa kalkması, verinin doğru dönüştürüldüğü anlamına gelmez — kayıp, kırpılmış veya yanlış kodlanmış veriler tipik göç kusurlarıdır."
+    },
+    {
+      topic: "Etki analizi",
+      q: "What is the MAIN purpose of impact analysis in maintenance testing?",
+      opts: [
+        "To identify the parts of the system affected by a change and to determine the scope of regression testing",
+        "To find the root cause of the defect that triggered the change",
+        "To measure statement coverage of the changed code",
+        "To decide which developer should implement the change"
+      ],
+      a: [0],
+      why: "<b>Etki analizi, değişikliğin nereye dokunduğunu ve dolayısıyla neyin yeniden test edileceğini belirler.</b> Ayrıca değişikliğin yapılıp yapılmayacağı kararını da destekler. Kök neden analizi (1.2) farklı bir aktivitedir — o kusurun kaynağına bakar, değişikliğin yayılımına değil."
+    },
+    {
+      topic: "Etki analizi",
+      q: "Which of the following make impact analysis difficult? (Choose TWO.)",
+      opts: [
+        "Specifications that are out of date or missing",
+        "Lack of traceability between the change and the testware",
+        "A test automation suite that runs in under ten minutes",
+        "A well-documented risk register"
+      ],
+      a: [0, 1],
+      why: "<b>Güncel olmayan spesifikasyon ve izlenebilirlik yokluğu, neyin etkilendiğini görmeyi imkânsızlaştırır</b> ve bakım testini 'her şeyi koş' noktasına iter. Son iki şık etki analizini <i>kolaylaştıran</i> şeylerdir."
+    },
+    {
+      topic: "Bakım testinin kapsamı",
+      q: "Which factors determine the extent of maintenance testing? (Choose TWO.)",
+      opts: [
+        "The degree of risk of the change",
+        "The size of the existing system",
+        "The number of testers available in the organization",
+        "The programming language used to implement the change"
+      ],
+      a: [0, 1],
+      why: "<b>Müfredat kapsamı belirleyen faktörleri şöyle sayar: değişikliğin riski, mevcut sistemin boyutu ve değişikliğin boyutu.</b> Tester sayısı bir kaynak kısıtıdır, kapsamı belirleyen bir faktör değil; programlama dili ise etki alanını belirlemez."
+    },
+    {
+      topic: "Bakım testinin bileşenleri",
+      q: "Maintenance testing after a defect fix consists of which two parts? (Choose TWO.)",
+      opts: [
+        "Testing that the change itself works correctly",
+        "Regression testing of the parts of the system that were not changed",
+        "Debugging the code to locate the root cause",
+        "Rewriting the original requirements specification"
+      ],
+      a: [0, 1],
+      why: "<b>Bakım testi her zaman iki soruyu birden sorar: değişiklik çalışıyor mu, ve değişmeyen yerleri bozdu mu?</b> Debugging bir test aktivitesi değildir (1.1); gereksinim yeniden yazmak da test değildir."
+    },
+    {
+      topic: "Bakım tetikleyicileri",
+      q: "Which of the following is an example of a modification that triggers maintenance testing?",
+      opts: [
+        "Applying a security patch to a third-party COTS component used by the system",
+        "Holding a retrospective at the end of the sprint",
+        "Writing a new test plan for the next release",
+        "Reviewing a user story before development starts"
+      ],
+      a: [0],
+      why: "<b>COTS bileşen yükseltmeleri ve yamalar modification grubundaki klasik tetikleyicilerdir.</b> Diğer üç şık yazılımın çalışan davranışını değiştirmez, dolayısıyla bakım testi tetiklemez."
+    },
+    {
+      topic: "Bakım testi ve regresyon",
+      q: "After a change is deployed, the previously failing test is executed again and passes. What has been performed, and what still remains?",
+      opts: [
+        "Confirmation testing has been performed; regression testing still remains",
+        "Regression testing has been performed; confirmation testing still remains",
+        "Impact analysis has been performed; no testing remains",
+        "Both confirmation and regression testing have been performed"
+      ],
+      a: [0],
+      why: "<b>Aynı testi tekrar koşmak confirmation testing'dir</b> ve yalnızca düzeltmenin işe yaradığını gösterir. Yan etki olup olmadığını göstermez — bunun için <i>diğer</i> testlerin koşulması, yani regresyon gerekir. Bu ikisini birbirinin yerine kullanmak en sık yapılan hatadır."
+    },
+    {
+      topic: "Etki analizi",
+      q: "Why can impact analysis also support the decision whether to make a change at all?",
+      opts: [
+        "Because it reveals how widely the change would propagate and how much retesting it would require",
+        "Because it automatically calculates the cost of the change in currency",
+        "Because it guarantees that no side effects will occur",
+        "Because it replaces the need for a change management process"
+      ],
+      a: [0],
+      why: "<b>Etkisi çok geniş bir değişiklik, faydasından pahalıya mal olabilir</b> — etki analizi bu kararı görünür kılar. Üçüncü şıkta <code>guarantees</code> var; etki analizi yan etkileri <i>öngörmeye çalışır</i>, sıfırlamaz."
+    },
+    {
+      topic: "Bakım testi nedir",
+      q: "Which statement about testing during maintenance is correct?",
+      opts: [
+        "The scope of regression testing should be based on impact analysis rather than on running everything",
+        "All existing tests must always be re-executed after any change",
+        "Maintenance testing does not require any new test cases",
+        "Maintenance testing applies only to systems developed with sequential lifecycles"
+      ],
+      a: [0],
+      why: "<b>Regresyon kapsamı etki analizine dayandırılır</b>; her şeyi koşmak çoğu sistemde uygulanabilir değildir (<code>always</code> içeren ikinci şık bu yüzden yanlış). Üçüncü şık da yanlış: değişikliğin kendisi için genellikle <i>yeni</i> test case'leri gerekir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

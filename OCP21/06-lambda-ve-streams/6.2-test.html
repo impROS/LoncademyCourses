@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-6.2",
+  code: "Lambda & Streams · 6.2",
+  title: "Stream Oluşturma, Ara İşlemler ve Optional",
+  back: "6.2-stream-ve-ara-islemler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Tembellik",
+      q: "<pre>Stream.of(\"a\", \"b\")\n      .peek(System.out::println)\n      .filter(s -&gt; true);</pre>What is the result?",
+      opts: [
+        "Nothing is printed.",
+        "a and b are printed.",
+        "Compilation fails.",
+        "An IllegalStateException is thrown."
+      ],
+      a: [0],
+      why: "<code>peek</code> ve <code>filter</code> <b>ara işlemlerdir</b> ve tembeldir: boru hattı yalnızca bir <b>terminal işlem</b> (<code>forEach</code>, <code>collect</code>, <code>count</code>...) çağrıldığında yürür. Terminal işlem olmadığı için hiçbir şey çalışmaz. <br><b>Kanca:</b> Stream bir veri yapısı değil, bir <b>tariftir</b>; tarifi okumak yemek pişirmez."
+    },
+    {
+      topic: "Tek kullanımlık",
+      q: "<pre>Stream&lt;String&gt; s = Stream.of(\"a\", \"b\");\nSystem.out.print(s.count());\nSystem.out.print(s.count());</pre>What is the result?",
+      opts: [
+        "2 is printed, then an IllegalStateException is thrown.",
+        "22 is printed.",
+        "Compilation fails.",
+        "2 is printed, then a NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "Bir stream <b>tek kullanımlıktır</b>: terminal işlem çalıştıktan sonra kapanır ve ikinci kullanım <code>IllegalStateException: stream has already been operated upon or closed</code> verir. <br>Aynı veriyi tekrar işlemek için kaynaktan <b>yeni bir stream</b> almalısın (<code>liste.stream()</code>) veya kaynağı bir <code>Supplier&lt;Stream&gt;</code> ile saklamalısın."
+    },
+    {
+      topic: "Dikey akış",
+      q: "<pre>Stream.of(\"a\", \"b\")\n      .peek(x -&gt; System.out.print(\"p\" + x + \" \"))\n      .forEach(x -&gt; System.out.print(\"f\" + x + \" \"));</pre>What is the result?",
+      opts: [
+        "pa fa pb fb",
+        "pa pb fa fb",
+        "fa fb pa pb",
+        "pa fa fb pb"
+      ],
+      a: [0],
+      why: "Stream akışı <b>dikeydir</b>: her eleman boru hattının tamamını baştan sona geçer, sonra sıradaki eleman başlar. Bu yüzden <code>a</code> için önce <code>peek</code> sonra <code>forEach</code>, ardından <code>b</code> için aynısı çalışır. <br>Bu tasarım <code>limit</code> ve <code>findFirst</code> gibi işlemlerin <b>kısa devre</b> yapabilmesini sağlar."
+    },
+    {
+      topic: "Kısa devre",
+      q: "<pre>int[] sayac = {0};\nStream.iterate(1, x -&gt; x + 1)\n      .map(x -&gt; { sayac[0]++; return x * 10; })\n      .limit(2)\n      .toList();\nSystem.out.println(sayac[0]);</pre>What is the result?",
+      opts: [
+        "2",
+        "Infinite loop; the program never terminates.",
+        "0",
+        "10"
+      ],
+      a: [0],
+      why: "<code>limit(2)</code> <b>kısa devre</b> yapar: iki eleman toplandığında kaynak durdurulur, bu yüzden <code>map</code> yalnızca <b>2 kez</b> çalışır. Sonsuz kaynak olması sorun değildir. <br><b>Ama:</b> <code>limit</code> yerine <code>sorted()</code> olsaydı tüm elemanlar gerekeceği için program <b>asla bitmezdi</b>."
+    },
+    {
+      topic: "Sonsuz stream",
+      q: "<pre>Stream.iterate(1, x -&gt; x + 1).sorted().limit(5).forEach(System.out::println);</pre>What is the result?",
+      opts: [
+        "The program never terminates.",
+        "1 2 3 4 5 is printed.",
+        "Compilation fails.",
+        "An IllegalStateException is thrown."
+      ],
+      a: [0],
+      why: "<code>sorted()</code> <b>durum tutan</b> bir işlemdir: sıralamak için <b>tüm</b> elemanları görmek zorundadır. Sonsuz kaynakta bu asla tamamlanmaz. <br>Doğru yazım <code>limit</code>'i <b>öne almaktır</b>: <code>.limit(5).sorted()</code>. Aynı sorun <code>distinct()</code> için de kısmen geçerlidir."
+    },
+    {
+      topic: "Ara işlemler",
+      q: "<pre>List&lt;Integer&gt; v = List.of(1, 2, 3, 1, 2);\nSystem.out.println(v.stream().takeWhile(x -&gt; x &lt; 3).toList() + \" \"\n                 + v.stream().filter(x -&gt; x &lt; 3).toList());</pre>What is the result?",
+      opts: [
+        "[1, 2] [1, 2, 1, 2]",
+        "[1, 2, 1, 2] [1, 2]",
+        "[1, 2] [1, 2]",
+        "[1, 2, 1, 2] [1, 2, 1, 2]"
+      ],
+      a: [0],
+      why: "<code>takeWhile</code> koşul <b>ilk kez bozulduğunda durur</b> — 3'ü görünce akış biter, sonrasındaki 1 ve 2'ye hiç bakmaz. <code>filter</code> ise <b>tüm</b> elemanları tarar ve uyanların hepsini alır. <br><code>dropWhile</code> ise tersini yapar: ilk ihlale kadar atar, sonrasını <b>olduğu gibi</b> alır → <code>[3, 1, 2]</code>."
+    },
+    {
+      topic: "Ara işlemler",
+      q: "<pre>List&lt;List&lt;String&gt;&gt; ic = List.of(List.of(\"a\",\"b\"), List.of(\"c\"));\nSystem.out.println(ic.stream().flatMap(List::stream).toList());</pre>What is the result?",
+      opts: [
+        "[a, b, c]",
+        "[[a, b], [c]]",
+        "[2, 1]",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>flatMap</code> her elemanı bir <b>stream'e</b> dönüştürür ve sonuçları <b>tek bir akışta düzleştirir</b> → <code>[a, b, c]</code>. <br><code>map(List::stream)</code> yazsaydın <code>Stream&lt;Stream&lt;String&gt;&gt;</code> elde ederdin — iç içe kalırdı. <code>map(List::size)</code> ise <code>[2, 1]</code> verirdi."
+    },
+    {
+      topic: "Stream oluşturma",
+      q: "<pre>System.out.println(IntStream.range(1, 5).boxed().toList() + \" \"\n                 + IntStream.rangeClosed(1, 5).boxed().toList());</pre>What is the result?",
+      opts: [
+        "[1, 2, 3, 4] [1, 2, 3, 4, 5]",
+        "[1, 2, 3, 4, 5] [1, 2, 3, 4]",
+        "[1, 2, 3, 4] [1, 2, 3, 4]",
+        "[0, 1, 2, 3, 4] [1, 2, 3, 4, 5]"
+      ],
+      a: [0],
+      why: "<code>range</code> üst sınırı <b>hariç</b> tutar (dizi indeksleriyle uyum için), <code>rangeClosed</code> <b>dahil</b> eder. Alt sınır her ikisinde de dahildir. <br><code>boxed()</code> <code>IntStream</code>'i <code>Stream&lt;Integer&gt;</code>'a çevirir; onsuz <code>toList()</code> bir <code>List&lt;Integer&gt;</code> üretmez (6.4)."
+    },
+    {
+      topic: "Optional",
+      q: "<pre>Optional.of(null);</pre>What is the result?",
+      opts: [
+        "A NullPointerException is thrown at runtime.",
+        "An empty Optional is created.",
+        "Compilation fails.",
+        "An IllegalArgumentException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>Optional.of</code> argümanının <b>null olmamasını</b> şart koşar ve null gelirse <code>NullPointerException</code> atar — bu bilinçlidir: \"burada değer olmalı\" demenin yoludur. <br>Null olabilecek değerler için <code>Optional.ofNullable(x)</code> kullanılır; o null'ı <b>boş Optional</b>'a çevirir."
+    },
+    {
+      topic: "Optional",
+      q: "<pre>static String pahali() { System.out.print(\"H\"); return \"yedek\"; }\n\nSystem.out.print(Optional.of(\"var\").orElse(pahali()));\nSystem.out.print(Optional.of(\"var\").orElseGet(Main::pahali));</pre>What is printed?",
+      opts: [
+        "Hvarvar",
+        "varvar",
+        "HvarHvar",
+        "varHvar"
+      ],
+      a: [0],
+      why: "<code>orElse</code>'in argümanı <b>normal bir metot çağrısıdır</b> ve Optional dolu olsa bile <b>önce hesaplanır</b> (sonucu kullanılmaz) → <code>H</code> yazılır. <code>orElseGet</code> ise bir <code>Supplier</code> alır ve yalnızca <b>gerekirse</b> çalıştırır → hiçbir şey yazılmaz. <br><b>Kural:</b> Yedek değer pahalıysa veya yan etkiliyse <b>her zaman</b> <code>orElseGet</code> kullan."
+    },
+    {
+      topic: "Optional",
+      q: "<pre>System.out.println(Optional.of(\"x\").map(v -&gt; (String) null));</pre>What is the result?",
+      opts: [
+        "Optional.empty",
+        "A NullPointerException is thrown at runtime.",
+        "Optional[null]",
+        "null"
+      ],
+      a: [0],
+      why: "<code>Optional.map</code> fonksiyonun sonucunu <b><code>ofNullable</code> ile sarar</b>: <code>null</code> dönerse sonuç <b>boş Optional</b> olur, NPE atılmaz. <br>Bu davranış zincirlemeyi güvenli kılar: <code>opt.map(A::b).map(B::c).orElse(...)</code> ara adımlardan biri null verse bile çalışır."
+    },
+    {
+      topic: "Optional",
+      q: "<pre>Optional&lt;String&gt; o = Optional.empty();\nSystem.out.println(o.get());</pre>What is the result?",
+      opts: [
+        "A NoSuchElementException is thrown at runtime.",
+        "null is printed.",
+        "Compilation fails.",
+        "An empty string is printed."
+      ],
+      a: [0],
+      why: "Boş bir <code>Optional</code> üzerinde <code>get()</code> <b>NoSuchElementException: No value present</b> atar — <code>null</code> dönmez. <br>Bu yüzden <code>get()</code> doğrudan çağrılmaz; önce <code>isPresent()</code> kontrol edilir ya da <code>orElse</code>/<code>orElseGet</code>/<code>orElseThrow</code> tercih edilir. Java 10'dan beri aynı davranışın açık adı <code>orElseThrow()</code>'dur."
+    },
+    {
+      topic: "Stream oluşturma",
+      q: "Which stream sources are infinite unless limited? (Choose TWO.)",
+      opts: [
+        "Stream.generate(() -&gt; 1)",
+        "Stream.iterate(1, x -&gt; x + 1)",
+        "Stream.iterate(1, x -&gt; x &lt; 10, x -&gt; x + 1)",
+        "IntStream.range(1, 100)"
+      ],
+      a: [0, 1],
+      why: "<code>Stream.generate</code> ve <b>iki argümanlı</b> <code>Stream.iterate</code> durma koşulu içermez → <b>sonsuzdur</b>; <code>limit</code> olmadan terminal işlem çağırırsan program asla bitmez. <br><b>Üç argümanlı</b> <code>iterate</code> (Java 9+) bir <code>hasNext</code> koşulu alır ve <b>sonludur</b>; <code>range</code> zaten sınırlıdır."
+    },
+    {
+      topic: "Ara işlemler",
+      q: "<pre>System.out.println(Stream.of(3, 1, 2, 1).distinct().sorted().skip(1).toList());</pre>What is the result?",
+      opts: [
+        "[2, 3]",
+        "[1, 2, 3]",
+        "[1, 2]",
+        "[3, 2]"
+      ],
+      a: [0],
+      why: "Sırayla: <code>distinct</code> → <code>[3, 1, 2]</code>, <code>sorted</code> → <code>[1, 2, 3]</code>, <code>skip(1)</code> ilk elemanı atar → <b>[2, 3]</b>. <br>İşlem sırası önemlidir: <code>skip</code> önce gelseydi sonuç farklı olurdu. <code>distinct</code> ve <code>sorted</code> <b>durum tutan</b> işlemlerdir ve sonsuz kaynakta sorun çıkarır."
+    },
+    {
+      topic: "Tembellik",
+      q: "Which statements about intermediate and terminal operations are correct? (Choose TWO.)",
+      opts: [
+        "An intermediate operation returns a Stream and is lazy.",
+        "A terminal operation triggers the pipeline and closes the stream.",
+        "peek is a terminal operation.",
+        "count is an intermediate operation."
+      ],
+      a: [0, 1],
+      why: "Ara işlemler <b>yeni bir Stream</b> döner ve hiçbir şey yürütmez; terminal işlem boru hattını <b>başlatır</b> ve stream'i kapatır. <br><code>peek</code> <code>Stream</code> döndürdüğü için <b>ara</b> işlemdir (adı yanıltıcıdır); <code>count</code> <code>long</code> döndürdüğü için <b>terminaldir</b>. <b>Kanca:</b> Dönüş tipi <code>Stream</code> ise ara, değilse terminal."
+    },
+    {
+      topic: "Optional",
+      q: "<pre>System.out.println(Optional.of(\"abc\").filter(v -&gt; v.length() &gt; 5).isPresent());</pre>What is the result?",
+      opts: [
+        "false",
+        "true",
+        "A NoSuchElementException is thrown.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>Optional.filter</code> koşul sağlanmazsa <b>boş Optional</b> döner — değeri atmaz, exception da atmaz. \"abc\" uzunluğu 3 olduğundan koşul başarısızdır → <code>isPresent()</code> <b>false</b>. <br>Bu, <code>Optional</code>'ı stream benzeri zincirlerde kullanmayı sağlar: <code>map</code>, <code>filter</code>, <code>flatMap</code> hepsi boşluğu <b>yayar</b>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

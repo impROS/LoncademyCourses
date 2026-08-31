@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deneme Sınavı 1 — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-deneme-1",
+  code: "1Z0-830 · Deneme Sınavı 1",
+  title: "OCP 21 Deneme Sınavı 1",
+  back: "son-tekrar.md",
+  backLabel: "Son tekrara dön",
+  mode: "exam",
+  time: 7200,
+  pass: 68,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe. Sonuçlar en sonda gelir.",
+  passNote: "gerçek sınavın geçme notu",
+  notes: [
+    "Süre tutulur: 120 dakika. Tek oturumda, telefonsuz, notsuz çöz.",
+    "Zorlandığın soruyu işaretle ve geç; sonunda hiçbir soruyu boş bırakma.",
+    "Zayıf alan raporundaki kodlar konu dosyalarına karşılık gelir (örn. 3.4 -> 03-nesne-yonelimli/3.4-...)."
+  ],
+  questions: [
+    {
+      topic: "1.1 Primitifler ve operatörler",
+      q: "<pre>short s = 100;\ns += 5000000;\nSystem.out.println(s);</pre>What is the result?",
+      opts: ["-11348", "5000100", "Compilation fails.", "An ArithmeticException is thrown."],
+      a: [0],
+      why: "Compound assignment <b>gizli cast</b> içerir: <code>s = (short)(s + 5000000)</code>. Kod derlenir ve sonuç <code>short</code> aralığına taşarak <b>-11348</b> olur. <br>Sınav bu satırı çoğu zaman \"Compilation fails\" sandırmak için sorar; derleme hatası ancak <code>s = s + 5000000;</code> yazılsaydı gelirdi."
+    },
+    {
+      topic: "1.1 Primitifler ve operatörler",
+      q: "<pre>System.out.println(Math.round(-3.5) + \" \" + (-9 % 4) + \" \" + Math.floorMod(-9, 4));</pre>What is the result?",
+      opts: ["-3 -1 3", "-4 -1 3", "-3 3 -1", "-4 3 -1"],
+      a: [0],
+      why: "<code>Math.round</code> <b>yukarı</b> yuvarlar → <code>-3.5</code> için <b>-3</b>. <code>%</code> işaretini <b>sol</b> operanddan alır → <b>-1</b>. <code>floorMod</code> ise işareti <b>bölenden</b> alır → <b>3</b>. <br>Üç kural da ayrı ayrı ezberlenir; sınav ikisini yan yana koyup karıştırmanı bekler."
+    },
+    {
+      topic: "1.2 String ve StringBuilder",
+      q: "<pre>StringBuilder sb = new StringBuilder(\"java\");\nsb.insert(2, \"XY\").reverse().delete(0, 3);\nSystem.out.println(sb);</pre>What is the result?",
+      opts: ["Xaj", "avaj", "jaXY", "Compilation fails."],
+      a: [0],
+      why: "<code>insert(2,\"XY\")</code> → <code>jaXYva</code>. <code>reverse()</code> → <code>avYXaj</code>. <code>delete(0,3)</code> ilk üç karakteri siler (bitiş <b>hariç</b>) → <b>Xaj</b>. <br>Her metot <b>aynı nesneyi</b> döndürdüğü için zincir çalışır ve <code>sb</code> gerçekten değişir — <code>String</code>'de bu böyle olmazdı."
+    },
+    {
+      topic: "1.2 String ve StringBuilder",
+      q: "<pre>String a = \"ja\";\nfinal String b = \"ja\";\nSystem.out.println(((a + \"va\") == \"java\") + \" \" + ((b + \"va\") == \"java\"));</pre>What is the result?",
+      opts: ["false true", "true true", "false false", "true false"],
+      a: [0],
+      why: "<code>a</code> <b>final değil</b>, bu yüzden <code>a + \"va\"</code> çalışma zamanında yeni bir nesne üretir → <code>==</code> <b>false</b>. <code>b</code> <code>final</code> olduğu için ifade bir <b>derleme zamanı sabitidir</b> ve havuzdaki <code>\"java\"</code>ya bağlanır → <b>true</b>. <br>Aynı <code>final</code> mantığı 1.1'deki <code>byte b = SABIT;</code> kuralıyla akrabadır."
+    },
+    {
+      topic: "1.3 Date-Time API",
+      q: "<pre>LocalDate d = LocalDate.of(2024, 2, 29);\nSystem.out.println(d.plusYears(1));</pre>What is the result?",
+      opts: ["2025-02-28", "2025-03-01", "A DateTimeException is thrown.", "2025-02-29"],
+      a: [0],
+      why: "2025 artık yıl olmadığı için 29 Şubat yoktur; <code>plusYears</code> taşan günü <b>ayın son gününe çeker</b> → <b>2025-02-28</b>. Exception <b>atılmaz</b>. <br>Aynı davranış <code>plusMonths</code>'ta da vardır (31 Ocak + 1 ay = 28/29 Şubat). <code>of()</code> ise geçersiz tarihi <b>düzeltmez</b>, exception atar."
+    },
+    {
+      topic: "1.3 Date-Time API",
+      q: "Which expressions throw an exception at runtime? (Choose TWO.)",
+      opts: [
+        "LocalDate.now().plus(Duration.ofHours(2))",
+        "Duration.of(1, ChronoUnit.YEARS)",
+        "LocalDateTime.now().plus(Period.ofDays(1))",
+        "LocalTime.now().plus(Duration.ofMinutes(30))"
+      ],
+      a: [0, 1],
+      why: "<code>LocalDate</code>'in <b>saat alanı yoktur</b>, bu yüzden <code>Duration</code> uygulanamaz → <code>UnsupportedTemporalTypeException</code>. <code>Duration</code> yalnızca <b>kesin</b> birimleri kabul eder; <code>YEARS</code> takvime bağlı olduğu için reddedilir. <br>Diğer ikisi geçerlidir: <code>LocalDateTime</code> her iki tarafı da tutar, <code>LocalTime</code> ise saat tabanlıdır."
+    },
+    {
+      topic: "2.1 switch ve pattern matching",
+      q: "<pre>Object o = 42;\nString r = switch (o) {\n    case Integer i when i &gt; 100 -&gt; \"buyuk\";\n    case Number n -&gt; \"sayi\";\n    case Integer i -&gt; \"tam sayi\";\n    default -&gt; \"?\";\n};</pre>What is the result?",
+      opts: [
+        "Compilation fails because the third case label is dominated.",
+        "sayi",
+        "tam sayi",
+        "buyuk"
+      ],
+      a: [0],
+      why: "<code>Integer</code> bir <code>Number</code> olduğu için ikinci dal üçüncüsünü <b>gölgeler (dominance)</b> ve üçüncüsüne asla ulaşılamaz → derleme hatası. <br>Guard'lı ilk dal sorun değildir (guard eşleşmeyebilir), ama <b>guard'sız</b> genel bir desenden sonra <b>daha özel</b> bir desen yazılamaz. Doğru sıralama: özelden genele."
+    },
+    {
+      topic: "2.1 switch ve pattern matching",
+      q: "<pre>int x = 3;\nswitch (x) {\n    default: System.out.print(\"d\");\n    case 1: System.out.print(\"a\");\n    case 2: System.out.print(\"b\"); break;\n    case 3: System.out.print(\"c\");\n}</pre>What is the result?",
+      opts: ["c", "cdab", "dab", "cd"],
+      a: [0],
+      why: "Eşleşen etiket <code>case 3</code>'tür ve akış oradan başlar; sonrasında başka dal olmadığı için yalnızca <b>c</b> yazılır. <br><code>default</code>'un <b>en üstte</b> olması geçerlidir ve yalnızca hiçbir etiket eşleşmediğinde devreye girer — konumu \"her zaman çalışır\" anlamına <b>gelmez</b>."
+    },
+    {
+      topic: "2.2 Döngüler",
+      q: "<pre>int i = 0, t = 0;\nouter:\nwhile (i++ &lt; 4) {\n    for (int j = 0; j &lt; 3; j++) {\n        if (j == 1) continue outer;\n        t++;\n    }\n}\nSystem.out.println(t);</pre>What is the result?",
+      opts: ["4", "3", "12", "8"],
+      a: [0],
+      why: "Dış döngü <code>i</code> 0,1,2,3 iken toplam <b>4 kez</b> çalışır. Her turda iç döngü yalnızca <code>j = 0</code> için <code>t++</code> yapar, <code>j = 1</code>'de <code>continue outer</code> ile dışa atlar → <b>4</b>. <br><code>i++ &lt; 4</code> postfix olduğu için karşılaştırma eski değerle yapılır; bu, döngü sayısını belirleyen ayrıntıdır (1.1)."
+    },
+    {
+      topic: "3.1 Sınıflar ve başlatma sırası",
+      q: "<pre>class A {\n    static { System.out.print(\"1\"); }\n    A() { System.out.print(\"2\"); }\n}\nclass B extends A {\n    { System.out.print(\"3\"); }\n    B() { System.out.print(\"4\"); }\n    public static void main(String[] x) { new B(); new B(); }\n}</pre>What is the result?",
+      opts: ["1234234", "1234134", "1232434", "1234"],
+      a: [0],
+      why: "Statik blok sınıf yüklenirken <b>bir kez</b> çalışır → <code>1</code>. Her <code>new B()</code> için önce üst sınıf ctor'ı (<code>2</code>), sonra alt sınıfın örnek bloğu (<code>3</code>) ve ctor gövdesi (<code>4</code>) çalışır. <br>İkinci nesnede statik kısım <b>tekrarlanmaz</b> → <code>1</code> + <code>234</code> + <code>234</code>."
+    },
+    {
+      topic: "3.2 Metotlar ve overload",
+      q: "<pre>static void f(Object o) { System.out.print(\"O\"); }\nstatic void f(Integer i) { System.out.print(\"I\"); }\nstatic void f(int... n) { System.out.print(\"V\"); }\n\nf(5);</pre>What is the result?",
+      opts: ["I", "O", "V", "Compilation fails because the call is ambiguous."],
+      a: [0],
+      why: "Sıra: tam eşleşme yok → <b>genişletme</b> yok (<code>int</code> → <code>Object</code> doğrudan olmaz) → <b>kutulama</b> denenir ve <code>Integer</code> uyar. Derleyici burada durur → <b>I</b>. <br><code>Object</code> ancak kutulamadan <b>sonra</b> üst tipe geçişle uyar ve bu daha uzak bir eşleşmedir; varargs ise <b>en son</b> çaredir."
+    },
+    {
+      topic: "3.3 Record'lar",
+      q: "<pre>record P(int x, int y) {\n    P {\n        if (x &lt; 0) throw new IllegalArgumentException();\n        y = Math.abs(y);\n    }\n    P(int x) { this(x, -5); }\n}\nSystem.out.println(new P(2));</pre>What is the result?",
+      opts: ["P[x=2, y=5]", "P[x=2, y=-5]", "Compilation fails.", "An IllegalArgumentException is thrown."],
+      a: [0],
+      why: "Ek constructor <code>this(x, -5)</code> ile canonical'a delege eder; compact constructor <b>parametreyi</b> değiştirir (<code>y = 5</code>) ve blok bitince derleyici alanlara atar → <b>P[x=2, y=5]</b>. <br><code>x = 2</code> negatif olmadığı için exception atılmaz. Compact constructor'da <code>this.y = ...</code> yazılsaydı <b>derlenmezdi</b>."
+    },
+    {
+      topic: "3.3 Record'lar",
+      q: "Which statements about records are correct? (Choose TWO.)",
+      opts: [
+        "A record can implement an interface.",
+        "A record cannot declare an instance initializer block.",
+        "A record can declare additional instance fields.",
+        "A record can be declared abstract."
+      ],
+      a: [0, 1],
+      why: "Record'lar <b><code>implements</code> edebilir</b> (sealed hiyerarşilerde çok kullanılır) ama <b>örnek initializer bloğu</b> bildiremezler — tüm kurulum canonical constructor'dan geçmelidir. <br>Ek <b>örnek alanı</b> da yasaktır (statik alan serbesttir) ve record'lar <b>implicitly final</b> olduğu için <code>abstract</code> olamazlar."
+    },
+    {
+      topic: "3.4 Kalıtım ve polimorfizm",
+      q: "<pre>class A { static String w() { return \"Aw\"; } String i() { return \"Ai\"; } }\nclass B extends A { static String w() { return \"Bw\"; } String i() { return \"Bi\"; } }\n\nA r = new B();\nSystem.out.println(r.w() + r.i());</pre>What is the result?",
+      opts: ["AwBi", "BwBi", "AwAi", "BwAi"],
+      a: [0],
+      why: "Statik metotlar <b>gizlenir (hiding)</b> ve çağrı <b>referansın tipine</b> göre çözülür → <code>A.w()</code> = <code>Aw</code>. Örnek metotlar ise <b>override</b> edilir ve <b>nesnenin tipine</b> göre çalışır → <code>Bi</code>. <br><b>Kanca:</b> \"Metot nesneye, statik ve alan referansa.\""
+    },
+    {
+      topic: "3.4 Kalıtım ve polimorfizm",
+      q: "<pre>class A { protected Object m() throws java.io.IOException { return null; } }\nclass B extends A { public String m() { return \"\"; } }</pre>What is the result?",
+      opts: [
+        "The code compiles.",
+        "Compilation fails because the return type differs.",
+        "Compilation fails because the access modifier changed.",
+        "Compilation fails because B removes the throws clause."
+      ],
+      a: [0],
+      why: "Üç değişiklik de <b>izinlidir</b>: dönüş tipi <b>daraltıldı</b> (covariant: <code>String</code> bir <code>Object</code>), erişim <b>genişletildi</b> (<code>protected</code> → <code>public</code>), checked exception listesi <b>daraltıldı</b> (hiç bildirmemek serbesttir). <br>Yasak olanlar tam tersleridir: dönüşü genişletmek, erişimi daraltmak, yeni checked exception eklemek."
+    },
+    {
+      topic: "3.5 Abstract ve sealed",
+      q: "<pre>sealed interface S permits A, B { }\nrecord A(int x) implements S { }\nfinal class B implements S { }\n\nstatic int f(S s) {\n    return switch (s) {\n        case A a -&gt; 1;\n        case B b -&gt; 2;\n    };\n}</pre>What is the result?",
+      opts: [
+        "The code compiles; no default is needed.",
+        "Compilation fails because a default branch is required.",
+        "Compilation fails because a record cannot implement a sealed interface.",
+        "Compilation fails because B must be non-sealed."
+      ],
+      a: [0],
+      why: "Sealed hiyerarşinin <b>tüm</b> izinli alt tipleri kapsandığı için <code>switch</code> <b>exhaustive</b> sayılır ve <code>default</code> gerekmez. <br><code>record</code> implicitly <code>final</code> olduğu için ek belirteç istemez; <code>B</code> için <code>final</code> geçerli bir seçimdir (<code>sealed</code> ve <code>non-sealed</code> da olabilirdi)."
+    },
+    {
+      topic: "3.6 Arayüzler",
+      q: "<pre>interface A { default String m() { return \"A\"; } }\ninterface B extends A { default String m() { return \"B\"; } }\ninterface C extends A { }\nclass D implements B, C { }\n\nSystem.out.println(new D().m());</pre>What is the result?",
+      opts: ["B", "A", "Compilation fails because of unrelated defaults.", "Compilation fails because D must override m()."],
+      a: [0],
+      why: "<code>B</code> ve <code>C</code> ilişkilidir (ikisi de <code>A</code>'yı genişletir) ve <code>B</code> <b>daha spesifiktir</b> — <code>A.m()</code>'i override eder. Bu yüzden belirsizlik yoktur ve <b>B</b> kazanır. <br>Derleme hatası yalnızca iki <b>ilişkisiz</b> arayüz aynı <code>default</code>'u verirse gelir; o zaman sınıf override etmek zorundadır."
+    },
+    {
+      topic: "3.6 Arayüzler",
+      q: "<pre>interface I {\n    int SABIT = 5;\n    static int f() { return SABIT; }\n    private int g() { return 1; }\n}\nclass C implements I { }\n\nSystem.out.println(C.f());</pre>What is the result?",
+      opts: [
+        "Compilation fails because interface static methods are not inherited.",
+        "5",
+        "Compilation fails because a private method cannot appear in an interface.",
+        "1"
+      ],
+      a: [0],
+      why: "Arayüzlerin <code>static</code> metotları uygulayan sınıfa <b>kalıtılmaz</b>; yalnızca <code>I.f()</code> geçerlidir. <br>Gövdeli <code>private</code> arayüz metotları Java 9'dan beri <b>geçerlidir</b>; <code>SABIT</code> de örtük <code>public static final</code>'dır ve değeri atanmıştır."
+    },
+    {
+      topic: "3.7 Enum'lar",
+      q: "<pre>enum E {\n    A(1), B(2);\n    final int v;\n    E(int v) { this.v = v; System.out.print(\"c\"); }\n}\npublic static void main(String[] x) {\n    System.out.print(\"|\");\n    System.out.print(E.A.v);\n}</pre>What is the result?",
+      opts: ["|cc1", "|c1", "cc|1", "|1"],
+      a: [0],
+      why: "Enum sabitleri sınıf <b>ilk kullanıldığında</b> topluca oluşturulur — burada bu an <code>E.A</code> ifadesidir, yani <code>|</code> yazıldıktan <b>sonra</b>. İki sabit için ctor iki kez çalışır → <code>cc</code>, ardından değer <code>1</code>. <br>Ctor'ın <b>örtük private</b> olduğuna ve <code>final</code> alana ctor'da atandığına dikkat (3.1)."
+    },
+    {
+      topic: "3.8 İç sınıflar",
+      q: "<pre>class Dis {\n    private int x = 10;\n    class Ic {\n        private int x = 20;\n        int f() {\n            int x = 30;\n            return x + this.x + Dis.this.x;\n        }\n    }\n}</pre>What does f() return?",
+      opts: ["60", "90", "30", "Compilation fails."],
+      a: [0],
+      why: "Üç ayrı <code>x</code> vardır: yerel (<b>30</b>), iç sınıf alanı (<code>this.x</code> = <b>20</b>), dış sınıf alanı (<code>Dis.this.x</code> = <b>10</b>) → toplam <b>60</b>. <br>İç sınıflar dış sınıfın <code>private</code> üyelerine <b>erişebilir</b>; <code>Dis.this</code> sözdizimi yalnızca <code>static</code> olmayan iç sınıflarda geçerlidir."
+    },
+    {
+      topic: "3.8 İç sınıflar",
+      q: "<pre>Runnable r = new Runnable() {\n    public void run() { System.out.print(getClass().getSimpleName().isEmpty()); }\n};\nr.run();</pre>What is the result?",
+      opts: ["true", "false", "Compilation fails.", "Runnable"],
+      a: [0],
+      why: "Anonim sınıfların <b>adı yoktur</b>; <code>getSimpleName()</code> boş metin döner → <b>true</b>. <code>getName()</code> ise <code>Dis$1</code> gibi üretilmiş bir ad verir. <br>Aynı kod bir lambda ile yazılsaydı <code>getClass()</code> <b>çevreleyen sınıfa</b> değil, JVM'in ürettiği lambda sınıfına işaret ederdi — <code>this</code> ise çevreleyen sınıfı gösterirdi."
+    },
+    {
+      topic: "4.1 Exception temelleri",
+      q: "<pre>static int f() {\n    int x = 1;\n    try {\n        x = 2;\n        return x;\n    } finally {\n        x = 3;\n        System.out.print(\"F\");\n    }\n}\nSystem.out.println(f());</pre>What is the result?",
+      opts: ["F2", "F3", "2F", "3"],
+      a: [0],
+      why: "<code>return x;</code> çalıştığı anda dönüş değeri <b>2 olarak saklanır</b>. Ardından <code>finally</code> çalışır ve <code>F</code> yazılır; <code>x = 3</code> saklanan değeri <b>değiştirmez</b>. Metot döndükten sonra <code>println</code> <b>2</b> yazar → <b>F2</b>. <br><code>finally</code> içinde <b>yeni bir <code>return</code></b> olsaydı sonuç değişirdi."
+    },
+    {
+      topic: "4.1 Exception temelleri",
+      q: "Which of the following are checked exceptions? (Choose TWO.)",
+      opts: [
+        "java.io.IOException",
+        "java.text.ParseException",
+        "java.lang.NumberFormatException",
+        "java.util.MissingResourceException"
+      ],
+      a: [0, 1],
+      why: "<code>IOException</code> ve <code>ParseException</code> doğrudan <code>Exception</code>'ın altındadır → <b>checked</b>, yakala ya da bildir. <br><code>NumberFormatException</code> (<code>IllegalArgumentException</code> altı) ve <code>MissingResourceException</code> <code>RuntimeException</code> soyundandır → <b>unchecked</b>. \"Exception ile bitiyor\" checked olduğu anlamına <b>gelmez</b>."
+    },
+    {
+      topic: "4.2 try-with-resources",
+      q: "<pre>class K implements AutoCloseable {\n    String a;\n    K(String a) { this.a = a; System.out.print(\"a\" + a); }\n    public void close() { System.out.print(\"k\" + a); }\n}\ntry (K x = new K(\"1\"); K y = new K(\"2\")) {\n    System.out.print(\"g\");\n}</pre>What is the result?",
+      opts: ["a1a2gk2k1", "a1a2gk1k2", "a1a2k2k1g", "a2a1gk1k2"],
+      a: [0],
+      why: "Kaynaklar <b>bildirim sırasına</b> göre açılır (<code>a1</code>, <code>a2</code>), gövde çalışır (<code>g</code>), sonra <b>ters sırayla</b> kapanır (<code>k2</code>, <code>k1</code>). <br>Ters kapanışın sebebi bağımlılıktır: sonraki kaynak öncekine dayanıyor olabilir. Bu sıra dil belirtiminde <b>garanti edilmiştir</b>."
+    },
+    {
+      topic: "4.2 try-with-resources",
+      q: "<pre>class K implements AutoCloseable {\n    public void close() { throw new RuntimeException(\"kapat\"); }\n}\ntry (K k = new K()) {\n    throw new RuntimeException(\"govde\");\n} catch (Exception e) {\n    System.out.print(e.getMessage() + e.getSuppressed().length);\n}</pre>What is the result?",
+      opts: ["govde1", "kapat1", "govde0", "kapat0"],
+      a: [0],
+      why: "Hem gövde hem <code>close()</code> exception atarsa <b>gövdeninki yayılır</b> ve <code>close()</code>'unki <b>bastırılır</b> → mesaj <code>govde</code>, suppressed dizisi <b>1</b> elemanlı. <br>Klasik <code>finally</code> ile kapatsaydın gövdenin hatası <b>tamamen kaybolurdu</b> — try-with-resources'ın var oluş sebebi budur."
+    },
+    {
+      topic: "5.1 Diziler",
+      q: "<pre>int[] a = {5, 1, 3};\nint[] b = Arrays.copyOf(a, 3);\nArrays.sort(b);\nSystem.out.println(Arrays.toString(a) + Arrays.equals(a, b));</pre>What is the result?",
+      opts: ["[5, 1, 3]false", "[1, 3, 5]true", "[5, 1, 3]true", "[1, 3, 5]false"],
+      a: [0],
+      why: "<code>copyOf</code> <b>yeni bir dizi</b> üretir; <code>b</code>'yi sıralamak <code>a</code>'yı etkilemez → <code>a</code> hâlâ <code>[5, 1, 3]</code>. İçerikler farklı sırada olduğu için <code>Arrays.equals</code> <b>false</b> döner (eleman eleman ve <b>sırayla</b> karşılaştırır). <br><code>Arrays.sort</code> <code>void</code> döndüğü ve <b>yerinde</b> çalıştığı için hangi dizide çağrıldığı belirleyicidir."
+    },
+    {
+      topic: "5.2 Collections API",
+      q: "<pre>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;();\nm.put(\"a\", 1);\nm.merge(\"a\", 5, (x, y) -&gt; null);\nSystem.out.println(m);</pre>What is the result?",
+      opts: ["{}", "{a=null}", "{a=5}", "{a=6}"],
+      a: [0],
+      why: "Anahtar var olduğu için birleştirme fonksiyonu çalışır; fonksiyon <b><code>null</code> döndüğünde</b> <code>merge</code> anahtarı <b>siler</b> → boş map. <br>Aynı davranış <code>computeIfPresent</code> ve <code>compute</code>'ta da vardır. Anahtar <b>olmasaydı</b> fonksiyon hiç çağrılmaz, doğrudan <code>5</code> yazılırdı."
+    },
+    {
+      topic: "5.2 Collections API",
+      q: "Which collections reject null elements? (Choose TWO.)",
+      opts: ["PriorityQueue", "List.of(...)", "LinkedList", "LinkedHashMap"],
+      a: [0, 1],
+      why: "<code>PriorityQueue</code> elemanları <b>karşılaştırmak</b> zorundadır, <code>null</code> karşılaştırılamaz → NPE. Fabrika metotları (<code>List.of</code>, <code>Set.of</code>, <code>Map.of</code>) da <b>null kabul etmez</b>. <br><code>LinkedList</code> ve <code>LinkedHashMap</code> null'ı sorunsuz saklar. Diğer null reddedenler: <code>TreeSet</code>, <code>TreeMap</code> (anahtar), <code>ArrayDeque</code>, <code>ConcurrentHashMap</code>."
+    },
+    {
+      topic: "5.3 Sıralama ve Sequenced",
+      q: "<pre>SequencedMap&lt;String,Integer&gt; m = new LinkedHashMap&lt;&gt;();\nm.put(\"a\", 1);\nm.put(\"b\", 2);\nm.putFirst(\"c\", 3);\nSystem.out.println(m.firstEntry() + \" \" + m.reversed().firstEntry());</pre>What is the result?",
+      opts: ["c=3 b=2", "a=1 b=2", "c=3 c=3", "a=1 c=3"],
+      a: [0],
+      why: "<code>putFirst</code> girdiyi <b>en başa</b> koyar → sıra <code>c, a, b</code>. <code>firstEntry()</code> <b>c=3</b>, ters görünümün ilki ise <b>b=2</b>'dir. <br><code>TreeMap</code>'te <code>putFirst</code> <b>UnsupportedOperationException</b> atardı; <code>HashMap</code>'te ise metot <b>hiç bulunmaz</b> — o <code>SequencedMap</code> değildir."
+    },
+    {
+      topic: "5.3 Sıralama ve Sequenced",
+      q: "<pre>List&lt;String&gt; l = new ArrayList&lt;&gt;(List.of(\"bb\", \"a\", \"ccc\"));\nl.sort(Comparator.comparingInt(String::length).reversed());\nSystem.out.println(l);</pre>What is the result?",
+      opts: ["[ccc, bb, a]", "[a, bb, ccc]", "[bb, a, ccc]", "Compilation fails."],
+      a: [0],
+      why: "Uzunluğa göre artan sıra <code>[a, bb, ccc]</code>'dir; <code>reversed()</code> bunu tamamen çevirir → <b>[ccc, bb, a]</b>. <br><code>reversed()</code> her zaman <b>kendinden önceki zincirin tamamına</b> uygulanır; <code>thenComparing</code> ondan sonra eklenirse <b>düz</b> kalır."
+    },
+    {
+      topic: "6.1 Lambda ve fonksiyonel arayüzler",
+      q: "<pre>Function&lt;Integer,Integer&gt; f = x -&gt; x + 2;\nFunction&lt;Integer,Integer&gt; g = x -&gt; x * 3;\nSystem.out.println(f.compose(g).andThen(f).apply(2));</pre>What is the result?",
+      opts: ["10", "12", "14", "24"],
+      a: [0],
+      why: "Zincir soldan sağa okunur ama <code>compose</code> <b>önce argümanı</b> çalıştırır: <code>g(2) = 6</code>, sonra <code>f(6) = 8</code>. Ardından <code>andThen(f)</code> sonucu tekrar <code>f</code>'ten geçirir: <code>f(8) = 10</code>. <br><b>Kanca:</b> <code>compose</code> geriye, <code>andThen</code> ileriye doğru çalışır."
+    },
+    {
+      topic: "6.1 Lambda ve fonksiyonel arayüzler",
+      q: "Which method references compile when assigned to <code>Function&lt;String,Integer&gt;</code>? (Choose TWO.)",
+      opts: [
+        "String::length",
+        "Integer::parseInt",
+        "String::isEmpty",
+        "Integer::valueOf"
+      ],
+      a: [0, 1],
+      why: "<code>String::length</code> \"rastgele nesnenin metodu\" biçimidir: <code>String</code> alır, <code>int</code> döner (autoboxing ile <code>Integer</code>). <code>Integer::parseInt</code> <b>static</b> biçimdir: <code>String</code> alır, <code>int</code> döner. <br><code>String::isEmpty</code> <code>boolean</code> döner (uymaz). <code>Integer::valueOf</code> ise <b>belirsizdir</b>: <code>valueOf(String)</code> ve <code>valueOf(int)</code> aşırı yüklemeleri arasında derleyici seçim yapamaz."
+    },
+    {
+      topic: "6.2 Stream ve ara işlemler",
+      q: "<pre>System.out.println(\n    Stream.iterate(1, x -&gt; x + 2)\n          .limit(5)\n          .filter(x -&gt; x &gt; 3)\n          .findFirst()\n          .orElse(-1));</pre>What is the result?",
+      opts: ["5", "1", "-1", "The program never terminates."],
+      a: [0],
+      why: "<code>iterate</code> tek sayıları üretir: 1, 3, 5, 7, 9. <code>limit(5)</code> bunları sınırlar, <code>filter</code> 3'ten büyük olanları alır (5, 7, 9), <code>findFirst</code> ilkini döner → <b>5</b>. <br><code>limit</code> sonsuz kaynağı sonlandırdığı için program biter; <code>limit</code> yerine <code>sorted()</code> olsaydı <b>asla bitmezdi</b>."
+    },
+    {
+      topic: "6.2 Stream ve ara işlemler",
+      q: "<pre>Optional&lt;String&gt; o = Optional.of(\"java\")\n    .filter(s -&gt; s.length() &gt; 10)\n    .map(String::toUpperCase);\nSystem.out.println(o.orElseGet(() -&gt; \"yok\"));</pre>What is the result?",
+      opts: ["yok", "JAVA", "java", "A NoSuchElementException is thrown."],
+      a: [0],
+      why: "<code>filter</code> koşul sağlanmadığı için Optional'ı <b>boşaltır</b>; sonraki <code>map</code> boş Optional üzerinde çalıştığı için <b>hiç çağrılmaz</b> ve boşluk yayılır. <code>orElseGet</code> yedek değeri üretir → <b>yok</b>. <br>Zincirin herhangi bir adımı boşluk üretirse gerisi <b>sessizce atlanır</b> — Optional'ın temel davranışı budur."
+    },
+    {
+      topic: "6.3 Terminal işlemler ve Collectors",
+      q: "<pre>System.out.println(\n    Stream.of(\"aa\", \"b\", \"cc\")\n          .collect(Collectors.partitioningBy(s -&gt; s.length() == 2,\n                                             Collectors.counting())));</pre>What is the result?",
+      opts: ["{false=1, true=2}", "{true=2, false=1}", "{false=[b], true=[aa, cc]}", "{true=2}"],
+      a: [0],
+      why: "<code>partitioningBy</code> <b>her zaman</b> <code>false</code> ve <code>true</code> anahtarlarını içerir ve döndüğü map <code>false</code>'u <b>önce</b> yazdırır. Downstream <code>counting()</code> verildiği için değerler <b>Long</b> sayılardır. <br>Downstream verilmeseydi değerler <code>List</code> olurdu (üçüncü şık)."
+    },
+    {
+      topic: "6.3 Terminal işlemler ve Collectors",
+      q: "<pre>System.out.println(\n    Stream.of(\"a\", \"bb\", \"a\")\n          .collect(Collectors.toMap(s -&gt; s, String::length, (x, y) -&gt; x + y)));</pre>What is the result?",
+      opts: ["{bb=2, a=2}", "An IllegalStateException is thrown.", "{a=1, bb=2}", "{bb=2, a=1}"],
+      a: [0],
+      why: "<code>\"a\"</code> anahtarı iki kez üretilir; <b>merge fonksiyonu</b> verildiği için exception atılmaz ve değerler toplanır (<code>1 + 1 = 2</code>). <br>Merge fonksiyonu <b>olmasaydı</b> <code>IllegalStateException: Duplicate key</code> alırdın. Sonuç bir <code>HashMap</code>'tir, sıra garantisi yoktur."
+    },
+    {
+      topic: "6.4 Primitif ve paralel stream",
+      q: "<pre>System.out.println(IntStream.rangeClosed(1, 4).boxed()\n    .collect(Collectors.averagingInt(i -&gt; i)));</pre>What is the result?",
+      opts: ["2.5", "2", "10", "Compilation fails."],
+      a: [0],
+      why: "1+2+3+4 = 10, dört eleman → ortalama <b>2.5</b>. <code>averagingInt</code> her zaman <b><code>Double</code></b> döner (tam bölünse bile). <br><code>boxed()</code> gereklidir çünkü <code>collect(Collector)</code> nesne stream'ine aittir; <code>IntStream</code> üzerinde doğrudan <code>average()</code> çağrılsaydı <b>OptionalDouble</b> dönerdi."
+    },
+    {
+      topic: "6.4 Primitif ve paralel stream",
+      q: "Which statements about parallel streams are correct? (Choose TWO.)",
+      opts: [
+        "findAny may return a different element on each run.",
+        "An incorrect reduce identity can produce a wrong result only in parallel.",
+        "forEachOrdered is faster than forEach on a parallel stream.",
+        "Parallel streams always improve performance for large data sets."
+      ],
+      a: [0, 1],
+      why: "<code>findAny</code> \"herhangi biri\" der ve paralelde <b>farklı elemanlar</b> dönebilir — bu yüzden hızlıdır. Yanlış identity paralel bölünmede her parçaya ayrı uygulandığı için <b>yalnızca paralelde</b> bozulur; sıralıda doğru görünür. <br><code>forEachOrdered</code> sırayı korumak için ek iş yapar, <b>daha yavaştır</b>. Paralellik I/O ağırlıklı veya küçük işlerde <b>fayda getirmez</b>."
+    },
+    {
+      topic: "7.1 Modül tanımlama",
+      q: "<pre>module m {\n    requires transitive n;\n    exports com.m to com.x;\n    opens com.m.model;\n}</pre>Which statement is correct?",
+      opts: [
+        "Modules that require m can also read n.",
+        "Every module can access com.m.",
+        "com.m.model is accessible at compile time to all modules.",
+        "opens and exports cannot appear in the same module."
+      ],
+      a: [0],
+      why: "<code>requires transitive n</code> bağımlılığı <b>m'i kullananlara da</b> geçirir — <code>m</code>'in API'si <code>n</code>'in tiplerini döndürüyorsa bu şarttır. <br><code>exports ... to</code> <b>nitelikli</b> export'tur: yalnızca <code>com.x</code> erişir. <code>opens</code> yalnızca <b>çalışma zamanı yansıması</b> verir, derleme erişimi vermez; ikisi aynı modülde <b>rahatça</b> bulunabilir."
+    },
+    {
+      topic: "7.2 Derleme ve migrasyon",
+      q: "Which command correctly runs a modular application packaged as JARs in the <code>libs</code> directory?",
+      opts: [
+        "java -p libs -m com.app/com.app.Main",
+        "java -cp libs -m com.app.Main",
+        "java -p libs --module com.app.Main",
+        "java -m libs -p com.app/com.app.Main"
+      ],
+      a: [0],
+      why: "<code>-p</code> = <code>--module-path</code> ve <code>-m</code> = <code>--module</code>; ikincisinin değeri <b><code>modulAdi/SinifTamAdi</code></b> biçimindedir. <br>Jar'ın manifest'inde <code>Main-Class</code> tanımlıysa kısaca <code>java -p libs -m com.app</code> da yeterlidir. <code>-cp</code> classpath'tir ve modül yolunun yerini <b>tutmaz</b>."
+    },
+    {
+      topic: "8.1 Thread'ler ve virtual thread'ler",
+      q: "<pre>Thread t = Thread.ofVirtual().unstarted(() -&gt; { });\nSystem.out.println(t.isDaemon() + \" \" + t.getState());</pre>What is the result?",
+      opts: ["true NEW", "false NEW", "true RUNNABLE", "false TERMINATED"],
+      a: [0],
+      why: "Virtual thread'ler <b>her zaman daemon</b>'dır (değiştirilemez) ve <code>unstarted</code> henüz başlatmadığı için durum <b>NEW</b>'dur. <br><code>ofPlatform().unstarted(...)</code> olsaydı <code>isDaemon()</code> varsayılan olarak <b>false</b> dönerdi. Virtual thread'ler daemon olduğu için JVM'in kapanmasını <b>engellemez</b> — bitmelerini beklemek için <code>join()</code> veya bir executor gerekir."
+    },
+    {
+      topic: "8.2 ExecutorService",
+      q: "<pre>try (var e = Executors.newSingleThreadExecutor()) {\n    Future&lt;Integer&gt; f = e.submit(() -&gt; { throw new IllegalStateException(\"x\"); });\n    System.out.print(\"A\");\n}\nSystem.out.print(\"B\");</pre>What is printed?",
+      opts: ["AB", "A followed by a stack trace, then B", "AxB", "B only"],
+      a: [0],
+      why: "Görevin exception'ı <code>Future</code>'ın içinde saklanır ve <code>get()</code> <b>hiç çağrılmadığı</b> için sessizce kaybolur. <code>close()</code> görevlerin bitmesini bekler ama hataları <b>raporlamaz</b> → yalnızca <b>AB</b>. <br>Bu, gerçek projelerde en tehlikeli kalıplardan biridir: <code>submit</code> edip <code>Future</code>'ı yok saymak hataları görünmez yapar."
+    },
+    {
+      topic: "8.2 ExecutorService",
+      q: "Which statements about ExecutorService are correct? (Choose TWO.)",
+      opts: [
+        "shutdown() does not wait for running tasks to finish.",
+        "Submitting a task after shutdown() throws RejectedExecutionException.",
+        "shutdownNow() guarantees that all running tasks stop immediately.",
+        "isShutdown() returns true only after all tasks have completed."
+      ],
+      a: [0, 1],
+      why: "<code>shutdown()</code> yalnızca \"yeni görev alma\" bayrağını çevirir ve <b>hemen döner</b>; beklemek için <code>awaitTermination</code> gerekir. Kapatıldıktan sonra <code>submit</code> <b>RejectedExecutionException</b> atar. <br><code>shutdownNow()</code> yalnızca <b>kesmeye çalışır</b> — garanti vermez. <code>isShutdown()</code> \"çağrıldı mı\", <code>isTerminated()</code> \"bitti mi\" sorusudur."
+    },
+    {
+      topic: "8.3 Thread safety",
+      q: "<pre>AtomicInteger a = new AtomicInteger(10);\nSystem.out.println(a.updateAndGet(v -&gt; v / 2) + \" \" + a.getAndUpdate(v -&gt; v + 1) + \" \" + a.get());</pre>What is the result?",
+      opts: ["5 5 6", "5 6 6", "10 5 6", "5 5 5"],
+      a: [0],
+      why: "<code>updateAndGet</code> <b>yeni</b> değeri döner: 10/2 = <b>5</b>. <code>getAndUpdate</code> <b>eski</b> değeri döner (<b>5</b>) ve alanı 6 yapar. Son <code>get()</code> → <b>6</b>. <br><code>get</code> öneki \"eski\", sonek yokluğu \"yeni\" demektir — <code>i++</code> / <code>++i</code> ayrımının atomic karşılığı (1.1)."
+    },
+    {
+      topic: "8.3 Thread safety",
+      q: "Which statement about <code>CopyOnWriteArrayList</code> is correct?",
+      opts: [
+        "Iterating over it while adding elements does not throw ConcurrentModificationException.",
+        "It is optimised for workloads with frequent writes.",
+        "It rejects null elements.",
+        "Its iterator reflects changes made during iteration."
+      ],
+      a: [0],
+      why: "Her yazma işlemi iç diziyi <b>kopyaladığı</b> için iterator <b>eski anlık görüntüyü</b> gezer; bu yüzden <code>ConcurrentModificationException</code> atılmaz ama iterasyon sırasındaki değişiklikler de <b>görünmez</b>. <br>Kopyalama maliyeti yüzünden <b>okuma ağırlıklı</b> senaryolar için tasarlanmıştır; null elemanları <b>kabul eder</b>."
+    },
+    {
+      topic: "9.1 I/O ve serialization",
+      q: "<pre>class A implements Serializable {\n    int x = 1;\n    transient String s = \"ilk\";\n    A() { x = 99; }\n}</pre>An instance with x=5 and s=\"son\" is serialized and then deserialized. What are x and s?",
+      opts: ["x=5, s=null", "x=99, s=\"ilk\"", "x=5, s=\"son\"", "x=1, s=null"],
+      a: [0],
+      why: "<code>x</code> normal bir alan olduğu için akıştan <b>5</b> gelir. <code>transient s</code> hiç yazılmaz ve geri okunduğunda tipin <b>varsayılanı</b> olan <b><code>null</code></b> olur. <br>Sınıfın <b>constructor'ı ve alan initializer'ları çalışmaz</b>; bu yüzden <code>x = 99</code> ve <code>s = \"ilk\"</code> satırlarının hiçbir etkisi yoktur."
+    },
+    {
+      topic: "9.2 NIO.2",
+      q: "<pre>Path p = Path.of(\"/a/b/c\").resolve(\"../d\").normalize();\nSystem.out.println(p + \" \" + p.getNameCount());</pre>What is the result?",
+      opts: ["/a/b/d 3", "/a/b/c/../d 5", "/a/b/d 4", "/a/d 2"],
+      a: [0],
+      why: "<code>resolve(\"../d\")</code> göreli yolu ekler → <code>/a/b/c/../d</code>; <code>normalize()</code> <code>..</code>'yi çözer → <b>/a/b/d</b>. <code>getNameCount()</code> kökü <b>saymaz</b> → <code>a</code>, <code>b</code>, <code>d</code> = <b>3</b>. <br><code>normalize</code> çağrılmasaydı yol metin olarak <code>..</code> içermeye devam ederdi ve <code>getNameCount()</code> 5 olurdu."
+    },
+    {
+      topic: "9.2 NIO.2",
+      q: "Which Files methods return a Stream that must be closed? (Choose TWO.)",
+      opts: ["Files.lines", "Files.walk", "Files.readAllLines", "Files.readString"],
+      a: [0, 1],
+      why: "<code>Files.lines</code>, <code>Files.list</code>, <code>Files.walk</code> ve <code>Files.find</code> <b>açık bir dosya tanıtıcısı</b> tutan tembel stream'ler döner ve try-with-resources ile kapatılmalıdır. <br><code>readAllLines</code> ve <code>readString</code> ise dosyayı <b>tamamen okuyup kapatır</b>; sırasıyla <code>List&lt;String&gt;</code> ve <code>String</code> dönerler, kapatma gerektirmezler."
+    },
+    {
+      topic: "10.1 Yerelleştirme",
+      q: "<pre>// Mesaj_fr.properties : selam=Bonjour\n// Mesaj.properties    : selam=Hello, veda=Bye\nLocale.setDefault(Locale.of(\"en\", \"US\"));\nvar b = ResourceBundle.getBundle(\"Mesaj\", Locale.of(\"fr\", \"FR\"));\nSystem.out.println(b.getString(\"selam\") + \" \" + b.getString(\"veda\"));</pre>What is the result?",
+      opts: ["Bonjour Bye", "Hello Bye", "Bonjour null", "A MissingResourceException is thrown."],
+      a: [0],
+      why: "<code>Mesaj_fr_FR</code> yoktur, zincir <code>Mesaj_fr</code>'ye düşer ve <code>selam</code> oradan gelir → <b>Bonjour</b>. <code>veda</code> orada yoktur, arama <b>daha genele</b> devam eder ve default bundle'dan <b>Bye</b> alınır. <br>Anahtar hiçbir bundle'da olmasaydı <code>MissingResourceException</code> atılırdı — <code>null</code> asla dönmez."
+    },
+    {
+      topic: "5.2 Collections API",
+      q: "<pre>Deque&lt;Integer&gt; d = new ArrayDeque&lt;&gt;();\nd.offer(1);\nd.push(2);\nd.addLast(3);\nSystem.out.println(d + \" \" + d.poll());</pre>What is the result?",
+      opts: ["[2, 1, 3] 2", "[1, 2, 3] 1", "[2, 1, 3] 3", "[3, 2, 1] 3"],
+      a: [0],
+      why: "<code>offer</code> <b>sona</b> ekler (kuyruk davranışı) → <code>[1]</code>. <code>push</code> <b>başa</b> ekler (yığın davranışı) → <code>[2, 1]</code>. <code>addLast</code> yine sona ekler → <code>[2, 1, 3]</code>. <code>poll</code> <b>baştan</b> alır → <b>2</b>. <br><code>Deque</code> hem kuyruk hem yığın olarak kullanılabilir; hangi ucun kullanıldığını <b>metot adı</b> belirler ve sınav bunları kasten karıştırır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

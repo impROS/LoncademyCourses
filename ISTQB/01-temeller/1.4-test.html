@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.4 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-1-4",
+  code: "Fundamentals of Testing · 1.4",
+  title: "Test Aktiviteleri, Testware ve Roller",
+  back: "1.4-test-aktiviteleri.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Test aktiviteleri",
+      q: "During which test activity are test conditions identified?",
+      opts: ["Test analysis", "Test design", "Test implementation", "Test planning"],
+      a: [0],
+      why: "<b>Test analysis 'neyi test edeceğiz' sorusunu cevaplar ve test condition üretir.</b> Test design bir adım sonrasıdır: condition'lardan test case üretir. Kanca: analiz = <b>NE</b>, design = <b>NASIL</b>."
+    },
+    {
+      topic: "Test aktiviteleri",
+      q: "The team has agreed that the discount boundary at 500 must be exercised, but has not yet chosen which concrete values to use. Which activity has been completed?",
+      opts: ["Test analysis", "Test design", "Test execution", "Test completion"],
+      a: [0],
+      why: "<b>Somut değerler seçilmediyse henüz test case yok, sadece test condition var.</b> 499/500/501 değerleri seçildiği anda test design tamamlanmış olur. Bu senaryo, iki aktivite arasındaki sınırı tam olarak gösteren tipik sınav sorusudur."
+    },
+    {
+      topic: "Test aktiviteleri",
+      q: "Preparing test data and setting up the test environment belong to which test activity?",
+      opts: ["Test implementation", "Test design", "Test analysis", "Test monitoring and control"],
+      a: [0],
+      why: "<b>Implementation, test case'leri koşulabilir hale getirir</b>: veri hazırlanır, ortam kurulur, prosedürler sıraya dizilir, otomasyon script'i yazılır. Test design sadece test verisinin <i>gereksinimini</i> belirler — veriyi üretmez."
+    },
+    {
+      topic: "Test aktiviteleri",
+      q: "Which testware is produced by the test completion activity?",
+      opts: [
+        "Test completion report",
+        "Test progress report",
+        "Test procedures",
+        "Test conditions"
+      ],
+      a: [0],
+      why: "<b>Test completion report kapanış aktivitesinin ürünüdür.</b> Test progress report monitoring & control'de üretilir — isimleri benzer olduğu için en yakın çeldirici odur. Procedures implementation'da, conditions analysis'te üretilir."
+    },
+    {
+      topic: "Test aktiviteleri",
+      q: "In which activities can defect reports be produced? (Choose TWO.)",
+      opts: [
+        "Test analysis",
+        "Test execution",
+        "Test planning",
+        "Test completion"
+      ],
+      a: [0, 1],
+      why: "<b>Test execution dinamik testte arıza gözleyip kusur raporlar; test analysis ise statik testle test tabanındaki kusurları (belirsizlik, çelişki, eksiklik) doğrudan bulur.</b> Bu ikinci yol sık atlanır — test analysis sadece condition üretmez, aynı zamanda statik test yapar."
+    },
+    {
+      topic: "Testware",
+      q: "Which of the following is testware produced during test design?",
+      opts: [
+        "Test cases and coverage items",
+        "Test logs",
+        "The test plan",
+        "The test completion report"
+      ],
+      a: [0],
+      why: "<b>Test case'ler, coverage item'lar, test charter'lar ve test verisi gereksinimleri design'ın ürünüdür.</b> Test log execution'da, test plan planning'de, completion report completion'da üretilir."
+    },
+    {
+      topic: "İzlenebilirlik",
+      q: "A requirement is changed late in the project. Which benefit of traceability MOST directly helps the team decide which test cases must be updated?",
+      opts: [
+        "Impact analysis",
+        "Auditability",
+        "Improving the readability of the test report for non-technical stakeholders",
+        "Relating the test process to business objectives"
+      ],
+      a: [0],
+      why: "<b>Etki analizi, bir değişikliğin hangi testware'i etkilediğini gösterir.</b> Diğer üçü de izlenebilirliğin gerçek faydalarıdır ama sorunun sorduğu şey değildir — <code>MOST directly</code> ifadesi bunu haber veriyor."
+    },
+    {
+      topic: "İzlenebilirlik",
+      q: "Which of the following is part of the test basis?",
+      opts: [
+        "The requirements specification and the risk register",
+        "The test logs from the previous release",
+        "The defect reports raised during execution",
+        "The test completion report"
+      ],
+      a: [0],
+      why: "<b>Test basis, testin dayandığı kaynaktır</b>: gereksinimler, user story'ler, kabul kriterleri, tasarım, kod, risk kaydı, standartlar. Diğer üç şık test aktivitelerinin <i>çıktısı</i> olan testware'lerdir, girdisi değil."
+    },
+    {
+      topic: "Roller",
+      q: "Who is typically responsible for scheduling test resources and reporting test progress to stakeholders?",
+      opts: [
+        "The test management role",
+        "The testing role",
+        "The developer performing debugging",
+        "The person who writes the automated test scripts"
+      ],
+      a: [0],
+      why: "<b>Kaynak yönetimi, program ve raporlama test yönetimi rolüne aittir.</b> Testing role teknik işi yapar: analiz, tasarım, implementation, yürütme. Otomasyon script'i yazan kişi testing role içindedir."
+    },
+    {
+      topic: "Roller",
+      q: "An Agile team has no dedicated test manager. Which statement is correct?",
+      opts: [
+        "Test management responsibilities may be taken by a team lead, the product owner, or the team itself",
+        "Test management cannot be performed without a dedicated test manager",
+        "The team must hire a test manager before test planning can begin",
+        "In Agile teams, test management activities are not required"
+      ],
+      a: [0],
+      why: "<b>Roller kişi değil, sorumluluktur ve dağıtılabilir.</b> İkinci ve üçüncü şıklar mutlak bir zorunluluk uyduruyor; dördüncü şık ise test yönetiminin gerekliliğini yok sayıyor — çevik ekiplerde de planlama, izleme ve tamamlama yapılır."
+    },
+    {
+      topic: "Roller",
+      q: "Which two of the following belong to the testing role rather than the test management role? (Choose TWO.)",
+      opts: [
+        "Designing test cases from test conditions",
+        "Executing tests and reporting defects",
+        "Deciding the overall test approach in the test plan",
+        "Monitoring progress against the test schedule"
+      ],
+      a: [0, 1],
+      why: "<b>Tasarım ve yürütme teknik test işidir (testing role).</b> Test yaklaşımına karar vermek ve programa göre ilerlemeyi izlemek yönetim rolüne aittir. Aynı kişinin ikisini birden yapabileceğini unutma — soru kişiyi değil <i>rolü</i> soruyor."
+    },
+    {
+      topic: "Test süreci bağlamı",
+      q: "Which of the following factors influence the test process in a given organization? (Choose TWO.)",
+      opts: [
+        "The software development lifecycle being used",
+        "The level of risk and the regulatory requirements of the domain",
+        "The number of test cases written in the previous project",
+        "The alphabetical order of the modules under test"
+      ],
+      a: [0, 1],
+      why: "<b>Yaşam döngüsü ve alan riski/regülasyonu test sürecini doğrudan şekillendirir.</b> Bu, prensip 6'nın (testing is context dependent) uygulamasıdır. Son iki şık uydurmadır."
+    },
+    {
+      topic: "Test aktiviteleri",
+      q: "Which activity involves comparing actual results with expected results?",
+      opts: ["Test execution", "Test implementation", "Test design", "Test monitoring and control"],
+      a: [0],
+      why: "<b>Gerçek sonucu beklenen sonuçla karşılaştırmak yürütmenin tanımıdır.</b> Beklenen sonuç test design'da belirlenir, ama karşılaştırma execution'da yapılır. Implementation testi koşulabilir hale getirir, koşmaz."
+    },
+    {
+      topic: "İzlenebilirlik",
+      q: "Which statement about traceability is correct?",
+      opts: [
+        "Traceability supports coverage measurement by showing which parts of the test basis are covered by tests",
+        "Traceability is only required in Agile projects",
+        "Traceability replaces the need for a test plan",
+        "Traceability guarantees that all defects will be found"
+      ],
+      a: [0],
+      why: "<b>İzlenebilirlik, test tabanının hangi kısımlarının test edildiğini gösterir; bu da kapsam ölçümüdür.</b> İkinci şık yanlış (özellikle regüle ve şelale projelerde kritiktir), üçüncüsü uydurma, dördüncüsü <code>guarantees</code> içeriyor ve prensip 1'i ihlal ediyor."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

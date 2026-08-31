@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.1",
+  code: "1. alan · Bulut Kavramları · Görev 1.1",
+  title: "AWS Bulutunun Faydaları",
+  back: "1.1-bulut-faydalari.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Agility (çeviklik)",
+      q: "A development team can now provision test servers in 3 minutes instead of waiting 6 weeks for hardware procurement. Which benefit of the AWS Cloud does this describe?",
+      opts: ["Agility", "Elasticity", "Fault tolerance", "Economies of scale"],
+      a: [0],
+      why: "Anahtar ifade <b>in 3 minutes instead of 6 weeks</b> — yani <b>hayata geçirme hızı</b>. Bu <b>agility</b>dir. Elasticity talebe göre otomatik büyüyüp küçülmeyi anlatır; burada talepten söz edilmiyor. Fault tolerance kesintisiz çalışmayla, economies of scale ise AWS toplu alım gücüyle ilgilidir."
+    },
+    {
+      topic: "Elasticity vs Scalability",
+      q: "An application automatically adds EC2 instances when traffic increases and removes them when traffic drops at night. Which concept does this describe?",
+      opts: ["Elasticity", "Vertical scaling", "High availability", "Agility"],
+      a: [0],
+      why: "İki yön var: <b>ekliyor VE kaldırıyor</b>, üstelik <b>otomatik</b>. Bu tanım tam olarak <b>elasticity</b>. Scalability yalnızca büyüyebilmeyi ifade eder, küçülmeyi garanti etmez. Sınavda <b>automatically</b> + <b>scale in / remove</b> ikilisini gördüğünde refleksin elasticity olsun. AWS servisi: Auto Scaling."
+    },
+    {
+      topic: "Elasticity vs Scalability",
+      q: "A company changes an EC2 instance type from t3.small to m5.4xlarge to handle a heavier workload. What is this an example of?",
+      opts: ["Vertical scaling (scaling up)", "Horizontal scaling (scaling out)", "Elasticity", "Loose coupling"],
+      a: [0],
+      why: "Aynı makineyi <b>büyütmek</b> = <b>vertical scaling / scale up</b>. Makine <i>sayısını</i> artırmak olsaydı horizontal scaling / scale out olurdu. Sınav notu: AWS genelde <b>scale out</b>u önerir, çünkü scale up en büyük instance boyutuyla sınırlıdır ve genelde yeniden başlatma gerektirir."
+    },
+    {
+      topic: "HA / FT / DR",
+      q: "A workload is designed so that it continues to operate with NO interruption and no loss of performance even if an entire component fails. Which characteristic does this describe?",
+      opts: ["Fault tolerance", "High availability", "Elasticity", "Durability"],
+      a: [0],
+      why: "<b>No interruption</b> ifadesi <b>fault tolerance</b>ın imzasıdır. High availability kısa kesintiyi kabul eder — sistem hızla toparlanır ama birkaç saniye/dakika aksama olabilir. FT daha güçlü ve daha pahalı bir taahhüttür."
+    },
+    {
+      topic: "HA / FT / DR",
+      q: "A company deploys its application across two Availability Zones behind an Elastic Load Balancer so that the application stays reachable if one AZ has an outage. Which concept is the company implementing?",
+      opts: ["High availability", "Disaster recovery", "Economies of scale", "Data sovereignty"],
+      a: [0],
+      why: "Birden çok AZ + Load Balancer = klasik <b>high availability</b> mimarisi. Disaster recovery, region kaybı gibi <b>felaket sonrası geri dönüş planı</b>dır (yedekler, RTO/RPO). Burada anlatılan günlük çalışmada erişilebilir kalmak."
+    },
+    {
+      topic: "Durability vs Availability",
+      q: "Amazon S3 Standard is designed for 99.999999999% (11 nines) of what?",
+      opts: ["Durability of objects", "Availability of objects", "Uptime of the console", "Request success rate"],
+      a: [0],
+      why: "11 dokuz <b>durability</b> (dayanıklılık) rakamıdır: <b>veri kaybolmaz</b>. S3 Standard için <b>availability</b> (erişilebilirlik) hedefi ise %99,99tur. Ayrım: durability = veri duruyor mu · availability = veriye şu anda ulaşabiliyor muyum."
+    },
+    {
+      topic: "CapEx / OpEx ve ölçek ekonomisi",
+      q: "Which statement best explains why AWS can offer lower per-unit infrastructure costs than most companies achieve in their own data centers?",
+      opts: [
+        "AWS aggregates usage from hundreds of thousands of customers and achieves economies of scale",
+        "AWS does not pay for electricity in its data centers",
+        "AWS charges customers an annual license fee that subsidizes hardware",
+        "AWS requires all customers to sign 3-year contracts"
+      ],
+      a: [0],
+      why: "<b>Economies of scale</b>: AWS yüz binlerce müşterinin kullanımını topladığı için donanımı, elektriği ve bant genişliğini toptan alır, birim maliyeti düşer ve bu tasarrufu fiyat indirimi olarak yansıtır. Dikkat: ölçek ekonomisi <i>senin</i> çok kullanmanla değil, <b>AWSin toplu alım gücüyle</b> ilgilidir."
+    },
+    {
+      topic: "CapEx / OpEx ve ölçek ekonomisi",
+      q: "A company stops purchasing servers upfront and instead pays monthly only for the compute it consumes. Which financial shift does this represent?",
+      opts: [
+        "Capital expense to variable (operational) expense",
+        "Variable expense to capital expense",
+        "Operational expense to depreciation",
+        "Fixed expense to fixed expense"
+      ],
+      a: [0],
+      why: "Peşin donanım yatırımı = <b>CapEx</b>. Kullandıkça aylık ödeme = <b>OpEx / değişken gider</b>. Bulutun altı faydasından ilki budur: <i>trade fixed expense for variable expense</i>. Asıl kazanç muhasebe değil <b>risk</b>: yanlış tahminde elinde atıl donanım kalmaz."
+    },
+    {
+      topic: "Global erişim",
+      q: "Users in Southeast Asia report high latency when accessing an application hosted only in the us-east-1 Region. Which two approaches address this? (Choose TWO.)",
+      opts: [
+        "Deploy the application in an AWS Region closer to those users",
+        "Use Amazon CloudFront to cache content at edge locations near the users",
+        "Increase the size of the EC2 instances in us-east-1",
+        "Enable versioning on the Amazon S3 bucket",
+        "Purchase Reserved Instances for us-east-1"
+      ],
+      a: [0, 1],
+      why: "Gecikme <b>mesafe</b> sorunudur; çözüm içeriği <b>kullanıcıya yaklaştırmak</b>tır: ya yeni bir <b>Region</b>a yayılmak ya da <b>CloudFront</b> edge location kullanmak. Instance büyütmek işlem gücünü artırır, mesafeyi kısaltmaz. Versioning veri koruma, Reserved Instances ise fiyatlandırma konusudur."
+    },
+    {
+      topic: "Bulutun 6 faydası",
+      q: "Which two statements describe benefits of the AWS Cloud as defined by AWS? (Choose TWO.)",
+      opts: [
+        "Stop guessing capacity",
+        "Go global in minutes",
+        "AWS manages the customer application code",
+        "AWS guarantees 100% uptime for all services",
+        "Customers must commit to a minimum 1-year term"
+      ],
+      a: [0, 1],
+      why: "AWSin altı faydası: değişken gidere geçiş · ölçek ekonomisi · <b>kapasite tahmininden kurtulma</b> · hız ve çeviklik · veri merkezi işletmekten kurtulma · <b>dakikalar içinde global olma</b>. Diğer şıklar klasik tuzaktır: AWS <b>müşteri kodunu yönetmez</b> (paylaşılan sorumluluk), <b>%100 uptime garanti etmez</b> ve taahhüt zorunlu değildir. Sınavda <i>guarantees</i>, <i>100%</i>, <i>always</i>, <i>must</i> gibi mutlak ifadeler genelde yanlış şıktır."
+    },
+    {
+      topic: "HA / FT / DR",
+      q: "In a disaster recovery plan, which metric defines the maximum acceptable amount of DATA LOSS measured in time?",
+      opts: [
+        "Recovery Point Objective (RPO)",
+        "Recovery Time Objective (RTO)",
+        "Service Level Agreement (SLA)",
+        "Mean Time Between Failures (MTBF)"
+      ],
+      a: [0],
+      why: "<b>RPO</b> = kabul edilebilir <b>veri kaybı</b> (son yedek ne kadar eski olabilir). <b>RTO</b> = kabul edilebilir <b>kesinti süresi</b> (ne kadar sürede ayağa kalkmalı). Karıştırmamak için: RPO <b>P</b>oint = geçmişteki bir <b>nokta</b>ya kadar veri; RTO <b>T</b>ime = geri dönme <b>süresi</b>."
+    },
+    {
+      topic: "Bulutun 6 faydası",
+      q: "A company moves to AWS and no longer needs to hire staff for racking servers, replacing failed disks, and managing data center power and cooling. Which AWS Cloud benefit is this?",
+      opts: [
+        "Stop spending money running and maintaining data centers, and focus on customers",
+        "Elasticity",
+        "Loose coupling",
+        "Data sovereignty"
+      ],
+      a: [0],
+      why: "Rack, disk değişimi, elektrik ve soğutma AWSin deyimiyle <b>undifferentiated heavy lifting</b>tir — işine değer katmayan ağır iş. Bulut bunu ortadan kaldırır ve altı faydadan birini oluşturur. Sınavda <i>undifferentiated heavy lifting</i> veya <i>focus on customers instead of infrastructure</i> ifadesini görürsen cevap budur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

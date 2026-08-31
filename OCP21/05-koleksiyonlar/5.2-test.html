@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-5.2",
+  code: "Koleksiyonlar · 5.2",
+  title: "List, Set, Map, Deque ve Generics",
+  back: "5.2-collections-api.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "remove overload tuzağı",
+      q: "<pre>List&lt;Integer&gt; l = new ArrayList&lt;&gt;(List.of(10, 20, 30));\nl.remove(1);\nSystem.out.println(l);</pre>What is the result?",
+      opts: [
+        "[10, 30]",
+        "[10, 20, 30]",
+        "[20, 30]",
+        "An IndexOutOfBoundsException is thrown."
+      ],
+      a: [0],
+      why: "<code>List</code> hem <code>remove(int index)</code> hem <code>remove(Object o)</code> bildirir. <code>1</code> bir <code>int</code> literali olduğu için <b>tam eşleşme</b> kazanır (3.2: tam eşleşme kutulamayı yener) ve <b>1. indeks</b> yani 20 silinir. <br>Değere göre silmek için <code>l.remove(Integer.valueOf(1))</code> yazılmalıdır — o da listede 1 olmadığı için hiçbir şey silmezdi."
+    },
+    {
+      topic: "Fabrika metotları",
+      q: "<pre>List&lt;String&gt; l = List.of(\"a\", \"b\");\nl.set(0, \"z\");</pre>What is the result?",
+      opts: [
+        "An UnsupportedOperationException is thrown at runtime.",
+        "The code compiles and l becomes [z, b].",
+        "Compilation fails because List.of returns an immutable type.",
+        "An IllegalArgumentException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>List.of</code> <b>tamamen değiştirilemez</b> bir liste döner: <code>add</code>, <code>remove</code> <b>ve <code>set</code></b> hepsi <code>UnsupportedOperationException</code> atar. <br>Fark: <code>Arrays.asList</code> yalnızca <b>sabit boyutludur</b> — orada <code>set</code> çalışır (5.1). Kod derlenir; dönüş tipi normal <code>List</code>'tir."
+    },
+    {
+      topic: "Fabrika metotları",
+      q: "Which calls throw an exception at runtime? (Choose TWO.)",
+      opts: [
+        "Set.of(\"a\", \"a\")",
+        "List.of(\"a\", null)",
+        "new HashSet&lt;&gt;(List.of(\"a\", \"b\"))",
+        "new ArrayList&lt;String&gt;() with a null element added"
+      ],
+      a: [0, 1],
+      why: "<code>Set.of</code> <b>tekrarlı eleman</b> kabul etmez → <code>IllegalArgumentException</code>. Fabrika metotları <b>null kabul etmez</b> → <code>NullPointerException</code>. <br>Buna karşılık <code>new HashSet&lt;&gt;(...)</code> tekrarları <b>sessizce tekilleştirir</b> ve <code>ArrayList</code> null elemanı sorunsuz kabul eder. <b>Kanca:</b> Fabrika metotları katı, klasik constructor'lar hoşgörülüdür."
+    },
+    {
+      topic: "null politikaları",
+      q: "Which collections throw NullPointerException when you add null? (Choose TWO.)",
+      opts: [
+        "TreeSet",
+        "ArrayDeque",
+        "HashSet",
+        "ArrayList"
+      ],
+      a: [0, 1],
+      why: "<code>TreeSet</code> elemanları <b>karşılaştırmak</b> zorundadır ve <code>null</code> karşılaştırılamaz. <code>ArrayDeque</code> ise <code>null</code>'ı \"eleman yok\" işareti olarak kullandığı için (bkz. <code>poll</code>/<code>peek</code>) veri olarak kabul edemez. <br><code>HashSet</code> ve <code>ArrayList</code> null'ı sorunsuz saklar. Aynı kural <code>TreeMap</code> <b>anahtarı</b> ve <code>PriorityQueue</code> için de geçerlidir."
+    },
+    {
+      topic: "Map metotları",
+      q: "<pre>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;();\nSystem.out.print(m.put(\"a\", 1));\nSystem.out.print(\" \" + m.put(\"a\", 2));</pre>What is the result?",
+      opts: [
+        "null 1",
+        "1 2",
+        "null 2",
+        "1 1"
+      ],
+      a: [0],
+      why: "<code>put</code> <b>eski değeri</b> döner; anahtar ilk kez yazılıyorsa eski değer yoktur → <code>null</code>. İkinci çağrıda eski değer <b>1</b>'dir. <br><b>Kanca:</b> Dönüş değeri \"az önce yazdığım şey\" değil, \"üzerine yazdığım şey\"dir. Aynı mantık <code>remove(k)</code> için de geçerlidir: silinen değeri döner."
+    },
+    {
+      topic: "Map metotları",
+      q: "<pre>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;(Map.of(\"a\", 1));\nm.merge(\"a\", 10, Integer::sum);\nm.merge(\"b\", 7, Integer::sum);\nSystem.out.println(m.get(\"a\") + \" \" + m.get(\"b\"));</pre>What is the result?",
+      opts: [
+        "11 7",
+        "10 7",
+        "1 7",
+        "11 null"
+      ],
+      a: [0],
+      why: "<code>merge</code> anahtar <b>yoksa</b> verilen değeri doğrudan yazar (<code>b</code> → 7); <b>varsa</b> birleştirme fonksiyonunu çalıştırır (<code>1 + 10 = 11</code>). <br>Ek kural: fonksiyon <code>null</code> döndürürse anahtar <b>silinir</b> — aynı davranış <code>computeIfPresent</code>'ta da vardır."
+    },
+    {
+      topic: "Queue metotları",
+      q: "<pre>Queue&lt;String&gt; q = new ArrayDeque&lt;&gt;();\nSystem.out.print(q.poll());\nq.remove();</pre>What is the result?",
+      opts: [
+        "null is printed, then a NoSuchElementException is thrown.",
+        "Two NoSuchElementExceptions are thrown.",
+        "null is printed twice.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Boş kuyrukta <b>özel değer</b> dönen metotlar (<code>poll</code>, <code>peek</code>, <code>offer</code>) sessizce <code>null</code>/<code>false</code> verir; <b>exception</b> atanlar (<code>remove</code>, <code>element</code>, <code>add</code>) <code>NoSuchElementException</code> atar. <br><b>Kanca:</b> \"<code>o</code> ile başlayanlar nazik\": <code>offer</code>, <code>poll</code>, <code>peek</code>."
+    },
+    {
+      topic: "Queue metotları",
+      q: "<pre>Deque&lt;Integer&gt; d = new ArrayDeque&lt;&gt;();\nd.push(1);\nd.push(2);\nd.push(3);\nSystem.out.println(d.pop() + \" \" + d.peek());</pre>What is the result?",
+      opts: [
+        "3 2",
+        "1 2",
+        "1 3",
+        "3 1"
+      ],
+      a: [0],
+      why: "<code>push</code> elemanı <b>başa</b> ekler, <code>pop</code> ve <code>peek</code> de <b>baştan</b> çalışır — yani <code>Deque</code> bu metotlarla bir <b>yığın (LIFO)</b> gibi davranır. Son eklenen 3 çıkar, tepede 2 kalır. <br>Kuyruk (FIFO) davranışı için <code>offer</code> (sona ekler) ve <code>poll</code> (baştan alır) kullanılır."
+    },
+    {
+      topic: "Uygulama garantileri",
+      q: "<pre>Queue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();\npq.offer(5); pq.offer(1); pq.offer(4);\nSystem.out.println(pq);</pre>Which statement about the output is correct?",
+      opts: [
+        "Only the head element is guaranteed to be the smallest; the rest of the order is unspecified.",
+        "The output is always fully sorted ascending.",
+        "The output preserves insertion order.",
+        "The output is always fully sorted descending."
+      ],
+      a: [0],
+      why: "<code>PriorityQueue</code> içeride bir <b>ikili yığın (heap)</b> tutar: yalnızca <b>baş eleman</b> (en küçük) garantilidir; <code>toString</code> ve <code>iterator</code> <b>sıralı dolaşmaz</b>. <br>Sıralı çıktı istiyorsan elemanları <code>poll()</code> ile <b>çıkarman</b> gerekir. Sınav bunu \"sıralı yazdırır\" sandırmak için sorar."
+    },
+    {
+      topic: "Uygulama garantileri",
+      q: "Which collection preserves insertion order AND rejects duplicates?",
+      opts: [
+        "LinkedHashSet",
+        "HashSet",
+        "TreeSet",
+        "ArrayList"
+      ],
+      a: [0],
+      why: "<code>LinkedHashSet</code> hem <code>Set</code> sözleşmesini (tekrar yok) hem <b>ekleme sırasını</b> korur — içeride bağlı liste tutar. <br><code>HashSet</code> sıra garantisi <b>vermez</b>, <code>TreeSet</code> ekleme sırasını değil <b>doğal sıralamayı</b> uygular, <code>ArrayList</code> ise tekrarları <b>kabul eder</b>."
+    },
+    {
+      topic: "Wildcard",
+      q: "<pre>List&lt;? extends Number&gt; l = new ArrayList&lt;Integer&gt;();\nl.add(5);</pre>What is the result?",
+      opts: [
+        "Compilation fails because nothing except null can be added.",
+        "The code compiles.",
+        "Compilation fails because Integer is not a Number.",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>? extends Number</code> \"Number'ın <b>bilinmeyen bir</b> alt tipi\" demektir; derleyici listenin gerçekte <code>List&lt;Double&gt;</code> olabileceğini varsayar ve hiçbir somut değeri güvenli sayamaz. Yalnızca <code>null</code> eklenebilir. <br><b>PECS:</b> <code>extends</code> = <b>üretici</b> (okumak için), <code>super</code> = <b>tüketici</b> (yazmak için)."
+    },
+    {
+      topic: "Wildcard",
+      q: "<pre>List&lt;? super Integer&gt; l = new ArrayList&lt;Number&gt;();\nl.add(5);\nInteger i = l.get(0);</pre>What is the result?",
+      opts: [
+        "Compilation fails on the last line only.",
+        "The code compiles.",
+        "Compilation fails on the add line only.",
+        "Compilation fails on both the add and the get lines."
+      ],
+      a: [0],
+      why: "<code>? super Integer</code> listesine <code>Integer</code> ve alt tipleri <b>eklenebilir</b> — liste en azından Integer tutabilecek kadar geniştir. Ama <b>okurken</b> derleyici yalnızca <code>Object</code> garantisi verebilir (liste <code>List&lt;Object&gt;</code> olabilir), bu yüzden <code>Integer i = ...</code> derlenmez. <br>Doğrusu: <code>Object o = l.get(0);</code>."
+    },
+    {
+      topic: "Generics",
+      q: "<pre>List&lt;Object&gt; l = new ArrayList&lt;String&gt;();</pre>What is the result?",
+      opts: [
+        "Compilation fails because generics are not covariant.",
+        "The code compiles, just like Object[] o = new String[2].",
+        "The code compiles but throws ArrayStoreException at runtime.",
+        "Compilation fails because ArrayList cannot be assigned to List."
+      ],
+      a: [0],
+      why: "Diziler <b>kovaryanttır</b> (5.1) ama generics <b>değildir</b>: <code>List&lt;String&gt;</code> bir <code>List&lt;Object&gt;</code> <b>sayılmaz</b>. Bu bilinçli bir tasarımdır — dizilerdeki <code>ArrayStoreException</code> deliğini <b>derleme zamanında</b> kapatır. <br>Esneklik gerekiyorsa wildcard kullanılır: <code>List&lt;? extends Object&gt;</code>."
+    },
+    {
+      topic: "Generics",
+      q: "<pre>Object o = new ArrayList&lt;String&gt;();\nif (o instanceof List&lt;String&gt;) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because of type erasure.",
+        "The code compiles and the condition is true.",
+        "The code compiles and the condition is false.",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Generic tip bilgisi derleme sonrası <b>silinir</b> (type erasure); çalışma zamanında <code>List&lt;String&gt;</code> ile <code>List&lt;Integer&gt;</code> <b>aynı sınıftır</b>. Bu yüzden parametreli <code>instanceof</code> yasaktır. <br>Geçerli yazım: <code>o instanceof List&lt;?&gt;</code> veya sadece <code>o instanceof List</code>. Aynı sebeple <code>new T[10]</code> da derlenmez."
+    },
+    {
+      topic: "Map görünümleri",
+      q: "<pre>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;(Map.of(\"a\", 1, \"b\", 2));\nm.keySet().remove(\"a\");\nSystem.out.println(m.size());</pre>What is the result?",
+      opts: [
+        "1",
+        "2",
+        "An UnsupportedOperationException is thrown at runtime.",
+        "0"
+      ],
+      a: [0],
+      why: "<code>keySet()</code>, <code>values()</code> ve <code>entrySet()</code> birer <b>görünümdür (view)</b>, kopya değil: üzerlerinde yapılan silme işlemi <b>map'e yansır</b>. <br>Bu yüzden <code>m.keySet().remove(k)</code> ile <code>m.remove(k)</code> aynı etkiyi yapar. Görünümlere <b>ekleme</b> ise desteklenmez."
+    },
+    {
+      topic: "Fabrika metotları",
+      q: "<pre>Map&lt;String,Integer&gt; m = Map.of(\"a\",1,\"b\",2,\"c\",3,\"d\",4,\"e\",5,\n                                 \"f\",6,\"g\",7,\"h\",8,\"i\",9,\"j\",10,\"k\",11);</pre>What is the result?",
+      opts: [
+        "Compilation fails because Map.of supports at most 10 key-value pairs.",
+        "The code compiles and creates a map with 11 entries.",
+        "An IllegalArgumentException is thrown at runtime.",
+        "The code compiles but silently drops the eleventh pair."
+      ],
+      a: [0],
+      why: "<code>Map.of</code> 0'dan <b>10 çifte kadar</b> aşırı yüklenmiş sürümler sunar; 11. çift için uyan bir metot <b>yoktur</b> → derleme hatası. <br>Daha fazlası için <code>Map.ofEntries(Map.entry(k, v), ...)</code> kullanılır — o varargs aldığı için sınırsızdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

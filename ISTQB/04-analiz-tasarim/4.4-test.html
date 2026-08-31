@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.4 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-4-4",
+  code: "Test Analysis and Design · 4.4",
+  title: "Deneyim Tabanlı Test Teknikleri",
+  back: "4.4-deneyim-tabanli.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Keşif testi",
+      q: "A tester designs, executes and evaluates tests at the same time, refining the approach as more is learned about the system. Which technique is this?",
+      opts: ["Exploratory testing", "Checklist-based testing", "Error guessing", "Decision table testing"],
+      a: [0],
+      why: "<b>Eşzamanlı tasarım, yürütme ve değerlendirme keşif testinin tanımıdır.</b> Checklist-based testte liste önceden hazırdır; error guessing belirli hata desenlerini hedefler. Kanca: <b>keşif = öğrenirken test etmek.</b>"
+    },
+    {
+      topic: "Keşif testi",
+      q: "Which statement about exploratory testing is correct?",
+      opts: [
+        "It is performed within time-boxed sessions guided by a test charter, and the results are recorded",
+        "It is random, unplanned testing with no documentation",
+        "It can be performed equally well by any team member regardless of experience",
+        "Its coverage can be measured as precisely as branch coverage"
+      ],
+      a: [0],
+      why: "<b>Keşif testi charter'a göre, zaman kutulu oturumlarda yapılır ve bulgular kaydedilir.</b> İkinci şık en yaygın yanlış anlamadır ve sınav bunu doğrudan hedefler. Kalite testerın deneyimine bağlıdır ve kapsam ölçülemez — son iki şık da yanlış."
+    },
+    {
+      topic: "Keşif testi",
+      q: "In which situation is exploratory testing MOST appropriate?",
+      opts: [
+        "There is almost no specification for a newly acquired system and testing must start immediately",
+        "A regulatory standard requires 100% branch coverage to be demonstrated",
+        "The business rules define all eight combinations of three conditions",
+        "The team needs a repeatable regression suite for continuous integration"
+      ],
+      a: [0],
+      why: "<b>Spesifikasyon yoksa sistematik türetme yapamazsın; keşif testi hem sistemi öğrenmeni hem test etmeni sağlar.</b> Diğer üç senaryo sırasıyla beyaz kutu, karar tablosu ve otomatik betikli test gerektirir — keşif testi tekrarlanabilir olmadığı için regresyon suite'i olamaz."
+    },
+    {
+      topic: "Hata tahmini",
+      q: "A team compiles a list of possible errors, defects and failures based on past experience, then designs tests that target each item on the list. What is this called?",
+      opts: ["A fault attack (defect attack)", "A test charter", "A checklist review", "A decision table"],
+      a: [0],
+      why: "<b>Fault attack, error guessing'in sistematikleştirilmiş halidir</b>: olası kusurların listesi çıkarılır ve her maddeyi hedefleyen testler tasarlanır. Test charter keşif testine aittir; karar tablosu ise kara kutu tekniğidir."
+    },
+    {
+      topic: "Hata tahmini",
+      q: "Which knowledge does a tester use when applying error guessing? (Choose TWO.)",
+      opts: [
+        "How the application has behaved and failed in the past",
+        "Typical mistakes that developers tend to make",
+        "The measured statement coverage of the current test suite",
+        "The number of rules in the decision table"
+      ],
+      a: [0, 1],
+      why: "<b>Hata tahmini, uygulamanın geçmişi ve geliştiricilerin tipik hataları gibi deneyim kaynaklarına dayanır</b>; ayrıca benzer uygulamalarda görülen arızalar da kullanılır. Son iki şık sistematik tekniklerin ölçüleridir, deneyim kaynağı değil."
+    },
+    {
+      topic: "Checklist tabanlı test",
+      q: "What is a DISADVANTAGE of checklist-based testing?",
+      opts: [
+        "Its effectiveness decreases with repeated use, so checklists must be maintained and updated",
+        "It cannot be applied when the specification is incomplete",
+        "It requires access to the source code",
+        "It cannot be used by experienced testers"
+      ],
+      a: [0],
+      why: "<b>Aynı listeyi tekrar tekrar kullanmak yeni kusur bulmayı durdurur — bu, pesticide paradox'un (prensip 5) doğrudan bir örneğidir.</b> Çözüm listeyi düzenli güncellemektir. Diğer şıklar checklist tabanlı testin gerçek özelliklerini yanlış tarif ediyor."
+    },
+    {
+      topic: "Checklist tabanlı test",
+      q: "What is an ADVANTAGE of checklist-based testing?",
+      opts: [
+        "It provides consistency and systematic coverage, reducing the chance of forgetting important checks",
+        "It measures coverage numerically, like branch coverage",
+        "It removes the need for boundary value analysis",
+        "It guarantees that all usability defects will be found"
+      ],
+      a: [0],
+      why: "<b>Checklist tutarlılık sağlar ve unutmayı önler</b>; farklı testerlar aynı temel kontrolleri yapar. Ancak kapsamı sayısal olarak ölçmez — bu, tüm deneyim tabanlı tekniklerin ortak sınırıdır. Dördüncü şıkta <code>guarantees</code> + <code>all</code> var."
+    },
+    {
+      topic: "Ortak zayıflık",
+      q: "Why should experience-based techniques be used ALONGSIDE black-box and white-box techniques rather than instead of them?",
+      opts: [
+        "Because their coverage cannot be measured systematically and their results are not repeatable",
+        "Because they can only be applied at the acceptance test level",
+        "Because they require the source code to be available",
+        "Because they find fewer defects than systematic techniques in every context"
+      ],
+      a: [0],
+      why: "<b>Ölçülemeyen kapsam ve tekrarlanamaz sonuçlar, deneyim tabanlı tekniklerin ortak sınırıdır.</b> Dördüncü şık haksız: bu teknikler tam olarak sistematik tekniklerin <i>kaçırdıklarını</i> bulmakta güçlüdür — bu yüzden dışlanmaz, tamamlayıcı olarak kullanılır."
+    },
+    {
+      topic: "Keşif testi",
+      q: "What does a test charter typically define?",
+      opts: [
+        "The scope of the session, its objective, and the approach to be taken",
+        "The exact sequence of steps and the expected result of every test case",
+        "The statement and branch coverage targets for the component",
+        "The entry and exit criteria for the entire test level"
+      ],
+      a: [0],
+      why: "<b>Charter oturumun kapsamını, amacını ve yaklaşımını tanımlar</b> — ama adım adım test case yazmaz; testler oturum sırasında doğar. İkinci şık betikli (scripted) testi tarif ediyor ve keşif testinin tam karşıtıdır."
+    },
+    {
+      topic: "Keşif testi",
+      q: "What is session-based test management (SBTM)?",
+      opts: [
+        "A structured way of performing exploratory testing using charters, time-boxed sessions and session reports",
+        "A technique for measuring branch coverage during exploratory sessions",
+        "A method for maintaining checklists across releases",
+        "A form of static testing performed in review meetings"
+      ],
+      a: [0],
+      why: "<b>SBTM keşif testine yapı kazandırır</b>: her oturumun bir charter'ı, bir zaman kutusu ve bir raporu olur. Bu sayede keşif testi yönetilebilir ve raporlanabilir hale gelir — ama kapsam yine de sayısal olarak ölçülemez."
+    },
+    {
+      topic: "Teknik seçimi",
+      q: "Which technique is being used when a tester works through a high-level list of items to be checked, derived from quality characteristics and past defects?",
+      opts: ["Checklist-based testing", "Exploratory testing", "Error guessing", "State transition testing"],
+      a: [0],
+      why: "<b>Önceden hazırlanmış yüksek seviyeli bir listeye göre test etmek checklist-based testing'dir.</b> Keşif testinde liste yoktur, charter vardır ve testler oturum sırasında üretilir. Bu ikisini ayıran şey, <i>önceden hazır bir listenin</i> varlığıdır."
+    },
+    {
+      topic: "Keşif testi",
+      q: "Which two statements about exploratory testing are correct? (Choose TWO.)",
+      opts: [
+        "It is most useful when there is little or no specification, or under time pressure",
+        "The quality of the results depends heavily on the tester's skill and experience",
+        "It produces a repeatable test suite suitable for automated regression",
+        "It replaces the need for systematic black-box techniques"
+      ],
+      a: [0, 1],
+      why: "<b>Keşif testi spesifikasyon yokluğunda ve zaman baskısı altında en değerlidir, ve sonucu testerın becerisine bağlıdır.</b> Üçüncü şık yanlış: tekrarlanabilir olmadığı için otomatik regresyon suite'i üretmez. Dördüncü şık kapsam ölçülemezliğini yok sayıyor."
+    },
+    {
+      topic: "Teknik karşılaştırması",
+      q: "Which experience-based technique is MOST repeatable across different testers?",
+      opts: [
+        "Checklist-based testing, because the list of checks is fixed",
+        "Exploratory testing, because each session has a charter",
+        "Error guessing, because developers make the same mistakes",
+        "All three are equally repeatable"
+      ],
+      a: [0],
+      why: "<b>Checklist sabit olduğu için farklı testerlar aynı temel kontrolleri yapar; bu üç teknik arasındaki en tekrarlanabilir olanıdır.</b> Charter kapsamı belirler ama testleri belirlemez, dolayısıyla keşif testi tekrarlanabilir değildir. Hata tahmini tamamen testerın deneyimine bağlıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

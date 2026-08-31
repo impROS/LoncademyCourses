@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>9.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-9.2",
+  code: "I/O · 9.2",
+  title: "NIO.2: Path ve Files",
+  back: "9.2-nio2-path-ve-files.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "resolve",
+      q: "<pre>System.out.println(Path.of(\"/a/b\").resolve(\"/x/y\"));</pre>What is the result?",
+      opts: [
+        "/x/y",
+        "/a/b/x/y",
+        "/a/b//x/y",
+        "An IllegalArgumentException is thrown."
+      ],
+      a: [0],
+      why: "<code>resolve</code> argüman <b>mutlak bir yolsa</b> soldaki yolu tamamen <b>yok sayar</b> ve argümanı döndürür — \"zaten tam adres verilmiş, birleştirmeye gerek yok\" mantığı. <br>Argüman göreli olsaydı (<code>c/d</code>) sonuç <code>/a/b/c/d</code> olurdu. Bu, sınavın en sevdiği <code>Path</code> tuzağıdır."
+    },
+    {
+      topic: "relativize",
+      q: "<pre>System.out.println(Path.of(\"/a/b/c/d\").relativize(Path.of(\"/a/b\")));</pre>What is the result?",
+      opts: [
+        "../..",
+        "/a/b",
+        "c/d",
+        "An IllegalArgumentException is thrown."
+      ],
+      a: [0],
+      why: "<code>relativize</code> \"kaynaktan hedefe nasıl giderim\" sorusunu yanıtlar. Hedef <b>yukarıda</b> olduğu için iki seviye geri çıkmak gerekir → <b><code>../..</code></b>. <br>Ters yönde (<code>/a/b</code>'den <code>/a/b/c/d</code>'ye) sonuç <code>c/d</code> olurdu. İki yol da mutlak olduğu için exception atılmaz."
+    },
+    {
+      topic: "relativize",
+      q: "<pre>Path.of(\"/a\").relativize(Path.of(\"b\"));</pre>What is the result?",
+      opts: [
+        "An IllegalArgumentException is thrown at runtime.",
+        "The result is ../b.",
+        "The result is b.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>relativize</code> iki yolun da <b>aynı türden</b> olmasını şart koşar: ikisi mutlak veya ikisi göreli. Mutlak bir yoldan göreli bir yola gitmenin tanımlı bir cevabı yoktur (göreli yolun nereden başladığı bilinmez) → <b>IllegalArgumentException</b>. <br>Kod <b>derlenir</b>; hata çalışma zamanındadır."
+    },
+    {
+      topic: "Path bileşenleri",
+      q: "<pre>Path p = Path.of(\"/a/b/c\");\nSystem.out.println(p.getNameCount() + \" \" + p.getName(0));</pre>What is the result?",
+      opts: [
+        "3 a",
+        "4 /",
+        "3 /",
+        "4 a"
+      ],
+      a: [0],
+      why: "<code>getNameCount()</code> <b>kökü saymaz</b>: yalnızca <code>a</code>, <code>b</code>, <code>c</code> öğeleri sayılır → <b>3</b>. <code>getName(0)</code> da kökten <b>sonraki</b> ilk öğedir → <b><code>a</code></b>. <br>Kök ayrı olarak <code>getRoot()</code> ile alınır ve göreli yollarda <b><code>null</code></b> döner."
+    },
+    {
+      topic: "Path bileşenleri",
+      q: "<pre>System.out.println(Path.of(\"/a/b/c/d\").subpath(1, 3));</pre>What is the result?",
+      opts: [
+        "b/c",
+        "a/b/c",
+        "b/c/d",
+        "/b/c"
+      ],
+      a: [0],
+      why: "<code>subpath(baslangic, bitis)</code> indeksleri <code>getName()</code> ile aynıdır (kök sayılmaz) ve <b>bitiş hariçtir</b> — <code>String.substring</code> ile aynı mantık (1.2). İndeks 1 ve 2 alınır → <b><code>b/c</code></b>. <br>Sonuç her zaman <b>göreli</b> bir yoldur, başında kök bulunmaz."
+    },
+    {
+      topic: "normalize ve equals",
+      q: "<pre>System.out.println(Path.of(\"/a/b/../c\").equals(Path.of(\"/a/c\")));</pre>What is the result?",
+      opts: [
+        "false",
+        "true",
+        "An IOException is thrown.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>Path.equals</code> <b>sözdizimsel</b> karşılaştırma yapar: metinler farklı olduğu için <code>false</code> döner — <code>..</code> otomatik olarak sadeleştirilmez. <br>Anlamsal karşılaştırma için önce <code>normalize()</code> çağrılmalıdır: <code>Path.of(\"/a/b/../c\").normalize().equals(Path.of(\"/a/c\"))</code> → <b>true</b>. Sembolik bağları da çözmek istiyorsan <code>toRealPath()</code> gerekir."
+    },
+    {
+      topic: "Path ve dosya sistemi",
+      q: "<pre>Path p = Path.of(\"/kesinlikle/olmayan/yol.txt\");\nSystem.out.println(p.getFileName());</pre>What is the result?",
+      opts: [
+        "yol.txt",
+        "A NoSuchFileException is thrown.",
+        "null",
+        "An IOException is thrown."
+      ],
+      a: [0],
+      why: "<code>Path</code> metotları <b>saf metin işlemleridir</b> ve dosya sistemine <b>hiç dokunmaz</b>; var olmayan bir yol tamamen geçerli bir <code>Path</code>'tir. <br>Diske bakan tek <code>Path</code> metodu <code>toRealPath()</code>'tir (ve <code>IOException</code> atar). Varlık kontrolü <code>Files.exists(p)</code> ile yapılır. <b>Kanca:</b> \"Path metin, Files disk.\""
+    },
+    {
+      topic: "Files silme",
+      q: "<pre>Files.delete(Path.of(\"yok.txt\"));</pre>Assuming the file does not exist, what is the result?",
+      opts: [
+        "A NoSuchFileException is thrown.",
+        "The call returns false.",
+        "Nothing happens.",
+        "A FileNotFoundException is thrown."
+      ],
+      a: [0],
+      why: "<code>Files.delete</code> dosya yoksa <b>NoSuchFileException</b> (bir <code>IOException</code> alt tipi) atar. <br><code>Files.deleteIfExists</code> ise sessizce <b><code>false</code></b> döner — \"varsa sil\" semantiği. <code>FileNotFoundException</code> eski <code>java.io</code> API'sine aittir; NIO.2 kendi exception ailesini kullanır."
+    },
+    {
+      topic: "Files dizin oluşturma",
+      q: "Which method creates a directory along with any missing parent directories, without failing if it already exists?",
+      opts: [
+        "Files.createDirectories",
+        "Files.createDirectory",
+        "Files.createFile",
+        "Files.newDirectoryStream"
+      ],
+      a: [0],
+      why: "<code>createDirectories</code> (çoğul) eksik <b>ara dizinleri de</b> oluşturur ve dizin zaten varsa <b>hata vermez</b> — <code>mkdir -p</code> karşılığı. <br><code>createDirectory</code> (tekil) yalnızca son seviyeyi oluşturur; üst dizin yoksa <code>NoSuchFileException</code>, dizin zaten varsa <code>FileAlreadyExistsException</code> atar. <code>newDirectoryStream</code> ise dizin <b>okumak</b> içindir."
+    },
+    {
+      topic: "Files kopyalama",
+      q: "<pre>Files.copy(kaynak, hedef);</pre>The target file already exists. What happens?",
+      opts: [
+        "A FileAlreadyExistsException is thrown.",
+        "The target is silently overwritten.",
+        "The call returns null.",
+        "An IllegalArgumentException is thrown."
+      ],
+      a: [0],
+      why: "<code>Files.copy</code> ve <code>Files.move</code> varsayılan olarak <b>üzerine yazmaz</b>; hedef varsa <code>FileAlreadyExistsException</code> atarlar. Bu, veri kaybını önlemek için bilinçli bir tercihtir. <br>Üzerine yazmak istiyorsan seçenek vermelisin: <code>Files.copy(k, h, StandardCopyOption.REPLACE_EXISTING)</code>."
+    },
+    {
+      topic: "Files okuma",
+      q: "Which statements about <code>Files.lines</code> are correct? (Choose TWO.)",
+      opts: [
+        "It returns a Stream&lt;String&gt; that should be closed with try-with-resources.",
+        "It reads the file lazily rather than loading it entirely into memory.",
+        "It returns a List&lt;String&gt;.",
+        "It closes the underlying file automatically when the stream is exhausted."
+      ],
+      a: [0, 1],
+      why: "<code>Files.lines</code> <b>tembel</b> bir <code>Stream&lt;String&gt;</code> döner: satırlar okundukça akar, dosyanın tamamı belleğe alınmaz. Ama açık bir dosya tanıtıcısı tuttuğu için <b>try-with-resources ile kapatılmalıdır</b> — akış tükense bile otomatik kapanma <b>garanti değildir</b>. <br><code>List&lt;String&gt;</code> dönen metot <code>Files.readAllLines</code>'tır ve kapatma gerektirmez ama dosyayı tamamen belleğe alır."
+    },
+    {
+      topic: "Files dolaşma",
+      q: "What is the difference between Files.list and Files.walk?",
+      opts: [
+        "list returns entries of one directory level; walk traverses the whole subtree.",
+        "list returns a List; walk returns a Stream.",
+        "list is lazy; walk is eager.",
+        "list works on files; walk works on directories."
+      ],
+      a: [0],
+      why: "<code>Files.list(p)</code> yalnızca <b>bir seviye</b> (o dizinin doğrudan içeriği) döner; <code>Files.walk(p)</code> ise <b>alt ağacın tamamını</b> derinlemesine dolaşır (isteğe bağlı derinlik sınırıyla). <br>İkisi de <code>Stream&lt;Path&gt;</code> döner ve <b>ikisi de kapatılmalıdır</b>. Filtreli dolaşım için <code>Files.find</code> vardır."
+    },
+    {
+      topic: "Path metotları",
+      q: "Which method actually touches the file system and can throw IOException?",
+      opts: [
+        "toRealPath()",
+        "toAbsolutePath()",
+        "normalize()",
+        "resolve()"
+      ],
+      a: [0],
+      why: "<code>toRealPath()</code> yolu <b>diskte doğrular</b>, sembolik bağları çözer ve dosya yoksa <code>IOException</code> atar — bu yüzden imzasında <code>throws IOException</code> vardır. <br><code>toAbsolutePath()</code> yalnızca çalışma dizinini önüne ekler (diske bakmaz), <code>normalize</code> ve <code>resolve</code> ise tamamen <b>metin işlemleridir</b>."
+    },
+    {
+      topic: "resolveSibling",
+      q: "<pre>System.out.println(Path.of(\"/a/b/c.txt\").resolveSibling(\"d.txt\"));</pre>What is the result?",
+      opts: [
+        "/a/b/d.txt",
+        "/a/b/c.txt/d.txt",
+        "/a/d.txt",
+        "d.txt"
+      ],
+      a: [0],
+      why: "<code>resolveSibling</code> son öğeyi (<code>c.txt</code>) <b>atar</b> ve yerine argümanı koyar — yani <code>getParent().resolve(arg)</code> ile eşdeğerdir. Aynı klasördeki başka bir dosyaya işaret etmek için kullanılır. <br><code>resolve</code> ise sonuna <b>ekler</b> (<code>/a/b/c.txt/d.txt</code>) — iki metodu karıştırma."
+    },
+    {
+      topic: "Path oluşturma",
+      q: "<pre>Path p = new Path(\"a.txt\");</pre>What is the result?",
+      opts: [
+        "Compilation fails because Path is an interface.",
+        "The code compiles and creates a relative path.",
+        "A NullPointerException is thrown.",
+        "Compilation fails because the constructor needs two arguments."
+      ],
+      a: [0],
+      why: "<code>Path</code> bir <b>arayüzdür</b> ve doğrudan örneklenemez; nesneler fabrika metotlarıyla üretilir: <b><code>Path.of(...)</code></b> (Java 11+) veya eski <code>Paths.get(...)</code>. <br>Bu, <code>java.time</code> tiplerindeki <code>new LocalDate(...)</code> tuzağının (1.3) NIO.2 karşılığıdır: şıklarda <code>new</code> görürsen şüphelen."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-2.1",
+  code: "Akış Kontrolü · 2.1",
+  title: "if/else, switch ve Pattern Matching",
+  back: "2.1-if-switch-ve-pattern-matching.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Fall-through",
+      q: "<pre>int x = 2;\nswitch (x) {\n    case 1: System.out.print(\"a\");\n    case 2: System.out.print(\"b\");\n    case 3: System.out.print(\"c\");\n    default: System.out.print(\"d\");\n}</pre>What is the result?",
+      opts: [
+        "bcd",
+        "b",
+        "abcd",
+        "bc"
+      ],
+      a: [0],
+      why: "Eşleşen <code>case</code>'ten sonra <b>break yoksa</b> alttaki tüm dallar etiketleri kontrol edilmeden çalışır (fall-through) — <code>default</code> dahil → <b>bcd</b>. <b>Kanca:</b> Bu davranış yalnızca <b>deyim</b> biçimindedir; <code>-&gt;</code> biçiminde düşme yoktur."
+    },
+    {
+      topic: "Selector tipi",
+      q: "Which selector types are allowed in a traditional switch statement? (Choose TWO.)",
+      opts: [
+        "String",
+        "Integer",
+        "long",
+        "double"
+      ],
+      a: [0, 1],
+      why: "<code>String</code> Java 7'den beri, wrapper'lar (<code>Integer</code> vb.) ise unboxing ile desteklenir — ama wrapper <code>null</code> ise <b>NPE</b> atar. <br><code>long</code>, <code>float</code>, <code>double</code> ve <code>boolean</code> <b>hiçbir zaman</b> selector olamaz. <b>Kanca:</b> \"long yasak\" en çok şaşırtan kuraldır; <code>int</code> serbest ama <code>long</code> değil."
+    },
+    {
+      topic: "case etiketleri",
+      q: "<pre>int esik = 5;\nswitch (x) {\n    case esik: break;\n    default: break;\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a case label must be a constant expression.",
+        "The code compiles and runs without output.",
+        "Compilation fails because default must be the last label.",
+        "An exception is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>case</code> etiketleri <b>derleme zamanı sabiti</b> olmak zorundadır. <code>esik</code> <code>final</code> olsaydı sabit ifade sayılır ve derlenirdi. <br><code>default</code>'un <b>sonda olma zorunluluğu yoktur</b> — ortada da yazılabilir; o şık uydurma bir kuraldır."
+    },
+    {
+      topic: "switch ifadesi",
+      q: "<pre>int r = switch (x) {\n    case 1 -> 10;\n    default -> {\n        System.out.println(\"other\");\n    }\n};</pre>What is the result?",
+      opts: [
+        "Compilation fails because the block does not yield a value.",
+        "Compilation fails because switch expressions cannot contain blocks.",
+        "The code compiles and prints other.",
+        "Compilation fails because return is required instead."
+      ],
+      a: [0],
+      why: "<code>-&gt;</code> ile <b>blok</b> kullanırsan blok bir değer üretmek zorundadır: <code>yield 0;</code>. Derleyici mesajı: <i>switch rule completes without providing a value</i>. <br>Bloklar <b>serbesttir</b>, sorun blokta değil değer üretmemesindedir. <code>return</code> ise switch ifadesinde <b>kullanılamaz</b> — o metottan çıkar, switch'ten değil."
+    },
+    {
+      topic: "switch ifadesi",
+      q: "<pre>String s = switch (o) {\n    case Integer i -> \"num\";\n    case String t  -> \"str\";\n};</pre>Assume o is declared as Object. What is the result?",
+      opts: [
+        "Compilation fails because the switch expression is not exhaustive.",
+        "The code compiles; unmatched values yield null.",
+        "Compilation fails because pattern labels are not allowed in switch expressions.",
+        "A MatchException is thrown at runtime for unmatched values."
+      ],
+      a: [0],
+      why: "<code>switch</code> <b>ifadesi</b> her girdi için bir değer üretmek zorundadır, yani <b>exhaustive</b> olmalıdır. Selector <code>Object</code> olduğu için <code>default</code> (ya da tüm tipleri kapsayan bir desen) şarttır. Derleyici mesajı: <i>the switch expression does not cover all possible input values</i>. <br><code>MatchException</code> yalnızca <b>sealed</b> hiyerarşi derlemeden sonra değişirse çalışma zamanında gelir."
+    },
+    {
+      topic: "switch ifadesi",
+      q: "<pre>sealed interface S permits A, B {}\nrecord A() implements S {}\nrecord B() implements S {}\n\nstatic int f(S s) {\n    return switch (s) {\n        case A a -> 1;\n        case B b -> 2;\n    };\n}</pre>What is the result?",
+      opts: [
+        "The code compiles; no default branch is needed.",
+        "Compilation fails because a default branch is mandatory.",
+        "Compilation fails because records cannot be used in switch patterns.",
+        "The code compiles but throws MatchException for every input."
+      ],
+      a: [0],
+      why: "<code>sealed</code> hiyerarşinin <b>tüm izinli alt tipleri</b> yazıldığında derleyici switch'i exhaustive kabul eder ve <code>default</code> istemez. Bu, sealed + pattern matching kombinasyonunun asıl kazancıdır (3.5). <b>Kanca:</b> <code>default</code> yazarsan yeni bir alt tip eklendiğinde derleyici seni <b>uyaramaz</b> — bu yüzden sealed'da <code>default</code> yazmamak tercih edilir."
+    },
+    {
+      topic: "Pattern matching — null",
+      q: "<pre>Object o = null;\nString r = switch (o) {\n    case Integer i -> \"num\";\n    case String s  -> \"str\";\n    default        -> \"other\";\n};</pre>What is the result?",
+      opts: [
+        "A NullPointerException is thrown at runtime.",
+        "other",
+        "Compilation fails.",
+        "null"
+      ],
+      a: [0],
+      why: "<code>switch</code> selector'ü <code>null</code> ise ve <b>açık bir <code>case null</code> yoksa</b> NPE atılır — <code>default</code> null'ı <b>yakalamaz</b>. Bu, Java 21'de bilinçli olarak korunmuş bir geriye uyumluluk kuralıdır. <b>Kanca:</b> Güvenli hâle getirmek için <code>case null -&gt; ...</code> veya <code>case null, default -&gt; ...</code> yazılır."
+    },
+    {
+      topic: "Pattern matching — dominance",
+      q: "<pre>switch (o) {\n    case CharSequence c -> System.out.println(\"cs\");\n    case String s       -> System.out.println(\"str\");\n    default             -> System.out.println(\"?\");\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the String label is dominated by the CharSequence label.",
+        "The code compiles and prints str for String inputs.",
+        "The code compiles and prints cs for String inputs.",
+        "Compilation fails because CharSequence is an interface."
+      ],
+      a: [0],
+      why: "<code>String</code>, <code>CharSequence</code>'i uyguladığı için ilk dal onu zaten yakalar; ikinci dala <b>hiçbir zaman ulaşılamaz</b>. Derleyici bunu hata sayar: <i>this case label is dominated by a preceding case label</i>. <b>Kural:</b> Desenler <b>özelden genele</b> sıralanır — arayüz olması sorun değildir."
+    },
+    {
+      topic: "Pattern matching — guard",
+      q: "<pre>switch (o) {\n    case Integer i -> \"num\";\n    case Integer i when i > 5 -> \"big\";\n    default -> \"?\";\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the guarded label is unreachable.",
+        "The code compiles; values above 5 produce big.",
+        "Compilation fails because when is not a valid keyword.",
+        "The code compiles; values above 5 produce num."
+      ],
+      a: [0],
+      why: "Guard'sız <code>case Integer i</code> <b>tüm</b> Integer'ları yakalar, bu yüzden altındaki guard'lı dal ulaşılamaz kalır ve dominance hatası verir. Doğru sıra: <b>guard'lı önce, guard'sız sonra</b>. <br><code>when</code> geçerlidir — bir anahtar kelime değil, <b>bağlamsal isimdir</b>, bu yüzden <code>when</code> adlı bir değişken hâlâ tanımlanabilir."
+    },
+    {
+      topic: "instanceof pattern",
+      q: "<pre>if (o instanceof String s || s.isEmpty()) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because s is not definitely assigned in the right operand.",
+        "The code compiles and works for String values.",
+        "Compilation fails because instanceof cannot declare a variable.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Pattern değişkeni yalnızca derleyicinin \"burada kesinlikle atanmış\" diyebildiği yerde görünür (<b>flow scoping</b>). <code>||</code> sağ tarafı sol taraf <b>false</b> olduğunda çalışır — yani eşleşme <b>olmadığında</b> — bu yüzden <code>s</code> orada yoktur. <code>&amp;&amp;</code> ile yazsaydın derlenirdi. <b>Kanca:</b> \"&amp;&amp; çalışır, || çalışmaz.\""
+    },
+    {
+      topic: "instanceof pattern",
+      q: "<pre>static String f(Object o) {\n    if (!(o instanceof String s)) {\n        return \"not a string\";\n    }\n    return \"length \" + s.length();\n}</pre>What is the result for f(\"java\")?",
+      opts: [
+        "length 4",
+        "Compilation fails because s is out of scope on the last line.",
+        "not a string",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Negatif dal <code>return</code> ile çıktığı için, o noktadan sonra <code>o</code>'nun <b>kesinlikle String olduğu</b> derleyici tarafından bilinir ve <code>s</code> kapsamda kalır. Flow scoping <b>süslü parantezle değil, akışla</b> belirlenir. <b>Kanca:</b> Erken dönüş, pattern değişkenini metodun geri kalanına taşır."
+    },
+    {
+      topic: "Record pattern",
+      q: "<pre>record Nokta(int x, int y) {}\n\nstatic String f(Object o) {\n    return switch (o) {\n        case Nokta(int x, int y) when x == y -> \"diagonal\";\n        case Nokta n -> \"point\";\n        default -> \"?\";\n    };\n}</pre>What does f(new Nokta(5, 5)) return?",
+      opts: [
+        "diagonal",
+        "point",
+        "?",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Record pattern bileşenleri <b>ayrıştırır</b>: <code>x</code> ve <code>y</code> doğrudan değişken olur. Guard sağlandığı için ilk dal eşleşir → <b>diagonal</b>. Sıralama doğrudur: guard'lı desen guard'sız aynı desenden <b>önce</b> gelir. <b>Kanca:</b> Record pattern <code>null</code> ile <b>eşleşmez</b>; null ayrı ele alınmalıdır."
+    },
+    {
+      topic: "if/else",
+      q: "<pre>Boolean flag = null;\nif (flag) { System.out.println(\"yes\"); }</pre>What is the result?",
+      opts: [
+        "A NullPointerException is thrown at runtime.",
+        "Compilation fails because Boolean cannot be used in an if.",
+        "Nothing is printed.",
+        "yes"
+      ],
+      a: [0],
+      why: "<code>if</code> bir <b>primitif boolean</b> ister; <code>Boolean</code> otomatik olarak <b>unbox</b> edilir (<code>flag.booleanValue()</code>) ve null olduğu için <b>NPE</b> atılır. Kod derlenir — sorun tip uyumu değil, değerdir. <b>Kanca:</b> Bu, 1.1'deki unboxing NPE'sinin akış kontrolündeki hâlidir."
+    },
+    {
+      topic: "if/else",
+      q: "<pre>int x = 5;\nif (x > 3)\n    System.out.print(\"a\");\n    System.out.print(\"b\");\nSystem.out.print(\"c\");</pre>What is the result?",
+      opts: [
+        "abc",
+        "ac",
+        "a",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Süslü parantez olmadan <code>if</code> <b>yalnızca bir sonraki deyimi</b> kapsar. Girinti derleyici için anlamsızdır: <code>b</code> ve <code>c</code> koşuldan bağımsız çalışır → <b>abc</b>. <b>Kanca:</b> Sınav girintiyi kasten yanıltıcı yazar; parantezleri say, boşlukları değil."
+    },
+    {
+      topic: "switch sözdizimi",
+      q: "<pre>switch (x) {\n    case 1 -> System.out.println(\"one\");\n    case 2: System.out.println(\"two\"); break;\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the two case syntaxes cannot be mixed.",
+        "The code compiles and works as expected.",
+        "Compilation fails because a switch statement cannot use the arrow form.",
+        "Compilation fails because break is missing from the first case."
+      ],
+      a: [0],
+      why: "Bir <code>switch</code> içinde ya <b>hepsi</b> <code>-&gt;</code> ya <b>hepsi</b> <code>:</code> olmalıdır. Derleyici mesajı: <i>different case kinds used in the switch</i>. <br><code>switch</code> <b>deyimi</b> ok biçimini kullanabilir (o şık yanlış); ok biçiminde <code>break</code> zaten gereksizdir."
+    },
+    {
+      topic: "switch ifadesi",
+      q: "Which statements about switch expressions are correct? (Choose TWO.)",
+      opts: [
+        "A switch expression must be exhaustive.",
+        "The return statement cannot be used to produce a value from a switch expression.",
+        "A switch expression falls through to the next case when break is omitted.",
+        "A switch expression can be used as a statement without assigning its value."
+      ],
+      a: [0, 1],
+      why: "<code>switch</code> ifadesi her girdi için bir değer üretmeli, yani <b>exhaustive</b> olmalıdır. Değer üretmek için <code>yield</code> kullanılır; <code>return</code> switch'ten değil <b>metottan</b> çıkar ve ifade içinde <b>yasaktır</b>. <br>Ok biçiminde <b>fall-through yoktur</b>, ve bir ifadenin değeri kullanılmak zorundadır — atanmadan tek başına yazılamaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>s3 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "s3",
+  code: "Beceriler · s3",
+  title: "Writing 1: essay",
+  back: "s3-writing-essay.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Görev analizi",
+      q: "Task: 'Discuss both views and give your own opinion.' A candidate writes only about the view they agree with. What is the main consequence?",
+      opts: ["The content mark is capped because part of the task is missing.", "Only the accuracy mark is affected.", "Nothing, as long as the essay is well written.", "The essay is marked as off-topic and scores zero."],
+      a: [0],
+      why: "Görevin parçalarından biri eksikse <b>content</b> puanı tavanlanır — dil ne kadar iyi olursa olsun. Bu yüzden yazmadan önce soruyu parçalara ayırmak, tek başına en yüksek getirili alışkanlıktır."
+    },
+    {
+      topic: "Görev analizi",
+      q: "Which response structure best fits 'To what extent do you agree?'",
+      opts: ["State a degree of agreement and justify it.", "List all advantages, then all disadvantages, with no opinion.", "Describe the topic's history in detail.", "Give a simple yes or no in the final line."],
+      a: [0],
+      why: "<code>To what extent</code> bir <b>derece</b> sorar: <i>largely agree, partly agree, agree with reservations</i>. Sadece 'evet' demek soruyu yarım cevaplar; iki tarafı yazıp görüş belirtmemek de aynı sonucu verir."
+    },
+    {
+      topic: "Giriş paragrafı",
+      q: "What is the problem with copying the exam question word for word in the introduction?",
+      opts: ["It shows no language range and does not count towards your word total.", "It is treated as cheating.", "It makes the essay too formal.", "It always leads to a grammar mistake."],
+      a: [0],
+      why: "Kopyalanan cümleler kelime sayısına sayılmaz ve dil çeşitliliği göstermez. Doğru davranış, soruyu <b>kendi kelimelerinle yeniden ifade etmek</b>tir — bu zaten paraphrase becerini de sergiler."
+    },
+    {
+      topic: "Paragraf mimarisi",
+      q: "In the PEEL structure, what does the second E stand for?",
+      opts: ["Explain — why the evidence matters", "Example — a second illustration", "Evaluate — score the argument", "Expand — add a new topic"],
+      a: [0],
+      why: "PEEL = Point, Evidence, <b>Explain</b>, Link. Öğrencilerin en sık atladığı adım budur: kanıtı verip neden önemli olduğunu söylememek, paragrafı yarım bırakır."
+    },
+    {
+      topic: "Paragraf mimarisi",
+      q: "Which sentence works best as a topic sentence for a body paragraph?",
+      opts: ["The most obvious benefit of remote work is flexibility.", "In 2020, many offices closed for several months.", "I will now talk about remote work.", "Remote work, home office, hybrid models."],
+      a: [0],
+      why: "Topic sentence paragrafın <b>iddiasını</b> tek cümlede söyler. İkinci şık bir olgudur, iddia değil; üçüncüsü ise okuyucuya ne yapacağını duyurur ki akademik yazıda gereksiz ve zayıftır."
+    },
+    {
+      topic: "Kayıt (register)",
+      q: "Which two features are inappropriate in a B2 essay? (Choose TWO.)",
+      opts: ["Contractions such as 'don't' and 'it's'", "Sweeping claims such as 'Everybody knows that…'", "Linking words such as 'however'", "Passive constructions such as 'it is often argued'"],
+      a: [0, 1],
+      why: "Essay resmî bir kayıttadır: kısaltma kullanılmaz ve mutlak genellemelerden kaçınılır (<i>many people feel that…</i> tercih edilir). Bağlaçlar ve edilgen yapı ise tam tersine puan getiren araçlardır."
+    },
+    {
+      topic: "Kalıp bankası",
+      q: "Which phrase is most suitable for conceding a point before refuting it?",
+      opts: ["It is true that… However, this overlooks…", "In conclusion, therefore…", "For instance, in my country…", "As I said before…"],
+      a: [0],
+      why: "<b>It is true that… However…</b> kabul-çürütme kalıbıdır ve karşı görüş paragrafının omurgasını kurar. Bu hamle, B2'de tartışma olgunluğu gösterdiği için içerik puanını yükseltir."
+    },
+    {
+      topic: "Kalıp bankası",
+      q: "Which is the best closing sentence for a discussion essay?",
+      opts: ["On balance, the benefits outweigh the drawbacks, provided that clear rules are in place.", "So that is my opinion about this topic.", "Another important point is the cost of equipment.", "In conclusion, I have discussed two views."],
+      a: [0],
+      why: "Sonuç, tezi <b>farklı kelimelerle</b> toparlar ve gerekirse bir koşul ekler. Üçüncü şık sonuçta yeni bir argüman açar — yapıyı bozan klasik hatadır; dördüncüsü ise hiçbir görüş bildirmez."
+    },
+    {
+      topic: "Dil çeşitliliği",
+      q: "Which rewrite shows the greatest language range?",
+      opts: ["What makes the scheme attractive is that it costs considerably less than the alternatives.", "The scheme is good because it is cheap.", "The scheme is cheap and it is good.", "The scheme is very very cheap."],
+      a: [0],
+      why: "Birinci şıkta vurgu yapısı (<i>What makes… is that…</i>), derece zarfı (<i>considerably</i>) ve karşılaştırma bir arada. Aynı fikri taşıyan diğer üç cümle B1 düzeyinde kalır — ölçülen şey fikir değil, <b>yapı</b>dır."
+    },
+    {
+      topic: "Yaygın hatalar",
+      q: "A candidate writes 'Firstly… Secondly… Thirdly… Finally…' as the opening word of every paragraph. What is the weakness?",
+      opts: ["The essay reads as a list rather than a connected argument.", "These words are too informal for an essay.", "These words are grammatically incorrect.", "They make the essay too short."],
+      a: [0],
+      why: "Sıralama bağlaçları örgütlenme yerine geçmez: paragraflar arasında <b>mantıksal</b> bir bağ kurulmalıdır (<i>This advantage, however, comes at a cost</i>). Liste tonu, örgütlenme puanını düşürür."
+    },
+    {
+      topic: "Kelime sayısı",
+      q: "The task asks for 140–190 words and you have written 310. What is the risk?",
+      opts: ["More opportunities for errors, and possible loss of relevance, with no extra credit for length.", "The essay will not be marked at all.", "The content mark automatically doubles.", "Nothing at all; longer is always better."],
+      a: [0],
+      why: "Uzunluk bir ölçüt değildir; fazla yazmak yalnızca hata ve konudan sapma riskini artırır. Eksik yazmak ise doğrudan içerik puanı kaybettirir — asıl tehlike o taraftadır."
+    },
+    {
+      topic: "Zaman yönetimi",
+      q: "In a 40-minute essay task, roughly how should the time be divided?",
+      opts: ["5 minutes planning, 28 writing, 7 checking", "40 minutes writing, no planning or checking", "20 minutes planning, 20 writing", "10 minutes reading the question, 30 writing"],
+      a: [0],
+      why: "Kısa bir plan, paragraf yapısını garanti eder; sondaki kontrol ise en çok puan kurtaran aşamadır (özne-fiil uyumu, artikel, tekil-çoğul). Planlamasız yazmak neredeyse her zaman dağınık bir metin üretir."
+    },
+    {
+      topic: "Kontrol listesi",
+      q: "Which of these is the most productive thing to check in the final minutes?",
+      opts: ["Subject–verb agreement, articles and singular/plural forms", "Whether your handwriting is attractive", "Whether you used enough long words", "Whether the topic is interesting"],
+      a: [0],
+      why: "Son dakikalarda en çok hata bu üç alanda bulunur ve düzeltilmesi saniyeler sürer. Uzun kelime kullanmak accuracy puanını yükseltmez; yanlış kullanılan uzun kelime tam tersine düşürür."
+    },
+    {
+      topic: "Görüş ifadeleri",
+      q: "A candidate begins four sentences with 'I think'. What is the best fix?",
+      opts: ["Vary with 'In my view', 'I would argue that', 'It seems to me that'.", "Remove all opinion from the essay.", "Replace them all with 'Everybody knows'.", "Move them all into the conclusion."],
+      a: [0],
+      why: "Görüş bildirmek gereklidir; tekrar eden tek kalıp ise dil çeşitliliği puanını düşürür. <code>Everybody knows</code> ise aşırı genellemedir ve akademik yazıda kaçınılan bir ifadedir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-2-1",
+  code: "Testing Throughout the SDLC · 2.1",
+  title: "SDLC, Shift Left ve DevOps",
+  back: "2.1-sdlc.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "TDD / ATDD / BDD",
+      q: "A developer writes an automated unit test that fails, then writes just enough production code to make it pass, then improves the design while keeping the test green. Which approach is being used?",
+      opts: ["Test-Driven Development (TDD)", "Acceptance Test-Driven Development (ATDD)", "Behavior-Driven Development (BDD)", "Exploratory testing"],
+      a: [0],
+      why: "<b>Red → Green → Refactor döngüsü TDD'nin tanımıdır</b> ve birim seviyesinde, geliştirici tarafından uygulanır. ATDD kabul seviyesinde ve ekipçe yapılır; BDD doğal dilde davranış senaryoları yazar. Kanca: <b>T</b>DD = <b>T</b>eknik."
+    },
+    {
+      topic: "TDD / ATDD / BDD",
+      q: "Business representatives, developers and testers meet before design begins and together define the acceptance tests for a user story. Which approach is this?",
+      opts: ["ATDD", "TDD", "DevOps", "A retrospective"],
+      a: [0],
+      why: "<b>ATDD'de kabul testleri tasarımdan önce ve ekipçe tanımlanır</b>, böylece kabul kriterlerindeki belirsizlik koda dönüşmeden çözülür. TDD birim seviyesindedir ve geliştiricinin tek başına yürüttüğü bir döngüdür. Kanca: <b>A</b>TDD = <b>A</b>cceptance."
+    },
+    {
+      topic: "TDD / ATDD / BDD",
+      q: "Which approach expresses the desired behavior in natural language scenarios such as \"Given the cart total is 500, When the customer checks out, Then no shipping fee is charged\"?",
+      opts: ["BDD", "TDD", "ATDD", "Statement testing"],
+      a: [0],
+      why: "<b>Given/When/Then formatı BDD'nin imzasıdır</b> ve amacı iş tarafıyla ekip arasında ortak anlayış kurmaktır. ATDD'ye çok yakındır — ayırt edici olan <i>doğal dil senaryosu</i> biçimidir. Kanca: <b>B</b>DD = <b>B</b>ehavior."
+    },
+    {
+      topic: "TDD / ATDD / BDD",
+      q: "What do TDD, ATDD and BDD have in common?",
+      opts: [
+        "In all three, tests are defined before the corresponding code is written",
+        "In all three, tests are written only by developers",
+        "In all three, tests are written after the code is complete",
+        "All three make dynamic testing unnecessary"
+      ],
+      a: [0],
+      why: "<b>Üçü de 'önce test' ailesindendir ve testler bir tür yaşayan spesifikasyon haline gelir.</b> İkinci şık ATDD/BDD'yi yanlış tanımlıyor (ekipçe yazılır), üçüncü şık üçünün de temel fikrini ters çeviriyor."
+    },
+    {
+      topic: "Shift left",
+      q: "Which statement about shift left is correct?",
+      opts: [
+        "It usually requires extra effort early in the lifecycle, which is repaid by lower costs later",
+        "It removes the need for system testing and acceptance testing",
+        "It reduces total project effort immediately with no additional investment",
+        "It applies only to dynamic testing, not to static testing"
+      ],
+      a: [0],
+      why: "<b>Shift left bedava değildir: erken yatırım ister.</b> Kısa vadede efor artar, geç bulunan kusurun maliyeti düştüğü için toplamda kazanç sağlar. İkinci şık sonraki seviyeleri iptal ettiğini iddia ediyor — yanlış. Dördüncü şık tam tersi: shift left'in en güçlü aracı <b>statik testtir</b>."
+    },
+    {
+      topic: "Shift left",
+      q: "Which of the following practices implement shift left? (Choose TWO.)",
+      opts: [
+        "Reviewing requirements and design documents before coding begins",
+        "Running static analysis tools as part of continuous integration",
+        "Executing the full regression suite only in the final week before release",
+        "Postponing performance testing until after user acceptance testing"
+      ],
+      a: [0, 1],
+      why: "<b>Review ve statik analiz test aktivitesini mümkün olan en erken noktaya taşır.</b> Son iki şık tam tersini yapıyor — testi sağa (geç) itiyor, ki bu geç bulunan kusurun maliyetini artırır."
+    },
+    {
+      topic: "DevOps",
+      q: "Which of the following is a RISK or limitation of DevOps from a testing perspective?",
+      opts: [
+        "The pipeline and the test automation require additional resources to build and maintain",
+        "It provides fast feedback on code quality",
+        "It reduces the amount of repetitive manual regression work",
+        "It makes test environments more repeatable"
+      ],
+      a: [0],
+      why: "<b>Pipeline ve otomasyon kurulum ve bakım maliyeti getirir</b> — DevOps'un bedeli budur. Diğer üç şık DevOps'un <i>faydalarıdır</i>; soru <code>RISK</code> diye büyük harfle uyarıyor, o kelimeyi kaçırırsan hepsi doğru görünür."
+    },
+    {
+      topic: "DevOps",
+      q: "Which statement about DevOps and testing is correct?",
+      opts: [
+        "Automation cannot cover all types of testing, so exploratory and experience-based testing are still needed",
+        "DevOps removes the need for all manual testing",
+        "In DevOps, testers are no longer required",
+        "DevOps guarantees that no defects reach production"
+      ],
+      a: [0],
+      why: "<b>Otomasyon regresyonu devralır ama keşif testi, kullanılabilirlik ve deneyim tabanlı testi devralamaz.</b> İkinci ve üçüncü şıklar bu sınırı yok sayıyor; dördüncü şıkta <code>guarantees</code> var — prensip 1'in ihlali."
+    },
+    {
+      topic: "Yaşam döngüsünün etkisi",
+      q: "Which of the following are influenced by the choice of software development lifecycle? (Choose TWO.)",
+      opts: [
+        "The extent and timing of test automation",
+        "The level of detail of test documentation",
+        "The definition of the terms error, defect and failure",
+        "Whether the pesticide paradox applies to the project"
+      ],
+      a: [0, 1],
+      why: "<b>Yaşam döngüsü otomasyon kapsamını ve dokümantasyon ayrıntısını doğrudan belirler.</b> Son iki şık evrenseldir: terimlerin tanımı ve test prensipleri yaşam döngüsüne göre değişmez."
+    },
+    {
+      topic: "Yaşam döngüsünün etkisi",
+      q: "In an incremental development model, why does the regression testing burden tend to grow?",
+      opts: [
+        "Because each new increment can affect previously delivered functionality, which must be re-tested",
+        "Because increments are always larger than in sequential models",
+        "Because regression testing cannot be automated in incremental models",
+        "Because incremental models do not allow static testing"
+      ],
+      a: [0],
+      why: "<b>Her yeni artım, önceden teslim edilmiş işlevselliği bozabilir</b>, dolayısıyla regresyon kapsamı sürekli büyür. Bu, artımlı modellerde test otomasyonunu pratik bir zorunluluk haline getirir. Diğer şıklar olgusal olarak yanlış."
+    },
+    {
+      topic: "İyi test pratikleri",
+      q: "According to good testing practices that apply to every lifecycle, when should the test analysis and design for a given test level begin?",
+      opts: [
+        "During the corresponding development phase, in parallel with it",
+        "Only after the corresponding development phase is fully complete",
+        "Only after the code has been delivered to the test environment",
+        "Only during the test execution activity"
+      ],
+      a: [0],
+      why: "<b>Bir test seviyesinin analiz ve tasarımı, karşılık gelen geliştirme aşamasıyla eşzamanlı başlar.</b> V-model'in doğru okunuşu da budur — V-model 'test en sonda' demez, test <i>yürütmesinin</i> sonda olduğunu gösterir. Bu, shift left'in temelidir."
+    },
+    {
+      topic: "Retrospektifler",
+      q: "At the end of each iteration the team discusses what went well, what did not go well, and agrees on concrete improvements. What is this called, and what is its main output?",
+      opts: [
+        "A retrospective, whose output is actionable improvement items",
+        "A review, whose output is an approved work product",
+        "A test completion report, whose output is archived testware",
+        "A regression test cycle, whose output is a defect list"
+      ],
+      a: [0],
+      why: "<b>Retrospektif süreç iyileştirme toplantısıdır ve çıktısı eyleme dönüştürülebilir maddelerdir.</b> Sadece konuşulup dağılırsa retrospektif olmaz. Review (Bölüm 3) <i>ürünü</i> değerlendirir; retrospektif <i>süreci</i> değerlendirir — sınav bu ikisini yan yana sorar."
+    },
+    {
+      topic: "Retrospektifler",
+      q: "Which of the following is a benefit of retrospectives from a testing perspective?",
+      opts: [
+        "Improved quality of the test basis, for example by agreeing on clearer user stories",
+        "Guaranteed elimination of all process defects",
+        "Replacement of the need for test monitoring and control",
+        "Automatic reduction of the regression test suite"
+      ],
+      a: [0],
+      why: "<b>Retrospektif test tabanının kalitesini artırabilir</b> — belirsiz user story'ler tekrar tekrar kusur üretiyorsa, ekip bunu retrospektifte fark edip Definition of Ready tanımlar. Diğer şıklar aşırı iddialar veya alakasız otomatik sonuçlar içeriyor."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

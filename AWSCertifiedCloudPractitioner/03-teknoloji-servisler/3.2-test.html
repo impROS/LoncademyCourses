@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.2 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.2",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.2",
+  title: "AWS Global Altyapısı",
+  back: "3.2-global-altyapi.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Region / AZ / Edge ayrımı",
+      q: "What is an AWS Availability Zone?",
+      opts: [
+        "One or more discrete data centers with redundant power, networking and connectivity within an AWS Region",
+        "A geographic area that contains multiple AWS Regions",
+        "A location where CloudFront caches content close to users",
+        "A virtual network dedicated to a single AWS account"
+      ],
+      a: [0],
+      why: "<b>AZ</b>, bir Region içindeki <b>fiziksel olarak ayrı</b> bir veya birden çok veri merkezidir; kendi elektriği, soğutması ve ağı vardır ama diğer AZlerle yüksek hızlı özel bağlantıyla bağlıdır. CloudFrontun önbellek noktaları <b>edge location</b>dır; izole sanal ağ ise <b>VPC</b>dir."
+    },
+    {
+      topic: "Yüksek erişilebilirlik",
+      q: "A company wants its web application to remain available even if an entire data center fails. What is the recommended approach?",
+      opts: [
+        "Deploy the application across multiple Availability Zones in the same Region",
+        "Run a larger EC2 instance type in a single Availability Zone",
+        "Store the application code in Amazon S3",
+        "Enable Amazon CloudFront in front of the application"
+      ],
+      a: [0],
+      why: "<b>Yüksek erişilebilirlik = birden çok AZ.</b> Sınavda <i>highly available</i> ifadesini gördüğünde refleksin bu olsun. Daha büyük tek instance hâlâ tek arıza noktasıdır; CloudFront gecikmeyi düşürür ama arka uçtaki AZ arızasını tek başına çözmez."
+    },
+    {
+      topic: "Region / AZ / Edge ayrımı",
+      q: "How many Availability Zones does an AWS Region contain at a minimum?",
+      opts: ["Three", "One", "Two", "Ten"],
+      a: [0],
+      why: "Her AWS Regionı <b>en az üç</b> Availability Zone içerir. Bu, üç kopyayla yüksek erişilebilirlik ve çoğunluk (quorum) tabanlı servislerin çalışabilmesi için gereklidir."
+    },
+    {
+      topic: "Edge / CDN",
+      q: "A company's users in South America experience slow load times for images served from a Region in Europe. Which AWS capability addresses this MOST directly?",
+      opts: [
+        "Amazon CloudFront edge locations",
+        "Additional Availability Zones in Europe",
+        "A larger EC2 instance type",
+        "Amazon EBS Provisioned IOPS volumes"
+      ],
+      a: [0],
+      why: "Statik içeriği <b>kullanıcıya yaklaştırmak</b> gecikmeyi düşürür; bunu <b>CloudFront edge location</b>ları yapar. Edge sayısı Region sayısından kat kat fazladır. Yeni AZ eklemek erişilebilirliği artırır, <b>mesafeyi kısaltmaz</b>."
+    },
+    {
+      topic: "Region seçim kriterleri",
+      q: "A European bank must ensure that customer data never leaves Germany. Which factor should drive its AWS Region selection?",
+      opts: [
+        "Compliance and data residency requirements",
+        "The price of EC2 instances",
+        "The number of Availability Zones",
+        "The availability of AWS Support plans"
+      ],
+      a: [0],
+      why: "Region seçiminin dört kriteri: <b>uyumluluk/veri egemenliği</b>, kullanıcıya yakınlık (gecikme), <b>servisin o Regionda olması</b> ve <b>fiyat</b>. Yasal zorunluluk varsa bu diğer üçünün önüne geçer — mevzuat tartışmaya kapalıdır."
+    },
+    {
+      topic: "Region seçim kriterleri",
+      q: "Which two are valid criteria for choosing an AWS Region? (Choose TWO.)",
+      opts: [
+        "Whether the required AWS services are available in that Region",
+        "Proximity to end users to reduce latency",
+        "The number of IAM users in the account",
+        "The company support plan tier",
+        "The operating system used on EC2 instances"
+      ],
+      a: [0, 1],
+      why: "Dört kriter: uyumluluk, gecikme (kullanıcıya yakınlık), <b>servis kullanılabilirliği</b> ve fiyat. IAM kullanıcı sayısı, destek planı veya işletim sistemi Region seçimini belirlemez — bunlar tuzak şıklardır."
+    },
+    {
+      topic: "Global vs Region servisleri",
+      q: "Which two AWS services are global rather than Region-scoped? (Choose TWO.)",
+      opts: ["AWS IAM", "Amazon Route 53", "Amazon EC2", "Amazon RDS", "Amazon VPC"],
+      a: [0, 1],
+      why: "Global servisler: <b>IAM, Route 53, CloudFront, Organizations, Shield</b> ve CloudFront ile kullanılan WAF. EC2, RDS ve VPC <b>Region bazlıdır</b>. Konsolda Region seçicide <i>Global</i> yazması iyi bir ipucudur."
+    },
+    {
+      topic: "Global vs Region servisleri",
+      q: "Which statement about Amazon S3 is correct?",
+      opts: [
+        "Bucket names are globally unique, but each bucket resides in a specific Region",
+        "S3 is a global service and buckets exist in all Regions simultaneously",
+        "Buckets are tied to a single Availability Zone by default",
+        "Bucket names only need to be unique within an AWS account"
+      ],
+      a: [0],
+      why: "S3 bucket <b>isimleri dünya genelinde benzersizdir</b>, ancak her bucket <b>belirli bir Regionda</b> yaşar ve verisi o Region içinde <b>birden çok AZye</b> kopyalanır (One Zone sınıfları hariç). Konsolun tüm bucketları tek listede göstermesi S3ü global sandırır — klasik tuzak."
+    },
+    {
+      topic: "Edge servisleri",
+      q: "A gaming company runs a UDP-based multiplayer service in two Regions and needs static IP addresses plus fast failover between Regions. Which service should it use?",
+      opts: [
+        "AWS Global Accelerator",
+        "Amazon CloudFront",
+        "Amazon Route 53 health checks only",
+        "AWS Direct Connect"
+      ],
+      a: [0],
+      why: "<b>Global Accelerator</b> statik anycast IP adresleri verir, kullanıcıyı en yakın AWS uç noktasından omurgaya alır ve Region arası <b>hızlı failover</b> sağlar; TCP/UDP iş yükleri için tasarlanmıştır. <b>CloudFront</b> ise HTTP/HTTPS <b>önbelleklenebilir içerik</b> içindir."
+    },
+    {
+      topic: "Uç seçenekleri",
+      q: "Which AWS offering extends a Region to place compute and storage closer to large population centers for single-digit millisecond latency?",
+      opts: ["AWS Local Zones", "AWS Outposts", "Availability Zones", "Amazon CloudFront"],
+      a: [0],
+      why: "<b>Local Zones</b>, AWS Regionının büyük metropollere yakın uzantılarıdır ve <b>tek haneli milisaniye</b> gecikme gerektiren iş yükleri içindir (canlı video işleme, gerçek zamanlı oyun). <b>Outposts</b> ise donanımı <b>müşterinin kendi tesisine</b> koyar."
+    },
+    {
+      topic: "Veri konumu",
+      q: "Which statement about data stored in an AWS Region is correct?",
+      opts: [
+        "AWS does not move customer data out of the selected Region without the customer's consent",
+        "AWS automatically copies all data to at least two Regions",
+        "Data is stored in whichever Region has the most free capacity",
+        "Data location is chosen by AWS Support"
+      ],
+      a: [0],
+      why: "Region seçimi <b>müşteriye</b> aittir ve AWS veriyi müşterinin izni olmadan Region dışına taşımaz — <b>veri egemenliği</b> ilkesi. Bölgeler arası kopyalama isteğe bağlıdır (örn. S3 Cross-Region Replication) ve müşteri tarafından yapılandırılır."
+    },
+    {
+      topic: "Çok-AZ mimarisi",
+      q: "Which two AWS features help distribute a workload across multiple Availability Zones for high availability? (Choose TWO.)",
+      opts: [
+        "Elastic Load Balancing",
+        "Amazon RDS Multi-AZ deployment",
+        "Amazon S3 Glacier Deep Archive",
+        "AWS Cost Explorer",
+        "Amazon Route 53 domain registration"
+      ],
+      a: [0, 1],
+      why: "<b>ELB</b> trafiği AZler arasında dağıtır; <b>RDS Multi-AZ</b> başka bir AZde senkron bir standby tutar ve arıza anında otomatik <b>failover</b> yapar. Bunlara <b>EC2 Auto Scaling</b> de eşlik eder. Glacier arşiv depolamadır, Cost Explorer maliyet analizidir."
+    },
+    {
+      topic: "Region / AZ / Edge ayrımı",
+      q: "Which statement about AWS edge locations is TRUE?",
+      opts: [
+        "There are many more edge locations than Regions, and they are used to reduce latency for end users",
+        "Each Region contains exactly one edge location",
+        "Edge locations are used to run EC2 instances for high availability",
+        "Edge locations replace the need for Availability Zones"
+      ],
+      a: [0],
+      why: "Edge locationlar <b>yüzlercedir</b> ve Region sayısından kat kat fazladır; amaçları <b>gecikmeyi düşürmek</b>tir (CloudFront önbelleği, Route 53 DNS yanıtı). Yüksek erişilebilirliği sağlayan yapı ise <b>AZ</b>lerdir — ikisi farklı amaçlara hizmet eder."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

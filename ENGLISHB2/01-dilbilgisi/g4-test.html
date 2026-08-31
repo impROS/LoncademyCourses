@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g4 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g4",
+  code: "Dilbilgisi · g4",
+  title: "Modal fiiller ve çıkarım",
+  back: "g4-modals.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Şimdiki zaman çıkarımı",
+      q: "Her office light is on and her coat is on the chair. She ______ still be in the building.",
+      opts: ["must", "can't", "mustn't", "needn't"],
+      a: [0],
+      why: "<b>must</b> — kanıt güçlü ve olumlu bir sonuca işaret ediyor. <code>mustn't</code> bir yasaktır, çıkarım kurmaz; olumsuz çıkarım isteseydik <code>can't</code> derdik."
+    },
+    {
+      topic: "Şimdiki zaman çıkarımı",
+      q: "That ______ be Deniz at the door — she's in Berlin until Sunday.",
+      opts: ["can't", "mustn't", "shouldn't", "might not"],
+      a: [0],
+      why: "<b>can't</b> — olumsuz güçlü çıkarımın tek doğru modalıdır. Türkçe 'olamaz' ile 'olmamalı' arasındaki fark burada kritiktir: <code>mustn't</code> = yasak, <code>shouldn't</code> = tavsiye."
+    },
+    {
+      topic: "Geçmiş çıkarım",
+      q: "The meeting room is empty and the chairs are stacked. They ______ early.",
+      opts: ["must have finished", "must finish", "can't have finished", "should have finished"],
+      a: [0],
+      why: "<b>must have finished</b> — geçmişe dair güçlü çıkarım <code>modal + have + V3</code> ile kurulur. <code>should have finished</code> 'bitirmeleri gerekirdi ama bitirmediler' anlamına gelir, kanıtla çelişir."
+    },
+    {
+      topic: "Geçmiş çıkarım",
+      q: "They ______ the whole project in two days — it normally takes a month.",
+      opts: ["can't have completed", "mustn't have completed", "couldn't complete", "didn't have to complete"],
+      a: [0],
+      why: "<b>can't have completed</b> — geçmiş olumsuz çıkarım. <code>mustn't have</code> İngilizcede çıkarım anlamında kullanılmaz; bu kalıbı görürsen neredeyse her zaman çeldiricidir."
+    },
+    {
+      topic: "should have / could have",
+      q: "I ______ the tickets earlier; now everything is sold out.",
+      opts: ["should have booked", "must have booked", "needn't have booked", "can't have booked"],
+      a: [0],
+      why: "<b>should have booked</b> — yapılmamış ve pişmanlık duyulan geçmiş eylem. <code>needn't have booked</code> tam tersini söylerdi: gereksiz yere almışsın."
+    },
+    {
+      topic: "needn't have / didn't need to",
+      q: "Which sentence means the person DID something that turned out to be unnecessary?",
+      opts: ["You needn't have brought a gift.", "You didn't need to bring a gift.", "You mustn't bring a gift.", "You don't have to bring a gift."],
+      a: [0],
+      why: "<b>needn't have brought</b> = getirdin ama gerek yokmuş. <code>didn't need to</code> gereğin olmadığını söyler ve genelde eylemin yapılmadığını ima eder. Bu ikili sınavların favori ayrımıdır."
+    },
+    {
+      topic: "Zorunluluk ve yasak",
+      q: "Visitors ______ enter the laboratory without protective glasses.",
+      opts: ["mustn't", "don't have to", "needn't", "shouldn't have"],
+      a: [0],
+      why: "<b>mustn't</b> — kesin yasak. <code>don't have to</code> ve <code>needn't</code> 'isteğe bağlı' demektir ve güvenlik kuralını tam tersine çevirir."
+    },
+    {
+      topic: "Zorunluluk ve yasak",
+      q: "Lunch is included, so you ______ bring sandwiches.",
+      opts: ["don't have to", "mustn't", "can't", "shouldn't"],
+      a: [0],
+      why: "<b>don't have to</b> — gereklilik yok, ama yasak da yok. <code>mustn't</code> sandviç getirmeyi yasaklardı ki öğle yemeğinin dahil olması bunu gerektirmez."
+    },
+    {
+      topic: "must vs have to",
+      q: "Choose the two sentences where the obligation comes from an external rule. (Choose TWO.)",
+      opts: ["Cyclists have to wear helmets in this city.", "You have to show your ID at reception.", "I must remember to call my sister.", "I must start going to bed earlier."],
+      a: [0, 1],
+      why: "<code>have to</code> dışarıdan gelen kuralı (kanun, kurum politikası) taşır; <code>must</code> ise konuşanın kendine koyduğu iç zorunluluğu. Son iki cümlede kimse kimseyi zorlamıyor, kişi kendi kendine söylüyor."
+    },
+    {
+      topic: "Yetenek",
+      q: "The lift broke down, but the engineer ______ to get everyone out within an hour.",
+      opts: ["was able", "could", "can", "might"],
+      a: [0],
+      why: "<b>was able to</b> — tek seferlik, belirli bir durumda elde edilen başarı. <code>could</code> genel kapasiteyi anlatır (<i>I could swim at five</i>); tek bir olayda başarı için kullanılamaz."
+    },
+    {
+      topic: "Yetenek",
+      q: "When I was a child I ______ read music, but I've forgotten how.",
+      opts: ["could", "was able", "managed to", "have been able"],
+      a: [0],
+      why: "<b>could</b> — geçmişteki genel yetenek/kapasite. <code>managed to</code> ve <code>was able to</code> tek bir olaydaki başarı içindir ve 'çocukken genel olarak yapardım' anlamını vermez."
+    },
+    {
+      topic: "Nezaket ve teklif",
+      q: "______ you mind giving me a hand with these boxes?",
+      opts: ["Would", "Could", "Do you can", "Should"],
+      a: [0],
+      why: "<b>Would you mind + V-ing</b> sabit bir nezaket kalıbıdır. Dikkat: cevabı <i>Not at all</i> ya da <i>Of course not</i> olumludur — 'sakıncası var mı' diye sorulduğu için."
+    },
+    {
+      topic: "Tavsiye",
+      q: "You ______ leave now if you want to catch the last bus — it's the only one tonight.",
+      opts: ["had better", "would rather", "may as well not", "don't have to"],
+      a: [0],
+      why: "<b>had better</b> — olumsuz sonucu ima eden güçlü tavsiye, ardından yalın fiil gelir (<i>had better leave</i>). <code>would rather</code> tercih bildirir, uyarı değil."
+    },
+    {
+      topic: "be supposed to",
+      q: "Everyone ______ to sign in at reception, but half the team never does.",
+      opts: ["is supposed", "must", "had better", "is able"],
+      a: [0],
+      why: "<b>is supposed to</b> — kural var ama uygulanmıyor; tam da cümlenin ikinci yarısındaki çelişkiyi taşır. <code>must</code> kuralı bildirir ama 'beklenen ama olmayan' tonunu vermez."
+    },
+    {
+      topic: "Geçmiş çıkarım",
+      q: "I can't find my glasses. I ______ them at the office.",
+      opts: ["may have left", "may leave", "must leave", "should have left"],
+      a: [0],
+      why: "<b>may have left</b> — geçmişe dair orta düzey olasılık. <code>should have left</code> 'bırakmam gerekirdi' anlamına gelir ve gözlüğü kaybetme durumuyla ilgisizdir."
+    },
+    {
+      topic: "Zorunluluk geçmişte",
+      q: "There was no lift, so we ______ carry everything up six flights of stairs.",
+      opts: ["had to", "must", "should", "could"],
+      a: [0],
+      why: "<b>had to</b> — <code>must</code>'ın geçmiş biçimi yoktur; geçmiş zorunluluk her zaman <code>had to</code> ile kurulur. Bu, sınavda dolaylı anlatım (g7) sorularında da karşına çıkar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

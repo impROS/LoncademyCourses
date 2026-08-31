@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.1 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4.1",
+  code: "4. alan · Faturalama ve Destek · Görev 4.1",
+  title: "Fiyatlandırma Modelleri",
+  back: "4.1-fiyatlandirma.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Spot",
+      q: "A batch image-rendering job can be stopped and restarted at any time without affecting results. Which EC2 pricing model provides the LOWEST cost?",
+      opts: ["Spot Instances", "On-Demand Instances", "Reserved Instances", "Dedicated Hosts"],
+      a: [0],
+      why: "<b>Spot</b> AWSin atıl kapasitesini satar ve <b>%90a varan</b> indirim sağlar; karşılığında AWS kapasiteye ihtiyaç duyduğunda <b>2 dakika ihbarla</b> geri alabilir. Soruda <i>can be interrupted</i>, <i>fault tolerant</i> veya <i>flexible start/end time</i> geçiyorsa cevap Spottur."
+    },
+    {
+      topic: "Savings Plans vs RI",
+      q: "A company will run a steady production workload for the next three years but wants the freedom to change instance families, sizes and Regions over time. Which purchasing option is MOST appropriate?",
+      opts: [
+        "Compute Savings Plans",
+        "Standard Reserved Instances",
+        "Spot Instances",
+        "On-Demand Capacity Reservations"
+      ],
+      a: [0],
+      why: "<b>Compute Savings Plans</b> saatlik bir <b>dolar taahhüdü</b> verir ve instance ailesi, boyutu, Region, işletim sistemi değişse bile geçerlidir; ayrıca <b>Fargate ve Lambda</b>yı da kapsar. <b>Standard RI</b> daha katıdır — aile değiştirilemez. Soruda <i>flexibility</i> geçiyorsa Savings Plans seç."
+    },
+    {
+      topic: "On-Demand",
+      q: "A startup is testing a new application. Usage is unpredictable and the team does not want any long-term commitment. Which pricing model should it use?",
+      opts: ["On-Demand", "Reserved Instances", "Savings Plans", "Dedicated Host"],
+      a: [0],
+      why: "<b>On-Demand</b> taahhüt istemez, saniye/saat bazında ödersin ve istediğin an durdurursun. Kullanım <b>öngörülemez</b> veya kısa süreliyse doğru seçim budur; kullanım oturduktan sonra Savings Plans/RIye geçilir."
+    },
+    {
+      topic: "Dedicated Host",
+      q: "A company must run software that is licensed per physical socket and core, and needs visibility into the physical server. Which option meets this requirement?",
+      opts: ["Dedicated Host", "Dedicated Instance", "Spot Instance", "On-Demand Instance"],
+      a: [0],
+      why: "<b>Dedicated Host</b> fiziksel sunucuyu tamamen sana ayırır ve <b>soket/çekirdek görünürlüğü</b> sağlar; bu, çekirdek bazlı lisanslanan yazılımların <b>BYOL</b> ile taşınması için gereklidir. <b>Dedicated Instance</b> donanımı paylaşmaz ama bu görünürlüğü vermez."
+    },
+    {
+      topic: "Veri transferi",
+      q: "Which statement about AWS data transfer pricing is correct?",
+      opts: [
+        "Data transferred INTO AWS from the internet is generally free, while data transferred OUT to the internet is charged",
+        "Both inbound and outbound data transfer are always free",
+        "Data transferred INTO AWS is charged, while outbound is free",
+        "Data transfer is included in the AWS Support plan fee"
+      ],
+      a: [0],
+      why: "<b>Giriş (IN) genelde ücretsiz, çıkış (OUT) ücretlidir.</b> Ayrıca AZler arası ve Regionlar arası trafik de ücretlendirilir. Bu kural mimari kararları etkiler — örneğin CloudFront kullanmak çıkış maliyetini düşürür."
+    },
+    {
+      topic: "EC2 maliyet bileşenleri",
+      q: "An EC2 instance is stopped for an entire month. What does the customer still pay for?",
+      opts: [
+        "The attached Amazon EBS volumes",
+        "The instance compute hours",
+        "Nothing at all",
+        "The Amazon Machine Image (AMI) license"
+      ],
+      a: [0],
+      why: "<b>Stop</b> compute ücretini durdurur ama <b>EBS diski durmaya devam eder ve ücretlenir</b> (veri korunduğu için). Tamamen durdurmak için <b>terminate</b> gerekir. Ayrıca boşta duran <b>Elastic IP</b> de ücret üretir — sürpriz faturanın klasik kaynağı."
+    },
+    {
+      topic: "Reserved Instances",
+      q: "Which Reserved Instance payment option provides the LARGEST discount?",
+      opts: ["All Upfront", "Partial Upfront", "No Upfront", "Monthly billing"],
+      a: [0],
+      why: "İndirim sırası: <b>All Upfront &gt; Partial Upfront &gt; No Upfront</b>. Aynı şekilde <b>3 yıllık</b> taahhüt 1 yıllıktan daha yüksek indirim sağlar. Mantık basit: AWSe ne kadar çok ve ne kadar önden taahhüt verirsen o kadar ucuza alırsın."
+    },
+    {
+      topic: "Lambda fiyatlandırma",
+      q: "How does AWS charge for AWS Lambda?",
+      opts: [
+        "Per request and per compute duration based on allocated memory",
+        "A flat monthly fee per function",
+        "Per EC2 instance hour used by the function",
+        "Per gigabyte of code stored"
+      ],
+      a: [0],
+      why: "Lambda <b>istek sayısı</b> ve <b>çalışma süresi × ayrılan bellek</b> üzerinden ücretlendirilir; fonksiyon çalışmıyorken ödeme yoktur. Bu, <i>pay only when your code runs</i> ifadesinin karşılığıdır."
+    },
+    {
+      topic: "Free Tier",
+      q: "Which two statements about the AWS Free Tier are correct? (Choose TWO.)",
+      opts: [
+        "Some offers are limited to 12 months after account creation",
+        "Some services include an always-free usage amount",
+        "The Free Tier removes all charges for the first year regardless of usage",
+        "The Free Tier includes AWS Business Support at no cost",
+        "Free Tier limits cannot be monitored"
+      ],
+      a: [0, 1],
+      why: "Ücretsiz kullanım üç türdür: <b>12 ay ücretsiz</b>, <b>her zaman ücretsiz (always free)</b> ve <b>kısa süreli denemeler</b>. Sınırı aşınca <b>normal fiyat</b> işler — bu yüzden Budgets alarmı kurulur. Kullanımını <b>Billing → Free tier</b> sayfasından izleyebilirsin. Business Support ücretlidir."
+    },
+    {
+      topic: "Kapasite garantisi",
+      q: "A company must guarantee that EC2 capacity will be available in a specific Availability Zone for a planned event, without making a long-term commitment. Which option should it use?",
+      opts: [
+        "On-Demand Capacity Reservations",
+        "Spot Instances",
+        "Standard Reserved Instances",
+        "Compute Savings Plans"
+      ],
+      a: [0],
+      why: "<b>On-Demand Capacity Reservation</b> belirli bir AZde <b>kapasiteyi rezerve eder</b> ama <b>fiyat indirimi sağlamaz</b> ve uzun süreli taahhüt gerektirmez. Savings Plans ve RI ise <b>fatura indirimi</b> araçlarıdır; Spot ise kapasite garantisi vermez, tam tersine kesilebilir."
+    },
+    {
+      topic: "S3 maliyet bileşenleri",
+      q: "Which two factors affect the cost of Amazon S3? (Choose TWO.)",
+      opts: [
+        "The amount of data stored per month and the storage class",
+        "The number of requests such as PUT and GET",
+        "The number of IAM users in the account",
+        "The AWS Region selected for AWS Support",
+        "The number of Availability Zones in the Region"
+      ],
+      a: [0, 1],
+      why: "S3 maliyeti: <b>depolanan GB/ay (sınıfa göre)</b>, <b>istek sayısı</b>, <b>veri çıkışı</b> ve sınıflar arası geçiş/erişim ücretleridir. Ayrıca IA sınıflarında 30, Glacierda 90, Deep Archiveda 180 günlük <b>minimum saklama süreleri</b> vardır — erken silsen de o süreyi ödersin."
+    },
+    {
+      topic: "Ücretsiz servisler",
+      q: "Which statement is TRUE about services such as AWS CloudFormation, Amazon VPC and AWS Identity and Access Management (IAM)?",
+      opts: [
+        "The services themselves are free, but the AWS resources they create or use may incur charges",
+        "They are free and any resources they create are also free",
+        "They are billed per API call",
+        "They require a paid support plan to use"
+      ],
+      a: [0],
+      why: "<b>Servisin kendisi ücretsiz olabilir</b> (IAM, VPC, Auto Scaling, CloudFormation, Elastic Beanstalk, consolidated billing, Shield Standard) ama <b>oluşturdukları kaynaklar ücretlidir</b>: CloudFormationın açtığı EC2, VPCdeki NAT Gateway gibi. Bu ayrım sınavda özellikle sorulur."
+    },
+    {
+      topic: "Spot uygunluğu",
+      q: "Which workload is LEAST suitable for Amazon EC2 Spot Instances?",
+      opts: [
+        "A production database that must not lose its connection",
+        "A stateless batch data-processing job",
+        "A CI/CD build fleet",
+        "A video rendering farm"
+      ],
+      a: [0],
+      why: "Spot instancelar <b>2 dakika ihbarla geri alınabilir</b>; bu yüzden <b>durum tutan (stateful)</b> ve kesintiyi kaldıramayan iş yükleri (üretim veritabanı) için uygun değildir. Toplu işleme, CI/CD ve render gibi <b>yeniden başlatılabilir</b> işler idealdir."
+    },
+    {
+      topic: "Savings Plans kapsamı",
+      q: "Which two compute services can be covered by Compute Savings Plans? (Choose TWO.)",
+      opts: [
+        "AWS Lambda",
+        "AWS Fargate",
+        "Amazon S3",
+        "Amazon RDS",
+        "Amazon Route 53"
+      ],
+      a: [0, 1],
+      why: "<b>Compute Savings Plans</b> EC2ye ek olarak <b>Fargate ve Lambda</b> kullanımını da kapsar — bu, onu Reserved Instancesa göre daha esnek kılan başlıca özelliktir. S3, RDS ve Route 53 bu plana dahil değildir (RDS için ayrı Reserved DB Instance seçeneği vardır)."
+    },
+    {
+      topic: "Fiyatlandırma mantığı",
+      q: "Which pricing principle applies to most AWS services?",
+      opts: [
+        "Pay-as-you-go with no upfront commitment required",
+        "A fixed annual license fee per account",
+        "A per-user subscription for every AWS service",
+        "Payment based on the number of Availability Zones used"
+      ],
+      a: [0],
+      why: "AWSin temel modeli <b>kullandığın kadar öde (pay-as-you-go)</b>dur: taahhüt zorunlu değildir, kullanımı bıraktığında ödeme durur. Taahhütlü seçenekler (Savings Plans, Reserved) <b>isteğe bağlı indirim</b> mekanizmalarıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

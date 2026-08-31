@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>05-01 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-05-01",
+  code: "05 Crackme · Mantık",
+  title: "Lisans Kontrolünü Bulmak ve Kırmak",
+  back: "01-crackme-mantik.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Crackme türleri",
+      q: "<code>strings</code>'te parola yok; kodda bir toplama döngüsü ve <code>cmp eax, 0x290</code> var. Bu ne tür bir crackme'dir?",
+      opts: ["Dönüşümlü — girdi işlenip bir hedef değerle karşılaştırılıyor (keygen adayı)", "Sabit parola", "Zaman kısıtlı", "Anti-debug"],
+      a: [0],
+      why: "Parola gömülü değil, girdi bir dönüşümden (toplam) geçip <b>hedef değerle</b> (0x290) karşılaştırılıyor → <b>dönüşümlü</b>. Beklenen değeri üretmek keygen işidir (5.2)."
+    },
+    {
+      topic: "Crackme türleri",
+      q: "Bir crackme girdiyi doğrudan gömülü bir string ile <code>strcmp</code> yapıyor. En hızlı saldırı?",
+      opts: ["String/xref ile gömülü parolayı okumak", "Keygen yazmak", "Tüm binary'yi patch'lemek", "Brute-force"],
+      a: [0],
+      why: "Sabit parola türünde en ucuz yol <b>okumaktır</b>: strings veya xref ile karşılaştırılan string doğrudan görünür. Daha karmaşık yöntemler gereksiz."
+    },
+    {
+      topic: "Doğrulama noktası",
+      q: "Doğrulama noktasını (Correct/Wrong kararı) bulmanın üç ana yolundan biri <b>değildir</b>:",
+      opts: ["Binary'yi rastgele byte'larla değiştirip denemek", "Sonuç string'ine (Correct/Wrong) xref almak", "strcmp/memcmp import'una xref almak", "break strcmp ile dinamik yakalamak"],
+      a: [0],
+      why: "Üç yol: <b>string→xref, import→xref, dinamik break.</b> Rastgele byte değiştirmek analiz değil; binary'yi bozar. Karar noktası hedefli aranır."
+    },
+    {
+      topic: "Doğrulama noktası",
+      q: "Dinamik olarak beklenen parolayı yakalamanın en pratik yolu?",
+      opts: ["break strcmp koyup durduğunda x/s $rdi ve x/s $rsi ile argümanları okumak", "Programı yüzlerce kez elle denemek", "strings çıktısını ezberlemek", "Binary'yi silmek"],
+      a: [0],
+      why: "<code>break strcmp</code> karşılaştırma anında durdurur; argüman register'ları (2.4) karşılaştırılan iki string'i verir — biri beklenen parola. En hızlı dinamik crackme yolu (4.1)."
+    },
+    {
+      topic: "Correct dalı",
+      q: "<code>call strcmp; test eax,eax; jne .wrong</code> dizisinde 'Correct' dalı hangisidir?",
+      opts: ["jne alınmadığında (eax==0, yani eşitken) devam eden kol", "jne'nin atladığı .wrong etiketi", "test komutunun kendisi", "strcmp'in içi"],
+      a: [0],
+      why: "strcmp eşitse 0 döner → <code>test</code> ZF=1 → <code>jne</code> <b>atlamaz</b>, akış devam eder = Correct dalı. jne'nin gittiği yer Wrong'dur."
+    },
+    {
+      topic: "Correct dalı",
+      q: "Tek bir <code>jne</code>'yi nop'ladın ama program hâlâ 'Wrong' diyor. En olası sebep?",
+      opts: ["Birden çok karar noktası var (uzunluk + içerik + checksum); tüm zinciri haritalamak gerek", "nop çalışmıyor", "Binary şifreli", "strcmp bozuk"],
+      a: [0],
+      why: "Gerçek crackme'ler sık sık <b>çoklu kontrol</b> içerir. Tek dalı geçmek yetmez; tüm karar zincirini bulup her birini ele almalısın. Tek jne'ye odaklanmak tuzaktır."
+    },
+    {
+      topic: "Girdi akışı",
+      q: "Bir dönüşümde her byte <code>^ 0x2a</code> yapılıyor. Bu dönüşümün tersi nedir?",
+      opts: ["Yine ^ 0x2a (XOR kendi tersidir)", "+ 0x2a", "- 0x2a", "/ 0x2a"],
+      a: [0],
+      why: "<b>XOR kendi tersidir:</b> <code>(x ^ k) ^ k = x</code>. Bu yüzden XOR'lu dönüşümler kolayca tersine çevrilebilir → keygen basittir. Bunu bilmek dönüşümlü crackme'lerin anahtarı."
+    },
+    {
+      topic: "Girdi akışı",
+      q: "Bir dönüşümün 'tersine çevrilebilir' olması neden önemlidir?",
+      opts: ["Tersine çevrilebilirse beklenen sonuçtan geçerli girdiyi hesaplayabilir (keygen yazabilir)sin", "Programı hızlandırır", "Binary boyutunu küçültür", "Önemli değildir"],
+      a: [0],
+      why: "Keygen = hedef sonuçtan girdiyi geri hesaplamak. Dönüşüm tersine çevrilebilirse (XOR, +, -) bu doğrudan yapılır. <b>Tek yönlü hash</b> ise tersine çevrilemez → patch veya brute-force gerekir."
+    },
+    {
+      topic: "Strateji seçimi",
+      q: "Doğrulama tek yönlü bir hash (ör. SHA) kullanıyor ve girdiyi hash'leyip sabitle karşılaştırıyor. En uygun strateji?",
+      opts: ["Keygen zor; kontrolü patch'lemek veya girdiyi brute-force etmek", "Hash'i matematiksel olarak tersine çevirmek", "strings ile parolayı okumak", "Hiçbir şey yapılamaz"],
+      a: [0],
+      why: "Tek yönlü hash tersine çevrilemez, o yüzden keygen pratik değil. <b>Patch</b> (kararı zorla) veya <b>brute-force</b> (küçük girdi uzayı) tercih edilir. 'Hash'i tersine çevir' gerçekçi değil."
+    },
+    {
+      topic: "Strateji seçimi",
+      q: "Programı sadece <b>bir kez</b> geçmen yeterliyse (kalıcı çözüm gerekmiyorsa) en hızlı yöntem?",
+      opts: ["GDB'de ilgili register/flag'i set ile değiştirip o çalıştırmada Correct dalına zorlamak", "Keygen yazmak", "Binary'yi kalıcı patch'lemek", "Kaynak kodu bulmak"],
+      a: [0],
+      why: "Tek seferlik geçiş için <b>dinamik set</b> (4.1) en hızlısıdır: <code>set $eax=0</code> gibi. Kalıcı çözüm gerekiyorsa patch (5.3); üretilebilir key gerekiyorsa keygen (5.2)."
+    },
+    {
+      topic: "Strateji seçimi",
+      q: "Saldırı stratejilerinin genel maliyet/zarafet sırası hangisidir?",
+      opts: ["Önce oku (en ucuz) → hesapla/keygen (en zarif) → patch (en kaba ama etkili)", "Önce patch → sonra oku", "Her zaman keygen ile başla", "Her zaman brute-force"],
+      a: [0],
+      why: "Karar ağacı: gömülü değeri <b>oku</b>; olmuyorsa dönüşümü <b>hesapla</b>; o da zorsa kararı <b>zorla (patch)</b>. En düşük maliyetten başlamak zaman kazandırır."
+    },
+    {
+      topic: "Correct dalı",
+      q: "Bazı crackme'ler kararı 'ters' kurar: doğruda <code>exit</code>, yanlışta devam. Bu neyi öğretir?",
+      opts: ["Correct dalının her zaman en bariz yerde olmadığını; karar mantığını dikkatle okumak gerektiğini", "Crackme'nin bozuk olduğunu", "Patch'in imkânsız olduğunu", "strcmp kullanılmadığını"],
+      a: [0],
+      why: "Kurgu tersine çevrilebilir; 'başarı = devam eden dal' varsayımı yanıltıcı olabilir. <b>Karar mantığını (hangi dal ne yapıyor) okumak</b> ezber kalıptan önemlidir."
+    },
+    {
+      topic: "Crackme türleri",
+      q: "Kullanıcı adı + seri numarası girip bir formülle doğrulanan crackme türü için doğal saldırı nedir?",
+      opts: ["Doğrulama formülünü çıkarıp aynı formülle geçerli seri üreten bir keygen yazmak", "Sadece strings okumak", "Binary'yi silmek", "Programı yavaşlatmak"],
+      a: [0],
+      why: "Seri/anahtar türünde formül girdiye bağlıdır; sabit bir parola yoktur. <b>Formülü tersine çevirip keygen</b> yazmak (5.2) bu türün klasik çözümüdür."
+    },
+    {
+      topic: "Girdi akışı",
+      q: "Bir dönüşüm <code>+ 0x10</code> ekliyorsa, keygen'de bunu tersine çevirmek için ne yaparsın?",
+      opts: ["- 0x10 (çıkarma) uygularım", "yine + 0x10", "^ 0x10", "* 0x10"],
+      a: [0],
+      why: "Toplamanın tersi çıkarmadır: <code>(x + k) - k = x</code>. Her tersine çevrilebilir işlemin bir tersi vardır (XOR↔XOR, +↔−, kaydırma↔kaydırma). Keygen bu tersleri zincirler."
+    },
+    {
+      topic: "Doğrulama noktası",
+      q: "Karar noktasını bulduktan sonra elindeki üç temel seçenek nedir?",
+      opts: ["Oku (sabit değeri al), hesapla (keygen), zorla (patch/dinamik set)", "Sil, kopyala, yapıştır", "Derle, linkle, çalıştır", "Sadece brute-force"],
+      a: [0],
+      why: "Karar noktası bulununca: değeri <b>oku</b>, beklenen girdiyi <b>hesapla</b>, ya da kararı <b>zorla</b>. Bu üçlü, sonraki iki konunun (keygen, patching) temelidir."
+    },
+    {
+      topic: "Doğrulama noktası",
+      q: "Bir crackme'de doğrulama (Correct/Wrong) noktasını bulmanın <b>iki</b> geçerli yolu hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Sonuç string'ine ('Correct') xref almak", "<code>strcmp</code> import'una xref almak veya <code>break strcmp</code> koymak", "Binary'yi rastgele byte'larla değiştirmek", "Parolayı sezgiyle tahmin etmek"],
+      a: [0, 1],
+      why: "<b>String/import xref</b> ve <b>break strcmp</b> hedefli, geçerli yöntemlerdir. Rastgele byte değiştirmek binary'yi bozar; tahmin analiz değildir."
+    },
+    {
+      topic: "Girdi akışı",
+      q: "Keygen açısından tersine çevrilebilir olan <b>iki</b> işlem hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["XOR (<code>^ k</code>)", "Toplama (<code>+ k</code>)", "Bit maskeleme (<code>&amp; 0xF0</code>)", "Tek yönlü hash (SHA)"],
+      a: [0, 1],
+      why: "<b>XOR ve toplama tersine çevrilebilir</b> (XOR↔XOR, +↔−). Maskeleme bit kaybeder, hash tek yönlüdür → keygen için tersine çevrilemez; o durumda patch/brute-force gerekir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>05-03 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-05-03",
+  code: "05 Crackme · Patching & Anti-debug",
+  title: "Binary Patching ve Anti-Debug",
+  back: "03-patching-antidebug.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Patch yolları",
+      q: "Tek bir çalıştırmada kararı geçmen yeterli, kaynak binary'yi kalıcı değiştirmek istemiyorsun. En uygun yöntem?",
+      opts: ["Dinamik patch: GDB'de set ile register/flag değiştirmek", "Statik byte patch", "Keygen yazmak", "Binary'yi silmek"],
+      a: [0],
+      why: "<b>Dinamik patch (GDB set)</b> sadece o oturumu etkiler, dosyaya dokunmaz. Kalıcı 'cracked' kopya için statik byte patch gerekir."
+    },
+    {
+      topic: "Karar komutu",
+      q: "Kısa <code>jne</code> komutunun makine kodu byte'ı nedir ve <code>je</code>'ye çevirmek için ne yaparsın?",
+      opts: ["jne = 0x75; onu 0x74 (je) yaparım — tek byte", "jne = 0x90; 0x75 yaparım", "jne = 0xCC; 0x74 yaparım", "jne = 0xEB; nop yaparım"],
+      a: [0],
+      why: "<b>jne(kısa)=0x75, je(kısa)=0x74.</b> Tek bir byte'ı 75→74 yapmak koşulu tersine çevirir. nop=0x90, int3=0xCC farklı komutlardır."
+    },
+    {
+      topic: "Karar komutu",
+      q: "Karar <code>test eax,eax; jne .wrong</code>. Programı her girdide 'Correct' yapmanın en temiz yolu genelde nedir?",
+      opts: ["jne'yi nop'lamak (atlamayı iptal etmek) — akış Correct dalına düşer", "Tüm fonksiyonu silmek", "test'i çıkarmak", "eax'i büyütmek"],
+      a: [0],
+      why: "'Yanlışsa atla'yı <b>nop ile iptal edersen</b> program hiç Wrong'a sapmaz, doğal olarak Correct dalına akar. Yine de dalların ne yaptığını okumak şart (bazı kurguda je gerekir)."
+    },
+    {
+      topic: "Karar komutu",
+      q: "<code>nop</code> komutunun byte değeri nedir?",
+      opts: ["0x90", "0x75", "0xCC", "0x00"],
+      a: [0],
+      why: "<b>nop = 0x90</b> (hiçbir şey yapma). 2 byte'lık bir jne'yi iptal etmek için iki <code>0x90</code> yazılır. 0xCC = int3 (breakpoint), 0x75 = jne."
+    },
+    {
+      topic: "Uzunluk koruma",
+      q: "Patch uygularken neden komutun byte uzunluğunu korumak zorundasın?",
+      opts: ["Farklı uzunlukta yazarsan sonraki komutlar kayar ve binary bozulur", "Uzunluk önemsizdir", "Daha uzun komut programı hızlandırır", "Kısa komut daha güvenlidir"],
+      a: [0],
+      why: "Makine kodu ardışıktır; bir komutu <b>farklı boyutta</b> bir şeyle değiştirmek sonraki byte'ların hizasını bozar. Aynı uzunlukta değiştir (je↔jne 2 byte, veya nop'larla doldur). Ghidra Patch Instruction bunu hizalar."
+    },
+    {
+      topic: "Statik patch",
+      q: "Ghidra ile kalıcı bir patch'li binary üretmenin adımı nedir?",
+      opts: ["Komuta sağ tık → Patch Instruction → yeni komut → File → Export Program → Original File", "Sadece Decompiler'da kodu değiştirmek", "strings çıktısını düzenlemek", "objdump ile kaydetmek"],
+      a: [0],
+      why: "Ghidra'da <b>Patch Instruction</b> ile komutu değiştirir, sonra <b>Export Program → Original File</b> ile patch'li binary'yi diske yazarsın. Decompiler görünümünü değiştirmek dosyayı değiştirmez."
+    },
+    {
+      topic: "Statik patch",
+      q: "Statik patch öncesi ve sonrası hangi güvenlik önlemi alınmalı?",
+      opts: ["Binary'nin yedeğini almak (cp prog prog.bak) ve patch sonrası çalışmayı test etmek", "Binary'yi şifrelemek", "Kaynağı silmek", "Hiçbir şey gerekmez"],
+      a: [0],
+      why: "Yanlış offset'e yazmak programı <b>çökertir.</b> Her zaman <b>yedek al</b> ve patch sonrası çalıştırıp sağlamlığı doğrula. Geri dönülebilirlik güvenliğidir."
+    },
+    {
+      topic: "Anti-debug",
+      q: "<code>ptrace(PTRACE_TRACEME)</code> tabanlı anti-debug nasıl çalışır?",
+      opts: ["Program kendini trace etmeye çalışır; bir debugger zaten trace ediyorsa bu çağrı başarısız olur → tespit", "Belleği şifreler", "CPU'yu yavaşlatır", "Diski tarar"],
+      a: [0],
+      why: "Bir process aynı anda yalnızca bir trace edilebilir. Program <code>PTRACE_TRACEME</code> ile kendini trace etmeyi dener; <b>GDB zaten trace ediyorsa çağrı −1 döner</b> → 'debugger var'. Atlatma: dönüşünü patch'le/set et."
+    },
+    {
+      topic: "Anti-debug",
+      q: "Bir program <code>/proc/self/status</code> içindeki <code>TracerPid</code> değerine bakıyor. Bu ne için?",
+      opts: ["TracerPid≠0 ise bir debugger'ın process'i izlediğini anlamak (anti-debug)", "Bellek kullanımını ölçmek", "Dosya boyutunu okumak", "Ağ trafiğini izlemek"],
+      a: [0],
+      why: "<code>TracerPid</code> process'i izleyen debugger'ın PID'idir; <b>0 değilse izleniyor</b> demektir. Anti-debug bunu okuyup davranış değiştirir. İlgili karşılaştırmayı patch'leyerek atlatırsın."
+    },
+    {
+      topic: "Anti-debug",
+      q: "Bir program GDB altında ve GDB olmadan <b>farklı</b> davranıyor (örn. GDB'de hep 'Wrong'). İlk şüphen?",
+      opts: ["Anti-debug: program izlendiğini tespit edip yanıltıcı/farklı yola sapıyor olabilir", "GDB bozuk", "Binary şifreli", "Rastgele davranış"],
+      a: [0],
+      why: "GDB altında/dışında <b>farklı davranış</b> klasik anti-debug işaretidir. Program sizi yanlış yöne bile itebilir. Anti-debug kararını bulup atlatana kadar dinamik gözlemine güvenme."
+    },
+    {
+      topic: "Anti-debug atlatma",
+      q: "Anti-debug'ı atlatmanın genel refleksi nedir?",
+      opts: ["Onu da bir karar olarak bul (import'ta ptrace, string'de /proc), sonra patch'le veya GDB'de sonucu set et", "GDB kullanmaktan tamamen vazgeçmek", "Binary'yi 100 kez çalıştırmak", "Anti-debug atlatılamaz"],
+      a: [0],
+      why: "Anti-debug sihir değil, bir <b>karardır</b> ('izleniyor muyum → evet ise çık'). Diğer kararlar gibi bulunur (ptrace import'u, TracerPid string'i) ve patch'lenir/set edilir."
+    },
+    {
+      topic: "Yöntem seçimi",
+      q: "Doğrulama algoritması tersine çevrilebilir basit bir dönüşümse, patch yerine hangisi daha zariftir?",
+      opts: ["Keygen yazmak (5.2)", "Her zaman patch", "Anti-debug eklemek", "Binary'yi silmek"],
+      a: [0],
+      why: "Patch kararı zorlar ama binary'yi değiştirir. Dönüşüm <b>tersine çevrilebilirse keygen</b> daha zariftir: orijinal binary'yi bozmadan geçerli anahtar üretir. Patch, keygen zor/imkânsızken tercih edilir."
+    },
+    {
+      topic: "Patch mantığı",
+      q: "Bir crackme'de kararı geçmek için <code>jne wrong</code>'u <code>je wrong</code> yaptın ama şimdi doğru parola 'Wrong' veriyor, yanlış parola 'Correct'. Ne oldu?",
+      opts: ["Koşulu tersine çevirdin; artık mantık ters çalışıyor — bu kurguda nop'lamak daha doğruydu", "Patch başarısız oldu", "Binary bozuldu", "Anti-debug devreye girdi"],
+      a: [0],
+      why: "<code>jne→je</code> koşulu <b>tersine çevirir</b>: eskiden geçenler takılır, takılanlar geçer. 'Her girdiyle geç' istiyorsan çoğu kurguda <b>nop'lamak</b> (atlamayı iptal) doğrudur. Dalların ne yaptığını okumak şart."
+    },
+    {
+      topic: "Anti-debug",
+      q: "Kod içinde <code>0xCC</code> byte'ı arayan bir anti-debug ne tespit etmeye çalışır?",
+      opts: ["Yazılım breakpoint'lerini (GDB break, kod byte'ını 0xCC/int3 ile değiştirir)", "Şifreli veriyi", "Ağ bağlantısını", "Bellek sızıntısını"],
+      a: [0],
+      why: "GDB yazılım breakpoint'i koyarken hedef byte'ı <b>0xCC (int3)</b> ile değiştirir. Program kendi kodunda 0xCC ararsa breakpoint'i tespit eder. Atlatma: <b>donanım breakpoint</b> (kod byte'ını değiştirmez) kullanmak."
+    },
+    {
+      topic: "Patch yolları",
+      q: "Kalıcı bir 'cracked' binary kopyası istiyorsun. Doğru yöntem?",
+      opts: ["Statik byte patch (Ghidra Patch Instruction + Export, veya hex editör)", "GDB'de set (her çalıştırmada tekrar gerekir)", "strings düzenlemek", "Sadece keygen"],
+      a: [0],
+      why: "GDB set <b>kalıcı değildir</b> — her çalıştırmada tekrar yapılır. Kalıcı çözüm için <b>dosyadaki byte'ı</b> değiştirmen gerekir (statik patch)."
+    },
+    {
+      topic: "Karar komutu",
+      q: "Patch'lerken byte değerleri hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Kısa <code>jne</code> = 0x75, kısa <code>je</code> = 0x74", "<code>nop</code> = 0x90", "<code>jne</code> = 0x90", "<code>nop</code> = 0xCC"],
+      a: [0, 1],
+      why: "<b>jne=0x75, je=0x74, nop=0x90.</b> 0xCC int3'tür (yazılım breakpoint). Bu byte'ları ezbere bilmek elle patch yapmayı sağlar; komut uzunluğunu korumayı unutma."
+    },
+    {
+      topic: "Anti-debug",
+      q: "Anti-debug hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>ptrace(TRACEME)</code>, debugger zaten trace ediyorsa başarısız olur → tespit", "GDB altında/dışında farklı davranış anti-debug şüphesi doğurur", "Anti-debug atlatılamaz, sihirdir", "Anti-debug her zaman binary'yi şifreler"],
+      a: [0, 1],
+      why: "<b>ptrace tespiti</b> ve <b>farklı davranış</b> klasik anti-debug işaretleridir. Anti-debug bir karardır; bulunup patch'lenir/set edilir — sihir değil, şifreleme şart değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

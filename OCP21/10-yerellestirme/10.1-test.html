@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-10.1",
+  code: "Yerelleştirme · 10.1",
+  title: "Locale, ResourceBundle ve Biçimlendirme",
+  back: "10.1-locale-ve-bicimlendirme.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "ResourceBundle arama sırası",
+      q: "<pre>// Mesaj_tr_TR.properties : veda=Gule gule\n// Mesaj_tr.properties    : selam=Merhaba\n// Mesaj.properties        : selam=Hello, veda=Bye, x=only default\n\nvar b = ResourceBundle.getBundle(\"Mesaj\", Locale.of(\"tr\",\"TR\"));\nSystem.out.println(b.getString(\"x\"));</pre>What is the result?",
+      opts: [
+        "only default",
+        "A MissingResourceException is thrown.",
+        "null",
+        "An empty string"
+      ],
+      a: [0],
+      why: "Bundle seçimi ile <b>anahtar araması</b> farklı şeylerdir. En özel bundle seçilse bile bir anahtar orada yoksa arama <b>daha genel</b> bundle'lara doğru sürer: <code>_tr_TR</code> → <code>_tr</code> → varsayılan locale → <b>default bundle</b>. <br>Bu yüzden dile özgü dosyalar yalnızca <b>farklı olan</b> anahtarları içerebilir; tüm anahtarları tekrarlamaya gerek yoktur."
+    },
+    {
+      topic: "ResourceBundle arama sırası",
+      q: "A key exists in none of the bundles in the chain. What happens?",
+      opts: [
+        "A MissingResourceException is thrown at runtime.",
+        "getString returns null.",
+        "Compilation fails.",
+        "getString returns the key itself."
+      ],
+      a: [0],
+      why: "<code>getString</code> anahtarı hiçbir bundle'da bulamazsa <b>MissingResourceException</b> atar — <code>null</code> <b>dönmez</b>. Bu bir <code>RuntimeException</code>'dır, yani <b>unchecked</b>'tir ve yakalamak zorunda değilsin. <br>Aynı exception, hiçbir bundle <b>dosyası</b> bulunamadığında <code>getBundle</code> çağrısında da atılır."
+    },
+    {
+      topic: "ResourceBundle adlandırma",
+      q: "Which file name is the correct resource bundle for Turkish spoken in Turkey with base name <code>Mesaj</code>?",
+      opts: [
+        "Mesaj_tr_TR.properties",
+        "Mesaj_TR_tr.properties",
+        "Mesaj-tr-TR.properties",
+        "Mesaj.tr.TR.properties"
+      ],
+      a: [0],
+      why: "Biçim sabittir: <b><code>TemelAd_dil_ULKE.properties</code></b> — alt çizgi ile ayrılır, <b>dil önce</b> ve küçük harf, <b>ülke sonra</b> ve büyük harf. <br>Tire (<code>-</code>) yalnızca <code>toLanguageTag()</code> / <code>forLanguageTag()</code> biçiminde kullanılır, dosya adlarında değil."
+    },
+    {
+      topic: "Locale",
+      q: "Which Locale creation is written according to the standard convention?",
+      opts: [
+        "Locale.of(\"tr\", \"TR\")",
+        "Locale.of(\"TR\", \"tr\")",
+        "Locale.of(\"TR\", \"TR\")",
+        "Locale.of(\"tr\", \"tr\")"
+      ],
+      a: [0],
+      why: "Kural: <b>dil kodu küçük harf</b>, <b>ülke kodu BÜYÜK harf</b> — <code>tr_TR</code>, <code>en_US</code>, <code>fr_CA</code>. <br>Java yanlış yazımı <b>düzeltmez ve hata da vermez</b>: <code>Locale.of(\"TR\", \"tr\")</code> derlenir ve çalışır, ama beklediğin bundle'ı ve biçimleri bulamazsın. Bu yüzden sınav \"hangisi doğru\" diye sorar."
+    },
+    {
+      topic: "Locale",
+      q: "<pre>Locale tr = Locale.of(\"tr\", \"TR\");\nSystem.out.println(tr + \" \" + tr.toLanguageTag());</pre>What is the result?",
+      opts: [
+        "tr_TR tr-TR",
+        "tr-TR tr_TR",
+        "tr_TR tr_TR",
+        "tr-TR tr-TR"
+      ],
+      a: [0],
+      why: "<code>toString()</code> Java'nın klasik biçimini kullanır: <b>alt çizgi</b> (<code>tr_TR</code>). <code>toLanguageTag()</code> ise BCP 47 standardını kullanır: <b>tire</b> (<code>tr-TR</code>). <br>Bu ayrım pratikte önemlidir: HTTP <code>Accept-Language</code> başlıkları ve JSON API'leri <b>tire</b> biçimini bekler; dosya adları ise alt çizgi kullanır."
+    },
+    {
+      topic: "NumberFormat",
+      q: "<pre>System.out.println(NumberFormat.getInstance(Locale.of(\"tr\",\"TR\")).format(1234567.891));</pre>What is the result?",
+      opts: [
+        "1.234.567,891",
+        "1,234,567.891",
+        "1234567,891",
+        "1 234 567.891"
+      ],
+      a: [0],
+      why: "Türkçe locale'de <b>nokta binlik ayırıcı</b>, <b>virgül ondalık ayırıcıdır</b> — İngilizcenin tam tersi. <br>Aynı sayı <code>Locale.US</code> ile <code>1,234,567.891</code> olurdu. Bu ters ilişki sınavın doğrudan sorduğu tek satırlık bir bilgidir ve gerçek hayatta da parse hatalarının en yaygın sebebidir."
+    },
+    {
+      topic: "NumberFormat",
+      q: "Which NumberFormat factory produces output like <code>$1,234.50</code> for Locale.US?",
+      opts: [
+        "getCurrencyInstance",
+        "getPercentInstance",
+        "getIntegerInstance",
+        "getCompactNumberInstance"
+      ],
+      a: [0],
+      why: "<code>getCurrencyInstance</code> locale'in <b>para birimi sembolünü</b> ve basamak kurallarını uygular (US için <code>$</code> ve 2 ondalık). <br><code>getPercentInstance</code> değeri 100 ile çarpıp <code>%</code> ekler; <code>getIntegerInstance</code> ondalıkları yuvarlar; <code>getCompactNumberInstance</code> (Java 12+) <code>1.2K</code> gibi kısaltılmış biçim üretir."
+    },
+    {
+      topic: "NumberFormat parse",
+      q: "<pre>Number n = NumberFormat.getInstance().parse(\"42\");</pre>Which statements are correct? (Choose TWO.)",
+      opts: [
+        "The return type is Number, not int.",
+        "parse declares the checked exception ParseException.",
+        "parse returns a String.",
+        "parse throws NumberFormatException for invalid input."
+      ],
+      a: [0, 1],
+      why: "<code>parse</code> girdiye göre <code>Long</code> veya <code>Double</code> üretir, bu yüzden dönüş tipi genel olarak <b><code>Number</code></b>'dır — gerekirse <code>intValue()</code>/<code>doubleValue()</code> ile dönüştürülür. Ayrıca <b>checked</b> <code>ParseException</code> bildirir, yakalanmalıdır. <br><code>NumberFormatException</code> <code>Integer.parseInt</code>'in attığı <b>unchecked</b> exception'dır — farklı bir API'dir (4.1)."
+    },
+    {
+      topic: "Tarih yerelleştirme",
+      q: "<pre>LocalDate d = LocalDate.of(2026, 8, 23);\nd.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));</pre>What is the result?",
+      opts: [
+        "An UnsupportedTemporalTypeException is thrown at runtime.",
+        "8/23/26",
+        "Compilation fails.",
+        "8/23/26, 12:00 AM"
+      ],
+      a: [0],
+      why: "<code>ofLocalizedDateTime</code> hem <b>tarih hem saat</b> alanları ister; <code>LocalDate</code>'in saat alanı olmadığı için <b>UnsupportedTemporalTypeException</b> atılır (1.3'teki aynı kural). <br>Kod <b>derlenir</b> — tip uyumsuzluğu ancak çalışma zamanında anlaşılır. Doğrusu <code>ofLocalizedDate(...)</code> kullanmak veya değeri <code>LocalDateTime</code>'a çevirmektir."
+    },
+    {
+      topic: "Tarih yerelleştirme",
+      q: "Which FormatStyle produces the longest, most descriptive date such as <code>Sunday, August 23, 2026</code>?",
+      opts: [
+        "FULL",
+        "LONG",
+        "MEDIUM",
+        "SHORT"
+      ],
+      a: [0],
+      why: "Sıra <b>SHORT → MEDIUM → LONG → FULL</b> şeklinde artar. <code>FULL</code> haftanın gününü de ekler (<code>Sunday, August 23, 2026</code>); <code>LONG</code> ay adını yazar ama gün adını yazmaz; <code>MEDIUM</code> ayı kısaltır; <code>SHORT</code> tamamen sayısaldır (<code>8/23/26</code>). <br>Çıktının kendisi <b>locale'e bağlıdır</b> — Türkçe'de <code>SHORT</code> <code>23.08.2026</code> olur."
+    },
+    {
+      topic: "ResourceBundle",
+      q: "Which separators are valid between a key and its value in a .properties file? (Choose TWO.)",
+      opts: [
+        "=",
+        ":",
+        ";",
+        "->"
+      ],
+      a: [0, 1],
+      why: "<code>.properties</code> biçiminde anahtar ile değeri <b><code>=</code></b>, <b><code>:</code></b> veya düz <b>boşluk</b> ayırabilir; üçü de eşdeğerdir. Yorum satırları <code>#</code> veya <code>!</code> ile başlar, uzun değerler satır sonuna <code>\\</code> konarak bölünebilir. <br><code>;</code> ve <code>-&gt;</code> geçerli ayırıcılar <b>değildir</b> — o satır tek başına bir anahtar sayılır."
+    },
+    {
+      topic: "Locale",
+      q: "What does <code>Locale.setDefault(Locale.US)</code> affect?",
+      opts: [
+        "The JVM-wide default locale used when no locale is passed explicitly.",
+        "Only the locale of the current thread.",
+        "Only formatting, not resource bundle lookup.",
+        "Nothing; the default locale is immutable."
+      ],
+      a: [0],
+      why: "<code>Locale.setDefault</code> <b>JVM genelini</b> değiştirir: locale almayan tüm <code>NumberFormat</code>, <code>DateTimeFormatter</code> ve <code>ResourceBundle.getBundle</code> çağrıları bundan etkilenir. <br>Bu, bundle arama zincirinde de rol oynar (varsayılan locale, istenen locale'den sonra denenir). Test kodlarında sonuçların makineye göre değişmesini önlemek için sabitlenir."
+    },
+    {
+      topic: "ResourceBundle",
+      q: "Which statement about a language-specific bundle such as <code>Mesaj_tr.properties</code> is correct?",
+      opts: [
+        "It only needs to contain the keys whose values differ from the default bundle.",
+        "It must contain every key that appears in the default bundle.",
+        "It replaces the default bundle entirely.",
+        "It is ignored if a country-specific bundle exists."
+      ],
+      a: [0],
+      why: "Arama zinciri sayesinde bir bundle yalnızca <b>farklı olan</b> anahtarları içerebilir; bulunamayan anahtarlar için daha genel bundle'lara <b>geri düşülür</b>. Bu, çeviri dosyalarını küçük ve bakımı kolay tutar. <br>Ülkeye özgü bundle varsa dile özgü olan <b>yok sayılmaz</b> — ikisi de zincirde sırayla denenir."
+    },
+    {
+      topic: "NumberFormat",
+      q: "<pre>System.out.println(NumberFormat.getPercentInstance(Locale.US).format(0.25));</pre>What is the result?",
+      opts: [
+        "25%",
+        "0.25%",
+        "%25",
+        "0,25%"
+      ],
+      a: [0],
+      why: "<code>getPercentInstance</code> değeri <b>100 ile çarpar</b> ve locale'in yüzde biçimini uygular → <code>0.25</code> için <b>25%</b>. Değeri kendin çarparsan <code>2500%</code> alırsın — sık yapılan bir hatadır. <br>Sembolün konumu <b>locale'e bağlıdır</b>: Türkçe'de yüzde işareti <b>başa</b> gelir (<code>%25</code>)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

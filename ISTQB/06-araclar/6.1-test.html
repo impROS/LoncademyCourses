@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.1–6.2 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-6-1",
+  code: "Test Tools · 6.1–6.2",
+  title: "Araç Desteği ve Test Otomasyonu",
+  back: "6.1-araclar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Otomasyonun riskleri",
+      q: "Which of the following is a RISK of test automation?",
+      opts: [
+        "Underestimating the effort required to maintain the test assets",
+        "Reducing repetitive manual work",
+        "More consistent and repeatable test execution",
+        "Faster feedback on code quality"
+      ],
+      a: [0],
+      why: "<b>Bakım eforunun hafife alınması klasik bir otomasyon riskidir</b>: uygulama değiştikçe testler kırılır ve kimse onları güncellemezse suite çürür. Diğer üç şık otomasyonun <i>faydalarıdır</i>; soru <code>RISK</code> diye büyük harfle uyarıyor."
+    },
+    {
+      topic: "Otomasyonun riskleri",
+      q: "What is the MOST commonly cited cause of failure in test automation initiatives?",
+      opts: [
+        "Unrealistic expectations about what the tool can achieve",
+        "Using an open-source tool instead of a commercial one",
+        "Running the tests in a continuous integration pipeline",
+        "Measuring code coverage during test execution"
+      ],
+      a: [0],
+      why: "<b>Aracın yapabileceklerinin abartılması, müfredatın ilk sırada saydığı risktir.</b> Araç bir çarpandır, çözüm değil — iyi bir süreci hızlandırır, kötü bir süreci daha hızlı kötüleştirir. Son iki şık iyi pratiklerdir, risk değil."
+    },
+    {
+      topic: "Otomasyonun riskleri",
+      q: "An organization relies on an open-source test tool with a small community. Which risk applies MOST directly?",
+      opts: [
+        "The open-source project may stop, leaving the tool unmaintained and unsupported",
+        "The tool will always be more expensive than a commercial alternative",
+        "Open-source tools cannot be integrated into CI pipelines",
+        "Open-source tools cannot measure coverage"
+      ],
+      a: [0],
+      why: "<b>Açık kaynak projesinin durması, ticari araçlardaki 'satıcı riski'nin karşılığıdır</b>: destek kaybolur, güvenlik yamaları gelmez, yeni platformlar desteklenmez. Diğer şıklar açık kaynak araçlar hakkında olgusal olarak yanlış iddialardır."
+    },
+    {
+      topic: "Otomasyonun sınırı",
+      q: "Which statement about test automation is correct?",
+      opts: [
+        "Automation does not remove the need for testers; it shifts their effort towards design, analysis and exploratory testing",
+        "Automation removes the need for testers entirely",
+        "Automation can cover all types of testing, including usability",
+        "Automation guarantees that no defects reach production"
+      ],
+      a: [0],
+      why: "<b>Otomasyon tekrarlayan yürütmeyi devralır, testerın işini ortadan kaldırmaz.</b> Kullanılabilirlik ve keşif testi insan yargısı gerektirir (5.1b'deki Q3). Dördüncü şıkta <code>guarantees</code> var — prensip 1'in ihlali."
+    },
+    {
+      topic: "Otomasyonun sınırı",
+      q: "A team automates its existing manual regression suite, half of which has not found a defect in two years. What is the LIKELY outcome?",
+      opts: [
+        "The same ineffective tests will run faster, and the team now also pays their maintenance cost",
+        "The automated suite will start finding the defects the manual suite missed",
+        "Coverage will automatically increase to 100%",
+        "The pesticide paradox no longer applies once tests are automated"
+      ],
+      a: [0],
+      why: "<b>Kötü bir test setini otomatikleştirmek onu iyileştirmez.</b> Önce suite gözden geçirilmeli ve yenilenmelidir (prensip 5, pesticide paradox). Otomasyon yıpranmayı engellemez; sadece yıpranmış testleri daha ucuza koşmanı sağlar."
+    },
+    {
+      topic: "Otomasyonun faydaları",
+      q: "Which of the following are BENEFITS of test automation? (Choose TWO.)",
+      opts: [
+        "More consistent and repeatable test execution, reducing human error",
+        "Faster feedback on code quality, especially in a CI pipeline",
+        "Elimination of the need for test planning",
+        "Guaranteed detection of all usability problems"
+      ],
+      a: [0, 1],
+      why: "<b>Tutarlılık/tekrarlanabilirlik ve hızlı geri bildirim otomasyonun temel faydalarıdır.</b> Test planlama hâlâ gereklidir; kullanılabilirlik problemleri ise insan yargısı gerektirdiği için otomasyonla garanti edilemez — dördüncü şıkta ayrıca <code>all</code> var."
+    },
+    {
+      topic: "Araç kategorileri",
+      q: "Which of the following can be supported by test tools? (Choose TWO.)",
+      opts: [
+        "Static analysis of source code",
+        "Measurement of statement and branch coverage",
+        "Deciding which product risks are acceptable to the business",
+        "Judging whether a user interface feels intuitive to end users"
+      ],
+      a: [0, 1],
+      why: "<b>Statik analiz ve kapsam ölçümü tipik araç destekli aktivitelerdir.</b> Hangi riskin kabul edilebilir olduğuna karar vermek bir iş kararıdır; arayüzün sezgisel olup olmadığı ise insan yargısıdır. Araçlar ölçer, karar vermez."
+    },
+    {
+      topic: "Araç kategorileri",
+      q: "A tool that reports which lines and branches of the code were executed by the test suite belongs to which category?",
+      opts: [
+        "Coverage measurement tools",
+        "Test management tools",
+        "Defect management tools",
+        "Configuration management tools"
+      ],
+      a: [0],
+      why: "<b>JaCoCo gibi araçlar kapsam ölçümü kategorisindedir</b> ve 4.3'teki statement/branch coverage'ı ölçer. Test yönetimi araçları test case ve sonuçları, konfigürasyon yönetimi araçları ise sürümleri yönetir — farklı kategorilerdir."
+    },
+    {
+      topic: "Otomasyon adaylığı",
+      q: "Which type of test is the BEST candidate for automation?",
+      opts: [
+        "A large regression suite that is executed every sprint against a stable interface",
+        "A usability evaluation of a newly designed screen",
+        "A one-off exploratory session on an unfamiliar module",
+        "A test of a screen whose design changes every week"
+      ],
+      a: [0],
+      why: "<b>Tekrarlayan ve kararlı testler otomasyonun birinci adayıdır.</b> Kullanılabilirlik ve keşif insan yargısı ister; her hafta değişen bir ekranı otomatikleştirmek ise bakım maliyetinin faydayı aşmasına yol açar — bu, bakım riskinin somut hali."
+    },
+    {
+      topic: "Otomasyonun riskleri",
+      q: "Which of the following are risks related to test automation? (Choose TWO.)",
+      opts: [
+        "Neglecting version control of the test assets",
+        "Neglecting the relationships and interoperability between tools",
+        "Executing the same tests consistently every time",
+        "Providing objective measurements such as coverage"
+      ],
+      a: [0, 1],
+      why: "<b>Test varlıklarının sürüm kontrolünün ihmali izlenebilirliği kırar (5.4); araçların birbiriyle konuşmaması ise otomasyonun değerini düşürür.</b> Son iki şık otomasyonun faydalarıdır — risk ve fayda listelerini birbirine karıştırma."
+    },
+    {
+      topic: "Statik analiz araçları",
+      q: "Which defect can a static analysis tool typically detect?",
+      opts: [
+        "Unreachable (dead) code and undefined variables",
+        "A business rule that is implemented consistently but is the wrong rule",
+        "A slow response time under concurrent load",
+        "A usability problem in the checkout flow"
+      ],
+      a: [0],
+      why: "<b>Statik analiz araçları ölü kodu, tanımsız değişkenleri, standart ihlallerini ve karmaşıklık aşımlarını bulur.</b> Yanlış iş kuralı anlam gerektirir (insan review'ı), yanıt süresi ve kullanılabilirlik ise ancak sistem çalışırken değerlendirilebilir."
+    },
+    {
+      topic: "Araç kategorileri",
+      q: "Which statement about tool support for testing is correct?",
+      opts: [
+        "Tools support many areas, including test management, static testing, configuration management and CI, not only test execution",
+        "Tool support in testing means test execution automation only",
+        "Tools are only useful at the system test level",
+        "Tools remove the need for a test approach in the test plan"
+      ],
+      a: [0],
+      why: "<b>Araç desteği test sürecinin tamamına yayılır</b>: yönetim, gereksinim ve kusur takibi, konfigürasyon, CI/CD, statik test, tasarım, yürütme, fonksiyonel olmayan test ve kapsam ölçümü. Araç desteğini yürütme otomasyonuna indirgemek en yaygın yanlış anlamadır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

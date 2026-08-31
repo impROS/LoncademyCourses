@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>s4 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "s4",
+  code: "Beceriler · s4",
+  title: "Writing 2: e-posta, rapor, review",
+  back: "s4-writing-diger.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Kayıt (register)",
+      q: "You are writing to a company you have never contacted before. Which opening is appropriate?",
+      opts: ["Dear Sir or Madam,", "Hi there,", "Hello guys,", "Dear friend,"],
+      a: [0],
+      why: "<b>Dear Sir or Madam</b> — muhatabın adı bilinmediğinde standart resmî açılıştır ve <i>Yours faithfully</i> ile eşleşir. Diğer üçü samimi ya da yapay durur ve kurumsal yazışmada kayıt hatası sayılır."
+    },
+    {
+      topic: "Kayıt (register)",
+      q: "Which sentence mixes registers inappropriately?",
+      opts: ["Dear Sir or Madam, Hope you're well! I'd be grateful if you could sort it out ASAP.", "Dear Sir or Madam, I am writing to request a refund for order 4471.", "Hi Deniz, Just letting you know the meeting has moved to Friday.", "Dear Ms Kaya, I would be grateful if you could confirm the arrangements."],
+      a: [0],
+      why: "Tek cümlede üç ton çarpışıyor: resmî açılış, samimi <i>Hope you're well</i> ve <i>sort it out ASAP</i>. Kayıt <b>metin boyunca tutarlı</b> olmalıdır; karışım en sık cezalandırılan yazma hatasıdır."
+    },
+    {
+      topic: "Kayıt (register)",
+      q: "What is the formal equivalent of 'Something came up, so we had to cancel'?",
+      opts: ["Owing to unforeseen circumstances, we were obliged to cancel.", "We cancelled it, sorry about that.", "Stuff happened and it got cancelled.", "It didn't work out in the end."],
+      a: [0],
+      why: "<b>Owing to unforeseen circumstances</b> resmî kayıtta standart bir açıklamadır. Resmî yazıda belirsiz kelimeler (<i>stuff, things</i>) ve günlük deyimler kullanılmaz."
+    },
+    {
+      topic: "Mektup düzeni",
+      q: "An email beginning 'Dear Ms Kaya' should end with:",
+      opts: ["Yours sincerely", "Yours faithfully", "Love", "Cheers"],
+      a: [0],
+      why: "İsim biliniyorsa <b>Yours sincerely</b>, bilinmiyorsa <i>Yours faithfully</i>. Bu eşleşme resmî yazışmanın en kolay kazanılan puanıdır — sadece ezber gerektirir."
+    },
+    {
+      topic: "Şikâyet mektubu",
+      q: "Which sentence has the most appropriate tone for a letter of complaint?",
+      opts: ["I was extremely disappointed to find that the materials had not been provided.", "This is completely unacceptable and I am furious.", "Your company is a disgrace.", "I guess these things happen sometimes."],
+      a: [0],
+      why: "Şikâyette doğru ton <b>kararlı ama nazik</b>tir: memnuniyetsizlik açıkça belirtilir, hakaret edilmez. Öfkeli ton kayıt hatasıdır; son şık ise şikâyeti geçersiz kılacak kadar yumuşaktır."
+    },
+    {
+      topic: "Şikâyet mektubu",
+      q: "A complaint letter should normally end by:",
+      opts: ["stating clearly what action you expect", "apologising for taking up their time", "listing the problems again in detail", "threatening legal action"],
+      a: [0],
+      why: "Şikâyetin amacı bir <b>sonuç</b> almaktır: iade, değişim, tazminat. Talebi belirtmeyen şikâyet, görevin yarısını yerine getirmemiş olur ve içerik puanı kaybettirir."
+    },
+    {
+      topic: "Rapor",
+      q: "Which feature belongs to a report but NOT to a letter?",
+      opts: ["Section headings such as 'Findings' and 'Recommendations'", "A greeting such as 'Dear Sir or Madam'", "A signature at the end", "A closing phrase such as 'Yours faithfully'"],
+      a: [0],
+      why: "Rapor <b>başlıklı</b> bir belgedir ve mektup formalitelerini kullanmaz. Rapora <i>Dear Sir</i> ile başlamak, tür seçimini yanlış anladığını gösterir ve doğrudan puan kaybettirir."
+    },
+    {
+      topic: "Rapor",
+      q: "Which sentence is written in appropriate report language?",
+      opts: ["The majority of respondents felt that the facilities were inadequate.", "Everyone hated the facilities, obviously.", "I'm sure people didn't like the facilities.", "The facilities were rubbish and everyone said so."],
+      a: [0],
+      why: "Rapor dili <b>nesnel ve ölçülü</b>dür: <i>the majority of respondents</i>, <i>the results suggest</i>. Mutlak ifadeler (<i>everyone</i>) ve kişisel kesinlik (<i>I'm sure</i>) rapor türüne aykırıdır."
+    },
+    {
+      topic: "Rapor",
+      q: "Choose the two phrases suitable for the recommendations section. (Choose TWO.)",
+      opts: ["It would be advisable to extend the opening hours.", "I would recommend that the college review its timetable.", "You really should do something about it.", "Everybody wants this changed immediately."],
+      a: [0, 1],
+      why: "<code>It would be advisable to…</code> ve <code>I would recommend that + özne + V1</code> resmî tavsiye kalıplarıdır. Diğer ikisi hem samimi hem de aşırı genelleyicidir; rapor kayıtına uymaz."
+    },
+    {
+      topic: "Proposal",
+      q: "What mainly distinguishes a proposal from a report?",
+      opts: ["A proposal looks forward and argues for a future course of action.", "A proposal is always shorter.", "A proposal must not contain headings.", "A proposal is written informally."],
+      a: [0],
+      why: "Rapor <b>geriye</b> bakar (olan biteni bildirir), proposal <b>ileriye</b> bakar (yapılmasını önerdiğin şeyi savunur). İkisi de başlıklı ve resmîdir; fark zaman yönündedir."
+    },
+    {
+      topic: "Review",
+      q: "In a review, roughly what balance between summary and evaluation is expected?",
+      opts: ["A short summary and a longer, reasoned evaluation", "A detailed plot summary and one line of opinion", "Only a summary, with no personal opinion", "Only opinion, with no description at all"],
+      a: [0],
+      why: "Review'da puan <b>değerlendirmede</b>dir. Uzun olay özeti, hem yer harcar hem de spoiler riski taşır; ama hiç tanıtım yapmamak da okuyucuyu bağlamsız bırakır — kısa özet gereklidir."
+    },
+    {
+      topic: "Review",
+      q: "Which sentence best evaluates rather than merely describes?",
+      opts: ["The tension builds steadily rather than relying on cheap twists.", "The series has eight episodes and is set in the 1970s.", "The main character is a teacher who moves to a small town.", "It was released last year on a streaming platform."],
+      a: [0],
+      why: "İlk cümle bir <b>yargı</b> içerir ve gerekçelendirir; diğerleri yalnızca olgu bildirir. Review'da her paragrafın en az bir değerlendirme cümlesi taşıması beklenir."
+    },
+    {
+      topic: "Tür seçimi",
+      q: "Task: 'Write a report for your college principal suggesting improvements to the library.' The most appropriate format is:",
+      opts: ["headed sections, formal and impersonal", "a friendly email with contractions", "a narrative describing your own study habits", "a review with a star rating"],
+      a: [0],
+      why: "Muhatap (müdür) ve tür (rapor) birlikte kayıt ve düzeni belirler: başlıklı bölümler, nesnel dil, tavsiye bölümü. Anlatı ya da yıldız puanı bu türe ait değildir."
+    },
+    {
+      topic: "Görev kapsamı",
+      q: "The task lists three problems to mention and asks what you expect the company to do. You describe only two problems. What happens?",
+      opts: ["The content mark is reduced because part of the task is not covered.", "Nothing, as long as the letter is polite.", "The accuracy mark falls.", "The letter is rejected as off-topic."],
+      a: [0],
+      why: "Görev maddeleri bir <b>kontrol listesi</b>dir; eksik madde doğrudan içerik puanını düşürür. Yazmadan önce maddeleri numaralayıp yazdıkça işaretlemek bu kaybı tamamen önler."
+    },
+    {
+      topic: "Kayıt (register)",
+      q: "Which is the informal equivalent of 'I look forward to hearing from you'?",
+      opts: ["Hope to hear from you soon", "I await your correspondence", "Kindly respond in due course", "Please be advised of my expectation"],
+      a: [0],
+      why: "<b>Hope to hear from you soon</b> arkadaşa yazılan e-postanın kapanışıdır. Diğer üçü resmîden de öte, yapay derecede ağır kalıplardır ve B2 düzeyinde doğal durmaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

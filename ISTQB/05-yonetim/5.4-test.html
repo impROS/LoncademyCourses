@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.4–5.5 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-5-4",
+  code: "Managing the Test Activities · 5.4–5.5",
+  title: "Konfigürasyon Yönetimi ve Kusur Yönetimi",
+  back: "5.4-konfigurasyon-kusur.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Severity ve priority",
+      q: "A report that is used only once a year, at year-end closing, crashes. It is currently March. How should this defect MOST appropriately be classified?",
+      opts: [
+        "High severity, low priority",
+        "High severity, high priority",
+        "Low severity, low priority",
+        "Low severity, high priority"
+      ],
+      a: [0],
+      why: "<b>Teknik etki büyük (rapor tamamen çöküyor) ama düzeltme aciliyeti düşük — Aralık'a kadar zaman var.</b> Bu, severity ile priority'nin bağımsız eksenler olduğunun klasik örneğidir. 'Yüksek severity her zaman yüksek priority' varsayımı yanlıştır."
+    },
+    {
+      topic: "Severity ve priority",
+      q: "The company's own name is misspelled in large letters on the home page. How should this defect MOST appropriately be classified?",
+      opts: [
+        "Low severity, high priority",
+        "High severity, high priority",
+        "Low severity, low priority",
+        "High severity, low priority"
+      ],
+      a: [0],
+      why: "<b>Teknik olarak hiçbir işlev bozulmuyor (düşük severity) ama itibar etkisi yüzünden hemen düzeltilmeli (yüksek priority).</b> Bu, önceki sorunun tam tersi kombinasyonudur — sınav ikisini yan yana sorarak iki ekseni ayırt edip edemediğini ölçer."
+    },
+    {
+      topic: "Severity ve priority",
+      q: "Who typically determines the PRIORITY of a defect?",
+      opts: [
+        "The product owner or business representative",
+        "The tester who found the defect",
+        "The developer who will fix it",
+        "The configuration manager"
+      ],
+      a: [0],
+      why: "<b>Priority iş değerine, kullanıcı etkisine ve sürüm takvimine bağlı olduğu için genellikle iş tarafı belirler.</b> Severity ise teknik etkiyi ölçtüğü için genellikle tester atar. İkisini farklı kişilerin belirlemesi, bunların farklı sorular olduğunu gösterir."
+    },
+    {
+      topic: "Kusur raporu içeriği",
+      q: "Which of the following is NOT typically part of a defect report?",
+      opts: [
+        "The root cause of the defect and instructions on how to fix the code",
+        "Steps to reproduce the defect, with expected and actual results",
+        "The identification of the test object and the test environment",
+        "The severity and the priority of the defect"
+      ],
+      a: [0],
+      why: "<b>Kök neden debugging'in sonucudur, rapor anında bilinmez; düzeltmeyi nasıl yapacağı ise geliştiricinin işidir.</b> Rapor anında tahmin yazmak yanıltıcı olur ve geliştiriciyi yanlış yöne sevk eder. Diğer üç şık raporun zorunlu içeriğidir."
+    },
+    {
+      topic: "Kusur raporu içeriği",
+      q: "Which of the following MUST a defect report contain? (Choose TWO.)",
+      opts: [
+        "Steps to reproduce the defect",
+        "The expected result and the actual result",
+        "The name of the person who introduced the defect",
+        "An estimate of how long the fix will take"
+      ],
+      a: [0, 1],
+      why: "<b>Yeniden üretme adımları ve beklenen/gerçek sonuç raporun kalbidir</b> — bunlar olmadan kusur ne doğrulanabilir ne düzeltilebilir. Kusuru kimin ürettiğini yazmak 1.5'teki iletişim kuralının ihlalidir; düzeltme süresi ise geliştirmenin kestirimidir."
+    },
+    {
+      topic: "Statik testte kusur raporu",
+      q: "Can a defect report be raised as a result of static testing?",
+      opts: [
+        "Yes, because reviews and static analysis find defects directly",
+        "No, because static testing does not execute the code",
+        "No, defect reports are only created during test execution",
+        "Yes, but only if the defect is later confirmed by dynamic testing"
+      ],
+      a: [0],
+      why: "<b>Statik test kusuru doğrudan bulur ve bunun için kusur raporu yazılır.</b> Bu, 1.4'te gördüğün 'test analysis de kusur raporu üretir' maddesiyle aynı gerçektir. Dördüncü şık statik bulguları dinamik teyide bağımlı kılıyor — gereksiz ve yanlış."
+    },
+    {
+      topic: "Kusur durumu",
+      q: "A developer has fixed a defect and committed the change. What should the status of the defect report become?",
+      opts: [
+        "Awaiting confirmation testing",
+        "Closed",
+        "Rejected",
+        "Duplicate"
+      ],
+      a: [0],
+      why: "<b>Düzeltme yapıldı diye kusur kapanmaz; önce confirmation testing ile düzeltmenin işe yaradığı doğrulanmalıdır (2.2).</b> Doğrudan kapatmak, düzeltilmemiş bir kusurun kapalı görünmesine yol açar — bu da metrikleri ve sürüm kararını bozar."
+    },
+    {
+      topic: "Konfigürasyon yönetimi",
+      q: "What is the PURPOSE of configuration management in testing?",
+      opts: [
+        "To establish and maintain the integrity of the test object and the testware, and their relationships, throughout the project",
+        "To classify defects by severity and priority",
+        "To decide which test techniques will be applied",
+        "To measure the branch coverage of the code"
+      ],
+      a: [0],
+      why: "<b>CM, test nesnesinin ve testware'in bütünlüğünü ve aralarındaki ilişkiyi proje boyunca korur.</b> Bu sayede hangi sürümde neyin test edildiği bilinir ve izlenebilirlik ayakta kalır. Diğer şıklar kusur yönetimi, teknik seçimi ve kapsam ölçümüne ait."
+    },
+    {
+      topic: "Konfigürasyon yönetimi",
+      q: "Which of the following should be under configuration management? (Choose TWO.)",
+      opts: [
+        "The test object (the software being tested)",
+        "The testware, including test cases, test data and automation scripts",
+        "The verbal status updates given in the daily stand-up",
+        "The individual testers' personal notes"
+      ],
+      a: [0, 1],
+      why: "<b>Hem test nesnesi hem testware konfigürasyon yönetimine tabidir</b> ve birbirlerinin sürümleriyle ilişkilendirilmelidir. 'CM sadece kaynak kod içindir' varsayımı sık yapılan bir hatadır — versiyonlanmayan test case'ler izlenebilirliği kırar."
+    },
+    {
+      topic: "Konfigürasyon yönetimi",
+      q: "Why is configuration management essential for reproducing a reported defect?",
+      opts: [
+        "Because it identifies exactly which version of the test object and testware were used",
+        "Because it automatically assigns the severity of the defect",
+        "Because it fixes the defect in all affected versions",
+        "Because it replaces the need for a defect report"
+      ],
+      a: [0],
+      why: "<b>Hangi build ve hangi test verisiyle kusurun ortaya çıktığı bilinmezse geliştirici onu yeniden üretemez</b> — ve yeniden üretilemeyen kusurlar tipik olarak 'reproduce edilemedi' diye kapanır. CM olmadan kusur yönetimi de çalışmaz."
+    },
+    {
+      topic: "Kusur raporunun amacı",
+      q: "Which of the following are objectives of a defect report? (Choose TWO.)",
+      opts: [
+        "To provide those responsible with enough information to analyze and resolve the issue",
+        "To provide input for test process improvement",
+        "To assign responsibility for the mistake to a specific developer",
+        "To document the exact code change required"
+      ],
+      a: [0, 1],
+      why: "<b>Kusur raporu hem düzeltmeyi mümkün kılar hem süreç iyileştirmeye girdi sağlar</b>; ayrıca test sürecinin ilerlemesini izlemeye yarar. Son iki şık raporun amacını saptırıyor: sorumlu atamak ve çözümü dikte etmek raporun işi değildir."
+    },
+    {
+      topic: "Severity ve priority",
+      q: "Which statement about severity and priority is correct?",
+      opts: [
+        "They are independent attributes, so all four combinations of high and low are possible",
+        "High severity always implies high priority",
+        "Priority is always determined by the tester who found the defect",
+        "Severity measures how urgently the defect must be fixed"
+      ],
+      a: [0],
+      why: "<b>Severity teknik zararı, priority düzeltme aciliyetini ölçer ve dört kombinasyon da gerçekte karşımıza çıkar.</b> Dördüncü şık iki tanımı yer değiştirmiş. İkinci şıkta <code>always</code> var — nadiren kullanılan bir modülün çökmesi karşı örnektir."
+    },
+    {
+      topic: "Kusur raporu içeriği",
+      q: "A defect report includes a field noting that the same missing validation may also exist in the subscription renewal screen. Which part of the defect report is this?",
+      opts: [
+        "Global issues (the change may affect other areas)",
+        "The steps to reproduce",
+        "The change history",
+        "The priority"
+      ],
+      a: [0],
+      why: "<b>Küresel etkiler alanı, kusurun veya düzeltmesinin başka alanları etkileyebileceğini işaret eder</b> ve etki analizine (2.3) doğrudan girdi olur. Aynı sınıftan kusurları önceden yakalamak, kök neden analizinin (1.2) pratik karşılığıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

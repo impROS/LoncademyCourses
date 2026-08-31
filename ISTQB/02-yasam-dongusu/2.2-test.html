@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-2-2",
+  code: "Testing Throughout the SDLC · 2.2",
+  title: "Test Seviyeleri ve Test Tipleri",
+  back: "2.2-seviyeler-ve-tipler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Seviye vs tip",
+      q: "Which of the following is a test TYPE rather than a test LEVEL?",
+      opts: ["Performance testing", "Component testing", "System testing", "Acceptance testing"],
+      a: [0],
+      why: "<b>Performans testi bir tiptir — neyi ölçtüğünü söyler, nerede yapıldığını değil.</b> Diğer üçü seviyedir. Seviye ve tip dik eksenlerdir: performans testi component seviyesinde de sistem seviyesinde de yapılabilir. Kanca: <b>seviye = NEREDE, tip = NE.</b>"
+    },
+    {
+      topic: "Kabul testi",
+      q: "What is the PRIMARY objective of acceptance testing?",
+      opts: [
+        "To establish confidence in the quality of the system and that it is ready for use",
+        "To find as many defects as possible before release",
+        "To measure statement and branch coverage of the code",
+        "To verify the interfaces between internal components"
+      ],
+      a: [0],
+      why: "<b>Kabul testinin birincil amacı güven oluşturmak ve kullanıma hazır olduğunu göstermektir</b> — kusur bulmak birincil amaç değildir (elbette kusur bulunabilir). İkinci şık sistem testinin hedefidir ve en yakın çeldiricidir. Sınav bu ayrımı doğrudan sorar."
+    },
+    {
+      topic: "Test seviyeleri",
+      q: "A tester verifies that the system exchanges data correctly with an external shipping company's API. Which test level is this?",
+      opts: ["System integration testing", "Component integration testing", "Component testing", "Acceptance testing"],
+      a: [0],
+      why: "<b>Sistemin dış sistemler/servislerle arayüzü system integration testing'dir.</b> Component integration testing sistemin <i>iç</i> bileşenleri arasındaki arayüzlere bakar — 'dış' kelimesi ayrımı yapar."
+    },
+    {
+      topic: "Test seviyeleri",
+      q: "Which is a typical test basis for component integration testing?",
+      opts: [
+        "Software design and sequence diagrams",
+        "Business processes and user requirements",
+        "The contract and applicable regulations",
+        "The user manual and installation guide"
+      ],
+      a: [0],
+      why: "<b>Bileşen entegrasyon testi tasarım ve mimariye, özellikle sequence diagram'lara dayanır</b>, çünkü test edilen şey bileşenlerin birbiriyle nasıl konuştuğudur. Diğer üç şık kabul testinin test tabanlarıdır."
+    },
+    {
+      topic: "Test seviyeleri",
+      q: "Who typically performs component testing, and what is the typical test object?",
+      opts: [
+        "Developers, testing an individual class or function",
+        "Independent testers, testing the whole system end to end",
+        "End users, testing the business process",
+        "System administrators, testing backup and restore"
+      ],
+      a: [0],
+      why: "<b>Bileşen testini genelde geliştirici yapar ve nesnesi tek bir sınıf/fonksiyondur.</b> Bu, bağımsızlığın en düşük derecesidir (1.5) ama geçerli ve gerekli bir seviyedir. Diğer şıklar sırasıyla sistem, kabul (UAT) ve kabul (OAT) testini tarif ediyor."
+    },
+    {
+      topic: "Alpha ve beta testi",
+      q: "Potential customers test a pre-release version of the product at the developer's own site. What is this called?",
+      opts: ["Alpha testing", "Beta testing", "Operational acceptance testing", "Component integration testing"],
+      a: [0],
+      why: "<b>Alpha testi geliştirici sahasında, dış kullanıcılar tarafından yapılır.</b> Beta testi müşterinin kendi ortamında yapılır — tek ayırt edici <i>yer</i>dir. Kanca: <b>A</b>lpha = <b>A</b>t our place, <b>B</b>eta = <b>B</b>ack at theirs."
+    },
+    {
+      topic: "Kabul testi biçimleri",
+      q: "System administrators test the backup, restore and disaster recovery procedures of a new system. Which form of acceptance testing is this?",
+      opts: [
+        "Operational acceptance testing (OAT)",
+        "User acceptance testing (UAT)",
+        "Contractual acceptance testing",
+        "Beta testing"
+      ],
+      a: [0],
+      why: "<b>Yedekleme, geri yükleme, kurulum, felaket kurtarma ve güvenlik operasyonel kabul testinin konusudur.</b> UAT son kullanıcının iş sürecini yapabilmesine bakar — burada test eden kişiler operasyon ekibidir, iş kullanıcısı değil."
+    },
+    {
+      topic: "Confirmation ve regression",
+      q: "After a defect has been fixed, the team runs 60 tests in the payment module that were previously passing, to check that nothing else has broken. What is this?",
+      opts: ["Regression testing", "Confirmation testing", "Debugging", "Component testing"],
+      a: [0],
+      why: "<b>Başka testlerin koşulup yan etki aranması regresyon testidir.</b> Confirmation testing önceden FAIL olan <i>aynı</i> testi tekrar koşar. Kanca: <b>confirm = aynı test · regress = diğer testler.</b>"
+    },
+    {
+      topic: "Confirmation ve regression",
+      q: "Which of the following changes can require regression testing? (Choose TWO.)",
+      opts: [
+        "An upgrade of the database version used by the system",
+        "The addition of a new feature to an existing module",
+        "The creation of a new test plan document",
+        "A retrospective meeting held at the end of the sprint"
+      ],
+      a: [0, 1],
+      why: "<b>Regresyon testi sadece kusur düzeltmesinden sonra yapılmaz</b> — ortam değişikliği, sürüm yükseltmesi, konfigürasyon değişikliği ve yeni özellik eklenmesi de tetikleyicidir. Son iki şık yazılımın davranışını değiştirmez, dolayısıyla regresyon gerektirmez."
+    },
+    {
+      topic: "Confirmation ve regression",
+      q: "How is the scope of regression testing typically determined?",
+      opts: [
+        "By impact analysis, supported by traceability between the change and the testware",
+        "By always re-running every test in the test suite",
+        "By randomly selecting 10% of the existing test cases",
+        "By running only the test that originally failed"
+      ],
+      a: [0],
+      why: "<b>Etki analizi, değişikliğin hangi alanları etkilediğini belirler; izlenebilirlik (1.4) bunu mümkün kılar.</b> İkinci şıkta <code>always</code> var ve pratikte uygulanamaz. Dördüncü şık confirmation testing'i tarif ediyor, regresyonu değil."
+    },
+    {
+      topic: "Fonksiyonel olmayan test",
+      q: "When should non-functional testing be performed?",
+      opts: [
+        "As early as possible, and it can be performed at any test level",
+        "Only during system testing, after all functional testing is complete",
+        "Only during acceptance testing, by the end users",
+        "Only after the system has been released to production"
+      ],
+      a: [0],
+      why: "<b>Fonksiyonel olmayan test her seviyede yapılabilir ve mümkün olduğunca erken yapılmalıdır.</b> Geç bulunan bir performans veya güvenlik kusuru mimarî değişiklik gerektirebilir, bu da en pahalı düzeltmedir — shift left'in en güçlü gerekçelerinden biri budur."
+    },
+    {
+      topic: "Fonksiyonel olmayan test",
+      q: "A test measures whether the system continues to operate without failure under specified conditions for a specified period. Which quality characteristic is being tested?",
+      opts: ["Reliability", "Usability", "Portability", "Maintainability"],
+      a: [0],
+      why: "<b>Belirtilen koşullarda ve sürede arızasız çalışmaya devam etme = reliability.</b> Usability kullanım kolaylığıdır, portability başka ortama taşınabilirlik, maintainability değiştirme kolaylığıdır."
+    },
+    {
+      topic: "Black-box ve white-box",
+      q: "Which statement correctly distinguishes black-box from white-box testing?",
+      opts: [
+        "Black-box testing is based on the specified behavior, while white-box testing is based on the internal structure",
+        "Black-box testing is based on the code, while white-box testing is based on the requirements",
+        "Black-box testing can only be applied at system level, white-box only at component level",
+        "Black-box testing always finds more defects than white-box testing"
+      ],
+      a: [0],
+      why: "<b>Kara kutu spesifikasyona, beyaz kutu iç yapıya dayanır.</b> İkinci şık ikisini yer değiştirmiş. Üçüncü şık yanlış — kara kutu teknikleri component seviyesinde de kullanılabilir. Dördüncü şıkta <code>always</code> var."
+    },
+    {
+      topic: "Seviye vs tip",
+      q: "Which two statements about test levels and test types are correct? (Choose TWO.)",
+      opts: [
+        "Any test type can be performed at any test level",
+        "Test levels are distinguished by test object, test basis, defects sought and responsibilities",
+        "Each test level may use only one test type",
+        "Security testing is a test level that comes after system testing"
+      ],
+      a: [0, 1],
+      why: "<b>Seviye ve tip birbirinden bağımsız eksenlerdir</b> ve seviyeler test nesnesi, test tabanı, aranan kusur ve sorumlulukla ayrılır. Üçüncü şık iki ekseni birbirine kilitliyor; dördüncü şık güvenlik testini seviye sanıyor — o bir <i>tiptir</i>."
+    },
+    {
+      topic: "Test seviyeleri",
+      q: "Which test level uses business processes, user requirements and regulations as its typical test basis?",
+      opts: ["Acceptance testing", "Component testing", "Component integration testing", "System integration testing"],
+      a: [0],
+      why: "<b>İş süreçleri, kullanıcı gereksinimleri, sözleşme ve regülasyon kabul testinin test tabanıdır.</b> Component testing detaylı tasarım ve koda dayanır; entegrasyon seviyeleri tasarım ve arayüz spesifikasyonlarına dayanır. Test tabanı, seviyeyi ayırt etmenin en güvenilir yoludur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

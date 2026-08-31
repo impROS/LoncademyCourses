@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03-03 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-03-03",
+  code: "03 Statik · String & Xref",
+  title: "String, Xref, Sabit Avı",
+  back: "03-string-xref.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "String avı",
+      q: "Bir crackme'de en ucuz ilk ipucu kaynağı hangisidir?",
+      opts: ["String'ler (strings / Defined Strings) — 'Correct', 'Wrong', 'flag{'", "Tüm fonksiyonları satır satır okumak", "Register değerleri", "Stack dökümü"],
+      a: [0],
+      why: "<b>String avı</b> saniyeler sürer ve niyeti ele verir: sonuç mesajları, format string'ler, bazen doğrudan flag. RE'de en düşük maliyetli ilk adım."
+    },
+    {
+      topic: "String avı",
+      q: "<code>strings prog</code> parolayı bulamıyor ama Ghidra'da <code>mov byte [rbp-0x20], 'R'</code> gibi tek tek atamalar var. Neden?",
+      opts: ["String runtime'da byte byte kuruluyor; statik metin taraması yakalayamaz", "Binary bozuk", "Parola yok", "strings her zaman başarısızdır"],
+      a: [0],
+      why: "String <b>çalışma zamanında</b> (byte byte veya XOR ile) kuruluyorsa <code>strings</code> onu göremez. Böyle bir kalıp gördüğünde dinamik analize geçersin (Bölüm 4)."
+    },
+    {
+      topic: "String avı",
+      q: "<code>strings -n 6</code>'daki <code>-n 6</code> ne yapar?",
+      opts: ["En az 6 karakter uzunluğundaki dizileri gösterir (kısa gürültüyü eler)", "İlk 6 string'i gösterir", "6 numaralı bölümü tarar", "6 byte'lık offset atlar"],
+      a: [0],
+      why: "<b>-n = minimum uzunluk.</b> Varsayılan 4; 6+ yaparak rastgele kısa dizileri eleyip anlamlı mesajlara odaklanırsın."
+    },
+    {
+      topic: "Xref",
+      q: "Bir string'e 'References to' (Show References to) aldığında ne bulursun?",
+      opts: ["O string'i kullanan/yazdıran kod yerlerini", "String'in şifresini", "String'in uzunluğunu", "String'in ne zaman yazıldığını"],
+      a: [0],
+      why: "<b>References to = bu öğeyi kim kullanıyor.</b> 'Correct!'e xref → onu yazdıran doğrulama fonksiyonu. Bu, hedefe atlamanın en güçlü kestirmesidir."
+    },
+    {
+      topic: "Xref",
+      q: "'References to' ile 'References from' arasındaki fark nedir?",
+      opts: ["'to' = buraya kim atıf yapıyor; 'from' = buradan nereye atıf yapılıyor", "İkisi aynıdır", "'to' ileri, 'from' geri döngüdür", "'from' sadece string'ler için çalışır"],
+      a: [0],
+      why: "<b>to</b>: hedefi kullananlar (yukarı doğru). <b>from</b>: bu koddan çağrılan/okunanlar (aşağı doğru). Doğrulama noktası bulmada genelde 'to' kullanılır."
+    },
+    {
+      topic: "Xref",
+      q: "Klasik crackme çözüm zinciri hangisidir?",
+      opts: ["'Correct!' string → xref to → yazdıran fonksiyon → üstündeki karşılaştırma → beklenen değer", "main → her satırı oku → tahmin et", "Programı sonsuz kez çalıştır", "Binary'yi hex editörde rastgele değiştir"],
+      a: [0],
+      why: "Sonuç string'inden xref ile doğrulama fonksiyonuna, oradan karşılaştırmaya ve <b>beklenen değere</b> gidersin. Bu zincir çoğu basit crackme'yi dakikalar içinde çözer."
+    },
+    {
+      topic: "Sabit avı",
+      q: "Kodda <code>0x67452301</code> ve <code>0xefcdab89</code> sabitlerini görüyorsun. Ne ima eder?",
+      opts: ["MD5/SHA init sabitleri — muhtemelen bir hash hesaplanıyor", "Rastgele dolgu", "Stack adresleri", "Hata kodları"],
+      a: [0],
+      why: "Bunlar <b>MD5 başlangıç sabitleridir.</b> Tanıdık magic number'lar algoritmayı ele verir. Tanımadığın büyük/tuhaf sabitleri aratmak (Google) standart reflekstir."
+    },
+    {
+      topic: "Sabit avı",
+      q: "<code>0x9e3779b9</code> sabiti tipik olarak neyi işaret eder?",
+      opts: ["Golden ratio türevi — TEA/XXTEA gibi şifreleme algoritmaları", "Bir dosya boyutu", "Bir hata kodu", "ASCII 'flag'"],
+      a: [0],
+      why: "<b>0x9e3779b9</b> golden ratio'dan türetilir ve TEA ailesi şifrelerde 'delta' sabitidir. Görünce 'burada bir şifreleme var' dersin."
+    },
+    {
+      topic: "Sabit avı",
+      q: "Hangi sabitler tipik olarak 'gürültü'dür ve ilginç değildir?",
+      opts: ["0x0, 0x1 ve küçük offset'ler (0x8, 0x10 gibi hizalama)", "0x9e3779b9 gibi büyük tuhaf sayılar", "0x67452301 gibi hash sabitleri", "0x539 (1337)"],
+      a: [0],
+      why: "Küçük sayılar ve hizalama offset'leri her yerdedir → <b>gürültü.</b> 'Büyük, tuhaf, tekrarlayan' sabitler ilginçtir. 0x539=1337 gibi CTF şakaları da anlamlıdır."
+    },
+    {
+      topic: "Import avı",
+      q: "Bir binary'nin Imports listesinde <code>ptrace</code> görüyorsun. Ne ima eder?",
+      opts: ["Anti-debug: program hata ayıklandığını tespit etmeye çalışıyor olabilir", "Dosya okuyor", "Ağ bağlantısı kuruyor", "Sadece string yazdırıyor"],
+      a: [0],
+      why: "<code>ptrace</code> bir process'i izlemek/izlenmeyi tespit etmek için kullanılır; crackme'lerde klasik <b>anti-debug</b> tekniğidir (Bölüm 5). Import listesi niyeti ele verir."
+    },
+    {
+      topic: "Import avı",
+      q: "Imports'ta <code>strcmp</code> ve <code>memcmp</code> görmek neden faydalıdır?",
+      opts: ["Bunlara xref alıp tüm parola/key karşılaştırmalarını doğrudan bulabilirsin", "Program hızlıdır demektir", "Binary statik linklenmiştir demektir", "Hiçbir faydası yok"],
+      a: [0],
+      why: "<code>strcmp</code>/<code>memcmp</code> parola/key doğrulamanın kalbidir. Import'a <b>xref</b> alarak tüm çağrı yerlerine tek hamlede ulaşır, karşılaştırılan değerleri okursun."
+    },
+    {
+      topic: "Yön bulma stratejisi",
+      q: "Yeni bir crackme'de neden <code>main</code>'i baştan satır satır okumak yerine string→xref kullanırsın?",
+      opts: ["İlginç kod küçüktür; string/xref seni doğrudan doğrulama noktasına götürür, zaman kazandırır", "main okunamaz olduğu için", "string→xref her zaman flag'i düz verir", "main her zaman boştur"],
+      a: [0],
+      why: "Hız, <b>nereye bakmayacağını bilmektir.</b> String/xref ilgili küçük kısma atlar; tüm fonksiyonları okumak israftır. Belirsizlik kalırsa dinamiğe geçersin."
+    },
+    {
+      topic: "String avı",
+      q: "Bir binary'de <code>\"flag{s0me_th1ng}\"</code> doğrudan <code>strings</code> çıktısında görünüyor. Bu ne anlatır?",
+      opts: ["Bazı (kolay) challenge'larda ödül düz metindir; her zaman şifreli olmaz", "Binary kesin bozuktur", "Bu imkânsızdır", "Flag her zaman böyle görünür"],
+      a: [0],
+      why: "Kolay seviyelerde flag/parola <b>düz metin</b> gömülü olabilir — ilk denenecek şey budur. Zor challenge'larda şifreli/hesaplanmış olur; o zaman xref ve dinamik gerekir."
+    },
+    {
+      topic: "Sabit avı",
+      q: "Ghidra'da belirli bir sayısal değerin (magic number) geçtiği tüm yerleri nasıl bulursun?",
+      opts: ["Search → For Scalars", "Programı çalıştırarak", "Defined Strings", "Sadece Decompiler'a bakarak"],
+      a: [0],
+      why: "<b>Search → For Scalars</b> bir sabitin tüm kullanım yerlerini bulur. Tanıdık bir algoritma sabitini böyle takip edip ilgili rutine ulaşırsın."
+    },
+    {
+      topic: "Import avı",
+      q: "Bir binary'nin Imports listesinde görüldüğünde ilginç olan <b>iki</b> fonksiyon hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["<code>strcmp</code> — parola/string karşılaştırma ipucu", "<code>ptrace</code> — anti-debug ipucu", "<code>puts</code> — sadece ekrana yazar, ipucu değil", "<code>malloc</code> — sadece bellek ayırır, ipucu değil"],
+      a: [0, 1],
+      why: "<b>strcmp</b> doğrulama, <b>ptrace</b> anti-debug için güçlü ipuçlarıdır; bunlara xref alarak ilgili koda atlarsın. puts/malloc her yerde geçen sıradan çağrılardır."
+    },
+    {
+      topic: "Sabit avı",
+      q: "İlginç (algoritma ele veren) sabitler hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>0x9e3779b9</code> TEA/XXTEA şifrelemesini ima eder", "<code>0x67452301</code> MD5/SHA init sabitidir", "<code>0x1</code> güçlü bir algoritma ipucudur", "<code>0x8</code> (hizalama) tuhaf bir magic number'dır"],
+      a: [0, 1],
+      why: "<b>Büyük, tuhaf, tekrarlayan</b> sabitler algoritma parmak izidir (0x9e3779b9=TEA, 0x67452301=MD5). <code>0x1</code>, <code>0x8</code> gibi küçük/hizalama sayıları gürültüdür."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02-04 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-02-04",
+  code: "02 Assembly · Fonksiyon ABI",
+  title: "System V ABI, Stack Frame, Argümanlar",
+  back: "04-fonksiyon-abi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Argüman geçişi",
+      q: "Linux x86-64 (System V) ABI'de bir fonksiyonun ilk üç argümanı sırayla hangi register'larda geçer?",
+      opts: ["rdi, rsi, rdx", "rax, rbx, rcx", "rcx, rdx, r8", "rsp, rbp, rip"],
+      a: [0],
+      why: "Sıra: <b>rdi, rsi, rdx, rcx, r8, r9</b>. Ezber: 'Diane's silk dress costs 8-9'. rcx,rdx,r8,r9 <b>Windows</b> sırasıdır — karıştırma."
+    },
+    {
+      topic: "Argüman geçişi",
+      q: "Bir fonksiyonun dönüş değeri (integer/pointer) nerede bulunur?",
+      opts: ["rax (32-bit ise eax)", "rdi", "rsp", "rbx"],
+      a: [0],
+      why: "<b>Dönüş değeri = rax/eax.</b> rdi 1. argümandır. <code>call</code> sonrası <code>mov ..., rax</code> veya <code>test rax,rax</code> dönüşle ne yapıldığını gösterir."
+    },
+    {
+      topic: "Argüman geçişi",
+      q: "7. ve sonraki argümanlar nasıl geçer?",
+      opts: ["Stack üzerinden ([rsp], [rsp+8]...)", "r10, r11 register'larında", "xmm register'larında", "Geçemezler; en fazla 6 argüman olur"],
+      a: [0],
+      why: "İlk 6 register'da, <b>7.+ stack'te</b>. (Float/double ise ayrıca xmm0–xmm7 kullanılır.) 6'dan fazla argümanlı çağrılarda stack'e itilen ekstra argümanları ara."
+    },
+    {
+      topic: "Argüman geçişi",
+      q: "<code>call strcmp</code>'ten hemen önce <code>rdi</code> senin girdini, <code>rsi</code> ise <code>\"secret\"</code>'i tutuyor. Bu sana ne verir?",
+      opts: ["Beklenen parolayı: strcmp'in 2. argümanı karşılaştırılan sabit string", "Programın çıkış kodunu", "Stack boyutunu", "Derleyici sürümünü"],
+      a: [0],
+      why: "ABI sayesinde <code>rsi</code>'nin <b>strcmp'in 2. argümanı</b> olduğunu bilirsin; sabit taraf çoğu zaman beklenen paroladır. Bu, en hızlı crackme çözümlerinden biridir."
+    },
+    {
+      topic: "Windows farkı",
+      q: "Argüman register sırasıyla ilgili hangi ifade doğrudur?",
+      opts: ["Linux rdi,rsi,rdx,rcx,r8,r9; Windows rcx,rdx,r8,r9 kullanır", "İki sistemde de aynıdır", "Windows argümanları hep stack'te geçirir", "Linux her zaman rax ile başlar"],
+      a: [0],
+      why: "ABI platforma bağlıdır. Bir <b>Windows</b> binary'sine Linux sırasını uygularsan argümanları yanlış eşlersin. Önce hedef platformu belirle."
+    },
+    {
+      topic: "Register koruma",
+      q: "Bir <code>call</code>'dan sonra <code>rdi</code>'nin değeri korunmuş sayılabilir mi?",
+      opts: ["Hayır; argüman register'ları caller-saved'dır, bozulmuş olabilir", "Evet, her zaman korunur", "Sadece 64-bit modda korunur", "Sadece rdi korunur, rsi bozulur"],
+      a: [0],
+      why: "<b>rdi/rsi/rdx/rcx/r8–r11 caller-saved (volatile).</b> Çağrılan fonksiyon bunları ezebilir. Bu yüzden derleyici argümanları yerel değişkene (<code>[rbp-...]</code>) kopyalar."
+    },
+    {
+      topic: "Register koruma",
+      q: "Aşağıdakilerden hangisi callee-saved (fonksiyonun koruması gereken) bir register'dır?",
+      opts: ["rbx", "rax", "rdi", "rcx"],
+      a: [0],
+      why: "<b>Callee-saved: rbx, rbp, r12–r15, rsp.</b> Fonksiyon bunları kullanacaksa başta kaydedip sonda geri yükler. rax/rdi/rcx caller-saved'dır."
+    },
+    {
+      topic: "Prologue/epilogue",
+      q: "<code>push rbp</code> / <code>mov rbp, rsp</code> / <code>sub rsp, 0x30</code> dizisi ne yapar?",
+      opts: ["Fonksiyon prologue'u: yeni frame kurar ve 48 byte yerel alan açar", "Fonksiyondan döner", "Bir döngü başlatır", "Argümanları register'lara yükler"],
+      a: [0],
+      why: "Klasik <b>prologue</b>: eski rbp saklanır, yeni frame tabanı kurulur, rsp azaltılarak yerel değişken alanı açılır. <code>0x30=48</code> byte."
+    },
+    {
+      topic: "Prologue/epilogue",
+      q: "<code>leave</code> komutu hangi iki işleme eşdeğerdir?",
+      opts: ["mov rsp, rbp ; pop rbp", "push rbp ; mov rbp, rsp", "add rsp, 8 ; ret", "pop rip ; jmp rbp"],
+      a: [0],
+      why: "<b>leave = mov rsp,rbp ; pop rbp</b> — frame'i geri sarar. Ardından <code>ret</code> dönüş adresini çeker. leave tek başına dönmez; ret ayrıdır."
+    },
+    {
+      topic: "Prologue/epilogue",
+      q: "<code>-O2</code> ile derlenmiş bir fonksiyonda <code>rbp</code>'nin frame pointer olarak kullanılmadığını görüyorsun. Bu ne demek?",
+      opts: ["Derleyici -fomit-frame-pointer yapmış olabilir; frame yok değil, rbp kullanılmıyor", "Fonksiyon bozuk", "Fonksiyonun yerel değişkeni yoktur", "Bu imkânsızdır"],
+      a: [0],
+      why: "Optimizasyon rbp'yi genel register olarak serbest bırakabilir; erişimler <code>rsp</code>-göreli olur. <b>'rbp yok' ≠ 'frame yok'.</b> leave yerine <code>add rsp,N; ret</code> görebilirsin."
+    },
+    {
+      topic: "Frame yerleşimi",
+      q: "Bir stack frame'de <b>dönüş adresi</b> nerede bulunur?",
+      opts: ["rbp'nin hemen üstünde, [rbp+0x8]", "[rbp-0x8]", "rax içinde", "Her zaman [rsp]"],
+      a: [0],
+      why: "Frame düzeni: <code>[rbp+0x8]</code> dönüş adresi (call koydu), <code>[rbp]</code> eski rbp, <code>[rbp-...]</code> yereller. Overflow'da bu dönüş adresini ezmek exploit'in hedefidir (Bölüm 6)."
+    },
+    {
+      topic: "Çağrı okuma refleksi",
+      q: "<code>call malloc</code>'tan sonra <code>test rax, rax</code> + <code>je hata</code> görüyorsun. Ne kontrol ediliyor?",
+      opts: ["malloc NULL döndü mü (bellek alınamadı mı)", "malloc'un argümanı sıfır mı", "Bellek yazılabilir mi", "Program bitti mi"],
+      a: [0],
+      why: "malloc dönüşü <b>rax</b>'te; başarısızlıkta NULL (0) döner. <code>test rax,rax</code>+<code>je</code> = 'sıfırsa hata koluna'. Dönüş değeri kontrolünün klasik kalıbı."
+    },
+    {
+      topic: "Yaygın libc",
+      q: "<code>strcmp</code> sonrası <code>test eax, eax</code> + <code>jne .yanlis</code> kalıbı neyi anlatır?",
+      opts: ["İki string eşit değilse (strcmp≠0) 'yanlış' koluna gider", "İki string her zaman eşittir", "strcmp başarısız oldu", "eax sıfırlanıyor"],
+      a: [0],
+      why: "<b>strcmp eşitse 0 döner.</b> <code>test eax,eax</code>+<code>jne</code> = 'sıfır değilse (yani eşit değilse) hata'. Parola/lisans kontrolünün en yaygın izidir (Bölüm 5)."
+    },
+    {
+      topic: "Argüman sayma",
+      q: "Bir <code>call f</code>'ten önce rdi, rsi ve rdx dolduruluyor, r8/r9 dokunulmuyor. f hakkında ne söylersin?",
+      opts: ["En az 3 argüman alıyor olması muhtemel", "Kesinlikle 6 argüman alır", "Hiç argüman almaz", "Sadece float argüman alır"],
+      a: [0],
+      why: "Doldurulan ardışık argüman register'ları argüman sayısının alt sınırını verir: rdi,rsi,rdx → <b>en az 3</b>. Kesin sayı için fonksiyonun içine de bakmak gerekir."
+    },
+    {
+      topic: "Yaygın libc",
+      q: "<code>memcpy(dst, src, n)</code> çağrısında <code>n</code> (kopyalanacak byte sayısı) hangi register'da olur?",
+      opts: ["rdx (3. argüman)", "rdi (1. argüman)", "rax", "rcx"],
+      a: [0],
+      why: "Argüman sırası rdi(dst), rsi(src), <b>rdx(n)</b>. Boyut argümanını doğru okumak, kopyalanan veri miktarını ve olası taşmayı anlamak için önemlidir."
+    },
+    {
+      topic: "Argüman geçişi",
+      q: "System V (Linux) ABI hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["İlk argüman rdi'de geçer", "Dönüş değeri rax'tedir", "İlk argüman rcx'te geçer", "Dönüş değeri rdi'dedir"],
+      a: [0, 1],
+      why: "Linux: argümanlar <b>rdi,rsi,rdx,rcx,r8,r9</b>, dönüş <b>rax</b>. rcx ilk argüman <b>Windows</b> ABI'sidir; rdi dönüş değeri değildir."
+    },
+    {
+      topic: "Register koruma",
+      q: "Callee-saved (fonksiyonun koruması gereken) <b>iki</b> register hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["rbx", "r12", "rax", "rdi"],
+      a: [0, 1],
+      why: "<b>Callee-saved: rbx, rbp, r12–r15, rsp.</b> rax ve rdi caller-saved'dır (call sonrası bozulabilir). Bu ayrım, bir call'dan sonra hangi değerlere güvenebileceğini belirler."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

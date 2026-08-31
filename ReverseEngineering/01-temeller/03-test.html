@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-01-03",
+  code: "01 Temeller · Derleme & ELF",
+  title: "Kaynaktan Binary'ye: Derleme, Linkleme, ELF",
+  back: "03-derleme-elf.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Derleme hattı",
+      q: "<code>gcc -S prog.c</code> komutu ne üretir?",
+      opts: ["Assembly metni (.s)", "Object dosyası (.o)", "Çalıştırılabilir ELF", "Önişlenmiş .c"],
+      a: [0],
+      why: "<b>-S</b> = derlemeyi assembly'de durdur → <code>.s</code>. <code>-c</code> object (.o) üretir, bayraksız <code>gcc</code> tam ELF üretir. Ara adımları görmek RE sezgisini geliştirir."
+    },
+    {
+      topic: "Derleme hattı",
+      q: "Derleme hattında hangi bilgi <b>en erken</b> kaybolur?",
+      opts: ["Yorumlar ve makrolar", "Fonksiyon giriş noktaları", "Makine komutları", "ELF header"],
+      a: [0],
+      why: "Önişlem/derleme aşamasında yorumlar ve <code>#define</code> makroları açılıp <b>kaybolur</b>. Kod ve giriş noktaları binary'de kalır; RE onları kurtarır, yorumları asla."
+    },
+    {
+      topic: "Optimizasyon",
+      q: "Kaynakta net bir <code>for</code> döngüsü var ama disassembly'de döngü görünmüyor, kod düzleşmiş. En olası sebep?",
+      opts: ["Derleyici optimizasyonu (-O2/-O3) döngüyü açtı/dönüştürdü", "Binary bozuk", "Döngü stripped ile silindi", "Kaynak yanlış derlendi"],
+      a: [0],
+      why: "<b>-O2/-O3</b> döngü açma (unrolling), sabit katlama gibi dönüşümler yapar; kod kaynağa benzemez. CTF binary'leri sık optimize edilir. Kendi denemende <code>-O0</code> kullan."
+    },
+    {
+      topic: "Optimizasyon",
+      q: "Kendi öğrenme binary'ni derlerken hangi bayrak <b>en okunur</b> assembly verir?",
+      opts: ["<code>-O0 -g</code>", "<code>-O3</code>", "<code>-Os</code>", "<code>-O2 -flto</code>"],
+      a: [0],
+      why: "<b>-O0</b> optimizasyon kapalı (kaynağa en yakın), <b>-g</b> debug sembolleri ekler. O3/Os/lto çıktıyı sıkıştırıp okumayı zorlaştırır."
+    },
+    {
+      topic: "ELF formatı",
+      q: "Bir dosyanın ilk dört byte'ı <code>7f 45 4c 46</code>. Bu nedir?",
+      opts: ["Bir ELF dosyası", "Bir Windows PE dosyası", "Bir ZIP arşivi", "Bir shell script"],
+      a: [0],
+      why: "<b>7f 45 4c 46 = \\x7fELF</b>, ELF magic. PE dosyaları <code>MZ</code> ile başlar. Magic byte'lar dosya tipinin parmak izidir."
+    },
+    {
+      topic: "ELF formatı",
+      q: "ELF'te <b>section</b> ile <b>segment</b> arasındaki fark nedir?",
+      opts: ["Section analiz/linkleme için, segment çalıştırma anında belleğe yükleme için", "Section çalıştırma için, segment analiz için", "İkisi tamamen aynı şeydir", "Section 32-bit, segment 64-bit içindir"],
+      a: [0],
+      why: "<b>Section</b> (.text, .data…) linker ve analiz aracının bakışı; <b>segment</b> kernel'in belleğe yükleme birimi. Aynı byte'lara iki farklı görünüm."
+    },
+    {
+      topic: "ELF formatı",
+      q: "Bir binary'nin section header'ları silinmiş olabilir ama yine de çalışır. Neden?",
+      opts: ["Çalıştırma segment'lerle olur, section'larla değil", "İşletim sistemi eksik section'ları tamamlar", "Section'lar sadece süstür, hiç kullanılmaz", "Bu mümkün değildir, çalışmaz"],
+      a: [0],
+      why: "Kernel programı <b>program header'daki segment'lerle</b> yükler. Section header'lar analiz kolaylığıdır; silinince (stripped) araçların işi zorlaşır ama program çalışır."
+    },
+    {
+      topic: "Statik/dinamik link",
+      q: "<code>ldd prog</code> çıktısı: \"not a dynamic executable\". Bu ne anlama gelir?",
+      opts: ["Statik linklenmiş; libc binary'nin içinde", "Binary bozuk", "Program root gerektirir", "Dinamik ama semboller silinmiş"],
+      a: [0],
+      why: "<b>ldd</b> dinamik bağımlılıkları listeler. \"not a dynamic executable\" = <b>statik link</b>: kütüphane kodu içine gömülü. Bu, libc fonksiyonlarını analizde isimsiz gömülü hale getirir."
+    },
+    {
+      topic: "Statik/dinamik link",
+      q: "Dinamik linklenmiş bir binary'de <code>printf</code> çağrısı tipik olarak nasıl çözülür?",
+      opts: ["PLT/GOT üzerinden çalışma zamanında libc'ye yönlendirilir", "Binary içindeki kopyaya doğrudan atlar", "İşletim sistemi çağrısıyla (syscall)", "Derleyici printf'i satır içine gömer"],
+      a: [0],
+      why: "Dinamik binary'ler dış fonksiyonları <b>PLT/GOT</b> tablolarıyla çözer: ilk çağrıda loader gerçek adresi bağlar. Statik'te böyle bir dolaylama yoktur."
+    },
+    {
+      topic: "Stripped semboller",
+      q: "<code>strip</code> bir binary'de neyi siler?",
+      opts: ["Programcının kendi fonksiyon/değişken isimlerini (sembol tablosu)", "Tüm makine kodunu", "String'leri", "ELF header'ı"],
+      a: [0],
+      why: "<b>strip</b> sembol tablosunu (isimleri) siler; kod, string ve header kalır. Sonuç: <code>main</code> yerine <code>FUN_00401136</code> gibi adres-tabanlı isimler."
+    },
+    {
+      topic: "Stripped semboller",
+      q: "Stripped bir dinamik binary'de <code>printf</code> ismi hâlâ görünebilirken senin yazdığın <code>check_pw</code> neden görünmez?",
+      opts: ["printf dış (import) sembol; linkleme için .dynsym'de kalmak zorunda. check_pw iç sembol, silinir", "printf daha önemli olduğu için korunur", "strip sadece rastgele isimleri siler", "check_pw aslında hiç sembol değildir"],
+      a: [0],
+      why: "Dinamik import edilen semboller (<code>printf</code>) <b>.dynsym</b>'de kalmak zorunda — loader onları çözecek. Senin iç fonksiyonların (<code>check_pw</code>) .symtab'dadır ve strip'le silinir."
+    },
+    {
+      topic: "İlk refleks komutları",
+      q: "Bir binary'yi ilk açtığında onun 32/64-bit, statik/dinamik ve stripped olup olmadığını en hızlı hangi komut söyler?",
+      opts: ["<code>file prog</code>", "<code>strings prog</code>", "<code>gcc prog</code>", "<code>ls -l prog</code>"],
+      a: [0],
+      why: "<b>file</b> tek satırda mimari, link tipi ve stripped durumunu verir. strings metin arar, ls sadece boyut gösterir. file = ilk refleks."
+    },
+    {
+      topic: "İlk refleks komutları",
+      q: "Bir crackme'de gizli bir mesaj veya olası bir flag ipucu aramak için ilk denenecek komut?",
+      opts: ["<code>strings prog</code>", "<code>file prog</code>", "<code>chmod +x prog</code>", "<code>ldd prog</code>"],
+      a: [0],
+      why: "<b>strings</b> binary içindeki okunur ASCII dizilerini döker: mesajlar, format string'ler, bazen doğrudan flag. En ucuz ilk ipucu kaynağıdır."
+    },
+    {
+      topic: "İlk refleks komutları",
+      q: "<code>checksec prog</code> hangi bilgiyi verir?",
+      opts: ["NX, PIE, stack canary, RELRO gibi koruma katmanları", "Fonksiyon isimleri", "Kaynak kod satırları", "Derleyici sürümü"],
+      a: [0],
+      why: "<b>checksec</b> binary'nin güvenlik korumalarını listeler (NX, PIE, canary, RELRO). Exploit yazarken (Bölüm 6) hangi tekniğin mümkün olduğunu bu belirler."
+    },
+    {
+      topic: "Derleme hattı",
+      q: "Linkleme (link) aşaması tam olarak ne yapar?",
+      opts: ["Object dosyalarını ve kütüphaneleri birleştirip adresleri bağlar, çalıştırılabilir üretir", "C kodunu assembly'ye çevirir", "Makroları açar", "Sembolleri siler"],
+      a: [0],
+      why: "<b>Linker</b> ayrı .o parçalarını ve kütüphane referanslarını birleştirir, sembol adreslerini çözer ve tek bir ELF üretir. Derleme (compile) ise bir önceki aşamadır (.c → .s)."
+    },
+    {
+      topic: "İlk refleks komutları",
+      q: "Bir binary'yi ilk incelerken hangi <b>iki</b> komut mimari/link/stripped ve gömülü mesaj bilgisini verir? <b>(Choose TWO.)</b>",
+      opts: ["<code>file prog</code> — mimari, link tipi, stripped durumu", "<code>strings prog</code> — okunur metinler / ipuçları", "<code>chmod +x prog</code> — izin verir", "<code>rm prog</code> — dosyayı siler"],
+      a: [0, 1],
+      why: "<b>file</b> kimlik bilgisini, <b>strings</b> gömülü metinleri verir — ikisi de ilk refleks. chmod/rm analiz komutu değildir."
+    },
+    {
+      topic: "Statik/dinamik link",
+      q: "Statik linklenmiş bir binary hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["Kütüphane kodu binary'nin içine gömülüdür", "<code>ldd</code> 'not a dynamic executable' der", "Dosya boyutu dinamik sürümden küçüktür", "Çalışmak için ayrı .so dosyaları gerekir"],
+      a: [0, 1],
+      why: "Statik: libc <b>içine gömülü</b>, <code>ldd</code> dinamik bağımlılık bulamaz. Dosya <b>büyür</b> (küçülmez) ve ayrı .so gerekmez — bunlar dinamik linklemenin özellikleridir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

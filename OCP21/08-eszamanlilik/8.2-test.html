@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-8.2",
+  code: "Eşzamanlılık · 8.2",
+  title: "ExecutorService, Callable ve Future",
+  back: "8.2-executor-service.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Future ve exception",
+      q: "<pre>exec.submit(() -&gt; { throw new IllegalStateException(\"x\"); });\nThread.sleep(500);</pre>Assuming get() is never called, what is printed?",
+      opts: [
+        "Nothing.",
+        "java.lang.IllegalStateException: x",
+        "An ExecutionException stack trace.",
+        "The JVM terminates with an error."
+      ],
+      a: [0],
+      why: "Görevin fırlattığı exception <code>Future</code> nesnesinin <b>içinde saklanır</b> ve yalnızca <code>get()</code> çağrıldığında ortaya çıkar. <code>get()</code> hiç çağrılmazsa hata <b>sessizce kaybolur</b> — thread havuzu çökmez, hiçbir şey yazdırılmaz. <br>Bu, üretim kodunda en tehlikeli kalıplardan biridir: <code>submit</code> edip <code>Future</code>'ı yok saymak hataları görünmez yapar."
+    },
+    {
+      topic: "Future ve exception",
+      q: "<pre>Future&lt;Integer&gt; f = exec.submit(() -&gt; { throw new IllegalStateException(\"x\"); });\ntry { f.get(); }\ncatch (ExecutionException e) { System.out.println(e.getCause()); }</pre>What is printed?",
+      opts: [
+        "java.lang.IllegalStateException: x",
+        "java.util.concurrent.ExecutionException: x",
+        "null",
+        "Nothing; the catch block is not reached."
+      ],
+      a: [0],
+      why: "<code>get()</code> görevin hatasını <b><code>ExecutionException</code> içine sarar</b>; asıl exception <code>getCause()</code> ile alınır. <br><code>e.getMessage()</code> yazsaydın sarmalayanın mesajını görürdün — orijinal hatanın tipini ve mesajını istiyorsan <b>her zaman <code>getCause()</code></b>. <b>Kanca:</b> \"Executor hataları paketler; paketi açmak senin işin.\""
+    },
+    {
+      topic: "submit ve execute",
+      q: "<pre>Future&lt;?&gt; f = exec.submit(() -&gt; System.out.print(\"x\"));\nSystem.out.println(f.get());</pre>What is the result?",
+      opts: [
+        "xnull",
+        "x",
+        "Compilation fails.",
+        "xtrue"
+      ],
+      a: [0],
+      why: "Lambda değer döndürmediği için <code>Runnable</code> aşırı yüklemesi seçilir. <code>Runnable</code> sonuç üretmediğinden <code>Future.get()</code> <b><code>null</code></b> döner. <br>Görev önce <code>x</code> yazar, sonra <code>null</code> yazdırılır → <b>xnull</b>. Değer isteseydin lambda'yı <code>() -&gt; { ...; return v; }</code> yaparak <code>Callable</code>'a çevirmeliydin."
+    },
+    {
+      topic: "submit ve execute",
+      q: "<pre>Future&lt;?&gt; f = exec.execute(() -&gt; {});</pre>What is the result?",
+      opts: [
+        "Compilation fails because execute returns void.",
+        "The code compiles and f is null.",
+        "The code compiles normally.",
+        "A RejectedExecutionException is thrown."
+      ],
+      a: [0],
+      why: "<code>execute(Runnable)</code> <code>Executor</code> arayüzünden gelir ve <b><code>void</code></b> döner — görevi izlemenin hiçbir yolu yoktur. <br>Sonucu veya hatayı takip etmek istiyorsan <code>submit</code> kullanılır; o <code>Future</code> döner. Pratikte <code>execute</code> yalnızca \"ateşle ve unut\" senaryolarında tercih edilir."
+    },
+    {
+      topic: "Callable ve Runnable",
+      q: "Which statements about Callable are correct? (Choose TWO.)",
+      opts: [
+        "Its call() method can return a value.",
+        "Its call() method can throw checked exceptions.",
+        "It can be passed directly to the Thread constructor.",
+        "It declares a method named run()."
+      ],
+      a: [0, 1],
+      why: "<code>Callable&lt;V&gt;</code> <code>V call() throws Exception</code> bildirir: hem <b>değer döner</b> hem <b>checked exception atabilir</b>. <br><code>Thread</code> constructor'ı yalnızca <code>Runnable</code> kabul eder (8.1); <code>Callable</code> bir <code>ExecutorService</code>'e verilir. Metot adı <code>run</code> değil <b><code>call</code></b>'dır."
+    },
+    {
+      topic: "invokeAll ve invokeAny",
+      q: "<pre>Integer r = exec.invokeAny(List.of(() -&gt; 1, () -&gt; 2));</pre>What does invokeAny return?",
+      opts: [
+        "The result value of one successfully completed task.",
+        "A Future for the first completed task.",
+        "A List of Futures for all tasks.",
+        "void"
+      ],
+      a: [0],
+      why: "<code>invokeAny</code> <b>ilk başarıyla tamamlanan görevin değerini</b> doğrudan döner (<code>Future</code> değil) ve kalan görevleri iptal etmeye çalışır. <br><code>invokeAll</code> ise <b>tüm görevler bitene kadar bloklar</b> ve <code>List&lt;Future&lt;T&gt;&gt;</code> döner. İkisinin dönüş tipini karıştırmak sık yapılan hatadır."
+    },
+    {
+      topic: "invokeAll ve invokeAny",
+      q: "<pre>List&lt;Future&lt;Integer&gt;&gt; l = exec.invokeAll(gorevler);</pre>When does this call return?",
+      opts: [
+        "After all tasks have completed.",
+        "Immediately after submitting the tasks.",
+        "After the first task completes.",
+        "Only when shutdown() is called."
+      ],
+      a: [0],
+      why: "<code>invokeAll</code> <b>bloklayıcıdır</b>: tüm görevler tamamlanana (veya iptal edilene) kadar döner. Bu yüzden dönen listedeki her <code>Future</code> için <code>isDone()</code> <b>true</b>'dur. <br>Hemen dönen ve tek tek izlenen davranış istiyorsan görevleri ayrı ayrı <code>submit</code> etmelisin."
+    },
+    {
+      topic: "Kapatma",
+      q: "<pre>exec.shutdown();\nSystem.out.println(exec.isShutdown() + \" \" + exec.isTerminated());</pre>What is the most likely result immediately after shutdown()?",
+      opts: [
+        "true false",
+        "true true",
+        "false false",
+        "false true"
+      ],
+      a: [0],
+      why: "<code>shutdown()</code> <b>bloklamaz</b>: yalnızca \"yeni görev alma\" bayrağını çevirir, kuyruktaki görevler çalışmaya devam eder. Bu yüzden <code>isShutdown()</code> hemen <b>true</b>, <code>isTerminated()</code> ise görevler bitene kadar <b>false</b>'tur. <br>Bitişi beklemek için <code>awaitTermination(...)</code> veya Java 19+ <code>close()</code> kullanılır."
+    },
+    {
+      topic: "Kapatma",
+      q: "<pre>exec.shutdown();\nexec.submit(() -&gt; 1);</pre>What is the result?",
+      opts: [
+        "A RejectedExecutionException is thrown at runtime.",
+        "The task is queued and runs after shutdown completes.",
+        "Compilation fails.",
+        "submit returns null."
+      ],
+      a: [0],
+      why: "Kapatılmış bir executor yeni görev <b>kabul etmez</b> ve <code>RejectedExecutionException</code> (bir <b>unchecked</b> exception) atar. <br>Bu yüzden <code>shutdown()</code> genelde tüm gönderimler bittikten <b>sonra</b>, en sonda çağrılır — ya da try-with-resources kullanılarak sorumluluk derleyiciye bırakılır."
+    },
+    {
+      topic: "Kapatma",
+      q: "What does <code>shutdownNow()</code> return?",
+      opts: [
+        "A List of tasks that were waiting to be executed.",
+        "void",
+        "A boolean indicating whether all tasks stopped.",
+        "A List of Futures for the running tasks."
+      ],
+      a: [0],
+      why: "<code>shutdownNow()</code> çalışan görevleri <b>kesmeye çalışır</b> (garanti yok) ve <b>henüz başlamamış</b> görevleri <code>List&lt;Runnable&gt;</code> olarak döner — böylece istersen başka bir yerde yeniden çalıştırabilirsin. <br>Bitişi bildiren <code>boolean</code> <code>awaitTermination</code>'a aittir; <code>Future</code> listesi ise <code>invokeAll</code>'a."
+    },
+    {
+      topic: "AutoCloseable",
+      q: "<pre>try (var exec = Executors.newFixedThreadPool(2)) {\n    exec.submit(() -&gt; { Thread.sleep(500); return null; });\n}\nSystem.out.println(\"bitti\");</pre>What happens at the closing brace?",
+      opts: [
+        "close() calls shutdown() and blocks until all tasks finish.",
+        "close() calls shutdownNow() and returns immediately.",
+        "Nothing; ExecutorService is not AutoCloseable.",
+        "The pending task is cancelled."
+      ],
+      a: [0],
+      why: "Java 19'dan itibaren <code>ExecutorService</code> <b><code>AutoCloseable</code></b>'dır: <code>close()</code> <code>shutdown()</code> çağırır ve <b>tüm görevler bitene kadar bekler</b> (kesilirse <code>shutdownNow</code>'a düşer). <br>Bu yüzden <code>bitti</code> ancak 500 ms sonra yazılır. Öncesinde <code>try/finally</code> ile <code>shutdown</code> + <code>awaitTermination</code> yazmak gerekiyordu."
+    },
+    {
+      topic: "Future",
+      q: "<pre>Future&lt;Integer&gt; f = exec.submit(() -&gt; { Thread.sleep(2000); return 1; });\nf.get(200, TimeUnit.MILLISECONDS);</pre>What is the result?",
+      opts: [
+        "A TimeoutException is thrown.",
+        "An ExecutionException is thrown.",
+        "The call returns null after 200 ms.",
+        "The call blocks for the full 2000 ms and returns 1."
+      ],
+      a: [0],
+      why: "Süreli <code>get(long, TimeUnit)</code>, verilen süre içinde sonuç gelmezse <b><code>TimeoutException</code></b> atar — görev <b>iptal edilmez</b>, arka planda çalışmaya devam eder. <br>Görevi gerçekten durdurmak istiyorsan ayrıca <code>f.cancel(true)</code> çağırman gerekir."
+    },
+    {
+      topic: "Zamanlanmış görevler",
+      q: "What is the difference between scheduleAtFixedRate and scheduleWithFixedDelay?",
+      opts: [
+        "Fixed rate measures the interval between task start times; fixed delay measures from the end of one run to the start of the next.",
+        "Fixed rate runs only once; fixed delay repeats.",
+        "Fixed delay measures between start times; fixed rate measures from the end of a run.",
+        "They are identical; only the parameter order differs."
+      ],
+      a: [0],
+      why: "<code>scheduleAtFixedRate</code> <b>başlangıçlar arasındaki</b> süreyi sabit tutmaya çalışır — görev periyottan uzun sürerse çalıştırmalar birbirine yapışır. <code>scheduleWithFixedDelay</code> ise bir çalıştırmanın <b>bitişi</b> ile sonrakinin başlangıcı arasına sabit boşluk koyar, böylece üst üste binme olmaz. <br>İkisi de tekrarlıdır; tek seferlik olan <code>schedule</code>'dır."
+    },
+    {
+      topic: "Executor türleri",
+      q: "Which executor creates a new virtual thread for every submitted task?",
+      opts: [
+        "Executors.newVirtualThreadPerTaskExecutor()",
+        "Executors.newCachedThreadPool()",
+        "Executors.newWorkStealingPool()",
+        "Executors.newFixedThreadPool(0)"
+      ],
+      a: [0],
+      why: "Java 21'de eklenen <code>newVirtualThreadPerTaskExecutor()</code> <b>havuz kullanmaz</b>: her göreve ayrı bir virtual thread açar — virtual thread'ler ucuz olduğu için bu normaldir (8.1). <br><code>newCachedThreadPool</code> <b>platform</b> thread'leri yeniden kullanır; <code>newFixedThreadPool(0)</code> ise <code>IllegalArgumentException</code> atar."
+    },
+    {
+      topic: "Future",
+      q: "After a successful <code>f.cancel(true)</code> on a running task, what do isCancelled() and isDone() return?",
+      opts: [
+        "true and true",
+        "true and false",
+        "false and true",
+        "false and false"
+      ],
+      a: [0],
+      why: "<code>isDone()</code> \"görev artık çalışmıyor\" demektir — <b>başarı, hata veya iptal</b> fark etmez, üçünde de <code>true</code> döner. İptal edilmiş bir görev için <code>isCancelled()</code> de <code>true</code>'dur. <br>Bu durumda <code>get()</code> çağırmak <b><code>CancellationException</code></b> (unchecked) atar — <code>ExecutionException</code> değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

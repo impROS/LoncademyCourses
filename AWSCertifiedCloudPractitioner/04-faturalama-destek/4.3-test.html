@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.3 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4.3",
+  code: "4. alan · Faturalama ve Destek · Görev 4.3",
+  title: "Destek Planları ve Kaynaklar",
+  back: "4.3-destek-planlari.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "TAM ve plan ayrımı",
+      q: "Which AWS Support plan provides a designated Technical Account Manager (TAM)?",
+      opts: ["Enterprise", "Business", "Enterprise On-Ramp", "Developer"],
+      a: [0],
+      why: "<b>Atanmış (designated) TAM</b> yalnızca <b>Enterprise</b> planında vardır. <b>Enterprise On-Ramp</b> bir <b>TAM havuzuna</b> erişim verir — atanmış tek bir kişi değildir. Business ve altında TAM yoktur. Sınav bu ayrımı özellikle sorar."
+    },
+    {
+      topic: "Trusted Advisor kapsamı",
+      q: "A company needs access to the FULL set of AWS Trusted Advisor checks. What is the LOWEST-cost support plan that provides this?",
+      opts: ["Business", "Developer", "Enterprise", "Basic"],
+      a: [0],
+      why: "Trusted Advisorın <b>tüm kontrolleri</b> <b>Business</b> planından itibaren açılır (Enterprise On-Ramp ve Enterprise de dahil). Basic ve Developer planlarında yalnızca <b>sınırlı</b> kontroller görünür — temel güvenlik ve servis limitleri. Soru <i>lowest-cost</i> dediği için cevap Businesstır."
+    },
+    {
+      topic: "Destek kanalları",
+      q: "Which is the LOWEST-cost support plan that includes 24/7 access to support engineers by phone, chat and email?",
+      opts: ["Business", "Developer", "Enterprise On-Ramp", "Enterprise"],
+      a: [0],
+      why: "<b>Business</b> planı <b>7/24 telefon, sohbet ve e-posta</b> desteği sunar ve sınırsız sayıda kişi vaka açabilir. <b>Developer</b> yalnızca <b>e-posta</b> ve <b>mesai saatleri</b> içindir ve tek bir kişi vaka açabilir."
+    },
+    {
+      topic: "Yanıt süreleri",
+      q: "With AWS Enterprise Support, what is the target response time for a business-critical system down case?",
+      opts: ["Less than 15 minutes", "Less than 30 minutes", "Less than 1 hour", "Less than 4 hours"],
+      a: [0],
+      why: "Ezberlenecek üç sayı: <b>Business = 1 saat</b> (production system down), <b>Enterprise On-Ramp = 30 dakika</b>, <b>Enterprise = 15 dakika</b> (business-critical system down). Bu tablo sınavda doğrudan sorulur."
+    },
+    {
+      topic: "Yanıt süreleri",
+      q: "With AWS Business Support, what is the target response time for a PRODUCTION system down case?",
+      opts: ["Less than 1 hour", "Less than 15 minutes", "Less than 4 hours", "Less than 12 hours"],
+      a: [0],
+      why: "Business planında <b>production system down &lt; 1 saat</b>, <b>production system impaired &lt; 4 saat</b>, system impaired &lt; 12 saat, genel soru &lt; 24 saattir. <b>Business-critical</b> kategorisi Business planında <b>yoktur</b> — o yalnızca Enterprise On-Ramp ve Enterprise planlarında bulunur."
+    },
+    {
+      topic: "Basic plan kapsamı",
+      q: "Which two are included in the free AWS Basic Support plan? (Choose TWO.)",
+      opts: [
+        "Billing and account support",
+        "Access to a limited set of AWS Trusted Advisor checks",
+        "24/7 technical support by phone",
+        "A Technical Account Manager",
+        "Third-party software support"
+      ],
+      a: [0, 1],
+      why: "<b>Basic ücretsizdir</b> ve şunları içerir: <b>hesap ve fatura desteği</b>, <b>Trusted Advisorın temel kontrolleri</b>, AWS Health Dashboard, dokümantasyon ve re:Post erişimi. <b>Teknik destek vakası açamazsın</b>, TAM yoktur ve üçüncü parti yazılım desteği bulunmaz."
+    },
+    {
+      topic: "Developer plan",
+      q: "Which support plan allows only ONE contact to open technical support cases, by email during business hours?",
+      opts: ["Developer", "Business", "Basic", "Enterprise On-Ramp"],
+      a: [0],
+      why: "<b>Developer</b> planı deneme ve geliştirme ortamları içindir: <b>tek bir kişi</b>, <b>e-posta</b> ile ve <b>mesai saatlerinde</b> vaka açabilir. Business planında kişi sayısı <b>sınırsızdır</b> ve destek 7/24 çalışır."
+    },
+    {
+      topic: "Trusted Advisor kategorileri",
+      q: "Which two are categories of AWS Trusted Advisor checks? (Choose TWO.)",
+      opts: [
+        "Service limits",
+        "Fault tolerance",
+        "Data residency",
+        "Migration readiness",
+        "License conversion"
+      ],
+      a: [0, 1],
+      why: "Trusted Advisorın beş kategorisi: <b>Cost Optimization, Performance, Security, Fault Tolerance, Service Limits</b>. Diğer şıklar gerçek AWS kavramlarıdır ama Trusted Advisor kategorisi değildir — sınavın klasik tuzak kurgusu."
+    },
+    {
+      topic: "Health Dashboard",
+      q: "A company wants to be notified about AWS service disruptions and scheduled maintenance that specifically affect its own resources. Which should it use?",
+      opts: [
+        "AWS Health Dashboard — Your account health",
+        "Amazon CloudWatch alarms",
+        "AWS Trusted Advisor",
+        "AWS CloudTrail"
+      ],
+      a: [0],
+      why: "<b>AWS Health Dashboard</b>ın <i>Your account health</i> görünümü, <b>senin hesabını etkileyen</b> olayları (kesinti, planlı bakım, aksiyon gerektiren durumlar) bildirir. CloudWatch <b>senin kaynaklarının</b> metriklerini izler; AWSin kendi servis sağlığını söylemez."
+    },
+    {
+      topic: "Topluluk kaynakları",
+      q: "Which AWS resource is an official community where customers and AWS experts ask and answer technical questions?",
+      opts: ["AWS re:Post", "AWS Artifact", "AWS Skill Builder", "AWS Knowledge Center"],
+      a: [0],
+      why: "<b>AWS re:Post</b> AWSin resmî <b>soru-cevap topluluğudur</b> (eski AWS Forumsun yerine geçti) ve ücretsizdir. <b>Knowledge Center</b> sık karşılaşılan sorunların hazır çözümlerini içerir; <b>Skill Builder</b> eğitim platformu, <b>Artifact</b> ise uyumluluk raporlarıdır."
+    },
+    {
+      topic: "Profesyonel destek",
+      q: "A company wants AWS consultants to work directly with its team to plan and execute a large migration project. Which offering should it engage?",
+      opts: [
+        "AWS Professional Services",
+        "AWS Support Basic plan",
+        "AWS re:Post",
+        "AWS Trusted Advisor"
+      ],
+      a: [0],
+      why: "<b>AWS Professional Services</b> AWSin kendi ücretli danışmanlık ekibidir ve projelerde müşteriyle birlikte çalışır. Alternatif olarak <b>AWS Partner Network (APN)</b> içindeki <b>Consulting Partner</b> firmalar da bu işi yapar — sınavda ikisi de kabul edilebilir cevaplar olarak geçer."
+    },
+    {
+      topic: "Yönetilen operasyon",
+      q: "Which offering has AWS operate and manage a customer's AWS infrastructure on their behalf, including patching, monitoring and incident management?",
+      opts: [
+        "AWS Managed Services (AMS)",
+        "AWS Enterprise Support",
+        "AWS Systems Manager",
+        "AWS Control Tower"
+      ],
+      a: [0],
+      why: "<b>AWS Managed Services (AMS)</b> AWS ortamını <b>müşteri adına işletir</b>: yama, izleme, olay yönetimi, yedekleme. <b>Enterprise Support</b> danışmanlık ve destek sunar ama ortamı <b>senin yerine işletmez</b>. Systems Manager ise bir araçtır, hizmet değil."
+    },
+    {
+      topic: "İş ortakları",
+      q: "Within the AWS Partner Network, which partner type builds software products that run on or integrate with AWS?",
+      opts: [
+        "Technology Partners",
+        "Consulting Partners",
+        "Training Partners",
+        "Managed Service Providers only"
+      ],
+      a: [0],
+      why: "APN ikiye ayrılır: <b>Technology Partners</b> AWS üzerinde çalışan veya AWS ile entegre olan <b>yazılım ürünleri</b> geliştirir (ürünleri genelde AWS Marketplacete bulunur); <b>Consulting Partners</b> ise müşterilere <b>hizmet</b> verir (tasarım, göç, işletme)."
+    },
+    {
+      topic: "Plan seçimi",
+      q: "A startup runs a production workload and needs 24/7 technical support and third-party software support, but does not need a Technical Account Manager. Which plan is the BEST fit?",
+      opts: ["Business", "Developer", "Enterprise", "Basic"],
+      a: [0],
+      why: "<b>Business</b> planı üretim iş yükleri için tasarlanmıştır: 7/24 telefon/sohbet/e-posta, tüm Trusted Advisor kontrolleri, <b>üçüncü parti yazılım desteği</b> ve Support API içerir — ancak <b>TAM içermez</b>. TAM gerekmediği için Enterprise (çok daha pahalı) gereksizdir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.2 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-5-2",
+  code: "Managing the Test Activities · 5.2",
+  title: "Risk Yönetimi",
+  back: "5.2-risk-yonetimi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Proje ve ürün riski",
+      q: "Which of the following is a PROJECT risk?",
+      opts: [
+        "The test environment may not be ready on time",
+        "The system may calculate the interest incorrectly",
+        "The user interface may display incorrect information",
+        "The software may cause data loss"
+      ],
+      a: [0],
+      why: "<b>Test ortamının gecikmesi projenin yönetimi ve kontrolüyle ilgilidir, dolayısıyla proje riskidir</b> ve yönetim tedbirleriyle ele alınır. Diğer üç şık iş ürününün kalitesiyle ilgilidir — bunlar ürün riskidir ve testle doğrudan azaltılır."
+    },
+    {
+      topic: "Proje ve ürün riski",
+      q: "Which of the following are PRODUCT risks? (Choose TWO.)",
+      opts: [
+        "The software may not meet the specified non-functional requirements",
+        "A calculation may produce an incorrect result",
+        "A key developer may leave the project",
+        "The supplier may fail to deliver on schedule"
+      ],
+      a: [0, 1],
+      why: "<b>Fonksiyonel olmayan gereksinimlerin karşılanmaması ve yanlış hesaplama ürünün kalitesiyle ilgilidir.</b> Personel kaybı ve tedarikçi gecikmesi organizasyonel/tedarikçi kategorisindeki proje riskleridir. Kanca: <b>proje riski = 'projeyi bitiremeyiz', ürün riski = 'ürün bozuk çıkar'.</b>"
+    },
+    {
+      topic: "Risk seviyesi",
+      q: "How is the level of a risk determined?",
+      opts: [
+        "By combining the likelihood of the risk occurring and its impact if it occurs",
+        "By the likelihood of the risk occurring alone",
+        "By the impact of the risk alone",
+        "By the number of test cases that cover the affected area"
+      ],
+      a: [0],
+      why: "<b>Risk seviyesi = olasılık × etki.</b> İki niteliğin de hesaba katılması şarttır. İkinci ve üçüncü şıklar tek bir çarpanı alıyor ve bu, sınavın en sevdiği tuzağın kaynağıdır: sık oluşan ama önemsiz bir sorun düşük risklidir."
+    },
+    {
+      topic: "Risk seviyesi",
+      q: "A cosmetic label misalignment occurs very frequently but has almost no consequence for users. What is its risk level?",
+      opts: [
+        "Low, because impact is a factor as well as likelihood",
+        "High, because the likelihood is very high",
+        "High, because it is visible to every user",
+        "It cannot be determined without measuring code coverage"
+      ],
+      a: [0],
+      why: "<b>Yüksek olasılık tek başına yüksek risk üretmez; etki de çarpana girer.</b> Bu risk düşük seviyelidir ve büyük olasılıkla <i>kabul edilebilir</i>. Test eforunu buraya yığmak, yüksek etkili risklerden efor çalmak demektir."
+    },
+    {
+      topic: "Ürün risk analizi",
+      q: "Product risk analysis consists of which two activities?",
+      opts: [
+        "Risk identification and risk assessment",
+        "Risk mitigation and risk monitoring",
+        "Risk transfer and risk acceptance",
+        "Risk identification and risk mitigation"
+      ],
+      a: [0],
+      why: "<b>Analiz iki adımdır: riskleri listelemek (identification) ve seviyelerini belirleyip önceliklendirmek (assessment).</b> Mitigation ve monitoring ise risk <i>kontrolüne</i> aittir. İkinci şık en yakın çeldiricidir — analiz ile kontrolü karıştırıyor."
+    },
+    {
+      topic: "Ürün risk kontrolü",
+      q: "Product risk control consists of which two activities?",
+      opts: [
+        "Risk mitigation and risk monitoring",
+        "Risk identification and risk assessment",
+        "Risk acceptance and risk transfer",
+        "Risk assessment and risk reporting"
+      ],
+      a: [0],
+      why: "<b>Kontrol, analizin önerdiği tedbirleri hayata geçirmek (mitigation) ve bunların işe yarayıp yaramadığını izlemektir (monitoring).</b> İzleme sayesinde yeni riskler tespit edilir ve mevcut risklerin seviyeleri güncellenir."
+    },
+    {
+      topic: "Riskin test üzerindeki etkisi",
+      q: "How does a HIGH product risk level typically affect the test approach? (Choose TWO.)",
+      opts: [
+        "More rigorous test techniques and higher coverage levels are applied",
+        "Testing is performed with a higher degree of independence",
+        "Testing is postponed until after the release",
+        "Fewer test cases are designed to save effort"
+      ],
+      a: [0, 1],
+      why: "<b>Yüksek risk daha güçlü teknik, daha yüksek kapsam, daha erken test ve daha yüksek bağımsızlık derecesi gerektirir.</b> Son iki şık tam tersini yapıyor — düşük riskli alanlar için uygun olabilecek yanıtları yüksek riskli alana uyguluyor."
+    },
+    {
+      topic: "Kalan risk",
+      q: "After testing has been completed, what remains and must be communicated to stakeholders?",
+      opts: ["Residual risk", "Project risk", "The test charter", "The entry criteria"],
+      a: [0],
+      why: "<b>Test riski azaltır ama sıfırlayamaz; geriye kalan residual risk'tir ve raporlanmalıdır.</b> Bu, prensip 1'in (test kusur yokluğunu kanıtlayamaz) yönetim diline çevrilmiş halidir ve aynı zamanda 5.1a'daki bir çıkış kriteridir."
+    },
+    {
+      topic: "Risk yanıtları",
+      q: "A team decides not to test a low-risk cosmetic feature at all, knowing the consequence if it fails. Which risk response is this?",
+      opts: ["Accepting the risk", "Mitigating the risk", "Transferring the risk", "Ignoring the risk"],
+      a: [0],
+      why: "<b>Riski bilerek üstlenmek 'accept' yanıtıdır ve meşru bir karardır</b> — kaynaklar sınırlı olduğu için her risk azaltılamaz. Bunu 'ignore'dan ayıran şey <i>bilinçli</i> ve <i>belgelenmiş</i> olmasıdır; görmezden gelmek bir karar değildir."
+    },
+    {
+      topic: "Risk analizinin zamanlaması",
+      q: "Which statement about product risk analysis is correct?",
+      opts: [
+        "It should start as early as possible and be repeated regularly throughout the project",
+        "It should be performed once, at the end of the project",
+        "It should be performed only after the first defects have been found",
+        "It is only required in safety-critical projects"
+      ],
+      a: [0],
+      why: "<b>Risk analizi erken başlar ve düzenli tekrarlanır</b>: yeni riskler ortaya çıkar, mevcut risklerin seviyeleri değişir. Tek seferlik bir risk kaydı, projenin ikinci ayında eskimiş olur ve test önceliklendirmesini yanlış yönlendirir."
+    },
+    {
+      topic: "Ürün risk analizinin amacı",
+      q: "What is the PURPOSE of product risk analysis?",
+      opts: [
+        "To determine where to focus the test effort, how much testing to do, and which techniques and coverage levels to use",
+        "To eliminate all product risks before development begins",
+        "To assign blame for defects found in production",
+        "To replace the need for entry and exit criteria"
+      ],
+      a: [0],
+      why: "<b>Risk analizi test eforunun yerini, miktarını ve derinliğini belirler.</b> Bu, prensip 2'nin (tüketici test imkânsız) doğrudan sonucudur — sınırlı eforu bir yere yöneltmek zorundasın. İkinci şık riskleri sıfırlamayı iddia ediyor, ki mümkün değildir."
+    },
+    {
+      topic: "Proje ve ürün riski",
+      q: "Can testing reduce PROJECT risks?",
+      opts: [
+        "Not directly; project risks are addressed by management, although testing can provide information",
+        "Yes; more testing directly reduces project risks such as staff shortages",
+        "Yes; project risks and product risks are reduced by the same measures",
+        "No; project risks cannot be managed at all"
+      ],
+      a: [0],
+      why: "<b>Proje riski yönetim tedbirleriyle ele alınır — daha çok test personel eksikliğini gidermez.</b> Ancak test, ilerleme ve kalite hakkında bilgi sağlayarak yönetimin karar vermesine dolaylı katkı yapar. Son şık ise proje risklerinin hiç yönetilemeyeceğini iddia ediyor, ki yanlış."
+    },
+    {
+      topic: "Risk tanımlama",
+      q: "Which of the following are typical inputs to risk identification? (Choose TWO.)",
+      opts: [
+        "Brainstorming and expert interviews with stakeholders",
+        "Defect data from previous releases",
+        "The measured statement coverage of the current build",
+        "The number of testers available in the team"
+      ],
+      a: [0, 1],
+      why: "<b>Risk tanımlama paydaş katılımıyla yapılır: beyin fırtınası, uzman görüşü, geçmiş kusur verisi ve checklist'ler kullanılır.</b> Geçmiş kusur verisi, prensip 4'ün (kusurlar kümelenir) risk analizine nasıl girdi olduğunu gösterir."
+    },
+    {
+      topic: "Risk izleme",
+      q: "What is the purpose of risk monitoring?",
+      opts: [
+        "To check whether the mitigation measures are effective, to detect new risks, and to update risk levels",
+        "To calculate the initial level of each identified risk",
+        "To decide which test technique to use for each component",
+        "To record the defects found during test execution"
+      ],
+      a: [0],
+      why: "<b>İzleme, alınan tedbirlerin işe yarayıp yaramadığını kontrol eder ve risk tablosunu güncel tutar.</b> Başlangıç risk seviyesini hesaplamak risk assessment'ın işidir; kusur kaydı ise test yürütmenin çıktısıdır. Analiz bir kez, izleme sürekli."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

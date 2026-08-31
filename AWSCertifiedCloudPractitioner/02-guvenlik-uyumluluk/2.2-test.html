@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.2",
+  code: "2. alan · Güvenlik ve Uyumluluk · Görev 2.2",
+  title: "Yönetişim ve Uyumluluk",
+  back: "2.2-yonetisim-uyumluluk.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "CloudTrail / CloudWatch / Config ayrımı",
+      q: "A security team must determine which IAM user deleted an Amazon S3 bucket last week. Which service provides this information?",
+      opts: ["AWS CloudTrail", "Amazon CloudWatch", "AWS Config", "AWS Trusted Advisor"],
+      a: [0],
+      why: "<b>KİM ne yaptı</b> = <b>CloudTrail</b>. API çağrılarını kaydeder: kullanıcı, zaman, kaynak IP, işlem. Konsoldaki Event history son <b>90 günü ücretsiz</b> tutar. CloudWatch metrik/log/alarm, Config ise konfigürasyon uyumluluğu içindir."
+    },
+    {
+      topic: "CloudTrail / CloudWatch / Config ayrımı",
+      q: "A company must continuously verify that every Amazon EBS volume in the account is encrypted, and be notified when a non-compliant volume appears. Which service should be used?",
+      opts: ["AWS Config", "AWS CloudTrail", "Amazon CloudWatch", "AWS Artifact"],
+      a: [0],
+      why: "<b>Kurala uygun mu</b> = <b>AWS Config</b>. Kaynak konfigürasyonlarını kaydeder ve kurallara göre <b>compliant / non-compliant</b> olarak işaretler (örn. <code>encrypted-volumes</code>). Soruda <i>compliant</i>, <i>configuration</i> veya <i>continuously evaluate</i> kelimelerini görürsen Config düşün."
+    },
+    {
+      topic: "CloudTrail / CloudWatch / Config ayrımı",
+      q: "An operations team wants to be alerted when the average CPU utilization of an EC2 instance exceeds 80% for five minutes. Which service should they use?",
+      opts: ["Amazon CloudWatch", "AWS CloudTrail", "AWS Config", "AWS Systems Manager"],
+      a: [0],
+      why: "Metrik + eşik + alarm = <b>CloudWatch</b>. Sistemin <b>nasıl çalıştığını</b> ölçer; kim ne yaptı bilgisini vermez (o CloudTrail), konfigürasyon uyumluluğu da söylemez (o Config)."
+    },
+    {
+      topic: "CloudTrail / CloudWatch / Config ayrımı",
+      q: "Match the purpose: which service records the configuration HISTORY of a resource so you can see what it looked like at a point in time?",
+      opts: ["AWS Config", "AWS CloudTrail", "Amazon CloudWatch Logs", "AWS Health Dashboard"],
+      a: [0],
+      why: "<b>Config</b> kaynağın konfigürasyon <b>anlık görüntülerini ve değişim geçmişini</b> tutar — <i>bu security group dün nasıldı?</i> sorusunun cevabı. CloudTrail <b>eylemi</b> (kim değiştirdi) kaydeder; ikisi birbirini tamamlar ama farklı sorulara cevap verir."
+    },
+    {
+      topic: "Organizations ve SCP",
+      q: "A company wants to prevent all accounts in its Development organizational unit (OU) from launching resources outside of European Regions. Which feature should be used?",
+      opts: [
+        "A Service Control Policy (SCP) in AWS Organizations",
+        "An IAM permissions policy attached to each user",
+        "A security group rule",
+        "An AWS Config rule"
+      ],
+      a: [0],
+      why: "<b>SCP</b>, bir OU veya hesap için <b>izin tavanı</b> koyar ve merkezî olarak uygulanır. IAM politikası tek tek kullanıcıya yazılır, merkezî guardrail sağlamaz. Config uyumsuzluğu <b>tespit eder</b> ama <b>engellemez</b>; SCP ise engeller (preventive)."
+    },
+    {
+      topic: "Organizations ve SCP",
+      q: "Which statement about Service Control Policies (SCPs) is TRUE?",
+      opts: [
+        "An SCP sets the maximum available permissions; IAM permissions are still required for an action to succeed",
+        "An SCP grants permissions on its own without any IAM policy",
+        "An SCP applies to the organization management account the same way it applies to member accounts",
+        "An SCP can only be attached to individual IAM users"
+      ],
+      a: [0],
+      why: "SCP <b>izin vermez, tavan koyar</b>: gerçek yetki = SCP tavanı ∩ IAM izinleri. AdministratorAccessin olsa bile SCP yasaklıyorsa yapamazsın. Ayrıca SCPler <b>yönetim hesabını etkilemez</b> ve IAM kullanıcısına değil <b>root/OU/hesaba</b> bağlanır."
+    },
+    {
+      topic: "Organizations ve SCP",
+      q: "Which two benefits does AWS Organizations provide? (Choose TWO.)",
+      opts: [
+        "Consolidated billing across multiple accounts",
+        "Centralized guardrails through service control policies",
+        "Automatic encryption of all data in member accounts",
+        "Free AWS Business Support for all member accounts",
+        "Automatic patching of EC2 operating systems"
+      ],
+      a: [0, 1],
+      why: "Organizationsın ana faydaları <b>birleşik faturalama</b> (hacim indirimlerinin ve Savings Plans/RI kullanımının birleşmesi) ve <b>SCP ile merkezî kısıtlama</b>dır. Otomatik şifreleme, ücretsiz destek planı veya OS yaması sağlamaz — bunlar klasik tuzak şıklarıdır."
+    },
+    {
+      topic: "Control Tower",
+      q: "A company wants to quickly set up a secure, multi-account AWS environment with preconfigured guardrails and a way to provision standardized new accounts. Which service should it use?",
+      opts: ["AWS Control Tower", "AWS Organizations", "AWS Config", "AWS Service Catalog"],
+      a: [0],
+      why: "<b>Control Tower</b> bir <b>landing zone</b>u otomatik kurar: arka planda Organizations, IAM Identity Center, CloudTrail ve Configi yapılandırır, guardrail kütüphanesi ve <b>Account Factory</b> sunar. Organizations temel servistir ama kurulumu <b>sen</b> yaparsın; Control Tower bunu otomatikleştirir."
+    },
+    {
+      topic: "Uyumluluk kanıtı",
+      q: "An external auditor requests AWS's ISO 27001 certificate and SOC 2 report. Which AWS service provides on-demand access to these documents?",
+      opts: ["AWS Artifact", "AWS Audit Manager", "AWS Config", "AWS Security Hub"],
+      a: [0],
+      why: "<b>AWS Artifact</b> AWSin denetim raporlarına ve sözleşmelerine (SOC, ISO, PCI DSS, HIPAA BAA, GDPR DPA) self-servis erişim sağlar ve ücretsizdir. Dikkat: Artifact <b>AWSin</b> uyumluluğunu belgeler; <b>senin</b> kaynaklarının uyumluluğu Configin işidir."
+    },
+    {
+      topic: "Uyumluluk kanıtı",
+      q: "Which service helps a customer continuously collect evidence to support their own compliance audits?",
+      opts: ["AWS Audit Manager", "AWS Artifact", "AWS Trusted Advisor", "Amazon Inspector"],
+      a: [0],
+      why: "<b>Audit Manager</b> müşterinin kendi denetimleri için <b>kanıt toplamayı otomatikleştirir</b>. Artifact ise AWSin hazır raporlarını indirdiğin yerdir. Ayrım: Artifact = AWSin belgeleri · Audit Manager = senin kanıtların."
+    },
+    {
+      topic: "Veri egemenliği",
+      q: "Which statement about the location of customer data in AWS is correct?",
+      opts: [
+        "The customer chooses the Region, and AWS does not move the data to another Region without the customer's consent",
+        "AWS automatically replicates all customer data to every Region for durability",
+        "AWS chooses the Region based on available capacity",
+        "Data location is determined by the customer's AWS Support plan"
+      ],
+      a: [0],
+      why: "<b>Region seçimi müşterinindir</b> ve veri, müşterinin izni olmadan Region dışına taşınmaz — <b>veri egemenliği</b> ilkesi. Bu, mevzuat gereği verinin belirli bir ülkede kalması gereken senaryoların temelidir. Bölgeler arası kopyalama <b>isteğe bağlıdır</b> (örn. S3 Cross-Region Replication)."
+    },
+    {
+      topic: "Penetrasyon testi politikası",
+      q: "Which statement about penetration testing on AWS is correct?",
+      opts: [
+        "Customers may test their own resources on a list of permitted services without prior approval, but DoS/DDoS testing requires AWS authorization",
+        "Penetration testing is never allowed on AWS",
+        "Customers may test any resource in any AWS account without approval",
+        "Only AWS Enterprise Support customers may perform penetration tests"
+      ],
+      a: [0],
+      why: "Müşteriler <b>kendi</b> kaynaklarında, izin verilen servis listesi için (EC2, RDS, CloudFront, Aurora, API Gateway, Lambda, Lightsail vb.) <b>ön izin almadan</b> pentest yapabilir. <b>DoS/DDoS, port/protokol/istek flooding</b> testleri ve <b>başka müşterilerin</b> kaynaklarını hedef almak yasaktır veya özel izin gerektirir."
+    },
+    {
+      topic: "Organizations ve SCP",
+      q: "In AWS Organizations, what is an organizational unit (OU)?",
+      opts: [
+        "A container that groups accounts so policies can be applied to them together",
+        "The root user of an AWS account",
+        "A billing report that shows costs per account",
+        "An IAM group that spans multiple accounts"
+      ],
+      a: [0],
+      why: "<b>OU</b>, hesapları gruplayan ve politikaların (SCP) topluca uygulanmasını sağlayan kapsayıcıdır; iç içe olabilir (örn. Production, Development, Sandbox). Dikkat: Organizationsın <b>root</b>u OU ağacının tepesidir — bu, <b>IAM root user</b> ile aynı şey <b>değildir</b>; sınav bu ikisini kasten karıştırır."
+    },
+    {
+      topic: "Servis ayrımı",
+      q: "A company wants to know whether an ongoing AWS service disruption is affecting its own resources. Which service should it check?",
+      opts: [
+        "AWS Health Dashboard",
+        "Amazon CloudWatch",
+        "AWS Trusted Advisor",
+        "AWS CloudTrail"
+      ],
+      a: [0],
+      why: "<b>AWS Health Dashboard</b> hem genel servis durumunu hem de <b>senin hesabına özel</b> olayları (planlı bakım, etkilenen kaynaklar) gösterir. CloudWatch <b>senin</b> kaynaklarının metriklerini izler, AWSin servis sağlığını değil. Trusted Advisor öneri verir, CloudTrail denetim kaydı tutar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

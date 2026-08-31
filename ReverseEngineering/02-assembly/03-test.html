@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02-03 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-02-03",
+  code: "02 Assembly · Kontrol Akışı",
+  title: "Jump, Cmp, Döngü, If/Switch",
+  back: "03-kontrol-akisi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Koşullu atlama",
+      q: "<code>je</code> (jump if equal) hangi flag koşuluyla atlar?",
+      opts: ["ZF=1", "ZF=0", "SF=1", "CF=1"],
+      a: [0],
+      why: "<b>je/jz: ZF=1</b> (sonuç sıfır → cmp'te eşitlik). <code>jne</code> ise ZF=0. Eşitlik her zaman Zero Flag üzerinden okunur."
+    },
+    {
+      topic: "Koşullu atlama",
+      q: "<code>jg</code> ile <code>ja</code> arasındaki temel fark nedir?",
+      opts: ["jg işaretli (signed), ja işaretsiz (unsigned) karşılaştırma içindir", "jg word, ja dword içindir", "jg ileri, ja geri atlar", "İkisi tamamen aynıdır"],
+      a: [0],
+      why: "İkisi de 'büyükse atla' ama <b>jg=signed, ja=unsigned</b>. <code>0xFFFFFFFF</code> signed'da −1, unsigned'da devasa. Hangi atlama kullanıldığı verinin işaretli mi olduğunu ele verir."
+    },
+    {
+      topic: "Koşullu atlama",
+      q: "Bir sınır kontrolünde <code>ja .hata</code> kullanılıyorsa karşılaştırılan değer hakkında ne söyleyebilirsin?",
+      opts: ["İşaretsiz (unsigned) yorumlanıyor — muhtemelen boyut/uzunluk/indeks", "Kesinlikle negatif bir sayı", "Bir float", "Bir pointer olamaz"],
+      a: [0],
+      why: "<b>ja unsigned</b> karşılaştırmadır; boyut, uzunluk ve indeksler tipik olarak unsigned'dır. Decompiler tip tahminini de bu atlamalardan yapar."
+    },
+    {
+      topic: "if/else",
+      q: "Kaynakta <code>if (x == 5) A(); else B();</code> var. Assembly'de neden <code>jne .else</code> görürsün?",
+      opts: ["Atlama kaynak koşulunun tersini taşır: şart tutmuyorsa gövdeyi atla", "Derleyici hata yapmıştır", "jne aslında 'eşitse atla' demektir", "x her zaman 5'ten farklıdır"],
+      a: [0],
+      why: "Verimlilik için derleyici <b>ters koşulla atlar</b>: <code>if(==)</code> → <code>jne</code> (eşit değilse else'e). Bu ters çevirmeyi okumak if/else çözmenin anahtarıdır."
+    },
+    {
+      topic: "if/else",
+      q: "<code>cmp eax, edx</code> ardından <code>jne .yanlis</code>. Bu bir parola kontrolünde ne anlatır?",
+      opts: ["İki değer eşit değilse 'yanlış' koluna gider; eşitse doğru yol devam eder", "İki değer her zaman eşittir", "eax'i edx'e kopyalar", "Programı sonlandırır"],
+      a: [0],
+      why: "Klasik doğrulama kalıbı: hesaplanan değer beklenene eşit <b>değilse</b> hata koluna atla. 'Correct!' yolu eşitlik dalındadır — crackme'de aranan nokta budur."
+    },
+    {
+      topic: "Döngü",
+      q: "Disassembly'de bir döngüyü en güvenilir nasıl tanırsın?",
+      opts: ["Daha küçük (yukarı) bir adrese giden koşullu/koşulsuz atlama", "Herhangi bir cmp komutu", "Bir call komutu", "push/pop çifti"],
+      a: [0],
+      why: "<b>Geriye (küçük adrese) atlama = döngü.</b> İleri atlamalar genelde if/else. Adres numarası düşen bir jmp/jl gördüğünde orada dönen bir yapı vardır."
+    },
+    {
+      topic: "Döngü",
+      q: "Tipik bir <code>for(i=0;i&lt;n;i++)</code> döngüsünde sayacın artışı assembly'de neye benzer?",
+      opts: ["<code>add dword [rbp-0x4], 1</code> gibi bir artış, ardından koşul cmp'i", "Sadece bir jmp", "Bir call sayaç fonksiyonuna", "xor ile sıfırlama"],
+      a: [0],
+      why: "Sayaç bir yerelde tutulur ve <b>her turda +1</b> edilir (<code>add ...,1</code> veya <code>inc</code>), sonra <code>cmp</code>+<code>jl</code> ile sınır kontrol edilir. -O0'da bu kalıp nettir."
+    },
+    {
+      topic: "Döngü",
+      q: "<code>-O2</code>/<code>-O3</code> ile derlenmiş kodda 'temiz for döngüsü' bulamıyorsun. En olası sebep?",
+      opts: ["Derleyici döngüyü açmış (unroll)/dönüştürmüş, sayacı register'da tutuyor olabilir", "Döngü kaynakta hiç yoktu", "Binary bozuk", "Döngüler sadece -O0'da derlenir"],
+      a: [0],
+      why: "Optimizasyon döngü açma, sayaç register'a alma, koşulu başa taşıma gibi dönüşümler yapar. Yine de <b>geriye atlama ve sayaç artışı</b> ipuçlarını ara."
+    },
+    {
+      topic: "switch",
+      q: "<code>jmp qword [rax*8 + 0x4020]</code> kalıbı en olası neyi gösterir?",
+      opts: ["Bir switch/jump table üzerinden dolaylı atlama", "Bir fonksiyon çağrısı", "Bir döngü", "Bir string kopyalama"],
+      a: [0],
+      why: "İndeksli dolaylı atlama (<code>jmp [tablo + reg*8]</code>) yoğun bir <b>switch</b>'in jump table'ıdır: değer indeks yapılıp adres tablosundan hedefe atlanır."
+    },
+    {
+      topic: "switch",
+      q: "Seyrek/aralıklı case değerleri olan bir switch derleyici tarafından nasıl kodlanabilir?",
+      opts: ["Art arda cmp + je zinciri (if/else if gibi)", "Her zaman jump table ile", "Bir döngü ile", "Hiç kodlanamaz"],
+      a: [0],
+      why: "Jump table yoğun/ardışık değerler için verimlidir. <b>Seyrek</b> case'lerde derleyici <code>cmp eax,val</code>+<code>je</code> zinciri üretir. İkisini ayırt etmek switch'i tanımanı sağlar."
+    },
+    {
+      topic: "Kısa devre",
+      q: "<code>if (a &amp;&amp; b)</code> assembly'de nasıl görünür?",
+      opts: ["a yanlışsa b hiç kontrol edilmeden gövde atlanır (kısa devre)", "a ve b her zaman ayrı ayrı tam hesaplanır", "Tek bir cmp ile", "Bir jump table ile"],
+      a: [0],
+      why: "<b>&amp;&amp; kısa devre:</b> ilk şart yanlışsa ikinciye bakılmaz, erken atlanır. Art arda <code>cmp</code>+<code>j..</code> çiftleri tek bir bileşik koşul olabilir — her cmp'i ayrı sanma."
+    },
+    {
+      topic: "Koşullu atlama",
+      q: "<code>jle</code> hangi durumu yakalar ve işaretli mi işaretsiz midir?",
+      opts: ["Küçük veya eşit; işaretli (signed)", "Küçük veya eşit; işaretsiz", "Büyük veya eşit; işaretli", "Sadece eşit; işaretsiz"],
+      a: [0],
+      why: "<b>jle = jump if less or equal, signed.</b> İşaretsiz karşılığı <code>jbe</code>'dir. l/g signed, a/b unsigned ailesi — harf ailesini ayırt et."
+    },
+    {
+      topic: "Koşulsuz atlama",
+      q: "<code>jmp .son</code> ile <code>je .son</code> arasındaki fark nedir?",
+      opts: ["jmp her zaman atlar (koşulsuz); je sadece ZF=1 ise atlar", "İkisi de koşulludur", "jmp sadece geri, je sadece ileri atlar", "jmp bir fonksiyon çağırır"],
+      a: [0],
+      why: "<b>jmp koşulsuz</b> (goto gibi), <code>je</code> flag'e bağlı koşulludur. if/else gövdesinin sonundaki <code>jmp</code> genelde 'else'i atlayıp birleşme noktasına gitmek içindir."
+    },
+    {
+      topic: "if/else",
+      q: "İki koşullu atlama art arda geliyor: <code>cmp</code>+<code>jne</code> sonra tekrar <code>cmp</code>+<code>jne</code>, ikisi de aynı hata koluna gidiyor. Bu en olası ne?",
+      opts: ["Bir && zinciri: birden çok şartın hepsi tutmalı, biri tutmazsa hata", "Bir döngü", "Bir switch", "İki bağımsız fonksiyon"],
+      a: [0],
+      why: "Aynı hata koluna giden art arda ters-koşullu atlamalar tipik bir <b>&amp;&amp; zinciridir</b>: 'uzunluk doğru VE ilk karakter doğru VE …'. Crackme parola kontrolleri böyle görünür."
+    },
+    {
+      topic: "Koşullu atlama",
+      q: "<code>js .neg</code> ne zaman atlar?",
+      opts: ["Son sonuç negatifse (SF=1)", "Son sonuç sıfırsa", "İşaretsiz taşma olursa", "Her zaman"],
+      a: [0],
+      why: "<b>js = jump if sign, SF=1</b> → sonuç negatif. <code>jns</code> tersidir. Bir değerin negatifliğini doğrudan test etmek için kullanılır (örn. hata kodu &lt; 0)."
+    },
+    {
+      topic: "Döngü",
+      q: "Bir <code>while(x)</code> döngüsünün koşulu tipik olarak hangi komut çiftiyle kontrol edilir?",
+      opts: ["<code>test</code>/<code>cmp</code> + koşullu atlama (örn. test eax,eax + je çıkış)", "sadece jmp", "call + ret", "lea + mov"],
+      a: [0],
+      why: "Döngü koşulu da bir <b>flag kur + koşullu atla</b> çiftidir: <code>test eax,eax</code> (x sıfır mı) + <code>je .cikis</code>. Gövde sonunda başa geri atlama olur. for/while aynı yapıya iner."
+    },
+    {
+      topic: "Koşullu atlama",
+      q: "İşaretli (signed) karşılaştırma için kullanılan <b>iki</b> koşullu atlama hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["<code>jg</code> (jump if greater)", "<code>jl</code> (jump if less)", "<code>ja</code> (jump if above)", "<code>jb</code> (jump if below)"],
+      a: [0, 1],
+      why: "<b>l/g ailesi = signed</b> (jl, jg, jle, jge). <b>a/b ailesi = unsigned</b> (ja, jb…). Hangisinin kullanıldığı verinin işaretli mi olduğunu ele verir."
+    },
+    {
+      topic: "Döngü",
+      q: "Disassembly'de bir döngüyü işaret eden <b>iki</b> belirti hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Daha küçük (yukarı) bir adrese giden atlama", "Her turda artan bir sayaç (inc/add ...,1) ve koşul cmp'i", "Bir jump table (jmp [t+r*8])", "Bir call/ret çifti"],
+      a: [0, 1],
+      why: "<b>Geriye atlama + sayaç artışı + koşul</b> döngünün klasik işaretleridir. Jump table switch'i, call/ret fonksiyon çağrısını gösterir — döngü değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

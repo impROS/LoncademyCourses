@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.1",
+  code: "OOP · 3.1",
+  title: "Sınıflar, Nesne Yaşam Döngüsü ve Başlatma Sırası",
+  back: "3.1-siniflar-ve-yasam-dongusu.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Başlatma sırası",
+      q: "<pre>class T {\n    static { System.out.print(\"1 \"); }\n    { System.out.print(\"2 \"); }\n    T() { System.out.print(\"3 \"); }\n    public static void main(String[] a) {\n        new T();\n        new T();\n    }\n}</pre>What is the result?",
+      opts: [
+        "1 2 3 2 3",
+        "1 2 3 1 2 3",
+        "2 3 1 2 3",
+        "1 1 2 3 2 3"
+      ],
+      a: [0],
+      why: "Statik blok sınıf <b>ilk kez yüklendiğinde bir kez</b> çalışır — ikinci <code>new</code>'de tekrarlanmaz. Örnek initializer bloğu ve constructor ise <b>her <code>new</code>'de</b> çalışır, bu sırayla. <b>Kanca:</b> \"Statik bir kez, örnek her seferinde; blok constructor'dan önce.\""
+    },
+    {
+      topic: "Başlatma sırası",
+      q: "<pre>class A {\n    static { System.out.print(\"As \"); }\n    { System.out.print(\"Ai \"); }\n    A() { System.out.print(\"Ac \"); }\n}\nclass B extends A {\n    static { System.out.print(\"Bs \"); }\n    { System.out.print(\"Bi \"); }\n    B() { System.out.print(\"Bc \"); }\n}</pre>What is printed by <code>new B();</code>?",
+      opts: [
+        "As Bs Ai Ac Bi Bc",
+        "As Ai Ac Bs Bi Bc",
+        "Bs As Ai Ac Bi Bc",
+        "As Bs Bi Bc Ai Ac"
+      ],
+      a: [0],
+      why: "Önce <b>tüm statikler</b> yukarıdan aşağıya (<code>As</code>, <code>Bs</code>) — sınıf yüklemesi kalıtım zincirini yukarıdan tamamlar. Sonra her seviyede <b>önce örnek initializer, sonra constructor gövdesi</b>: üst sınıf tamamen biter (<code>Ai Ac</code>), ardından alt sınıf (<code>Bi Bc</code>). <b>Kanca:</b> \"Statikler önce ve topluca; sonra yukarıdan aşağı alan+ctor.\""
+    },
+    {
+      topic: "Başlatma sırası",
+      q: "<pre>class Ust { Ust() { yaz(); } void yaz() {} }\nclass Alt extends Ust {\n    int x = 5;\n    void yaz() { System.out.print(x); }\n}</pre>What is printed by <code>new Alt();</code>?",
+      opts: [
+        "0",
+        "5",
+        "Nothing is printed.",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "Üst sınıfın constructor'ı, alt sınıfın <b>alan başlatmaları henüz çalışmadan</b> yürür. Override edilmiş <code>yaz()</code> alt sınıftan çağrılır ama <code>x</code> hâlâ <b>varsayılan değerindedir</b> → <b>0</b>. <b>Kanca:</b> Bu yüzden constructor içinde override edilebilir metot çağırmak bir tasarım hatasıdır."
+    },
+    {
+      topic: "Constructor kuralları",
+      q: "<pre>class Kedi {\n    public void Kedi() { System.out.print(\"miyav\"); }\n    public static void main(String[] a) { new Kedi(); }\n}</pre>What is the result?",
+      opts: [
+        "The code compiles and prints nothing.",
+        "The code compiles and prints miyav.",
+        "Compilation fails because a constructor cannot have a return type.",
+        "Compilation fails because no constructor is defined."
+      ],
+      a: [0],
+      why: "<code>void</code> dönüş tipi olduğu için bu bir <b>constructor değil</b>, <code>Kedi</code> adında sıradan bir metottur. Sınıfta hiç constructor <b>bildirilmediği</b> için derleyici varsayılan parametresiz constructor'ı ekler ve <code>new Kedi()</code> onu çağırır — metot hiç çalışmaz. <b>Kanca:</b> Constructor'ın dönüş tipi <b>yoktur</b>, <code>void</code> bile."
+    },
+    {
+      topic: "Constructor kuralları",
+      q: "<pre>class A { A(int x) {} }\nclass B extends A { B() {} }</pre>What is the result?",
+      opts: [
+        "Compilation fails because A has no no-argument constructor.",
+        "The code compiles.",
+        "Compilation fails because B must declare the same constructor as A.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>B()</code> içinde açık bir <code>super(...)</code> yoksa derleyici <b>parametresiz <code>super();</code></b> ekler. <code>A</code> parametreli bir constructor bildirdiği için varsayılan constructor <b>üretilmez</b> ve çağrı karşılıksız kalır. <b>Çözüm:</b> <code>B() { super(0); }</code>. <b>Kanca:</b> Üst sınıfta bir tane bile constructor varsa alt sınıf onu açıkça çağırmak zorunda kalabilir."
+    },
+    {
+      topic: "Constructor kuralları",
+      q: "Which statements about this() and super() are correct? (Choose TWO.)",
+      opts: [
+        "If present, this() or super() must be the first statement in the constructor.",
+        "A constructor cannot contain both this() and super().",
+        "A constructor may call this() after logging output to the console.",
+        "If neither is written, the compiler inserts this()."
+      ],
+      a: [0, 1],
+      why: "Her ikisi de constructor'ın <b>ilk deyimi</b> olmak zorundadır — bu yüzden aynı constructor'da <b>ikisi birden</b> bulunamaz ve öncesine hiçbir deyim (log dahil) yazılamaz. <br>Hiçbiri yazılmazsa derleyici <b>this()</b> değil <b>super();</b> ekler."
+    },
+    {
+      topic: "Constructor kuralları",
+      q: "<pre>class A {\n    A() { this(1); }\n    A(int x) { this(); }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because of a recursive constructor invocation.",
+        "A StackOverflowError is thrown at runtime.",
+        "The code compiles and runs without output.",
+        "Compilation fails because this() cannot take arguments."
+      ],
+      a: [0],
+      why: "Derleyici constructor zincirinde <b>döngü</b> tespit eder ve <i>recursive constructor invocation</i> hatası verir — bu, çalışma zamanına hiç kalmaz. <br><code>StackOverflowError</code> normal metot özyinelemesinde olurdu; constructor zinciri <b>derleme zamanında</b> yakalanır. <code>this(...)</code> argüman <b>alabilir</b>."
+    },
+    {
+      topic: "Alanlar ve yerel değişkenler",
+      q: "<pre>class A {\n    int x;\n    void m() {\n        int y;\n        System.out.println(x + y);\n    }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because y might not have been initialized.",
+        "0",
+        "Compilation fails because x might not have been initialized.",
+        "The code compiles and prints nothing."
+      ],
+      a: [0],
+      why: "<b>Alanlar</b> varsayılan değer alır (<code>x</code> = 0), <b>yerel değişkenler almaz</b>. Derleyici <i>definite assignment</i> analizi yapar ve atanmamış <code>y</code>'yi kullanmayı reddeder. <b>Kanca:</b> \"Alan sıfırla doğar, yerel değişken doğmadan kullanılamaz.\""
+    },
+    {
+      topic: "İleri referans",
+      q: "<pre>class A {\n    int a = b;\n    int b = 5;\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because of an illegal forward reference.",
+        "The code compiles and a is 5.",
+        "The code compiles and a is 0.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Bir alan initializer'ı, <b>kendisinden sonra bildirilen</b> bir alana basit isimle başvuramaz → <i>illegal forward reference</i>. <br>Sırayı çevirirsen (<code>b</code> önce) derlenir ve <code>a</code> 5 olur. <code>this.b</code> yazarak kuralı aşmak derlenir ama değer <b>0</b> olur — daha da tehlikelidir."
+    },
+    {
+      topic: "final alanlar",
+      q: "<pre>class A {\n    final int x;\n    A() { }\n    A(int v) { x = v; }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because x is not assigned in every constructor.",
+        "The code compiles; x defaults to 0 in the no-arg constructor.",
+        "Compilation fails because a final field cannot be assigned in a constructor.",
+        "The code compiles and runs without error."
+      ],
+      a: [0],
+      why: "<code>final</code> bir örnek alanı <b>her</b> constructor tamamlandığında atanmış olmak zorundadır. Parametresiz constructor <code>x</code>'i atamadığı için hata alınır — <b>varsayılan değer final'ı kurtarmaz</b>. <br>Constructor'da atamak <b>geçerlidir</b>; asıl kural \"tam olarak bir kez ve her yolda\"dır."
+    },
+    {
+      topic: "final alanlar",
+      q: "<pre>final List&lt;String&gt; list = new ArrayList&lt;&gt;();\nlist.add(\"a\");\nlist = new ArrayList&lt;&gt;();</pre>What is the result?",
+      opts: [
+        "Compilation fails only on the last line.",
+        "Compilation fails on both the second and the last line.",
+        "The code compiles.",
+        "An UnsupportedOperationException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>final</code> <b>referansı</b> dondurur, <b>nesnenin içeriğini değil</b>. <code>add</code> tamamen geçerlidir; hata yalnızca değişkeni <b>yeniden bağlamaya</b> çalışan son satırdadır. <b>Kanca:</b> Gerçekten değiştirilemez bir liste istiyorsan <code>List.of(...)</code> kullanılır — orada <code>add</code> <code>UnsupportedOperationException</code> atar."
+    },
+    {
+      topic: "Çöp toplama",
+      q: "<pre>StringBuilder a = new StringBuilder(\"x\");\nStringBuilder b = a;\na = null;</pre>How many objects are eligible for garbage collection after the last line?",
+      opts: [
+        "0",
+        "1",
+        "2",
+        "It is impossible to determine."
+      ],
+      a: [0],
+      why: "Nesne hâlâ <code>b</code> üzerinden <b>erişilebilir</b> olduğu için GC'ye uygun değildir. <code>null</code> atamak nesneyi silmez, yalnızca <b>bir referansı</b> koparır. <code>b = null;</code> de yazılsaydı cevap 1 olurdu. <b>Kanca:</b> Soru \"kaç referans null\" değil, \"kaç nesneye artık ulaşılamıyor\" diye sorar."
+    },
+    {
+      topic: "Çöp toplama",
+      q: "Which statements about garbage collection in Java are correct? (Choose TWO.)",
+      opts: [
+        "System.gc() is only a suggestion and the JVM may ignore it.",
+        "An object becomes eligible for collection when it is no longer reachable from any live thread.",
+        "Setting a reference to null immediately frees the object's memory.",
+        "The finalize() method is guaranteed to run before an object is collected."
+      ],
+      a: [0, 1],
+      why: "<code>System.gc()</code> JVM'e bir <b>öneridir</b>, zorunluluk değil. Uygunluk ölçütü <b>erişilebilirliktir</b> (reachability), referans sayısı değil — birbirini gösteren iki ada nesne de toplanabilir. <br><code>null</code> atamak belleği <b>hemen boşaltmaz</b>; <code>finalize()</code> ise <b>deprecated</b>'dir ve çağrılacağı garanti değildir."
+    },
+    {
+      topic: "Constructor kuralları",
+      q: "<pre>class A {\n    A(String s) { System.out.print(\"1\"); }\n    A() { this(\"x\"); System.out.print(\"2\"); }\n    public static void main(String[] a) { new A(); }\n}</pre>What is the result?",
+      opts: [
+        "12",
+        "21",
+        "1",
+        "2"
+      ],
+      a: [0],
+      why: "<code>new A()</code> parametresiz constructor'ı çağırır; ilk deyim <code>this(\"x\")</code> olduğu için <b>önce</b> parametreli constructor tamamen çalışır (<code>1</code>), <b>sonra</b> çağıran constructor'ın kalan gövdesi (<code>2</code>) → <b>12</b>. <b>Kanca:</b> Zincirleme çağrı her zaman <b>içten dışa</b> tamamlanır."
+    },
+    {
+      topic: "Başlatma sırası",
+      q: "<pre>class T {\n    static int a = say(\"a\");\n    static { say(\"b\"); }\n    static int c = say(\"c\");\n    static int say(String s) { System.out.print(s); return 0; }\n    public static void main(String[] x) { }\n}</pre>What is the result?",
+      opts: [
+        "abc",
+        "acb",
+        "bac",
+        "Nothing is printed because main is empty."
+      ],
+      a: [0],
+      why: "Statik alanlar ve statik bloklar <b>tek bir sırada</b>, yani kaynak dosyadaki <b>metin sırasına göre</b> çalıştırılır — bloklar alanlardan sonra değil, yazıldıkları yerde. Sınıf <code>main</code> için yüklendiğinden çıktı <code>main</code> boş olsa da üretilir. <b>Kanca:</b> Sırayı belirleyen tek şey satır numarasıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

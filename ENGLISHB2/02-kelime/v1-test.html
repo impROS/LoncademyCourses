@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v1 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "v1",
+  code: "Kelime · v1",
+  title: "İş hayatı ve kariyer",
+  back: "v1-is-kariyer.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe. Kelimeler bağlam içinde sorulur.",
+  questions: [
+    {
+      topic: "İşe alım",
+      q: "Out of 200 applicants, only six were ______ for interview.",
+      opts: ["shortlisted", "recruited", "promoted", "dismissed"],
+      a: [0],
+      why: "<b>shortlisted</b> — ön elemeyi geçip kısa listeye alınmak. <code>recruited</code> işe alınmayı, yani sürecin sonunu anlatır; mülakat öncesi aşamada henüz kimse işe alınmamıştır."
+    },
+    {
+      topic: "İşe alım",
+      q: "I ______ for a project manager role, but unfortunately I was turned down.",
+      opts: ["applied", "attended", "referred", "recruited"],
+      a: [0],
+      why: "<b>apply for</b> + pozisyon sabit kalıptır. Edatı da ezberle: <i>apply <b>for</b> a job</i> ama <i>apply <b>to</b> a company</i>."
+    },
+    {
+      topic: "Kariyer hareketi",
+      q: "The plant was closed and 300 employees were made ______ .",
+      opts: ["redundant", "dismissed", "resigned", "unemployed"],
+      a: [0],
+      why: "<b>made redundant</b> — pozisyonun ortadan kalkması, kişinin kusuru değil. <code>dismissed</code> kusur nedeniyle işten çıkarmadır; fabrikanın kapanması durumunda bu kelime kişiye haksızlık eder. <code>resign</code> ise kişinin kendi kararıdır."
+    },
+    {
+      topic: "Kariyer hareketi",
+      q: "She ______ her notice last week and leaves at the end of the month.",
+      opts: ["handed in", "took on", "stepped up", "laid off"],
+      a: [0],
+      why: "<b>hand in your notice</b> = istifa dilekçesini vermek. <code>lay off</code> işveren tarafından yapılan bir eylemdir ve özne çalışan olduğunda mantıksızdır."
+    },
+    {
+      topic: "Collocation: make/do/take",
+      q: "The board will ______ a decision on the merger next Tuesday.",
+      opts: ["make", "do", "take", "give"],
+      a: [0],
+      why: "<b>make a decision</b> — sabit collocation. Türkçedeki 'karar vermek' <i>give</i> ile çevrilmeye çalışılır ve <i>give a decision</i> hatalı olur. Kanca: <code>make</code> ortaya yeni bir şey çıkarır."
+    },
+    {
+      topic: "Collocation: make/do/take",
+      q: "Our team has been ______ research into customer retention for six months.",
+      opts: ["doing", "making", "taking", "holding"],
+      a: [0],
+      why: "<b>do research</b> (veya <i>carry out research</i>). <code>make research</code> Türkçe konuşanların çok sık yaptığı hatadır; <code>make</code> somut bir ürün ya da sonuç üretmeyi çağrıştırır."
+    },
+    {
+      topic: "Collocation: make/do/take",
+      q: "Choose the two correct collocations. (Choose TWO.)",
+      opts: ["take responsibility for the error", "meet a tight deadline", "catch the deadline", "make an internship"],
+      a: [0, 1],
+      why: "<code>take responsibility</code> ve <code>meet a deadline</code> doğrudur. Teslim tarihi <i>catch</i> edilmez, <i>meet</i> edilir; staj ise <i>do an internship</i> olarak yapılır."
+    },
+    {
+      topic: "Toplantı fiilleri",
+      q: "The vice-president will ______ the meeting in the director's absence.",
+      opts: ["chair", "attend", "hold", "join"],
+      a: [0],
+      why: "<b>chair a meeting</b> = toplantıya başkanlık etmek. <code>attend</code> sadece katılmaktır ve müdürün yokluğunda birinin devralması fikrini vermez."
+    },
+    {
+      topic: "Çalışma koşulları",
+      q: "A three-hour daily ______ was the main reason he changed jobs.",
+      opts: ["commute", "commuting", "travel", "traffic"],
+      a: [0],
+      why: "<b>commute</b> hem fiil hem isimdir ve tam olarak 'işe gidip gelme yolculuğu' demektir. <code>travel</code> genel bir seyahattir, günlük iş yolculuğunu belirtmez."
+    },
+    {
+      topic: "İş sıfatları",
+      q: "The job is badly paid and repetitive, but she finds it strangely ______ .",
+      opts: ["rewarding", "demanding", "tedious", "redundant"],
+      a: [0],
+      why: "<b>rewarding</b> = maddi olmasa da tatmin edici. <code>tedious</code> zaten cümlenin ilk yarısında söylenen tekdüzeliği tekrar ederdi ve <i>but</i> ile kurulan zıtlığı bozardı."
+    },
+    {
+      topic: "İş sıfatları",
+      q: "Don't bring up the restructuring — he's rather ______ about losing his old team.",
+      opts: ["sensitive", "sensible", "reasonable", "efficient"],
+      a: [0],
+      why: "<b>sensitive</b> = alıngan, kolay incinen. <code>sensible</code> ise 'mantıklı, aklı başında' demektir ve iki kelime sınavların favori tuzağıdır — biri duyguyla, diğeri akılla ilgilidir."
+    },
+    {
+      topic: "Resmî e-posta",
+      q: "An email beginning 'Dear Sir or Madam' should end with:",
+      opts: ["Yours faithfully", "Yours sincerely", "Best wishes", "Regards"],
+      a: [0],
+      why: "İsim bilinmiyorsa <b>Yours faithfully</b>, biliniyorsa <i>Yours sincerely</i>. Bu eşleşme resmî yazışmanın standardıdır ve yazma görevlerinde doğrudan puana etki eder."
+    },
+    {
+      topic: "Resmî e-posta",
+      q: "Which sentence is appropriate in a formal application email?",
+      opts: ["I would be grateful if you could confirm receipt of my application.", "Can you tell me ASAP if you got it?", "Just checking you got my stuff.", "Let me know when you've had a look, thanks!"],
+      a: [0],
+      why: "Resmî kayıtta kısaltma, günlük deyim ve <i>stuff</i> gibi belirsiz kelimeler kullanılmaz. <code>I would be grateful if you could…</code> B2 yazma görevlerinin standart rica kalıbıdır."
+    },
+    {
+      topic: "Çalışma koşulları",
+      q: "Since two colleagues left, my ______ has become almost unmanageable.",
+      opts: ["workload", "workforce", "workshop", "workspace"],
+      a: [0],
+      why: "<b>workload</b> = kişinin üstlendiği iş miktarı. <code>workforce</code> bir kurumdaki toplam çalışan sayısıdır ve bireysel yoğunluğu anlatmaz — benzer görünen kelimeler farklı şeyleri adlandırır."
+    },
+    {
+      topic: "İşe alım",
+      q: "New staff are on a six-month ______ period before their contract becomes permanent.",
+      opts: ["probation", "notice", "vacancy", "recruitment"],
+      a: [0],
+      why: "<b>probation period</b> = deneme süresi. <code>notice period</code> ise istifa ile ayrılış arasındaki süredir; ikisi de 'period' ile gider ama zaman çizgisinin zıt uçlarındadır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

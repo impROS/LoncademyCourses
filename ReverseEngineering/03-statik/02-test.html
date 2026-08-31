@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03-02 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-03-02",
+  code: "03 Statik · Decompile Okuma",
+  title: "Decompile Okuma, Tip/İsim, Veri Akışı",
+  back: "02-decompile-okuma.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Uydurma isimler",
+      q: "Decompiler'da <code>param_1</code> neye karşılık gelir?",
+      opts: ["Fonksiyonun 1. argümanı (rdi)", "1 numaralı yerel değişken", "İlk global veri", "Dönüş değeri"],
+      a: [0],
+      why: "Ghidra argümanları ABI sırasına göre adlandırır: <b>param_1=rdi, param_2=rsi…</b> İsim uydurmadır ama sıra gerçektir (2.4)."
+    },
+    {
+      topic: "Uydurma isimler",
+      q: "Bir değişkeni yeniden adlandırmak (rename) için Ghidra decompiler'da tipik kısayol nedir ve etkisi ne olur?",
+      opts: ["L tuşu; isim tüm çıktıda otomatik güncellenir, mantık değişmez", "Delete tuşu; değişkeni siler", "Ctrl+S; binary'yi değiştirir", "F5; programı çalıştırır"],
+      a: [0],
+      why: "<b>L (veya sağ tık → Rename)</b> ismi her kullanımda günceller. Sadece analiz görünümünü değiştirir; binary'nin çalışmasına dokunmaz. En sık kullanılan komut."
+    },
+    {
+      topic: "Uydurma isimler",
+      q: "<code>FUN_00101169</code> ve <code>DAT_00104010</code> ne anlama gelir?",
+      opts: ["İsimsiz bir fonksiyon ve isimsiz bir global veri (adresten türetilmiş isimler)", "Bir hata kodu ve bir bellek adresi", "İki farklı register", "Şifrelenmiş kod blokları"],
+      a: [0],
+      why: "<b>FUN_ = isimsiz fonksiyon, DAT_ = isimsiz global veri</b>, adresleriyle adlandırılmış. Ne yaptıklarını çözüp yeniden adlandırman gerekir (stripped binary'de sık)."
+    },
+    {
+      topic: "Tip düzeltme",
+      q: "Ghidra bir değişkeni <code>undefined8</code> olarak gösteriyor. Bu nedir?",
+      opts: ["Ghidra'nın tipini belirleyemediği 8 byte'lık bir değer; gerçek bir C tipi değil", "8 baytlık bir hata", "Her zaman bir pointer", "Kaynaktaki gerçek tip"],
+      a: [0],
+      why: "<b>undefined8 = bilinmeyen 8 byte.</b> Doğru tipi (örn. <code>char *</code>, <code>long</code>) verirsen decompile çok daha okunur olur (<code>Ctrl+L</code> retype)."
+    },
+    {
+      topic: "Tip düzeltme",
+      q: "Bir <code>undefined8</code> değişkenini <code>char *</code> olarak retype edince tipik olarak ne kazanırsın?",
+      opts: ["<code>*(char*)(uVar+1)</code> gibi ifadeler <code>uVar[1]</code> gibi okunur string erişimine döner", "Program hızlanır", "Değişken silinir", "Binary yeniden derlenir"],
+      a: [0],
+      why: "Doğru tip, decompiler'ın ifadeleri <b>okunur diziye/string'e</b> çevirmesini sağlar. Tip düzeltme, decompile okunabilirliğinin anahtarıdır."
+    },
+    {
+      topic: "Tip düzeltme",
+      q: "Yanlış tip tahmini bir karşılaştırmayı nasıl yanıltabilir?",
+      opts: ["int sanılan bir değer aslında unsigned'sa, decompiler '<0' gösterirken gerçekte hiç negatif olmayabilir", "Programı çökertir", "Tüm string'leri siler", "Register isimlerini değiştirir"],
+      a: [0],
+      why: "Signed/unsigned tahmini yanlışsa karşılaştırma ters okunur. Şüphede <b>Listing'deki atlama komutuna</b> bak: <code>jl</code> signed, <code>jb</code> unsigned (2.3)."
+    },
+    {
+      topic: "Veri akışı",
+      q: "Bir crackme'de kullanıcı girdisinin nereye gittiğini izlemenin en doğrudan yolu?",
+      opts: ["Girdi değişkenine tıklayıp tüm kullanımlarını/references'ını takip etmek", "Programı 100 kez çalıştırmak", "Binary'yi silip yeniden derlemek", "Sadece string'lere bakmak"],
+      a: [0],
+      why: "Ghidra bir değişkenin tüm kullanımlarını vurgular ve <b>References</b> ile okuma/yazma yerlerini verir. Girdi → dönüşüm → karşılaştırma zincirini böyle izlersin."
+    },
+    {
+      topic: "Veri akışı",
+      q: "Bir doğrulamada <code>if (hesaplanan == 0x1a4)</code> görüyorsun; <code>hesaplanan</code> girdiden türüyor. Bu sana ne verir?",
+      opts: ["Hedef değer 0x1a4 (420); girdi bu değeri üretmelidir", "Girdi 0x1a4 karakter uzunluğunda olmalı", "Program 420 kez çalışır", "Hiçbir işe yaramaz"],
+      a: [0],
+      why: "Karşılaştırmanın <b>sabit tarafı beklenen değeri</b> verir. Crackme çözümü: girdiyi bu hedefi üretecek şekilde ters mühendislikle bulmak (keygen mantığı, Bölüm 5)."
+    },
+    {
+      topic: "Decompile kalıpları",
+      q: "strcmp çağrısından sonra <code>if (iVar1 == 0)</code> görüyorsun. Ne demek?",
+      opts: ["İki string eşit (strcmp eşitse 0 döner)", "İki string farklı", "Bir hata oluştu", "iVar1 sıfırlandı"],
+      a: [0],
+      why: "<b>strcmp eşitse 0 döner.</b> <code>== 0</code> = eşitlik dalı. Bu, 'Correct!' yolunu bulmanın en yaygın işaretidir. <code>!= 0</code> olsa eşitsizlik olurdu."
+    },
+    {
+      topic: "Decompile kalıpları",
+      q: "Decompile'da <code>(int)cVar1 + -0x30</code> ifadesi ne yapar?",
+      opts: ["Bir rakam karakterini sayısal değerine çevirir (c - '0')", "Karakteri büyük harfe çevirir", "48 karakterlik bir dizi oluşturur", "Karakteri siler"],
+      a: [0],
+      why: "<code>'0' = 0x30</code>; karakterden <code>0x30</code> çıkarmak sayısal değerini verir (1.1'deki ASCII bilgisi). Klasik 'char to digit' kalıbı."
+    },
+    {
+      topic: "Decompile kalıpları",
+      q: "Decompile'da <code>CONCAT44(0, uVar1)</code> veya <code>SUB84(...)</code> gibi ifadeler gördün. Bunlar nedir?",
+      opts: ["Ghidra'nın tip belirsizliğinden doğan yardımcılar; gerçek program fonksiyonu değil", "Programın çağırdığı gerçek kütüphane fonksiyonları", "Şifreleme rutinleri", "Derleyici hataları"],
+      a: [0],
+      why: "<b>CONCAT/SUB</b> byte birleştirme/kesme için Ghidra'nın ürettiği yardımcılardır — genelde doğru tip verince kaybolurlar. Onları 'gerçek çağrı' sanmak analizi saptırır."
+    },
+    {
+      topic: "İz bırakma",
+      q: "Uzun bir fonksiyonu çözerken Ghidra'da bulgularını nasıl kalıcı kılarsın?",
+      opts: ["Rename/retype yaparım ve Set Comment ile yorum eklerim; proje bunları kaydeder", "Ekran görüntüsü alıp kapatırım", "Hiçbir şey yapmam, ezberlerim", "Binary'yi düzenlerim"],
+      a: [0],
+      why: "Ghidra proje-tabanlıdır: <b>isim, tip ve yorumlar kaydedilir.</b> Ertesi gün aynı binary'ye döndüğünde ilerlemen durur. İz bırakmak uzun analizin sürdürülebilirliğidir."
+    },
+    {
+      topic: "Uydurma isimler",
+      q: "<code>uVar1</code> ve <code>iVar2</code> isimlerindeki <code>u</code> ve <code>i</code> ne ima eder?",
+      opts: ["u = unsigned, i = int (signed) — Ghidra'nın tip tahmini", "u = user, i = input", "Register numaraları", "Hiçbir şey, rastgele"],
+      a: [0],
+      why: "Ghidra geçici değişkenleri tahmini tipiyle önekler: <b>u=unsigned, i=int</b>, <code>cVar</code>=char, <code>pVar</code>=pointer. Tahmin yanlış olabilir; doğrula ve adlandır."
+    },
+    {
+      topic: "Veri akışı",
+      q: "Decompile'da <code>*(char *)(buf + i)</code> ifadesi neye denktir?",
+      opts: ["buf[i] — dizinin i. elemanı", "buf'un adresi", "buf + i sayısı", "i. fonksiyon çağrısı"],
+      a: [0],
+      why: "<code>*(char*)(buf+i)</code> = taban+offset dereference = <b>buf[i]</b>. Doğru tiple (buf'u <code>char*</code> yapınca) Ghidra bunu zaten <code>buf[i]</code> gösterir."
+    },
+    {
+      topic: "Tip düzeltme",
+      q: "Bir değişkenin tipini değiştirmek (retype) için tipik Ghidra kısayolu?",
+      opts: ["Ctrl+L (veya sağ tık → Retype Variable)", "L", "F1", "Delete"],
+      a: [0],
+      why: "<b>Ctrl+L = retype</b>, <b>L = rename.</b> İkisi decompile temizliğinin ana araçlarıdır: doğru isim + doğru tip = okunur kod."
+    },
+    {
+      topic: "Tip düzeltme",
+      q: "Ghidra decompile'ını okunur hale getiren <b>iki</b> temel işlem hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Rename (L) — anlamlı isim vermek", "Retype (Ctrl+L) — doğru tipi uygulamak", "Binary'yi yeniden derlemek", "Programı çalıştırmak"],
+      a: [0, 1],
+      why: "<b>Rename + Retype</b> decompile temizliğinin ana araçlarıdır: doğru isim + doğru tip = okunur kod. Bunlar sadece analiz görünümünü değiştirir, binary'yi değil."
+    },
+    {
+      topic: "Uydurma isimler",
+      q: "Ghidra'nın yer tutucu isimleri hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>param_1</code> fonksiyonun 1. argümanıdır (rdi)", "<code>FUN_00101229</code> isimsiz bir fonksiyondur", "<code>param_1</code> her zaman bir global değişkendir", "<code>undefined8</code> gerçek bir C tipidir"],
+      a: [0, 1],
+      why: "<b>param_N</b> argümanları ABI sırasına göre, <b>FUN_&lt;adres&gt;</b> isimsiz fonksiyonları adlandırır. <code>undefined8</code> gerçek tip değil (bilinmeyen 8 byte); param global değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

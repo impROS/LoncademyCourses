@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.3",
+  code: "2. alan · Güvenlik ve Uyumluluk · Görev 2.3",
+  title: "IAM — Erişim Yönetimi",
+  back: "2.3-iam.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Roller",
+      q: "An application running on an Amazon EC2 instance needs to read objects from an Amazon S3 bucket. What is the MOST secure way to grant this access?",
+      opts: [
+        "Attach an IAM role with S3 read permissions to the EC2 instance",
+        "Store an IAM user access key and secret key in a configuration file on the instance",
+        "Embed the root user credentials in the application code",
+        "Make the S3 bucket publicly readable"
+      ],
+      a: [0],
+      why: "<b>IAM rolü</b> EC2ye atandığında uygulama <b>AWS STS üzerinden geçici kimlik bilgileri</b> alır; anahtar diskte durmaz, otomatik döner, sızma riski çok düşüktür. Access keyi dosyaya yazmak, koda gömmek veya bucketı herkese açmak sınavda <b>her zaman yanlış</b> cevaptır."
+    },
+    {
+      topic: "İzin değerlendirme",
+      q: "A user has the AdministratorAccess policy attached. A second attached policy contains an explicit Deny for s3:DeleteBucket. Can the user delete an S3 bucket?",
+      opts: [
+        "No — an explicit deny always overrides any allow",
+        "Yes — AdministratorAccess overrides all other policies",
+        "Yes — the most recently attached policy wins",
+        "Only if the user has MFA enabled"
+      ],
+      a: [0],
+      why: "Değerlendirme sırası: <b>explicit deny → explicit allow → implicit deny</b>. Açık bir <b>Deny</b> her izni ezer; AdministratorAccess bile onu geçemez. Bu, IAM konusunun en sık sorulan mantık sorusudur."
+    },
+    {
+      topic: "İzin değerlendirme",
+      q: "A user attempts an action that is not mentioned in any attached policy — there is no Allow and no Deny for it. What happens?",
+      opts: [
+        "The request is denied by the implicit deny (default deny)",
+        "The request is allowed because nothing forbids it",
+        "The request is allowed only in the us-east-1 Region",
+        "The request requires root user approval"
+      ],
+      a: [0],
+      why: "IAMde varsayılan davranış <b>implicit deny</b>dir: açıkça izin verilmemiş her şey <b>yasaktır</b>. Bu yüzden en az ayrıcalık (least privilege) uygulamak doğaldır — dar başlarsın, gerektikçe açık izin eklersin."
+    },
+    {
+      topic: "Root kullanıcı",
+      q: "Which two tasks can ONLY be performed by the AWS account root user? (Choose TWO.)",
+      opts: [
+        "Closing the AWS account",
+        "Changing the AWS Support plan",
+        "Creating an IAM user",
+        "Launching an EC2 instance",
+        "Creating an S3 bucket"
+      ],
+      a: [0, 1],
+      why: "Sadece rootun yapabildikleri: <b>hesabı kapatmak</b>, <b>destek planını değiştirmek</b>, ödeme/fatura bilgisini değiştirmek, hesap ayarlarını (ad, e-posta) değiştirmek, S3te MFA Deletei yapılandırmak, kilitlenmiş IAM izinlerini kurtarmak, Reserved Instance Marketplacete satıcı olmak. IAM kullanıcısı oluşturmak, EC2 başlatmak, bucket açmak yetkili bir IAM kullanıcısıyla yapılır."
+    },
+    {
+      topic: "Root kullanıcı",
+      q: "Which is a security best practice for the AWS account root user?",
+      opts: [
+        "Enable MFA on the root user and use it only for tasks that require it",
+        "Create root access keys and use them for daily automation",
+        "Share the root credentials with the operations team so work is not blocked",
+        "Use the root user for day-to-day administration"
+      ],
+      a: [0],
+      why: "Root hesabın tamamına sahiptir ve <b>yetkisi kısıtlanamaz</b>. Doğru uygulama: <b>MFA takmak</b>, günlük iş için IAM kullanıcısı/IAM Identity Center kullanmak, <b>root access key oluşturmamak</b> (varsa silmek) ve kimseyle paylaşmamak."
+    },
+    {
+      topic: "Kullanıcı, grup, rol",
+      q: "An administrator must grant the same set of permissions to 25 new developers with the LEAST administrative effort. What should the administrator do?",
+      opts: [
+        "Create an IAM group, attach the policy to the group, and add the users to the group",
+        "Attach the policy individually to each of the 25 IAM users",
+        "Create 25 IAM roles and share the credentials",
+        "Add all 25 users to the root account"
+      ],
+      a: [0],
+      why: "<b>Grup</b> tam olarak bunun içindir: politikayı bir kez gruba bağlarsın, üyeler otomatik alır; izin değişince tek yerden güncellersin. Not: grup bir <b>kimlik değildir</b> — grup adına giriş yapılamaz, access keyi olmaz ve <b>grup içine grup konulamaz</b>."
+    },
+    {
+      topic: "Roller",
+      q: "Which statement about IAM roles is TRUE?",
+      opts: [
+        "A role provides temporary credentials and is assumed by a trusted entity",
+        "A role has a permanent password and access key like an IAM user",
+        "A role can only be used by users inside the same AWS account",
+        "A role must be attached to an IAM group"
+      ],
+      a: [0],
+      why: "Rolün <b>kalıcı kimlik bilgisi yoktur</b>; üstlenildiğinde <b>AWS STS</b> süreli geçici kimlik bilgileri verir. Roller hesaplar arası (cross-account) erişimde, federasyonda ve EC2/Lambda gibi servislerin AWS kaynaklarına erişiminde kullanılır. Gruplara rol eklenmez."
+    },
+    {
+      topic: "Politikalar",
+      q: "In an IAM policy document, which element specifies whether the statement allows or denies access?",
+      opts: ["Effect", "Action", "Resource", "Condition"],
+      a: [0],
+      why: "Politikanın temel alanları: <b>Effect</b> (Allow/Deny), <b>Action</b> (hangi işlem, örn. <code>s3:GetObject</code>), <b>Resource</b> (hangi kaynak ARNi) ve isteğe bağlı <b>Condition</b> (koşul, örn. kaynak IP). Effect kararın yönünü belirler."
+    },
+    {
+      topic: "MFA ve parola",
+      q: "A company wants to add a second layer of protection to console sign-in so that a stolen password alone is not enough. What should it implement?",
+      opts: [
+        "Multi-factor authentication (MFA)",
+        "An IAM password policy requiring 8 characters",
+        "Access key rotation",
+        "A service control policy"
+      ],
+      a: [0],
+      why: "<b>MFA</b> bildiğin bir şeye (parola) sahip olduğun bir şeyi ekler: sanal authenticator uygulaması, donanım TOTP tokenı veya FIDO güvenlik anahtarı. Parola politikası parolayı güçlendirir ama <b>ikinci faktör</b> sağlamaz."
+    },
+    {
+      topic: "Identity Center / Cognito / Directory",
+      q: "A company wants its employees to sign in once with their corporate identity and access multiple AWS accounts. Which service should it use?",
+      opts: [
+        "AWS IAM Identity Center",
+        "Amazon Cognito",
+        "AWS Security Token Service only",
+        "Amazon GuardDuty"
+      ],
+      a: [0],
+      why: "<b>IAM Identity Center</b> (eski adı AWS SSO) çalışanlara <b>tek oturumla birden çok AWS hesabına</b> erişim verir ve harici kimlik sağlayıcılara (Okta, Entra ID, AD) bağlanabilir. <b>Cognito</b> ise <b>senin uygulamanın son kullanıcıları</b> içindir. Ayırt edici soru: kullanıcılar çalışan mı, müşteri mi?"
+    },
+    {
+      topic: "Identity Center / Cognito / Directory",
+      q: "A development team needs sign-up, sign-in and user directory features for a public mobile application. Which AWS service is designed for this?",
+      opts: ["Amazon Cognito", "AWS IAM Identity Center", "AWS Directory Service", "AWS IAM user groups"],
+      a: [0],
+      why: "<b>Amazon Cognito</b> uygulamanın <b>son kullanıcıları</b> için kayıt/giriş, kullanıcı havuzu ve sosyal/kurumsal federasyon sağlar. IAM kullanıcıları uygulama müşterileri için tasarlanmamıştır — milyonlarca müşteri için IAM kullanıcısı açmak yanlış mimaridir."
+    },
+    {
+      topic: "En az ayrıcalık",
+      q: "Which practice BEST describes the principle of least privilege?",
+      opts: [
+        "Grant only the permissions required to perform a task, and nothing more",
+        "Grant AdministratorAccess to all developers to avoid blocking work",
+        "Grant permissions at the group level only",
+        "Rotate access keys every 90 days"
+      ],
+      a: [0],
+      why: "<b>Least privilege</b>: işi yapmaya yetecek <b>minimum</b> izin. Uygulaması dar başlayıp gerektikçe genişletmektir. Yardımcı araçlar: <b>IAM Access Analyzer</b>, <b>Access Advisor / last accessed</b> verisi ve <b>credential report</b>. Anahtar rotasyonu iyi bir uygulamadır ama least privilege tanımı değildir."
+    },
+    {
+      topic: "IAM temel özellikleri",
+      q: "Which two statements about AWS IAM are TRUE? (Choose TWO.)",
+      opts: [
+        "IAM is a global service, not tied to a specific Region",
+        "There is no additional charge for using IAM",
+        "IAM must be enabled separately in each Region",
+        "IAM policies are written in YAML only",
+        "IAM roles require a permanent password"
+      ],
+      a: [0, 1],
+      why: "IAM <b>globaldir</b> (Region seçicide Global görünür) ve <b>ücretsizdir</b>. Politikalar <b>JSON</b> ile yazılır ve rollerin kalıcı parolası yoktur — STS geçici kimlik bilgisi verir."
+    },
+    {
+      topic: "Roller",
+      q: "A company must allow an application in AWS Account A to access an S3 bucket in AWS Account B. What is the recommended approach?",
+      opts: [
+        "Create a cross-account IAM role in Account B that Account A can assume",
+        "Create an IAM user in Account B and email the access keys to Account A",
+        "Make the bucket public so any account can read it",
+        "Merge both accounts into one"
+      ],
+      a: [0],
+      why: "Hesaplar arası erişimin doğru yolu <b>cross-account IAM rolü</b>dür: hedef hesapta güven ilişkisi tanımlanır, kaynak hesap rolü <b>üstlenir</b> ve geçici kimlik bilgisiyle erişir. Access key paylaşmak ve bucketı herkese açmak güvenlik açığıdır."
+    },
+    {
+      topic: "IAM araçları",
+      q: "Which IAM feature helps identify resources in your account that are shared with an external entity?",
+      opts: [
+        "IAM Access Analyzer",
+        "IAM credential report",
+        "IAM password policy",
+        "AWS Cost Explorer"
+      ],
+      a: [0],
+      why: "<b>IAM Access Analyzer</b> kaynak politikalarını analiz ederek <b>dışarıya (başka hesap, kurum dışı) açık erişimleri</b> bulur ve en az ayrıcalık ilkesine uygun politika üretmeye yardım eder. <b>Credential report</b> ise tüm kimlik bilgilerinin (MFA, anahtar yaşı, son kullanım) durumunu CSV olarak verir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

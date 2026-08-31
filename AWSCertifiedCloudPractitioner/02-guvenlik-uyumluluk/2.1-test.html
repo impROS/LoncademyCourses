@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.1",
+  code: "2. alan · Güvenlik ve Uyumluluk · Görev 2.1",
+  title: "Paylaşılan Sorumluluk Modeli",
+  back: "2.1-paylasilan-sorumluluk.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 85,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "EC2 sorumluluğu",
+      q: "Who is responsible for patching the guest operating system on an Amazon EC2 instance?",
+      opts: ["The customer", "AWS", "AWS Support", "The AWS Partner Network"],
+      a: [0],
+      why: "EC2 bir <b>IaaS</b> servisidir: AWS sana sanal makineyi verir, <b>içindeki işletim sistemi senindir</b>. OS yaması, güncellemesi ve sertleştirilmesi <b>müşterinin</b> sorumluluğudur. Bu, sınavın en sık sorulan tek sorusudur. Aynı soru RDS için sorulursa cevap AWS olur."
+    },
+    {
+      topic: "Yönetilen servis sorumluluğu",
+      q: "Who is responsible for patching the database engine of an Amazon RDS DB instance?",
+      opts: ["AWS", "The customer", "Shared between AWS and the customer equally", "The database vendor"],
+      a: [0],
+      why: "RDS <b>yönetilen</b> bir servistir: altyapı, işletim sistemi ve <b>veritabanı motoru yaması AWSindir</b>. Müşteride kalanlar: veritabanı kullanıcıları, şema, veri, şifreleme seçimi, Security Group kuralları ve yedekleme politikası ayarları. Sorumluluk çizgisi <b>servise göre kayar</b> — konunun özü budur."
+    },
+    {
+      topic: "AWS tarafı",
+      q: "Which two responsibilities belong to AWS under the shared responsibility model? (Choose TWO.)",
+      opts: [
+        "Physical security of data centers",
+        "Decommissioning and destroying storage media at end of life",
+        "Configuring security group rules",
+        "Classifying customer data",
+        "Managing IAM user permissions"
+      ],
+      a: [0, 1],
+      why: "AWS <b>bulutun kendisinin</b> güvenliğinden sorumludur: fiziksel tesis, donanım, hipervizör, global altyapı ve <b>eskiyen disklerin güvenli imhası</b>. Security Group kuralları, veri sınıflandırması ve IAM izinleri <b>bulut içindeki</b> kararlardır ve müşteriye aittir."
+    },
+    {
+      topic: "Müşteri tarafı",
+      q: "Which two tasks are the customer's responsibility? (Choose TWO.)",
+      opts: [
+        "Managing IAM users, groups, roles and policies",
+        "Configuring network access rules such as security groups",
+        "Maintaining the hypervisor",
+        "Replacing failed physical disks in the data center",
+        "Patching the AWS Lambda runtime environment"
+      ],
+      a: [0, 1],
+      why: "IAM ve ağ erişim kuralları konsolda <b>senin ayarladığın</b> şeylerdir — klasik <i>security in the cloud</i>. Hipervizör, fiziksel disk değişimi ve Lambda çalışma ortamının yamalanması müşterinin dokunamadığı katmandır, dolayısıyla AWSindir."
+    },
+    {
+      topic: "Her zaman müşteride",
+      q: "Regardless of which AWS service is used, which item is ALWAYS the customer's responsibility?",
+      opts: [
+        "The data itself and who is allowed to access it",
+        "The physical network infrastructure",
+        "The virtualization layer",
+        "Availability Zone power and cooling"
+      ],
+      a: [0],
+      why: "Hangi servis kullanılırsa kullanılsın müşteride kalan üç şey: <b>verinin kendisi</b>, <b>erişim kararları (IAM)</b> ve <b>istemci tarafı şifreleme</b>. Sınavda <i>regardless of the service</i> ifadesini görürsen cevap bu üçünden biridir."
+    },
+    {
+      topic: "Lambda sorumluluğu",
+      q: "A company runs an application on AWS Lambda. Which item remains the customer's responsibility?",
+      opts: [
+        "The function code and its IAM execution role",
+        "Patching the underlying operating system",
+        "Scaling the compute fleet that runs the function",
+        "Maintaining the physical servers"
+      ],
+      a: [0],
+      why: "Lambdada AWS <b>çalışma ortamının tamamını</b> yönetir: sunucu, işletim sistemi, ölçekleme. Müşteride kalan <b>kendi kodu</b>, ona verilen <b>IAM rolü</b>, ortam değişkenleri ve veridir. Serverlessta sorumluluk yüzeyi en dardır — bu yüzden <i>least operational overhead</i> sorularının cevabıdır."
+    },
+    {
+      topic: "Paylaşılan kontroller",
+      q: "Patch management is described as a shared control. What does this mean?",
+      opts: [
+        "AWS patches the infrastructure and managed services, while the customer patches guest operating systems and applications",
+        "AWS patches everything but bills the customer for it",
+        "The customer patches everything including the hypervisor",
+        "Patching is handled entirely by AWS Support"
+      ],
+      a: [0],
+      why: "<b>Shared control</b>, aynı konunun her iki tarafta da karşılığı olması demektir: AWS altyapıyı ve yönetilen servisleri yamalar, müşteri <b>konuk OSu ve uygulamasını</b> yamalar. Diğer paylaşılan kontroller: <b>configuration management</b> ve <b>farkındalık eğitimi</b>."
+    },
+    {
+      topic: "S3 sorumluluğu",
+      q: "A company stores objects in Amazon S3. Which two items are the customer's responsibility? (Choose TWO.)",
+      opts: [
+        "Configuring bucket policies and Block Public Access settings",
+        "Deciding whether to enable encryption and which key model to use",
+        "Patching the servers that store the objects",
+        "Maintaining the durability of the S3 service",
+        "Replicating data across the physical devices inside an Availability Zone"
+      ],
+      a: [0, 1],
+      why: "S3te <b>erişim ayarları</b> (bucket policy, Block Public Access) ve <b>şifreleme kararı</b> müşteriye aittir. Depolama sunucularının yamalanması, servisin dayanıklılığı (11 dokuz) ve fiziksel cihazlar arası kopyalama AWSin işidir — bunlar konsolda hiç görünmez, iyi bir ipucudur."
+    },
+    {
+      topic: "AWS tarafı",
+      q: "Which layer of the AWS environment is AWS responsible for securing but the customer can never access or configure?",
+      opts: [
+        "The hypervisor and virtualization layer",
+        "The security group rules",
+        "The IAM password policy",
+        "The application code running on EC2"
+      ],
+      a: [0],
+      why: "Basit kural: <b>müşterinin konsolda göremediği/ayarlayamadığı her katman AWSindir</b>. Hipervizör, fiziksel donanım, veri merkezi ve AWS omurga ağı böyledir. Security Group, IAM parola politikası ve uygulama kodu ise senin ellerindedir."
+    },
+    {
+      topic: "Şifreleme sorumluluğu",
+      q: "Under the shared responsibility model, which statement about encryption is correct?",
+      opts: [
+        "AWS provides the encryption capabilities; the customer decides whether to enable them and manages key policies",
+        "AWS automatically encrypts all customer data with customer-managed keys by default",
+        "The customer must build their own encryption service because AWS provides none",
+        "Encryption is entirely an AWS responsibility in all services"
+      ],
+      a: [0],
+      why: "AWS <b>araçları</b> sağlar (KMS, S3 sunucu tarafı şifreleme, EBS şifreleme, ACM); <b>şifrelemeyi açma kararı</b>, hangi anahtar modelinin kullanılacağı ve müşteri yönetimli anahtarların politikası <b>müşteriye</b> aittir. İstemci tarafı şifreleme de tamamen müşteridedir."
+    },
+    {
+      topic: "Uyumluluk kanıtı",
+      q: "A customer's auditor requests AWS SOC 2 and ISO 27001 reports. Where can the customer obtain them?",
+      opts: ["AWS Artifact", "AWS Trusted Advisor", "AWS Config", "AWS Security Hub"],
+      a: [0],
+      why: "<b>AWS Artifact</b>, AWSin denetim raporlarına (SOC 1/2/3, ISO, PCI DSS) ve sözleşmelere (BAA, GDPR DPA) erişim noktasıdır — yani <b>AWSin kendi sorumluluk alanının</b> bağımsız kanıtı. Trusted Advisor öneri verir, Config konfigürasyon uyumluluğunu izler, Security Hub bulguları toplar."
+    },
+    {
+      topic: "Yanlış sorumluluk iddiaları",
+      q: "Which statement about the shared responsibility model is FALSE?",
+      opts: [
+        "AWS is responsible for securing the customer application code deployed on EC2",
+        "AWS is responsible for the security of the global infrastructure",
+        "The customer is responsible for managing access to their data",
+        "The customer is responsible for configuring network ACLs and security groups"
+      ],
+      a: [0],
+      why: "AWS <b>hiçbir zaman müşteri uygulama kodundan sorumlu değildir</b>. Yanlış şık üretmenin klasik yolu budur: AWSe müşteri işini yüklemek — kodu yamalamak, IAM politikası yazmak, veriyi sınıflandırmak, EC2 OSunu güncellemek. Diğer üç ifade doğrudur."
+    },
+    {
+      topic: "Veri egemenliği",
+      q: "Who decides in which AWS Region a customer's data is stored?",
+      opts: [
+        "The customer",
+        "AWS, based on capacity",
+        "AWS Support, based on the support plan",
+        "It is automatically replicated to all Regions"
+      ],
+      a: [0],
+      why: "<b>Region seçimi müşteriye aittir</b> ve AWS müşteri verisini müşterinin bilgisi/izni olmadan seçilen Regionın dışına taşımaz. Bu <b>veri egemenliği (data sovereignty)</b> ilkesidir ve mevzuat sorularının temelidir. Veri otomatik olarak tüm Regionlara kopyalanmaz — kopyalama isteğe bağlıdır (örneğin S3 Cross-Region Replication)."
+    },
+    {
+      topic: "EC2 sorumluluğu",
+      q: "A company runs a self-managed MySQL database on an Amazon EC2 instance. Which two tasks are the company's responsibility? (Choose TWO.)",
+      opts: [
+        "Applying operating system security patches",
+        "Configuring database backups",
+        "Maintaining the physical host hardware",
+        "Patching the EC2 hypervisor",
+        "Securing the Availability Zone facility"
+      ],
+      a: [0, 1],
+      why: "EC2 üzerine <b>kendin kurduğun</b> her şey senindir: OS yaması, veritabanı kurulumu, yedekleme, izleme, failover. Fiziksel donanım, hipervizör ve tesis güvenliği AWSindir. Karşılaştır: aynı veritabanını <b>RDS</b>te çalıştırsaydı OS yaması ve otomatik yedekleme AWSe geçerdi — bu <b>Replatform</b> kararının güvenlik tarafındaki karşılığıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

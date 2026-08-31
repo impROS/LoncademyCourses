@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>s2 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "s2",
+  code: "Beceriler · s2",
+  title: "Listening: strateji ve kulak eğitimi",
+  back: "s2-listening.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe. Dinleme yerine transkript parçaları kullanılır.",
+  questions: [
+    {
+      topic: "Distraktörler",
+      q: "Speaker: 'We were going to hold it in the main hall, but in the end we booked the conference room.' Where will the event be held?",
+      opts: ["In the conference room", "In the main hall", "In both rooms", "The speaker does not say"],
+      a: [0],
+      why: "<b>conference room</b> — <code>but in the end</code> ifadesi ilk bilgiyi iptal eder. B2 dinlemesinde doğru cevap neredeyse her zaman <i>ikinci</i> söylenen bilgidir; ilk bilgi bilerek konulmuş çeldiricidir."
+    },
+    {
+      topic: "Distraktörler",
+      q: "Which phrase most strongly signals that a correction is coming?",
+      opts: ["Actually,", "For example,", "In addition,", "As usual,"],
+      a: [0],
+      why: "<b>Actually</b> (ve <i>in fact, to be honest, well, hang on</i>) düzeltme sinyalidir. <code>In addition</code> bilgi ekler ama önceki bilgiyi iptal etmez — bu ayrım cevabı belirler."
+    },
+    {
+      topic: "Distraktörler",
+      q: "Speaker: 'It's not so much the price as the delivery time that worries me.' What worries the speaker?",
+      opts: ["The delivery time", "The price", "Both equally", "Neither"],
+      a: [0],
+      why: "<code>not so much X as Y</code> kalıbında cevap daima <b>Y</b>'dir. Bu kalıp yazılı metinde kolay görünür ama hızlı konuşmada kaçırılır; kalıbı önceden tanımak gerekir."
+    },
+    {
+      topic: "Sayı tuzakları",
+      q: "How can you distinguish 'thirteen' from 'thirty' when listening?",
+      opts: ["'Thirteen' is stressed on the second syllable, 'thirty' on the first.", "'Thirty' is always said more slowly.", "'Thirteen' is pronounced with a silent t.", "There is no reliable difference; you must guess."],
+      a: [0],
+      why: "İki kelime yalnızca <b>vurgu yeri</b> ile ayrılır: thir<b>TEEN</b> ve <b>THIR</b>ty. Son şık gibi 'ayırt edilemez' diyen seçenekler sınavlarda genellikle yanlıştır — her zaman bir ipucu vardır."
+    },
+    {
+      topic: "Zayıf biçimler",
+      q: "In natural speech, 'I could have told you' often sounds like:",
+      opts: ["I coulda told you", "I could of told you", "I could halve told you", "I cut have told you"],
+      a: [0],
+      why: "<code>have</code> zayıf biçimde /əv/ ya da /ə/ olur ve <i>coulda</i> gibi duyulur. Bu yüzden birçok öğrenci yapıyı <i>could of</i> diye yazar — duyduğu budur, ama yazımı <b>could have</b>'dir."
+    },
+    {
+      topic: "Zayıf biçimler",
+      q: "Which words are normally UNSTRESSED in connected speech? (Choose TWO.)",
+      opts: ["prepositions such as 'for'", "auxiliary verbs such as 'was'", "main verbs such as 'booked'", "numbers such as 'nineteen'"],
+      a: [0, 1],
+      why: "İşlev kelimeleri (edat, yardımcı fiil, artikel, bağlaç) zayıflar; anlamı taşıyan kelimeler (ana fiil, isim, sıfat, sayı) vurgulanır. Bu yüzden bir cümlede en net duyduğun kelimeler genellikle cevabı içerir."
+    },
+    {
+      topic: "Bağlı konuşma",
+      q: "'Pick it up' often sounds like 'pi-ki-tup'. This phenomenon is called:",
+      opts: ["linking", "intonation", "stress-timing", "ellipsis"],
+      a: [0],
+      why: "<b>Linking</b>: bir kelimenin son ünsüzü, sonraki kelimenin ilk ünlüsüne bağlanır. Bu yüzden kelime sınırları duyulmaz ve yazılı hâliyle bildiğin ifadeyi tanıyamazsın."
+    },
+    {
+      topic: "Soru tipleri",
+      q: "Before a multiple-choice listening task starts, the best use of the preparation time is to:",
+      opts: ["read the options and underline the difference between them", "translate the options into your own language", "guess the answers in advance", "write down all the words you don't know"],
+      a: [0],
+      why: "Şıklar arasındaki <b>ayırt edici kelimeyi</b> önceden bilirsen, dinlerken sadece onu beklersin. Çeviri ve kelime listesi hazırlığı, dinleme başladığında hiçbir işe yaramayacak kadar yavaştır."
+    },
+    {
+      topic: "Not alma",
+      q: "You miss a word in the middle of a recording. What should you do?",
+      opts: ["Mark it with a question mark and keep listening.", "Stop and try to reconstruct it before continuing.", "Go back to the previous question.", "Write down everything you heard word for word."],
+      a: [0],
+      why: "Takılmak en pahalı hatadır: bir kelime için üç cümle kaybedersin. İşaretleyip devam etmek, ikinci dinlemede (varsa) o boşluğu doldurma şansını korur."
+    },
+    {
+      topic: "Not alma",
+      q: "In a note-completion task, answers are usually:",
+      opts: ["one to three words, often heard exactly as spoken", "full sentences in your own words", "paraphrases of what the speaker said", "always numbers or dates"],
+      a: [0],
+      why: "Not tamamlama görevlerinde beklenen cevap kısadır ve genellikle duyduğun kelimenin aynısıdır. Uzun yazmak hem zaman kaybettirir hem de dilbilgisi hatası riskini artırır."
+    },
+    {
+      topic: "Kulak eğitimi",
+      q: "Why is watching a series with subtitles NOT enough as listening practice?",
+      opts: ["Because the brain reads instead of decoding the sound.", "Because subtitles are usually inaccurate.", "Because series use no natural speech.", "Because it is too slow to be useful."],
+      a: [0],
+      why: "Altyazı açıkken görsel kanal baskın hâle gelir ve kulak çalışmaz. Doğru döngü: önce <b>altyazısız</b> dinle, sonra altyazıyla kontrol et — sıra tersine dönerse pratik değerini kaybeder."
+    },
+    {
+      topic: "Kulak eğitimi",
+      q: "'Shadowing' means:",
+      opts: ["repeating what the speaker says at the same time, copying the rhythm", "writing down every word you hear", "listening once and summarising in your own language", "reading the transcript aloud before listening"],
+      a: [0],
+      why: "<b>Shadowing</b> hem kulağı hem ağzı çalıştırır: tonlama, ritim ve bağlı konuşma kalıpları taklit yoluyla yerleşir. Bu yüzden dinleme ve konuşma pratiği aynı egzersizde birleşir."
+    },
+    {
+      topic: "can / can't",
+      q: "You cannot clearly hear whether the speaker said 'can' or 'can't'. The best strategy is to:",
+      opts: ["decide from the meaning of the surrounding sentences", "always assume it was 'can'", "always assume it was 'can't'", "mark the question as unanswerable"],
+      a: [0],
+      why: "İngiliz İngilizcesinde <code>can</code> zayıf biçimde neredeyse kaybolur, <code>can't</code> ise vurgulanır — ama hızlı konuşmada bu her zaman güvenilir değildir. Bağlam (devamında gelen bilgi) en sağlam ipucudur."
+    },
+    {
+      topic: "Gist dinleme",
+      q: "When answering a 'what is the speaker's main point?' question, which parts of the recording are usually most informative?",
+      opts: ["The opening lines and the final summary", "The middle section only", "Any part containing numbers", "The parts where the speaker hesitates"],
+      a: [0],
+      why: "Konuşmacılar konuyu başta çerçeveler, sonda toparlar; ana fikir bu iki uçtadır. Sayılar genelde detay sorularına aittir ve ana fikri belirlemez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

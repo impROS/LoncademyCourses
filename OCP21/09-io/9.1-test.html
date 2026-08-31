@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>9.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-9.1",
+  code: "I/O · 9.1",
+  title: "I/O Stream'leri, Konsol ve Serialization",
+  back: "9.1-io-streams-ve-serialization.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Sarmalama zinciri",
+      q: "<pre>BufferedReader r = new BufferedReader(\"a.txt\");</pre>What is the result?",
+      opts: [
+        "Compilation fails because BufferedReader requires a Reader, not a file name.",
+        "The code compiles and opens the file.",
+        "A FileNotFoundException is thrown at runtime.",
+        "Compilation fails because BufferedReader is abstract."
+      ],
+      a: [0],
+      why: "<code>BufferedReader</code> bir <b>yüksek seviye (sarmalayıcı)</b> akıştır: kendisi kaynağa bağlanmaz, başka bir <code>Reader</code>'ı sarmalar. Doğrusu: <code>new BufferedReader(new FileReader(\"a.txt\"))</code>. <br>Kaynağa doğrudan bağlanan <b>düşük seviye</b> sınıflar <code>FileReader</code>, <code>FileInputStream</code> gibi olanlardır. <code>BufferedReader</code> <b>abstract değildir</b>."
+    },
+    {
+      topic: "Sarmalama zinciri",
+      q: "Which class bridges a byte stream to a character stream?",
+      opts: [
+        "InputStreamReader",
+        "BufferedReader",
+        "FileReader",
+        "ObjectInputStream"
+      ],
+      a: [0],
+      why: "<code>InputStreamReader</code> (ve yazma yönünde <code>OutputStreamWriter</code>) <b>köprü</b> sınıflardır: bir <code>InputStream</code> alıp <code>Reader</code> sunarlar, bu sırada karakter kodlaması uygulanır. <br><code>BufferedReader</code> yalnızca tamponlar; <code>FileReader</code> zaten karakter tarafındadır; <code>ObjectInputStream</code> byte tarafında kalır."
+    },
+    {
+      topic: "read metodu",
+      q: "<pre>char c;\nwhile ((c = reader.read()) != -1) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because read() returns int.",
+        "The code compiles and reads the whole file.",
+        "The loop never terminates.",
+        "Compilation fails because -1 is not a valid char."
+      ],
+      a: [0],
+      why: "<code>read()</code> <b><code>int</code></b> döner ve <code>int</code> bir <code>char</code>'a cast'siz atanamaz (1.1 daraltma kuralı). Doğru kalıp <code>int c; while ((c = r.read()) != -1)</code>'dir. <br><b>Neden int:</b> dosya sonunu (<code>-1</code>) geçerli bir <code>0xFF</code> baytından ayırt edebilmek için. Aynı sebeple <code>readLine()</code> sonda <code>-1</code> değil <b><code>null</code></b> döner."
+    },
+    {
+      topic: "read metodu",
+      q: "What does <code>BufferedReader.readLine()</code> return at end of stream?",
+      opts: [
+        "null",
+        "-1",
+        "An empty string",
+        "It throws EOFException"
+      ],
+      a: [0],
+      why: "<code>readLine()</code> bir <code>String</code> döndürdüğü için akış sonunu <b><code>null</code></b> ile bildirir; <code>-1</code> <code>read()</code>'in (int dönen) işaretidir. <br><b>Boş satır</b> ile akış sonunu karıştırma: boş satır <code>\"\"</code> döner ve döngü devam eder. <code>EOFException</code> ise <code>DataInputStream</code>/<code>ObjectInputStream</code> gibi yapılandırılmış akışlarda görülür."
+    },
+    {
+      topic: "Yazma ve flush",
+      q: "Which statements about PrintWriter are correct? (Choose TWO.)",
+      opts: [
+        "Its print methods do not throw IOException.",
+        "checkError() reports whether an error occurred.",
+        "It must be closed with flush() before close().",
+        "It can only wrap a byte stream."
+      ],
+      a: [0, 1],
+      why: "<code>PrintWriter</code> ve <code>PrintStream</code> hata durumunda <b>exception atmaz</b>; hatayı içeride bir bayrağa yazar ve <code>checkError()</code> ile sorulur. Bu, <code>System.out.println</code>'ın neden try/catch istemediğini de açıklar. <br><code>close()</code> zaten <code>flush()</code> yapar — ayrıca çağırmak gerekmez. <code>PrintWriter</code> hem <code>Writer</code> hem <code>OutputStream</code> sarmalayabilir."
+    },
+    {
+      topic: "Konsol",
+      q: "Which statement about <code>System.console()</code> is correct?",
+      opts: [
+        "It may return null, for example when the program runs from an IDE.",
+        "It always returns a Console instance.",
+        "It returns a PrintStream.",
+        "It throws IOException if no console is attached."
+      ],
+      a: [0],
+      why: "<code>System.console()</code> yalnızca gerçek bir <b>etkileşimli terminal</b> varsa bir nesne döner; IDE'den çalıştırıldığında veya girdi/çıktı yönlendirildiğinde <b><code>null</code></b> döner. Bu yüzden kullanmadan önce null kontrolü şarttır. <br>Dönüş tipi <code>Console</code>'dur (<code>PrintStream</code> değil) ve exception atmaz. <code>Console.readPassword()</code> girilen metni <b>ekranda göstermez</b>."
+    },
+    {
+      topic: "Serialization",
+      q: "<pre>class K implements Serializable {\n    int a = 5;\n    transient int b = 7;\n    static int c = 9;\n}</pre>After writing an instance (a=50, b=70, c=90) and reading it back in the same JVM where c was later set to 111, what are a, b and c?",
+      opts: [
+        "a=50, b=0, c=111",
+        "a=50, b=70, c=90",
+        "a=5, b=7, c=9",
+        "a=50, b=0, c=90"
+      ],
+      a: [0],
+      why: "<code>a</code> normal bir alan olduğu için dosyadan <b>50</b> gelir. <code>transient b</code> hiç yazılmaz, geri okunduğunda tipin <b>varsayılan değeri</b> olan <b>0</b> olur. <code>static c</code> nesneye değil <b>sınıfa</b> ait olduğu için serileştirilmez; okunduğunda o anki sınıf değeri olan <b>111</b> görünür. <br><b>Kanca:</b> \"transient sıfırlanır, static hiç uğramaz.\""
+    },
+    {
+      topic: "Serialization",
+      q: "<pre>class Ust { int u = 1; Ust() { u = 99; } }              // not Serializable\nclass Alt extends Ust implements Serializable { int a = 5; }</pre>During deserialization of an Alt instance, which constructors run?",
+      opts: [
+        "Only Ust's no-arg constructor.",
+        "Both Ust's and Alt's constructors.",
+        "Only Alt's constructor.",
+        "Neither constructor."
+      ],
+      a: [0],
+      why: "Deserialization <b>normal nesne oluşturma değildir</b>: <code>Serializable</code> sınıfların constructor'ları ve alan initializer'ları <b>atlanır</b>, değerler doğrudan akıştan yazılır. <br>Ama <b>ilk <code>Serializable</code> olmayan üst sınıfın</b> parametresiz constructor'ı <b>çalışır</b> — onun alanları akışta yoktur, bir şekilde başlatılmaları gerekir. Bu yüzden o constructor <b>var olmak zorundadır</b>; yoksa <code>InvalidClassException</code> alırsın."
+    },
+    {
+      topic: "Serialization",
+      q: "<pre>new ObjectOutputStream(out).writeObject(new Object());</pre>What is the result?",
+      opts: [
+        "A NotSerializableException is thrown at runtime.",
+        "Compilation fails because Object is not Serializable.",
+        "The object is written with default serialization.",
+        "An InvalidClassException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>writeObject</code> parametresi <code>Object</code> olduğu için kod <b>derlenir</b>; tip kontrolü <b>çalışma zamanında</b> yapılır ve nesne <code>Serializable</code> uygulamıyorsa <b>NotSerializableException</b> (bir <code>IOException</code>) atılır. <br><code>InvalidClassException</code> farklı bir durumdur: <code>serialVersionUID</code> uyuşmazlığı veya eksik parametresiz üst ctor."
+    },
+    {
+      topic: "Serialization",
+      q: "What is the purpose of <code>serialVersionUID</code>?",
+      opts: [
+        "It identifies the class version so that incompatible changes are detected on deserialization.",
+        "It uniquely identifies each serialized object instance.",
+        "It encrypts the serialized bytes.",
+        "It marks which fields should be skipped."
+      ],
+      a: [0],
+      why: "<code>serialVersionUID</code> sınıfın <b>sürüm damgasıdır</b>: yazma ve okuma sırasındaki değerler farklıysa <code>InvalidClassException</code> atılır. Elle tanımlamazsan derleyici sınıf yapısından türetir — ve en küçük değişiklik bile onu <b>değiştirir</b>, bu yüzden açıkça yazmak önerilir. <br>Nesneleri ayırt etmez, şifreleme yapmaz; alan atlamak <code>transient</code>'in işidir."
+    },
+    {
+      topic: "Serialization",
+      q: "Which exceptions can <code>ObjectInputStream.readObject()</code> throw? (Choose TWO.)",
+      opts: [
+        "ClassNotFoundException",
+        "IOException",
+        "IllegalArgumentException",
+        "NotSerializableException only"
+      ],
+      a: [0, 1],
+      why: "<code>readObject()</code> hem <b><code>IOException</code></b> hem <b><code>ClassNotFoundException</code></b> bildirir — ikisi de <b>checked</b>'tir, bu yüzden yakalanmalı veya bildirilmelidir. İkincisi sık unutulur: akıştaki sınıf classpath'te bulunamayabilir. <br><code>NotSerializableException</code> <b>yazma</b> tarafında ve <code>IOException</code>'ın alt tipi olarak gelir."
+    },
+    {
+      topic: "Akış aileleri",
+      q: "Which pair correctly describes FileReader and FileInputStream?",
+      opts: [
+        "FileReader reads characters; FileInputStream reads bytes.",
+        "FileReader reads bytes; FileInputStream reads characters.",
+        "Both read characters, but FileReader is buffered.",
+        "Both read bytes, but FileInputStream is buffered."
+      ],
+      a: [0],
+      why: "<code>Reader</code>/<code>Writer</code> ailesi <b>karakter</b> tabanlıdır ve karakter kodlaması uygular; <code>InputStream</code>/<code>OutputStream</code> ailesi <b>ham byte</b> okur. Metin için birinci, ikili (resim, ses, serileştirilmiş nesne) veri için ikinci kullanılır. <br>İkisi de <b>tamponlu değildir</b>; tamponlama <code>BufferedReader</code>/<code>BufferedInputStream</code> ile eklenir."
+    },
+    {
+      topic: "Kapatma",
+      q: "<pre>try (var r = new BufferedReader(new FileReader(\"a.txt\"))) { }</pre>Which streams are closed at the end of the block?",
+      opts: [
+        "Both the BufferedReader and the underlying FileReader.",
+        "Only the BufferedReader.",
+        "Only the FileReader.",
+        "Neither; close() must be called manually."
+      ],
+      a: [0],
+      why: "Sarmalayıcı akışın <code>close()</code>'u <b>sardığı akışı da kapatır</b>; zincir aşağı doğru ilerler. Bu yüzden yalnızca <b>en dıştakini</b> try-with-resources'a vermek yeterlidir. <br>Ayrıca <code>close()</code> tamponu <b>flush</b> eder — bu yüzden ayrıca <code>flush()</code> çağırmaya gerek yoktur (4.2)."
+    },
+    {
+      topic: "Serialization",
+      q: "A Serializable class has a field of a type that is NOT Serializable and is not marked transient. What happens when an instance is written?",
+      opts: [
+        "A NotSerializableException is thrown at runtime.",
+        "Compilation fails.",
+        "The field is silently skipped.",
+        "The field is written using toString()."
+      ],
+      a: [0],
+      why: "Serileştirme <b>nesne grafiğinin tamamını</b> gezer: <code>transient</code> olmayan her alanın tipi de <code>Serializable</code> olmalıdır, yoksa <b>NotSerializableException</b> atılır. <br>Çözüm: alanı <code>transient</code> yapmak, tipi <code>Serializable</code> hâle getirmek veya özel <code>writeObject</code>/<code>readObject</code> yazmak. Sessizce atlama <b>olmaz</b>."
+    },
+    {
+      topic: "Akış aileleri",
+      q: "Which of the following are low-level (source-connected) streams? (Choose TWO.)",
+      opts: [
+        "FileInputStream",
+        "FileWriter",
+        "BufferedWriter",
+        "ObjectOutputStream"
+      ],
+      a: [0, 1],
+      why: "<b>Düşük seviye</b> akışlar doğrudan bir kaynağa/hedefe bağlanır: <code>FileInputStream</code>, <code>FileOutputStream</code>, <code>FileReader</code>, <code>FileWriter</code>, <code>ByteArrayInputStream</code>. <br><code>BufferedWriter</code> ve <code>ObjectOutputStream</code> <b>yüksek seviyedir</b>: başka bir akışı sarmalarlar ve tek başlarına oluşturulamazlar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

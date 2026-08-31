@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-2.2",
+  code: "Akış Kontrolü · 2.2",
+  title: "Döngüler, break ve continue",
+  back: "2.2-donguler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Ulaşılamayan kod",
+      q: "<pre>while (false) {\n    System.out.println(\"x\");\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the loop body is unreachable.",
+        "The code compiles and prints nothing.",
+        "The code compiles and prints x once.",
+        "Compilation fails because a while condition cannot be a literal."
+      ],
+      a: [0],
+      why: "Derleyici sabit <code>false</code> koşulunu görür ve gövdeyi <b>ulaşılamaz</b> sayar; Java'da ulaşılamayan kod <b>derleme hatasıdır</b>. <br>Dikkat: <code>if (false) { }</code> <b>derlenir</b> — bu, koşullu derleme (debug bayrakları) için bilinçli bırakılmış tek istisnadır. <b>Kanca:</b> \"if (false) affedilir, while (false) affedilmez.\""
+    },
+    {
+      topic: "Ulaşılamayan kod",
+      q: "Which of the following compile successfully? (Choose TWO.)",
+      opts: [
+        "do { System.out.println(\"x\"); } while (false);",
+        "if (false) { System.out.println(\"x\"); }",
+        "while (true) { System.out.println(\"x\"); } System.out.println(\"y\");",
+        "for (; false; ) { System.out.println(\"x\"); }"
+      ],
+      a: [0, 1],
+      why: "<code>do-while</code> gövdesi koşuldan <b>önce</b> çalıştığı için <code>while (false)</code> olsa bile ulaşılabilirdir. <code>if (false)</code> ise bilinçli istisnadır. <br><code>while (true)</code>'dan sonraki satır ulaşılamaz olduğu için hata verir; <code>for (; false; )</code> ise <code>while (false)</code> ile aynı kurala tabidir."
+    },
+    {
+      topic: "for başlığı",
+      q: "<pre>for (int i = 0; i &lt; 3; i++);\nSystem.out.println(\"a\");</pre>How many times is <code>a</code> printed?",
+      opts: [
+        "1",
+        "3",
+        "0",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Başlığın hemen ardındaki <b>noktalı virgül</b> gövdeyi boşaltır: döngü 3 kez döner ama hiçbir şey yapmaz. <code>println</code> döngünün <b>dışındadır</b> ve bir kez çalışır. <b>Kanca:</b> Sınav girintiyi kasten yanıltıcı yazar — noktalı virgülü ara, boşluğa güvenme."
+    },
+    {
+      topic: "for başlığı",
+      q: "<pre>for (int i = 0, long j = 0; i &lt; 3; i++) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because only one type can be declared in the init section.",
+        "The code compiles and runs three times.",
+        "Compilation fails because the update section is missing a comma.",
+        "Compilation fails because long cannot be used in a loop."
+      ],
+      a: [0],
+      why: "<code>for</code> başlığının init bölümünde <b>tek bir tip</b> bildirilebilir; birden çok değişken ancak <b>aynı tipte</b> olursa yazılır: <code>for (int i = 0, j = 0; ...)</code>. <br><code>long</code> bir döngüde pekâlâ kullanılabilir — sorun tipin kendisi değil, aynı bildirimde <b>ikinci bir tip</b> olmasıdır."
+    },
+    {
+      topic: "for-each",
+      q: "<pre>int[] d = {1, 2, 3};\nfor (int x : d) { x *= 10; }\nSystem.out.println(d[0]);</pre>What is the result?",
+      opts: [
+        "1",
+        "10",
+        "0",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "for-each değişkeni her turda elemanın <b>kopyasıdır</b>; ona atamak diziyi etkilemez. Diziyi değiştirmek istiyorsan indeksli <code>for</code> ile <code>d[i] *= 10;</code> yazman gerekir. <b>Kanca:</b> Nesne referansı taşıyan bir dizide ise kopya <b>referansın kopyasıdır</b> — nesnenin içini değiştirebilirsin ama diziye yeni nesne atayamazsın."
+    },
+    {
+      topic: "for-each",
+      q: "<pre>List&lt;String&gt; list = new ArrayList&lt;&gt;(List.of(\"a\", \"b\", \"c\"));\nfor (String s : list) {\n    if (s.equals(\"a\")) list.remove(s);\n}</pre>What is the result?",
+      opts: [
+        "A ConcurrentModificationException is thrown at runtime.",
+        "The code runs and list becomes [b, c].",
+        "Compilation fails.",
+        "An UnsupportedOperationException is thrown at runtime."
+      ],
+      a: [0],
+      why: "for-each arka planda <code>Iterator</code> kullanır; koleksiyon iterasyon sırasında dışarıdan değiştirilince <b>ConcurrentModificationException</b> atılır. Adına rağmen <b>thread ile ilgisi yoktur</b>, tek thread'de olur. <br><code>UnsupportedOperationException</code> ise <b>immutable</b> bir listede (<code>List.of(...)</code> doğrudan kullanılsaydı) gelirdi — burada liste <code>ArrayList</code>'e kopyalanmış."
+    },
+    {
+      topic: "for-each",
+      q: "Which are safe ways to remove elements while traversing a collection? (Choose TWO.)",
+      opts: [
+        "Calling removeIf on the collection.",
+        "Calling remove on an explicit Iterator obtained from the collection.",
+        "Calling remove on the collection inside an enhanced for loop.",
+        "Assigning null to the loop variable inside an enhanced for loop."
+      ],
+      a: [0, 1],
+      why: "<code>removeIf</code> silme işlemini koleksiyonun kendi iterasyonu içinde yapar; <code>Iterator.remove()</code> ise iterator'ün iç sayacını günceller — ikisi de güvenlidir. <br>for-each içinde doğrudan <code>remove</code> çağırmak CME atar. Döngü değişkenine <code>null</code> atamak ise <b>hiçbir şey yapmaz</b>, çünkü değişken bir kopyadır."
+    },
+    {
+      topic: "break ve continue",
+      q: "<pre>int c = 0;\nfor (int i = 0; i &lt; 5; i++) {\n    if (i % 2 == 0) continue;\n    c++;\n}\nSystem.out.println(c);</pre>What is the result?",
+      opts: [
+        "2",
+        "3",
+        "5",
+        "0"
+      ],
+      a: [0],
+      why: "<code>continue</code> yalnızca çift <code>i</code> değerlerinde tetiklenir; sayaç <code>i = 1</code> ve <code>i = 3</code> için artar → <b>2</b>. <code>i = 0, 2, 4</code> atlanır. <b>Kanca:</b> <code>for</code> içinde <code>continue</code> <b>update bölümünü çalıştırır</b>, bu yüzden sonsuz döngü riski yoktur — <code>while</code>'da vardır."
+    },
+    {
+      topic: "Etiketli atlama",
+      q: "<pre>outer:\nfor (int i = 0; i &lt; 3; i++) {\n    for (int j = 0; j &lt; 3; j++) {\n        if (j == 1) continue outer;\n        if (i == 2) break outer;\n        System.out.print(i + \"\" + j + \" \");\n    }\n}</pre>What is the result?",
+      opts: [
+        "00 10",
+        "00 10 20",
+        "00 01 10 11",
+        "Nothing is printed."
+      ],
+      a: [0],
+      why: "Her dış turda iç döngü <code>j = 0</code>'da yazdırır, <code>j = 1</code>'de <code>continue outer</code> ile dış döngünün <b>sonraki turuna</b> atlar. <code>i = 2</code> olduğunda <code>j = 0</code> iken <code>break outer</code> tetiklenir ve yazdırmadan tamamen çıkılır → <b>00 10</b>. <b>Kanca:</b> <code>continue etiket</code> sonraki tura, <code>break etiket</code> dışarı çıkar."
+    },
+    {
+      topic: "Etiketli atlama",
+      q: "<pre>for (int i = 0; i &lt; 3; i++) {\n    for (int j = 0; j &lt; 3; j++) {\n        break outer;\n    }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the label outer is undefined.",
+        "The code compiles and exits both loops immediately.",
+        "Compilation fails because break cannot take a label.",
+        "The code compiles and exits only the inner loop."
+      ],
+      a: [0],
+      why: "Etiketli <code>break</code> yalnızca <b>tanımlı bir etikete</b> atlayabilir; etiket, hedef döngünün <b>hemen üstüne</b> <code>outer:</code> biçiminde yazılmalıdır. Tanımsız etiket derleme hatasıdır. <br><code>break</code> <b>etiket alabilir</b> — o şık uydurmadır."
+    },
+    {
+      topic: "switch içinde akış",
+      q: "<pre>for (int k = 0; k &lt; 4; k++) {\n    switch (k) {\n        case 1: break;\n        case 2: continue;\n        default: break;\n    }\n    System.out.print(k + \" \");\n}</pre>What is the result?",
+      opts: [
+        "0 1 3",
+        "0 1 2 3",
+        "0 3",
+        "0 1"
+      ],
+      a: [0],
+      why: "<code>break</code> yalnızca <b>switch'ten</b> çıkar, döngü devam eder ve <code>println</code> çalışır — bu yüzden <code>k = 1</code> yazdırılır. <code>continue</code> ise switch'e değil <b>çevreleyen döngüye</b> uygulanır ve <code>println</code>'i atlar — bu yüzden <code>k = 2</code> yazdırılmaz. Sonuç: <b>0 1 3</b>."
+    },
+    {
+      topic: "do-while",
+      q: "<pre>int i = 10;\ndo {\n    System.out.print(i);\n} while (i &lt; 5);</pre>What is the result?",
+      opts: [
+        "10",
+        "Nothing is printed.",
+        "Compilation fails.",
+        "The loop runs forever."
+      ],
+      a: [0],
+      why: "<code>do-while</code> koşulu <b>gövdeden sonra</b> kontrol eder, bu yüzden gövde <b>her zaman en az bir kez</b> çalışır → <b>10</b>. Koşul ilk kontrolde yanlış olduğu için ikinci tur olmaz. <b>Kanca:</b> <code>do-while</code>'ın sonundaki <b>noktalı virgül zorunludur</b>; unutmak derleme hatasıdır."
+    },
+    {
+      topic: "Döngü değişkeni kapsamı",
+      q: "<pre>for (int k = 0; k &lt; 3; k++) { }\nSystem.out.println(k);</pre>What is the result?",
+      opts: [
+        "Compilation fails because k is not in scope outside the loop.",
+        "3",
+        "2",
+        "0"
+      ],
+      a: [0],
+      why: "<code>for</code> başlığında bildirilen değişkenin kapsamı <b>yalnızca döngüdür</b>; dışarıda <i>cannot find symbol</i> hatası alırsın. Döngüden sonra değere ihtiyacın varsa değişkeni <b>döngünün dışında</b> bildirmelisin. <b>Kanca:</b> Bu, for-each değişkeni için de geçerlidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03-01 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-03-01",
+  code: "03 Statik · Ghidra Giriş",
+  title: "Disassembler vs Decompiler; Ghidra",
+  back: "01-ghidra-giris.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Disassembler vs decompiler",
+      q: "Disassembler ile decompiler arasındaki temel güvenilirlik farkı nedir?",
+      opts: ["Disassembler çıktısı kesin (byte'ların birebir karşılığı); decompiler tahminidir", "Decompiler kesin, disassembler tahmini", "İkisi de %100 kaynak kodu üretir", "İkisi de sadece hex gösterir"],
+      a: [0],
+      why: "<b>Disassembler = byte→assembly, kesin.</b> Decompiler yapı ve tipleri yeniden kurar → tahmini. Decompiler'a kaynak gibi güvenmek yaygın hatadır; şüphede listing'e bak."
+    },
+    {
+      topic: "Disassembler vs decompiler",
+      q: "Decompiler çıktısında <code>uVar1</code>, <code>local_18</code> gibi isimler nereden gelir?",
+      opts: ["Ghidra'nın ürettiği yer tutucu isimler; kaynaktaki gerçek isimler değil", "Kaynak koddaki orijinal değişken isimleri", "Derleyici hatası", "İşletim sisteminden"],
+      a: [0],
+      why: "Stripped binary'de gerçek isimler yok; Ghidra <b>uydurma isimler</b> (<code>uVar1</code>, <code>local_18</code>) ve tip tahminleri üretir. Yanlış tip mantığı ters gösterebilir."
+    },
+    {
+      topic: "Disassembler vs decompiler",
+      q: "Decompiler'daki bir tip cast'ından şüphelendin. En doğru davranış nedir?",
+      opts: ["Listing (assembly) penceresinde gerçek komutlara bakıp doğrulamak", "Decompiler'ı kapatıp binary'yi silmek", "Cast'a güvenip devam etmek", "Programı çalıştırıp tahmin etmek"],
+      a: [0],
+      why: "Listing <b>kesin gerçektir.</b> Decompiler↔Listing senkronize olduğu için şüpheli C satırının assembly karşılığını görüp tahmini doğrularsın."
+    },
+    {
+      topic: "Ghidra nedir",
+      q: "Ghidra hakkında hangisi doğrudur?",
+      opts: ["Açık kaynak, ücretsiz ve decompiler'ı ücretsiz sürümde de gelir", "Sadece ücretli lisansla decompiler verir", "Sadece Windows binary'lerini açar", "Kaynak kodu tam olarak geri getirir"],
+      a: [0],
+      why: "Ghidra NSA'in açık kaynak platformu; <b>decompiler dahildir</b> (IDA Free'de decompiler ayrı/ücretlidir). Yine de çıktı tahmindir, birebir kaynak değil."
+    },
+    {
+      topic: "Ghidra iş akışı",
+      q: "Ghidra'da bir binary'yi ilk açtığında karşına çıkan 'Analyze now?' sorusuna ne yapmalısın?",
+      opts: ["Yes — auto-analyze fonksiyonları, string'leri, xref'leri bulur", "No — analiz gereksizdir", "Binary'yi silmek", "Sadece hex görünümü açmak"],
+      a: [0],
+      why: "<b>Auto-analyze</b> fonksiyon sınırlarını, string'leri ve çapraz referansları çıkarır — sonraki her adım buna dayanır. İlk açılışta 'Yes' standarttır."
+    },
+    {
+      topic: "Ghidra iş akışı",
+      q: "Ghidra'da çalışmaya başlamak için doğru sıra hangisidir?",
+      opts: ["New Project → Import File → çift tıkla (CodeBrowser) → Analyze", "Import → derle → çalıştır → analiz", "Analyze → New Project → Import", "Sadece binary'yi çift tıkla, proje gereksiz"],
+      a: [0],
+      why: "Ghidra proje-tabanlıdır: önce <b>New Project</b>, sonra <b>Import File</b>, sonra CodeBrowser'da <b>Analyze</b>. Proje olmadan binary yönetilmez."
+    },
+    {
+      topic: "CodeBrowser panelleri",
+      q: "Listing ve Decompiler panelleri arasındaki ilişki nedir?",
+      opts: ["Senkronizedir: birinde bir satır seçilince diğeri karşılığını vurgular", "Birbirinden bağımsız iki dosyadır", "Listing decompiler'ın eski sürümüdür", "Sadece biri aynı anda açılabilir"],
+      a: [0],
+      why: "İki görünüm <b>senkronizedir.</b> Listing (kesin assembly) ile Decompiler (okunur C) arasında gidip gelmek en temel refleks; tahmini gerçeğe bağlarsın."
+    },
+    {
+      topic: "CodeBrowser panelleri",
+      q: "Bir binary'deki gömülü mesajları/olası flag'leri Ghidra'da nerede hızlıca görürsün?",
+      opts: ["Defined Strings penceresi", "Symbol Tree → Imports", "Function Graph", "Register penceresi"],
+      a: [0],
+      why: "<b>Defined Strings</b> bulunan tüm okunur dizileri listeler: 'Correct', 'Wrong', 'flag{' gibi ipuçları burada avlanır (3.3'te derinleşecek)."
+    },
+    {
+      topic: "Stripped main",
+      q: "Stripped bir binary'de Symbol Tree'de <code>main</code> görünmüyor. Ne yaparsın?",
+      opts: ["entry'den başlayıp __libc_start_main'e verilen ilk argümanı takip ederek main'i bulurum", "Binary'nin bozuk olduğuna karar veririm", "main'i yeniden derlerim", "Ghidra main'i asla bulamaz, vazgeçerim"],
+      a: [0],
+      why: "Stripped'te kendi sembollerin yok; <b>entry</b> vardır. <code>__libc_start_main</code>'in ilk argümanı main'in adresidir — oradan takip edersin (3.2)."
+    },
+    {
+      topic: "Statik sınır",
+      q: "Bir binary UPX ile paketlenmiş; Ghidra'da anlamlı kod yok, sadece küçük bir açıcı (stub) var. Neden?",
+      opts: ["Gerçek kod runtime'da bellekte açılır; statik görünüm asıl mantığı göstermez", "Ghidra bozuk", "Binary şifresiz ama Ghidra desteklemiyor", "Kod silinmiş"],
+      a: [0],
+      why: "Packer gerçek kodu sıkıştırır/şifreler; çalışınca bellekte açılır. <b>Statik analiz packed kodu göremez</b> — unpack veya dinamik analiz gerekir. 'Ghidra'da her şeyi görürüm' yanlış."
+    },
+    {
+      topic: "Statik sınır",
+      q: "Statik analizin dinamik analize göre en büyük <b>avantajı</b> nedir?",
+      opts: ["Programı çalıştırmadan tüm kod yollarını (tetiklenmeyen dallar dahil) görebilmek", "Runtime değerlerini kesin bilmek", "Şifreli kodu otomatik çözmek", "Her zaman daha hızlı olması"],
+      a: [0],
+      why: "Statik analiz <b>çalıştırmadan</b> tüm yolları görür — güvenli (zararlıyı çalıştırmazsın) ve kapsamlı. Ama runtime'da hesaplanan/açılan şeyleri göremez; orada dinamik gerekir."
+    },
+    {
+      topic: "İlk oturum refleksi",
+      q: "Bir crackme'de 'Correct!' string'ini kullanan kod parçasına ulaşmanın en hızlı Ghidra yolu?",
+      opts: ["String'e sağ tık → References → onu kullanan fonksiyona (xref) atla", "Tüm fonksiyonları tek tek okumak", "Binary'yi hex editörde açmak", "Programı defalarca çalıştırmak"],
+      a: [0],
+      why: "<b>Xref (cross-reference)</b>: bir string'i kimin kullandığını bulursun ve doğrudan doğrulama koduna atlarsın. String→xref→decompiler, basit crackme'lerin kısa yoludur."
+    },
+    {
+      topic: "Disassembler vs decompiler",
+      q: "objdump ile Ghidra'nın Listing penceresi ne bakımdan benzerdir?",
+      opts: ["İkisi de disassembly (adres + assembly) üretir; kesin byte karşılığıdır", "İkisi de C kodu üretir", "İkisi de programı çalıştırır", "İkisi de sadece string listeler"],
+      a: [0],
+      why: "objdump ve Ghidra Listing <b>disassembler</b> çıktısıdır: kesin, byte-birebir. Ghidra ayrıca decompiler (C benzeri) de sunar; objdump sunmaz."
+    },
+    {
+      topic: "Statik sınır",
+      q: "'Kodu Ghidra'da gördüm, o yüzden çözdüm' ifadesi ne zaman yanıltıcıdır?",
+      opts: ["Binary paketlenmiş/şifreliyse veya mantık runtime girdisine bağlıysa", "Her zaman doğrudur", "Sadece 32-bit binary'lerde", "Sadece stripped değilse"],
+      a: [0],
+      why: "Packed/şifreli kod veya <b>runtime'a bağlı</b> davranışlarda statik görünüm eksiktir. Statik + dinamik birlikte (Bölüm 4) tam resmi verir."
+    },
+    {
+      topic: "CodeBrowser panelleri",
+      q: "Ghidra CodeBrowser hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Listing (assembly) kesin, byte-birebir gerçektir", "Decompiler (C benzeri) tahminidir, şüpheyle okunur", "Decompiler çıktısı birebir kaynak koddur", "Listing ve Decompiler bağımsız, senkronizasyonsuz panellerdir"],
+      a: [0, 1],
+      why: "<b>Listing kesin, Decompiler tahmini</b> ve ikisi <b>senkronizedir</b>. Decompiler kaynak kodu birebir vermez (isim/tip uydurur); şüphede Listing'e bakılır."
+    },
+    {
+      topic: "Statik sınır",
+      q: "Statik analiz hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["Çalıştırmadan tüm kod yollarını (tetiklenmeyenler dahil) görebilir", "Packed/şifreli kodun gerçek mantığını göremez", "Runtime'da hesaplanan değerleri kesin bilir", "Her zaman dinamikten daha yavaştır"],
+      a: [0, 1],
+      why: "Statik <b>tüm yolları</b> kapsar ama <b>packed/runtime</b> kodu göremez. Gerçek runtime değerleri dinamik analizin alanıdır; statik+dinamik birlikte kullanılır (4.3)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.2",
+  code: "OOP · 3.2",
+  title: "Metotlar, Overloading, Varargs, var ve Immutability",
+  back: "3.2-metotlar-ve-kapsam.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Overload çözümleme",
+      q: "<pre>static void f(long x)    { System.out.print(\"long\"); }\nstatic void f(Integer x) { System.out.print(\"Integer\"); }\nstatic void f(int... x)  { System.out.print(\"varargs\"); }\n\nf(5);</pre>What is the result?",
+      opts: [
+        "long",
+        "Integer",
+        "varargs",
+        "Compilation fails because the call is ambiguous."
+      ],
+      a: [0],
+      why: "Overload çözümleme sırası: <b>tam eşleşme → genişletme → kutulama → varargs</b>. <code>int</code> için tam eşleşme yok ama <code>int → long</code> <b>genişletmesi</b> var, bu yüzden ikinci tur başarılı olur ve derleyici <b>durur</b> — kutulamaya hiç bakmaz. <b>Kanca:</b> \"Genişletme kutulamayı yener, kutulama varargs'ı yener.\""
+    },
+    {
+      topic: "Overload çözümleme",
+      q: "<pre>static void g(Long x) { }\n\ng(5);</pre>What is the result?",
+      opts: [
+        "Compilation fails.",
+        "The code compiles and runs.",
+        "A ClassCastException is thrown at runtime.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>int</code> kutulanınca <b>Integer</b> olur ve <code>Integer</code> ile <code>Long</code> arasında kalıtım ilişkisi <b>yoktur</b> — kutulamadan sonra genişletme yapılmaz. <br><code>g(5L)</code> yazılsaydı <code>long → Long</code> kutulaması geçerli olurdu. <b>Kanca:</b> \"int → Integer → Long yok, ama int → Integer → Object var.\""
+    },
+    {
+      topic: "Overload çözümleme",
+      q: "<pre>int f(int x) { return 0; }\nString f(int y) { return \"\"; }</pre>What is the result?",
+      opts: [
+        "Compilation fails because both methods have the same signature.",
+        "The code compiles because the return types differ.",
+        "The code compiles because the parameter names differ.",
+        "Compilation fails because a method cannot return String and int."
+      ],
+      a: [0],
+      why: "Metot imzası <b>ad + parametre tipleri</b>dir. Dönüş tipi ve parametre <b>adları</b> imzaya dahil değildir, bu yüzden iki metot da <code>f(int)</code> imzasına sahiptir → <i>method is already defined</i>. <b>Kanca:</b> Overload etmek için <b>parametre listesini</b> değiştirmen gerekir."
+    },
+    {
+      topic: "Varargs",
+      q: "<pre>static void v(String... s) { System.out.print(s.length); }\n\nv();\nv(new String[0]);\nv((String) null);</pre>What is the result?",
+      opts: [
+        "001",
+        "000",
+        "011",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Argümansız çağrı <b>boş dizi</b> üretir (null değil) → 0. Doğrudan boş dizi vermek de aynı şey → 0. <code>(String) null</code> ise <b>tek elemanlı</b> bir dizi oluşturur (elemanı null) → 1. <br>NPE ancak <code>(String[]) null</code> yazılırsa gelir: o zaman dizinin kendisi null olur."
+    },
+    {
+      topic: "Varargs",
+      q: "Which varargs declarations are legal? (Choose TWO.)",
+      opts: [
+        "void a(String prefix, int... nums)",
+        "void b(int... nums)",
+        "void c(int... nums, String suffix)",
+        "void d(int... a, String... b)"
+      ],
+      a: [0, 1],
+      why: "Varargs parametresi <b>en fazla bir tane</b> olabilir ve <b>en sonda</b> durmak zorundadır. İlk iki bildirim bu kurala uyar. <br>Üçüncüde varargs sondan önce geliyor, dördüncüde <b>iki</b> varargs var — ikisi de derleme hatasıdır."
+    },
+    {
+      topic: "static kuralları",
+      q: "<pre>class A {\n    int x = 1;\n    static int y = 2;\n    static void s() { System.out.println(x + y); }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because x cannot be referenced from a static context.",
+        "3",
+        "Compilation fails because y cannot be referenced from a static method.",
+        "2"
+      ],
+      a: [0],
+      why: "Statik metot bir <b>nesneye bağlı değildir</b>, bu yüzden örnek alanı <code>x</code>'e erişemez: <i>non-static variable x cannot be referenced from a static context</i>. Statik alan <code>y</code>'ye erişmek serbesttir. <br>Ters yön de serbesttir: <b>örnek metotlar statik üyelere erişebilir</b>."
+    },
+    {
+      topic: "Pass-by-value",
+      q: "<pre>static void m(StringBuilder sb, String s) {\n    sb.append(\"!\");\n    sb = new StringBuilder(\"yeni\");\n    s += \"!\";\n}\nStringBuilder b = new StringBuilder(\"a\");\nString t = \"a\";\nm(b, t);\nSystem.out.println(b + \" \" + t);</pre>What is the result?",
+      opts: [
+        "a! a",
+        "yeni a!",
+        "a! a!",
+        "yeni a"
+      ],
+      a: [0],
+      why: "Java <b>her zaman değer ile geçirir</b>; nesnelerde geçen değer <b>referansın kopyasıdır</b>. <code>append</code> nesnenin <b>içini</b> değiştirdiği için dışarıda görülür → <code>a!</code>. Parametreye yeni nesne atamak yalnızca <b>kopyayı</b> yeniden bağlar, dışarıya yansımaz. <code>String</code> immutable olduğu için <code>s += \"!\"</code> da yerel kalır. <b>Kanca:</b> \"İçini değiştirirsen görülür, referansı değiştirirsen görülmez.\""
+    },
+    {
+      topic: "var kuralları",
+      q: "Which uses of <code>var</code> compile? (Choose TWO.)",
+      opts: [
+        "for (var i = 0; i < 3; i++) { }",
+        "var list = new ArrayList<String>();",
+        "var x = null;",
+        "var arr = {1, 2, 3};"
+      ],
+      a: [0, 1],
+      why: "<code>var</code> yerel değişkenlerde ve döngü değişkenlerinde, <b>initializer varsa</b> kullanılabilir; tip başlatıcıdan çıkarılır. <br><code>null</code>'dan tip çıkarılamaz. <code>{1, 2, 3}</code> kısayolu yalnızca <b>açık dizi tipiyle</b> çalışır — <code>var arr = new int[]{1,2,3};</code> yazılmalıdır."
+    },
+    {
+      topic: "var kuralları",
+      q: "<pre>class A {\n    var sayac = 0;\n    void m(var s) { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails on both lines.",
+        "Compilation fails only on the field declaration.",
+        "Compilation fails only on the method parameter.",
+        "The code compiles."
+      ],
+      a: [0],
+      why: "<code>var</code> <b>yalnızca yerel değişken</b> tip çıkarımıdır: alan (field), metot parametresi, dönüş tipi ve <code>catch</code> parametresi olarak kullanılamaz. Her iki satır da ayrı ayrı hata verir. <b>Kanca:</b> \"var metodun içinde yaşar, imzasında değil.\""
+    },
+    {
+      topic: "var kuralları",
+      q: "<pre>int var = 5;\nSystem.out.println(var);</pre>What is the result?",
+      opts: [
+        "5",
+        "Compilation fails because var is a reserved keyword.",
+        "Compilation fails because a variable cannot be named var.",
+        "0"
+      ],
+      a: [0],
+      why: "<code>var</code> bir <b>anahtar kelime değildir</b>; yalnızca <i>ayrılmış tip adıdır</i> (reserved type name). Değişken, metot ve paket adı olarak kullanılabilir — yalnızca <b>sınıf/arayüz adı</b> olamaz. Bu geriye uyumluluk için bilinçli bir tasarımdır. <b>Kanca:</b> Sınav bunu \"derlenmez\" sandırmak için sorar."
+    },
+    {
+      topic: "Erişim belirteçleri",
+      q: "A class member is declared without any access modifier. From where can it be accessed?",
+      opts: [
+        "From any class in the same package only.",
+        "From any class in the same package and from subclasses in other packages.",
+        "From the declaring class only.",
+        "From anywhere, since the default is public."
+      ],
+      a: [0],
+      why: "Belirteç yazılmadığında üye <b>paket-özel</b> (package-private) olur: yalnızca <b>aynı paketteki</b> sınıflar erişebilir. Farklı paketteki alt sınıflar bile erişemez — o erişim için <code>protected</code> gerekir. <b>Kanca:</b> Java'da varsayılan <b>public değildir</b>; en sık yapılan varsayım hatası budur."
+    },
+    {
+      topic: "Immutability",
+      q: "<pre>public final class K {\n    private final List&lt;String&gt; l;\n    public K(List&lt;String&gt; l) { this.l = l; }\n    public List&lt;String&gt; get() { return l; }\n}</pre>Why is this class NOT immutable?",
+      opts: [
+        "The caller keeps a reference to the list and can modify it after construction.",
+        "The field must be static to be immutable.",
+        "The class must implement an interface to be immutable.",
+        "final fields cannot hold collections."
+      ],
+      a: [0],
+      why: "Sınıfın <code>final</code>, alanın <code>private final</code> olması <b>yetmez</b>: constructor'a verilen listenin <b>aynı referansı</b> saklandığı için çağıran onu sonradan değiştirebilir. Aynı sızıntı <code>get()</code>'te de vardır. <br>Çözüm: constructor'da <code>new ArrayList&lt;&gt;(l)</code>, getter'da <code>List.copyOf(l)</code> — yani <b>savunmacı kopya</b>."
+    },
+    {
+      topic: "Immutability",
+      q: "<pre>final List&lt;String&gt; l = new ArrayList&lt;&gt;();\nl.add(\"a\");\nl = new ArrayList&lt;&gt;();</pre>Which line fails to compile?",
+      opts: [
+        "Only the third line.",
+        "Only the second line.",
+        "Both the second and third lines.",
+        "None; the code compiles."
+      ],
+      a: [0],
+      why: "<code>final</code> yalnızca <b>referansın yeniden bağlanmasını</b> engeller; nesnenin içeriğine dokunmaz. <code>add</code> geçerlidir, yeniden atama değildir. <b>Kanca:</b> \"final = değişkene kilit, nesneye değil.\" Gerçekten değiştirilemez liste için <code>List.of(...)</code> gerekir — orada <code>add</code> runtime'da <code>UnsupportedOperationException</code> atar."
+    },
+    {
+      topic: "Effectively final",
+      q: "<pre>int sayi = 5;\nRunnable r = () -> System.out.println(sayi);\nsayi = 6;\nr.run();</pre>What is the result?",
+      opts: [
+        "Compilation fails because sayi is not effectively final.",
+        "5",
+        "6",
+        "Compilation fails because a lambda cannot use a local variable."
+      ],
+      a: [0],
+      why: "Lambda ve iç sınıflar yalnızca <b>effectively final</b> yerel değişkenleri yakalayabilir — yani hiç yeniden atanmamış olanları. <code>sayi = 6;</code> satırı bu niteliği bozar ve hata <b>lambda satırında</b> raporlanır. <br>Son satır silinirse kod derlenir ve <b>5</b> yazdırır. <b>Kanca:</b> Yakalanan değer, yakalandığı andaki <b>kopyadır</b>."
+    },
+    {
+      topic: "Overload çözümleme",
+      q: "<pre>static void h(Object o) { System.out.print(\"Object\"); }\n\nh(5);</pre>What is the result?",
+      opts: [
+        "Object",
+        "Compilation fails.",
+        "5",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>int</code> önce <b>Integer</b>'a kutulanır, ardından <code>Integer</code> bir <code>Object</code> olduğu için atama geçerlidir. Kutulamadan <b>sonra üst tipe geçiş serbesttir</b>; yasak olan kutulamadan sonra <b>başka bir wrapper'a</b> geçmektir (<code>Integer → Long</code>). <b>Kanca:</b> Yukarı doğru serbest, yana doğru yasak."
+    },
+    {
+      topic: "static kuralları",
+      q: "<pre>class A { static void s() { System.out.print(\"s\"); } }\n\nA a = null;\na.s();</pre>What is the result?",
+      opts: [
+        "s",
+        "A NullPointerException is thrown at runtime.",
+        "Compilation fails.",
+        "Nothing is printed."
+      ],
+      a: [0],
+      why: "Statik metot çağrısı <b>referansın değerini kullanmaz</b>; derleyici çağrıyı değişkenin <b>bildirilmiş tipine</b> göre <code>A.s()</code> hâline getirir. Bu yüzden referans <code>null</code> olsa bile NPE atılmaz. <br>Kod derlenir (yalnızca stil uyarısı alır). <b>Kanca:</b> Statik üyeye örnek üzerinden erişmek çalışır ama okunabilirlik için kaçınılır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

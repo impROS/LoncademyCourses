@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.7 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.7",
+  code: "OOP · 3.7",
+  title: "Enum'lar",
+  back: "3.7-enumlar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Yapı kuralları",
+      q: "<pre>enum E {\n    A, B\n    void m() { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a semicolon is required after the constant list.",
+        "The code compiles.",
+        "Compilation fails because an enum cannot declare methods.",
+        "Compilation fails because m() must be static."
+      ],
+      a: [0],
+      why: "Sabit listesinden sonra <b>başka bir üye</b> (alan, metot, constructor) geliyorsa liste <b>noktalı virgülle</b> bitmek zorundadır: <code>A, B;</code>. <br>Enum'lar metot, alan ve constructor bildirebilir — enum tam bir sınıftır. Metodun <code>static</code> olma zorunluluğu da yoktur."
+    },
+    {
+      topic: "Constructor",
+      q: "<pre>enum E {\n    A, B, C;\n    E() { System.out.print(\"x\"); }\n}\npublic static void main(String[] a) {\n    E e = E.A;\n}</pre>What is the result?",
+      opts: [
+        "xxx",
+        "x",
+        "Nothing is printed.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Enum sabitleri, enum sınıfı <b>ilk kez yüklendiğinde topluca</b> oluşturulur — tek bir sabite dokunman <b>hepsinin</b> constructor'ını tetikler. Üç sabit → üç <code>x</code>. <br><b>Kanca:</b> Bu, enum'ların neden thread-safe singleton için ideal olduğunu da açıklar: kurulum sınıf yükleme sırasında, bir kez ve güvenli biçimde yapılır."
+    },
+    {
+      topic: "Constructor",
+      q: "<pre>enum E {\n    A;\n    public E() { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because an enum constructor cannot be public.",
+        "The code compiles.",
+        "Compilation fails because an enum cannot have a constructor.",
+        "Compilation fails because A must pass arguments to the constructor."
+      ],
+      a: [0],
+      why: "Enum constructor'ları örtük olarak <b>private</b>'dır; <code>public</code> veya <code>protected</code> yazmak derleme hatasıdır — çünkü dışarıdan yeni örnek üretilmesi <b>kavramsal olarak</b> yasaktır. <br>Constructor'ın <b>kendisi serbesttir</b>; belirteç yazmadan (veya <code>private</code> yazarak) bildirilir."
+    },
+    {
+      topic: "Hazır metotlar",
+      q: "<pre>enum Renk { KIRMIZI, YESIL, MAVI }\n\nSystem.out.println(Renk.valueOf(\"mavi\"));</pre>What is the result?",
+      opts: [
+        "An IllegalArgumentException is thrown at runtime.",
+        "MAVI",
+        "null",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>valueOf</code> <b>büyük/küçük harf duyarlıdır</b> ve tam eşleşme arar; bulamazsa <code>null</code> <b>dönmez</b>, <b>IllegalArgumentException</b> atar (mesaj: <i>No enum constant ...</i>). <br>Güvenli arama istiyorsan <code>values()</code> üzerinde döngü kurup <code>equalsIgnoreCase</code> ile karşılaştırman gerekir."
+    },
+    {
+      topic: "Hazır metotlar",
+      q: "<pre>enum E { A, B, C }\n\nSystem.out.println(E.C.ordinal() + \" \" + E.values().length);</pre>What is the result?",
+      opts: [
+        "2 3",
+        "3 3",
+        "2 2",
+        "3 2"
+      ],
+      a: [0],
+      why: "<code>ordinal()</code> <b>0 tabanlıdır</b>: <code>A</code>=0, <code>B</code>=1, <code>C</code>=2. <code>values()</code> tüm sabitleri içeren diziyi döndürür, uzunluğu <b>3</b>. <br><b>Uyarı:</b> <code>ordinal()</code> bildirim sırasına bağlıdır; sabitleri yeniden sıralarsan değer değişir. Bu yüzden veritabanına <code>ordinal</code> yazmak klasik bir hatadır — <code>name()</code> kullanılır."
+    },
+    {
+      topic: "Hazır metotlar",
+      q: "Which statements about enum methods are correct? (Choose TWO.)",
+      opts: [
+        "toString() can be overridden but name() cannot.",
+        "values() returns a new array on every call.",
+        "valueOf() returns null when no constant matches.",
+        "ordinal() returns a 1-based position."
+      ],
+      a: [0, 1],
+      why: "<code>name()</code> <code>final</code>'dır — sabitin gerçek adını korumak için; <code>toString()</code> ise serbestçe override edilebilir. <code>values()</code> her çağrıda <b>savunmacı bir kopya</b> döndürür (dizi mutable olduğu için), bu yüzden döngü koşulunda çağırmak maliyetlidir. <br><code>valueOf</code> exception atar, <code>ordinal</code> <b>0 tabanlıdır</b>."
+    },
+    {
+      topic: "Sabit gövdesi",
+      q: "<pre>enum Islem {\n    TOPLA { public int f(int a, int b) { return a + b; } },\n    CIKAR;\n    public abstract int f(int a, int b);\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because CIKAR does not implement f().",
+        "The code compiles; CIKAR inherits an empty implementation.",
+        "Compilation fails because an enum cannot declare abstract methods.",
+        "The code compiles but CIKAR throws an exception when f() is called."
+      ],
+      a: [0],
+      why: "Enum'da <code>abstract</code> metot bildirdiysen <b>her sabit</b> kendi gövdesini vermek zorundadır — <code>CIKAR</code> vermediği için hata alınır. <br>Enum'lar <code>abstract</code> metot <b>bildirebilir</b>; bu, \"sabit başına davranış\" (constant-specific body) desenidir ve her gövdeli sabit aslında bir <b>anonim alt sınıftır</b>."
+    },
+    {
+      topic: "Sabit gövdesi",
+      q: "<pre>enum Islem {\n    TOPLA { public int f() { return 1; } };\n    public abstract int f();\n}\n\nSystem.out.println(Islem.TOPLA.getClass() == Islem.class);</pre>What is the result?",
+      opts: [
+        "false",
+        "true",
+        "Compilation fails.",
+        "A ClassCastException is thrown."
+      ],
+      a: [0],
+      why: "Gövdeli bir enum sabiti <b>anonim alt sınıf</b> olarak derlenir; sınıf adı <code>Islem$1</code> gibi olur ve <code>Islem.class</code>'a <b>eşit değildir</b>. <br>Bu ayrıntı, gövdeli sabiti olan enum'ların neden <code>final</code> işaretlenemediğini de açıklar. <code>getClass()</code> yerine <code>getDeclaringClass()</code> her zaman <code>Islem</code> döner."
+    },
+    {
+      topic: "Kalıtım",
+      q: "Which statements about enums and inheritance are correct? (Choose TWO.)",
+      opts: [
+        "An enum can implement one or more interfaces.",
+        "An enum cannot extend another class.",
+        "An enum can extend another enum.",
+        "An enum can be declared abstract at the type level."
+      ],
+      a: [0, 1],
+      why: "Her enum örtük olarak <code>java.lang.Enum</code>'u genişletir; Java tek kalıtıma izin verdiği için <b>başka bir sınıfı extend edemez</b> — bir enum'u da genişletemez. <code>implements</code> ise <b>tamamen serbesttir</b> ve yaygın bir kalıptır. <br>Enum tipinin kendisi <code>abstract</code> işaretlenemez; ama <b>abstract metot bildirmek</b> serbesttir."
+    },
+    {
+      topic: "switch",
+      q: "<pre>enum Renk { KIRMIZI, MAVI }\n\nRenk r = Renk.MAVI;\nString s = switch (r) {\n    case Renk.KIRMIZI -> \"k\";\n    case Renk.MAVI -> \"m\";\n};\nSystem.out.println(s);</pre>What is the result in Java 21?",
+      opts: [
+        "m",
+        "Compilation fails because case labels must be unqualified enum constants.",
+        "Compilation fails because a default branch is required.",
+        "k"
+      ],
+      a: [0],
+      why: "<b>Java 21'de nitelikli enum sabitleri</b> (<code>Renk.MAVI</code>) <code>case</code> etiketi olarak <b>geçerlidir</b> — daha eski sürümlerde derleme hatasıydı. Niteliksiz yazım (<code>MAVI</code>) da hâlâ geçerlidir. <br>Tüm sabitler kapsandığı için <code>default</code> gerekmez. <b>Kanca:</b> Eski kaynaklardan çalışırken bu kuralın güncellendiğini unutma."
+    },
+    {
+      topic: "switch",
+      q: "<pre>enum Renk { KIRMIZI, MAVI }\nRenk r = null;\n\nswitch (r) {\n    case KIRMIZI -> System.out.print(\"k\");\n    default -> System.out.print(\"d\");\n}</pre>What is the result?",
+      opts: [
+        "A NullPointerException is thrown at runtime.",
+        "d",
+        "Compilation fails.",
+        "Nothing is printed."
+      ],
+      a: [0],
+      why: "<code>switch</code> selector'ü <code>null</code> ise ve açık bir <code>case null</code> yoksa <b>NPE</b> atılır — <code>default</code> null'ı <b>yakalamaz</b> (2.1). Bu kural enum selector'lerde de aynen geçerlidir. <br>Güvenli hâle getirmek için <code>case null, default -&gt; ...</code> yazılır."
+    },
+    {
+      topic: "EnumSet ve EnumMap",
+      q: "<pre>enum Renk { KIRMIZI, YESIL, MAVI }\n\nSet&lt;Renk&gt; s = new EnumSet&lt;&gt;();</pre>What is the result?",
+      opts: [
+        "Compilation fails because EnumSet has no public constructor.",
+        "The code compiles and creates an empty set.",
+        "Compilation fails because EnumSet is not a Set.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>EnumSet</code> <b>abstract</b>'tır ve yalnızca <b>static fabrika metotlarıyla</b> üretilir: <code>noneOf</code>, <code>allOf</code>, <code>of</code>, <code>range</code>, <code>complementOf</code>. Bunun sebebi, sabit sayısına göre farklı (bit vektörü tabanlı) uygulamalar seçilmesidir. <br><code>EnumMap</code> ise <b>constructor'a sahiptir</b> ama <code>Class</code> nesnesi ister: <code>new EnumMap&lt;&gt;(Renk.class)</code>."
+    },
+    {
+      topic: "Karşılaştırma",
+      q: "<pre>enum Renk { KIRMIZI, MAVI }\nRenk a = Renk.MAVI;\nRenk b = Renk.valueOf(\"MAVI\");\n\nSystem.out.println((a == b) + \" \" + a.equals(b));</pre>What is the result?",
+      opts: [
+        "true true",
+        "false true",
+        "true false",
+        "false false"
+      ],
+      a: [0],
+      why: "Her enum sabiti JVM'de <b>tek bir örnektir</b> (singleton); <code>valueOf</code> yeni nesne üretmez, <b>var olanı</b> döndürür. Bu yüzden <code>==</code> ve <code>equals</code> aynı sonucu verir. <br><b>Kanca:</b> Enum'larda <code>==</code> kullanmak hem güvenli hem tercih edilendir — null-safe'dir ve yanlış tip karşılaştırmasını <b>derleme zamanında</b> yakalar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

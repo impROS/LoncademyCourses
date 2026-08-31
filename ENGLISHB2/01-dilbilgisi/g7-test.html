@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g7 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g7",
+  code: "Dilbilgisi · g7",
+  title: "Dolaylı anlatım",
+  back: "g7-reported-speech.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Zaman kaydırma",
+      q: "\"I have already spoken to the client.\" → She said she ______ to the client.",
+      opts: ["had already spoken", "has already spoken", "already spoke", "would already speak"],
+      a: [0],
+      why: "<b>had already spoken</b> — present perfect dolaylı anlatımda past perfect'e kayar. Aktarma fiili <code>said</code> geçmiş olduğu için kaydırma zorunludur."
+    },
+    {
+      topic: "Zaman kaydırma",
+      q: "\"We must leave before six.\" → He said they ______ before six.",
+      opts: ["had to leave", "must to leave", "should leave", "would must leave"],
+      a: [0],
+      why: "<b>had to leave</b> — <code>must</code>'ın geçmiş biçimi yoktur, dolaylı anlatımda <code>had to</code>'ya döner. <code>should</code> zorunluluğu tavsiyeye indirger ve anlamı zayıflatır."
+    },
+    {
+      topic: "Zaman kaydırma",
+      q: "Which modal does NOT change in reported speech?",
+      opts: ["could", "will", "can", "may"],
+      a: [0],
+      why: "<b>could</b> zaten geçmiş/uzak biçimdir, bu yüzden kaymaz. <code>will→would</code>, <code>can→could</code>, <code>may→might</code> kayar. Kaymayanlar listesi: would, could, might, should, ought to, used to."
+    },
+    {
+      topic: "say vs tell",
+      q: "He ______ me that the shipment had been delayed.",
+      opts: ["told", "said", "spoke", "talked"],
+      a: [0],
+      why: "<b>told</b> — <code>tell</code> doğrudan nesne alır (<i>tell me/him/us</i>). <code>said</code> nesne almaz; <i>said to me</i> demek gerekirdi. <code>speak/talk</code> ise <code>to</code> edatı ister."
+    },
+    {
+      topic: "say vs tell",
+      q: "Choose the two correct sentences. (Choose TWO.)",
+      opts: ["She said that the office would be closed.", "She told us that the office would be closed.", "She said us that the office would be closed.", "She told that the office would be closed."],
+      a: [0, 1],
+      why: "<code>say + that</code> (nesnesiz) ve <code>tell + sb + that</code> doğru kalıplardır. <i>said us</i> ve nesnesiz <i>told that</i> Türkçe konuşanların klasik iki hatasıdır — çünkü Türkçede 'söyledi' tek fiildir."
+    },
+    {
+      topic: "Dolaylı soru",
+      q: "\"Where did you park the car?\" → She asked me ______ .",
+      opts: ["where I had parked the car", "where did I park the car", "where I did park the car", "where had I parked the car"],
+      a: [0],
+      why: "Dolaylı soruda soru sırası bozulur ve yardımcı <code>did</code> düşer: <b>where I had parked</b>. Ters sıra (<i>did I / had I</i>) doğrudan soruya aittir ve dolaylı anlatımda her zaman hatalıdır."
+    },
+    {
+      topic: "Dolaylı soru",
+      q: "\"Are you free on Friday?\" → He asked ______ free on Friday.",
+      opts: ["if I was", "that I was", "was I", "do I be"],
+      a: [0],
+      why: "<b>if (veya whether) I was</b> — evet/hayır sorularının aktarımı <code>if/whether</code> ile bağlanır. <code>that</code> yalnızca düz cümle aktarımında kullanılır."
+    },
+    {
+      topic: "Emir ve rica",
+      q: "\"Don't use the side entrance.\" → The guard told us ______ the side entrance.",
+      opts: ["not to use", "to not use", "don't use", "that not use"],
+      a: [0],
+      why: "<b>not to use</b> — olumsuz emirde <code>not</code> daima <code>to</code>'dan önce gelir. <i>to not use</i> konuşma dilinde duyulsa da sınavda yanlış sayılır."
+    },
+    {
+      topic: "Reporting verbs — kalıplar",
+      q: "He ______ any knowledge of the missing files.",
+      opts: ["denied having", "denied to have", "refused having", "promised having"],
+      a: [0],
+      why: "<b>deny + V-ing</b> sabit bir kalıptır. <code>refuse</code> ise <code>to V1</code> alır ve anlamı da farklıdır: reddetmek ≠ inkâr etmek."
+    },
+    {
+      topic: "Reporting verbs — kalıplar",
+      q: "She ______ me to renew my passport before the trip.",
+      opts: ["reminded", "suggested", "insisted", "admitted"],
+      a: [0],
+      why: "<b>remind + sb + to V1</b> kalıba uyar. <code>suggest</code> asla <i>sb to do</i> almaz — <i>suggested renewing</i> ya da <i>suggested that I renew</i> denir; bu, sınavın en sık sorduğu kalıp hatasıdır."
+    },
+    {
+      topic: "Reporting verbs — kalıplar",
+      q: "They accused the supplier ______ the invoices.",
+      opts: ["of inflating", "for inflating", "to inflate", "that inflating"],
+      a: [0],
+      why: "<b>accuse sb of + V-ing</b>. Karıştırılan komşusu <code>blame sb <i>for</i> sth</code>'dir; edatlar fiile bağlıdır, mantığa değil — kalıp olarak ezberlenir."
+    },
+    {
+      topic: "Reporting verbs — anlam",
+      q: "\"I'll pay you back on Friday, I swear.\" Which report is most accurate?",
+      opts: ["He promised to pay me back on Friday.", "He offered to pay me back on Friday.", "He admitted paying me back on Friday.", "He warned me to pay him back on Friday."],
+      a: [0],
+      why: "<i>I swear</i> vurgusu bir söz vermedir → <b>promise + to V1</b>. <code>offer</code> gönüllü bir teklif, <code>warn</code> ise uyarıdır; ikisi de borcun geri ödenme sözünü karşılamaz."
+    },
+    {
+      topic: "Zaman ve yer zarfları",
+      q: "\"I'll meet you here tomorrow.\" → He said he would meet me ______ .",
+      opts: ["there the next day", "here tomorrow", "there tomorrow", "here the next day"],
+      a: [0],
+      why: "Dolaylı anlatımda yer ve zaman referansları da kayar: <code>here → there</code>, <code>tomorrow → the next day</code>. Aktaran kişi artık ne o yerde ne o zamandadır."
+    },
+    {
+      topic: "Kaymayan durumlar",
+      q: "Which sentence needs NO backshift?",
+      opts: ["He says he is on his way.", "He said he is on his way.", "He told me he is on his way.", "He asked me if I am ready."],
+      a: [0],
+      why: "<b>He says…</b> — aktarma fiili present olduğunda kaydırma yapılmaz. Diğer üçünde aktarma fiili geçmiştir, dolayısıyla <i>was / were</i> beklenir."
+    },
+    {
+      topic: "Dönüştürme",
+      q: "\"Why don't we split the cost?\" she said. Which is correct?",
+      opts: ["She suggested splitting the cost.", "She suggested us to split the cost.", "She suggested to split the cost.", "She suggested us splitting the cost."],
+      a: [0],
+      why: "<b>suggest + V-ing</b> (veya <i>suggest that we split</i>). <code>suggest sb to do</code> ve <code>suggest to do</code> biçimleri İngilizcede yoktur; bu üç yanlış şık tam olarak sınavın beklediği tuzaktır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

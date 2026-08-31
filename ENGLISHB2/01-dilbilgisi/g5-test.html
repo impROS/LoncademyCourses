@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g5 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g5",
+  code: "Dilbilgisi · g5",
+  title: "Koşul cümleleri ve wish",
+  back: "g5-conditionals.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Tip 1",
+      q: "If the supplier ______ the deadline again, we'll look for another one.",
+      opts: ["misses", "will miss", "would miss", "missed"],
+      a: [0],
+      why: "<b>misses</b> — tip 1'de <code>if</code> tarafı present simple, sonuç tarafı <code>will</code> alır. <code>will</code>'i if tarafına koymak Türkçe konuşanların en sık hatasıdır ve sınavın en sevdiği çeldiricidir."
+    },
+    {
+      topic: "Tip 2",
+      q: "If I ______ you, I'd ask for a written contract.",
+      opts: ["were", "am", "would be", "had been"],
+      a: [0],
+      why: "<b>were</b> — tavsiye kalıbı <code>If I were you, I'd…</code>. Tip 2 hayalidir, bu yüzden <code>am</code> (gerçek durum) olamaz; <code>would be</code> ise if tarafına asla girmez."
+    },
+    {
+      topic: "Tip 3",
+      q: "If they ______ the fault earlier, the whole system wouldn't have crashed.",
+      opts: ["had noticed", "noticed", "would notice", "have noticed"],
+      a: [0],
+      why: "<b>had noticed</b> — geçmişte olmamış bir şeyi varsayıyoruz, yani tip 3: <code>if + past perfect, would have + V3</code>. Sonuç tarafındaki <i>wouldn't have crashed</i> zaten tipi ele veriyor."
+    },
+    {
+      topic: "Karma koşullar",
+      q: "If she had accepted that transfer, she ______ in Berlin now.",
+      opts: ["would be living", "would have lived", "lived", "will live"],
+      a: [0],
+      why: "<b>would be living</b> — geçmiş koşul, <i>şimdiki</i> sonuç: karma koşul. Sonuç tarafındaki <code>now</code> kelimesi <code>would + V1</code> biçimini zorunlu kılar; <code>would have lived</code> sonucu geçmişe hapsederdi."
+    },
+    {
+      topic: "Karma koşullar",
+      q: "If he ______ so disorganised, he wouldn't have missed the deadline last week.",
+      opts: ["weren't", "hadn't been", "isn't", "wouldn't be"],
+      a: [0],
+      why: "<b>weren't</b> — kalıcı bir kişilik özelliği (şimdiki durum) geçmişteki bir sonucu doğurmuş: karma koşulun ikinci türü. <code>hadn't been</code> özelliği tek bir geçmiş ana indirger ve 'genel olarak dağınık' anlamını kaybettirir."
+    },
+    {
+      topic: "unless",
+      q: "We can't publish the article ______ the author approves the final version.",
+      opts: ["unless", "if", "in case", "even if"],
+      a: [0],
+      why: "<b>unless</b> = if not; 'onaylamazsa yayınlayamayız' anlamını tek kelimeyle verir. <code>if</code> anlamı tersine çevirirdi, <code>even if</code> ise onaya rağmen yayınlanmayacağını söylerdi."
+    },
+    {
+      topic: "unless",
+      q: "Which sentence is INCORRECT?",
+      opts: ["I won't sign unless you don't lower the price.", "I won't sign unless you lower the price.", "I'll sign as long as you lower the price.", "I'll sign provided that you lower the price."],
+      a: [0],
+      why: "<code>unless</code> zaten olumsuzluk taşır; içine ikinci bir <code>don't</code> koymak anlamı çift ters çevirip cümleyi bozar. Kanca: <i>unless</i> gördüğünde arkasından gelen fiili <b>olumlu</b> yaz."
+    },
+    {
+      topic: "in case",
+      q: "Print two copies ______ the projector fails during the presentation.",
+      opts: ["in case", "if", "unless", "otherwise"],
+      a: [0],
+      why: "<b>in case</b> — önlemi <i>şimdiden</i> alıyoruz. <code>if</code> deseydik kopyaları ancak projeksiyon bozulduktan sonra basardık, ki sunum sırasında bunun bir faydası olmaz."
+    },
+    {
+      topic: "wish",
+      q: "I wish I ______ that message; it caused a lot of trouble.",
+      opts: ["hadn't sent", "didn't send", "wouldn't send", "don't send"],
+      a: [0],
+      why: "<b>hadn't sent</b> — geçmişe duyulan pişmanlık <code>wish + past perfect</code> ile kurulur. <code>didn't send</code> şimdiki bir durumdan memnuniyetsizliği anlatırdı."
+    },
+    {
+      topic: "wish",
+      q: "I wish my neighbours ______ their music down after midnight.",
+      opts: ["would turn", "turned", "had turned", "will turn"],
+      a: [0],
+      why: "<b>would turn</b> — <i>başkasının</i> can sıkıcı davranışına sitem. Kendi davranışın için bu kalıp kullanılmaz; orada <code>I wish I could…</code> denir."
+    },
+    {
+      topic: "wish",
+      q: "Choose the two correct sentences. (Choose TWO.)",
+      opts: ["I wish I spoke better German.", "If only I had known about the discount!", "I wish I would be taller.", "I wish I have more free time."],
+      a: [0, 1],
+      why: "Şimdiki durum için <code>wish + past simple</code>, geçmiş için <code>if only + past perfect</code>. <code>wish + would</code> kendi durumun için kullanılmaz ve <code>wish + have</code> hiçbir zaman doğru değildir — <code>wish</code>'ten sonra present tense gelmez."
+    },
+    {
+      topic: "Tip 0 ve genel gerçek",
+      q: "If you ______ ice, it turns into water.",
+      opts: ["heat", "will heat", "would heat", "heated"],
+      a: [0],
+      why: "<b>heat</b> — değişmez bir gerçek anlatılıyor, yani tip 0: her iki taraf da present simple. Burada <code>will</code> kullanmak fiziksel bir yasayı tek seferlik bir olaya indirger."
+    },
+    {
+      topic: "Sonuçta diğer modallar",
+      q: "If you ______ any problems, call the support line immediately.",
+      opts: ["have", "will have", "would have", "had"],
+      a: [0],
+      why: "<b>have</b> — sonuç tarafı emir kipi olsa bile <code>if</code> tarafı present simple kalır. Bu, tip 1'in emir kipli çeşididir ve talimat metinlerinde çok geçer."
+    },
+    {
+      topic: "Dönüştürme",
+      q: "Rewrite: 'I didn't book a table, so we had to wait an hour.'",
+      opts: ["If I had booked a table, we wouldn't have had to wait an hour.", "If I booked a table, we wouldn't have to wait an hour.", "If I would have booked a table, we wouldn't wait an hour.", "If I have booked a table, we won't wait an hour."],
+      a: [0],
+      why: "Geçmişte olmamış bir eylem ve onun geçmiş sonucu → saf tip 3. Üçüncü şıktaki <code>If I would have booked</code> kalıbı İngilizcede hiçbir zaman doğru değildir; <code>would</code> if tarafına giremez."
+    },
+    {
+      topic: "as long as / provided",
+      q: "You may use the archive ______ you cite the source in your paper.",
+      opts: ["provided that", "in case", "even if", "unless"],
+      a: [0],
+      why: "<b>provided that</b> resmî bir şart bildirir: kaynağı gösterirsen izin var. <code>unless</code> anlamı tersine çevirir, <code>even if</code> ise şartı anlamsızlaştırır."
+    },
+    {
+      topic: "Tip 2",
+      q: "If the company ______ remote work, it would attract more applicants.",
+      opts: ["offered", "offers", "would offer", "had offered"],
+      a: [0],
+      why: "<b>offered</b> — sonuç tarafındaki <code>would attract</code> tip 2'yi işaret eder; şu an için hayali bir durum kuruluyor. <code>offers</code> tip 1 kurar ve sonuç <code>will attract</code> olurdu."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.3 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-6.3",
+  code: "Lambda & Streams · 6.3",
+  title: "Terminal İşlemler, Reduction ve Collectors",
+  back: "6.3-terminal-ve-collectors.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Boş stream",
+      q: "<pre>System.out.println(Stream.of().allMatch(x -&gt; false) + \" \"\n                 + Stream.of().anyMatch(x -&gt; true));</pre>What is the result?",
+      opts: [
+        "true false",
+        "false true",
+        "false false",
+        "true true"
+      ],
+      a: [0],
+      why: "Boş stream'de <code>allMatch</code> <b>her zaman <code>true</code></b> döner: \"koşulu bozan bir eleman yok\" mantığı (matematikte <i>vacuous truth</i>). Aynı sebeple <code>noneMatch</code> da <code>true</code> döner. <br><code>anyMatch</code> ise koşulu sağlayan <b>en az bir</b> eleman ister; boş stream'de bulamaz → <code>false</code>. <b>Kanca:</b> \"Boşta all ve none doğru, any yanlış.\""
+    },
+    {
+      topic: "reduce",
+      q: "<pre>Optional&lt;Integer&gt; o = Stream.of(1, 2).reduce(0, Integer::sum);</pre>What is the result?",
+      opts: [
+        "Compilation fails because this form of reduce returns Integer, not Optional.",
+        "The code compiles and o is Optional[3].",
+        "The code compiles and o is Optional.empty.",
+        "Compilation fails because Integer::sum is not a BinaryOperator."
+      ],
+      a: [0],
+      why: "Identity verilen biçim <b>her zaman bir değer üretebileceği için</b> doğrudan <code>T</code> döner — boş stream'de bile identity dönerdi, yani <code>Optional</code>'a gerek yoktur. <br><code>Optional</code> dönen biçim <b>identity'siz</b> olandır: <code>reduce(Integer::sum)</code>. <code>Integer::sum</code> geçerli bir <code>BinaryOperator&lt;Integer&gt;</code>'dır."
+    },
+    {
+      topic: "reduce",
+      q: "<pre>System.out.println(Stream.&lt;Integer&gt;of().reduce(Integer::sum));</pre>What is the result?",
+      opts: [
+        "Optional.empty",
+        "Optional[0]",
+        "0",
+        "A NoSuchElementException is thrown."
+      ],
+      a: [0],
+      why: "Identity'siz <code>reduce</code> <b>Optional</b> döner ve boş stream'de <b>boş Optional</b> verir — çünkü \"hiçbir eleman yoksa sonuç nedir\" sorusunun doğal bir cevabı yoktur. <br><code>reduce(0, Integer::sum)</code> yazsaydın identity olan <code>0</code> dönerdi. Exception atılmaz."
+    },
+    {
+      topic: "reduce",
+      q: "<pre>int r = Stream.of(\"a\", \"bb\").reduce(0, (n, s) -&gt; n + s.length(), Integer::sum);</pre>What is the result?",
+      opts: [
+        "3",
+        "Compilation fails.",
+        "2",
+        "An IllegalStateException is thrown."
+      ],
+      a: [0],
+      why: "Üç argümanlı <code>reduce</code>, sonuç tipi eleman tipinden <b>farklı</b> olduğunda kullanılır: accumulator <code>(U, T) -&gt; U</code>, combiner <code>(U, U) -&gt; U</code>. Burada uzunluklar toplanır: 1 + 2 = <b>3</b>. <br>Combiner yalnızca <b>paralel</b> çalıştırmada gerçekten kullanılır ama imza gereği <b>her zaman verilmelidir</b> — ve doğru olmalıdır, yoksa paralelde yanlış sonuç alırsın."
+    },
+    {
+      topic: "toList",
+      q: "<pre>Stream.of(\"a\").toList().add(\"b\");</pre>What is the result?",
+      opts: [
+        "An UnsupportedOperationException is thrown at runtime.",
+        "The code compiles and the list becomes [a, b].",
+        "Compilation fails.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Java 16'da eklenen <code>Stream.toList()</code> <b>değiştirilemez</b> bir liste döner. <br>Değiştirilebilir liste istiyorsan <code>collect(Collectors.toList())</code> kullanılır (genelde <code>ArrayList</code> döner). Üçüncü seçenek <code>collect(Collectors.toUnmodifiableList())</code>'tir — o da değiştirilemez ama <code>Stream.toList()</code>'in aksine <b>null eleman kabul etmez</b>."
+    },
+    {
+      topic: "Collectors.toMap",
+      q: "<pre>Stream.of(\"aa\", \"ab\")\n      .collect(Collectors.toMap(s -&gt; s.charAt(0), s -&gt; s));</pre>What is the result?",
+      opts: [
+        "An IllegalStateException is thrown at runtime.",
+        "A map with one entry is created; the last value wins.",
+        "Compilation fails.",
+        "A map with one entry is created; the first value wins."
+      ],
+      a: [0],
+      why: "İki argümanlı <code>toMap</code> anahtar tekrarını <b>hata sayar</b>: <code>IllegalStateException: Duplicate key a</code>. Sessizce üzerine yazmaz — veri kaybını gizlememek için bilinçli bir tercihtir. <br>Çözüm üçüncü argümandır: <code>toMap(k, v, (a, b) -&gt; a)</code> ilkini, <code>(a, b) -&gt; b</code> sonuncuyu seçer. Ayrıca <code>toMap</code> <b>null değer</b> kabul etmez (NPE)."
+    },
+    {
+      topic: "partitioningBy",
+      q: "<pre>Map&lt;Boolean,List&lt;String&gt;&gt; m = Stream.of(\"a\", \"b\")\n    .collect(Collectors.partitioningBy(s -&gt; s.length() &gt; 100));\nSystem.out.println(m.get(true));</pre>What is the result?",
+      opts: [
+        "[]",
+        "null",
+        "A NullPointerException is thrown.",
+        "[a, b]"
+      ],
+      a: [0],
+      why: "<code>partitioningBy</code> <b>her zaman</b> <code>true</code> ve <code>false</code> anahtarlarının ikisini de içeren bir map döner; eşleşen eleman yoksa değer <b>boş listedir</b>. <br>Bu, <code>groupingBy</code>'dan <b>temel farkıdır</b>: orada karşılığı olmayan anahtar map'te <b>hiç bulunmaz</b> ve <code>get</code> <code>null</code> döner."
+    },
+    {
+      topic: "groupingBy",
+      q: "<pre>Map&lt;Integer,Set&lt;String&gt;&gt; m = Stream.of(\"a\")\n    .collect(Collectors.groupingBy(String::length));</pre>What is the result?",
+      opts: [
+        "Compilation fails because groupingBy produces Lists by default.",
+        "The code compiles and produces a map of sets.",
+        "Compilation fails because String::length is not a valid classifier.",
+        "An IllegalStateException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Tek argümanlı <code>groupingBy</code> <b>Map&lt;K, List&lt;T&gt;&gt;</b> üretir; <code>Set</code> istiyorsan downstream vermelisin: <code>groupingBy(String::length, Collectors.toSet())</code>. <br><code>String::length</code> geçerli bir sınıflandırıcıdır (<code>Function&lt;String,Integer&gt;</code>). Varsayılan map tipi <code>HashMap</code>'tir — sıra garantisi yoktur."
+    },
+    {
+      topic: "Collectors",
+      q: "<pre>Integer c = Stream.of(\"a\", \"b\").collect(Collectors.counting());</pre>What is the result?",
+      opts: [
+        "Compilation fails because counting() returns Long.",
+        "The code compiles and c is 2.",
+        "Compilation fails because counting() takes an argument.",
+        "The code compiles but c is null."
+      ],
+      a: [0],
+      why: "<code>Collectors.counting()</code> <b><code>Long</code></b> döner (büyük veri setleri için); <code>Long</code> ile <code>Integer</code> arasında dönüşüm <b>yoktur</b> (3.2: kutulamadan sonra genişletme olmaz). <br>Aynı şekilde <code>stream.count()</code> de <b><code>long</code></b> döner. <code>Integer</code> istiyorsan açıkça <code>intValue()</code> çağırman gerekir."
+    },
+    {
+      topic: "Terminal işlemler",
+      q: "Which terminal operations return an Optional? (Choose TWO.)",
+      opts: [
+        "max(Comparator)",
+        "findAny()",
+        "count()",
+        "anyMatch(Predicate)"
+      ],
+      a: [0, 1],
+      why: "<code>min</code>, <code>max</code>, <code>findFirst</code>, <code>findAny</code> ve identity'siz <code>reduce</code> <b>Optional</b> döner — boş stream'de mantıklı bir değer üretemezler. <br><code>count()</code> <b><code>long</code></b>, <code>anyMatch</code>/<code>allMatch</code>/<code>noneMatch</code> <b><code>boolean</code></b> döner; bunların boş stream'de tanımlı cevapları vardır."
+    },
+    {
+      topic: "Collectors",
+      q: "<pre>System.out.println(Stream.of(\"a\",\"b\")\n    .collect(Collectors.joining(\", \", \"[\", \"]\")));</pre>What is the result?",
+      opts: [
+        "[a, b]",
+        "[, a, b]",
+        "a, b",
+        "[a][b]"
+      ],
+      a: [0],
+      why: "<code>joining</code>'in üç argümanlı biçiminin sırası <b>(ayırıcı, önek, sonek)</b>'tir. Önek ve sonek sonuca <b>bir kez</b> eklenir, ayırıcı ise elemanlar <b>arasına</b> girer. <br>Sınav argüman sırasını karıştırmanı bekler; \"önce ayırıcı\" diye hatırla."
+    },
+    {
+      topic: "Collectors",
+      q: "<pre>Map&lt;Integer,Long&gt; m = Stream.of(\"aa\",\"bb\",\"c\")\n    .collect(Collectors.groupingBy(String::length, Collectors.counting()));\nSystem.out.println(m);</pre>What is the result?",
+      opts: [
+        "{1=1, 2=2}",
+        "{1=[c], 2=[aa, bb]}",
+        "{2=2, 1=1}",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Downstream olarak <code>counting()</code> verildiğinde her grubun <b>eleman sayısı</b> saklanır: uzunluk 1'den bir tane, uzunluk 2'den iki tane. Değerler <code>Long</code>'dur. <br>Varsayılan map <code>HashMap</code> olduğu için sıra garantisi yoktur; <code>Integer</code> anahtarlar küçük değerlerde genelde artan görünür ama <b>buna güvenilmez</b>."
+    },
+    {
+      topic: "Terminal işlemler",
+      q: "What is the difference between <code>forEach</code> and <code>forEachOrdered</code>?",
+      opts: [
+        "forEachOrdered preserves the encounter order even on a parallel stream.",
+        "forEach is lazy while forEachOrdered is eager.",
+        "forEachOrdered sorts the elements before consuming them.",
+        "forEach cannot be used on a parallel stream."
+      ],
+      a: [0],
+      why: "Paralel bir stream'de <code>forEach</code> elemanları <b>herhangi bir sırayla</b> işleyebilir; <code>forEachOrdered</code> ise kaynağın <b>karşılaşma sırasını (encounter order)</b> korur ve bu yüzden daha yavaştır. <br>Sıralı (sequential) stream'de ikisi aynıdır. <code>forEachOrdered</code> <b>sıralama yapmaz</b> — mevcut sırayı korur, bu farklı bir şeydir."
+    },
+    {
+      topic: "Collectors",
+      q: "Which statements about Collectors.toUnmodifiableList() are correct? (Choose TWO.)",
+      opts: [
+        "The returned list throws UnsupportedOperationException on add.",
+        "It throws NullPointerException if the stream contains a null element.",
+        "It returns an ArrayList that can be modified.",
+        "It is identical in behaviour to Stream.toList()."
+      ],
+      a: [0, 1],
+      why: "<code>toUnmodifiableList()</code> değiştirilemez bir liste üretir ve <code>List.of</code> gibi <b>null elemana izin vermez</b>. <br><code>Stream.toList()</code> ile <b>tam aynı değildir</b>: o da değiştirilemez ama <b>null kabul eder</b>. Değiştirilebilir liste isteyen <code>Collectors.toList()</code> kullanır."
+    },
+    {
+      topic: "reduce",
+      q: "<pre>System.out.println(Stream.of(\"a\",\"b\",\"c\").reduce(\"\", String::concat));</pre>What is the result?",
+      opts: [
+        "abc",
+        "Optional[abc]",
+        "cba",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Identity <code>\"\"</code> birleştirme için <b>etkisiz elemandır</b>, accumulator elemanları sırayla ekler → <b>abc</b>. Identity verildiği için dönüş <code>Optional</code> değil doğrudan <code>String</code>'dir. <br><b>Uyarı:</b> Identity yanlış seçilirse (örneğin <code>\"-\"</code>) paralel çalıştırmada sonuç <b>bozulur</b>, çünkü her parçaya ayrı ayrı eklenir."
+    },
+    {
+      topic: "Collectors",
+      q: "<pre>var s = Stream.of(\"aa\",\"b\").collect(Collectors.summarizingInt(String::length));\nSystem.out.println(s.getMax() + \" \" + s.getCount());</pre>What is the result?",
+      opts: [
+        "2 2",
+        "2 3",
+        "3 2",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>summarizingInt</code> bir <code>IntSummaryStatistics</code> döner: <code>getCount()</code> (long), <code>getSum()</code>, <code>getMin()</code>, <code>getMax()</code>, <code>getAverage()</code> hepsini <b>tek geçişte</b> hesaplar. Uzunluklar 2 ve 1 → max <b>2</b>, count <b>2</b>. <br>Aynı bilgiyi ayrı ayrı toplamak için stream'i birden çok kez dolaşman gerekirdi — ki bu mümkün değildir (6.2)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

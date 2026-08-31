@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>04-02 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-04-02",
+  code: "04 Dinamik · Bellek İnceleme",
+  title: "Bellek/Stack İnceleme, Watch, Canlı Takip",
+  back: "02-bellek-inceleme.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "x komutu",
+      q: "<code>x/8xg $rsp</code> kaç byte'lık bellek okur?",
+      opts: ["64 byte (8 adet × 8-byte giant)", "8 byte", "8 bit", "32 byte"],
+      a: [0],
+      why: "<b>g = giant = 8 byte</b>, sayı 8 → 8×8 = 64 byte. <code>x/8xb</code> olsaydı 8 byte olurdu. Boyut harfini (b/w/g) doğru okumak kritik."
+    },
+    {
+      topic: "x komutu",
+      q: "<code>x/4xb $rsp</code> ile <code>x/4xg $rsp</code> arasındaki fark nedir?",
+      opts: ["İlki 4 byte, ikincisi 4 qword (32 byte) okur", "İkisi de 4 byte okur", "İlki string, ikincisi sayı", "İkisi aynıdır"],
+      a: [0],
+      why: "<b>b=1 byte, g=8 byte.</b> 4b=4 byte, 4g=32 byte. Yanlış boyut harfi beklediğinden çok/az veri okutur ve endianness yorumunu bozar."
+    },
+    {
+      topic: "x komutu",
+      q: "Sıradaki 10 komutu disassemble ederek ileriye bakmak için hangi komut?",
+      opts: ["<code>x/10i $rip</code>", "<code>x/10s $rip</code>", "<code>x/10d $rip</code>", "<code>p $rip</code>"],
+      a: [0],
+      why: "<b>i = instruction formatı.</b> <code>x/10i $rip</code> rip'ten itibaren 10 komutu çözerek gösterir — akışın önünü görmenin hızlı yolu. s=string, d=decimal farklı çıktı verir."
+    },
+    {
+      topic: "x komutu",
+      q: "Bir qword'ü <code>x/xg</code> ile okuduğunda değer doğru birleşir; ama <code>x/8xb</code> ile aynı yeri okuyunca byte'lar 'ters' görünür. Neden?",
+      opts: ["x86-64 little-endian; byte döküm ham sırada, qword okuma byte'ları doğru birleştirir", "GDB hatası", "Bellek bozuk", "8xb her zaman yanlıştır"],
+      a: [0],
+      why: "1.1'deki endianness: byte byte dökümde (<code>xb</code>) düşük byte önce görünür (ters gibi); <code>xg</code> ise qword'ü doğru sayıya birleştirir. İkisi tutarlı, sadece gösterim farklı."
+    },
+    {
+      topic: "Stack okuma",
+      q: "Stack dökümünde <code>.text</code> aralığında (kod bölgesi) bir değer görmen büyük olasılıkla neyi işaret eder?",
+      opts: ["Bir dönüş adresi (ret buraya dönecek)", "Bir string", "Bir yerel sayaç", "Kaydedilmiş rbp"],
+      a: [0],
+      why: "Kod aralığındaki (<code>.text</code>) bir stack değeri tipik olarak <b>dönüş adresidir</b>. Kaydedilmiş rbp bir <i>stack</i> adresi (0x7fff…) olur; ikisini aralıklarından ayırt edersin."
+    },
+    {
+      topic: "Stack okuma",
+      q: "Overflow analizinde buffer ile dönüş adresi arasındaki mesafeyi nasıl ölçersin?",
+      opts: ["Stack'i dökerek buffer başından dönüş adresine kadar byte sayarım", "Sadece kaynağa bakarım", "Register sayısını sayarım", "Ölçülemez"],
+      a: [0],
+      why: "Stack dökümünde (<code>x/xg $rsp</code>) buffer'ın başladığı yeri ve dönüş adresinin durduğu yeri bulup <b>aradaki byte'ları sayarsın</b> — bu 'offset' exploit'in temelidir (Bölüm 6)."
+    },
+    {
+      topic: "Watchpoint",
+      q: "Watchpoint ile breakpoint arasındaki temel fark nedir?",
+      opts: ["Watchpoint bir veriye (değişkene/adrese) kurulur ve değer değişince durur; breakpoint bir koda kurulur", "İkisi de koda kurulur", "Watchpoint daha hızlı çalışır", "Breakpoint veriye kurulur"],
+      a: [0],
+      why: "<b>Breakpoint = kod noktası, watchpoint = veri.</b> 'Bu değer nerede değişiyor?' sorusunu watchpoint cevaplar: değişimde otomatik durur, <code>bt</code> ile yeri bulursun."
+    },
+    {
+      topic: "Watchpoint",
+      q: "<code>watch x</code> ile <code>rwatch x</code> arasındaki fark nedir?",
+      opts: ["watch x yazıldığında, rwatch x okunduğunda durur", "İkisi de yazmada durur", "rwatch daha yavaştır sadece", "watch sadece global için çalışır"],
+      a: [0],
+      why: "<b>watch = write, rwatch = read, awatch = ikisi.</b> Bir değerin ne zaman <i>okunduğunu</i> (örn. bir anahtarın kullanıldığını) bulmak için rwatch kullanılır."
+    },
+    {
+      topic: "Watchpoint",
+      q: "Yerel bir değişkene watchpoint koymanın riski nedir?",
+      opts: ["Fonksiyon kapsamı bitince o adres başka şeye ait olur; watch yanlış tetiklenebilir", "Yerel değişkene watch konamaz", "Program çöker", "Watch kalıcı olur"],
+      a: [0],
+      why: "Yerel değişken bir <b>stack adresidir</b>; fonksiyon dönünce o adres yeniden kullanılır → watch alakasız değişimlerde tetiklenir. Global/heap adresleri daha güvenlidir. Ayrıca donanım watch sayısı sınırlıdır (~4)."
+    },
+    {
+      topic: "Backtrace",
+      q: "<code>backtrace</code> (bt) komutu ne gösterir?",
+      opts: ["Çağrı yığınını: hangi fonksiyon hangi fonksiyonu çağırarak buraya gelindiğini", "Anlık register değerlerini", "Tüm string'leri", "Sıradaki komutu"],
+      a: [0],
+      why: "<b>bt = çağrı zinciri.</b> Bir crash'te veya watchpoint durağında 'buraya nasıl geldim' sorusunu cevaplar. Stripped'te isimler yerine adresler görürsün ama zincir okunur."
+    },
+    {
+      topic: "Backtrace",
+      q: "pwndbg olmayan bir GDB'de <code>info locals</code> ve <code>info args</code> ne zaman anlamlı çıktı verir?",
+      opts: ["Binary debug bilgisiyle (-g) derlenmişse; stripped'te sınırlı/boş olur", "Her zaman tam çalışır", "Sadece PIE binary'lerde", "Hiçbir zaman"],
+      a: [0],
+      why: "<code>info locals</code>/<code>info args</code> <b>debug sembollerine</b> dayanır. Stripped/optimize binary'de isimli yerel/argüman bilgisi olmayabilir; o zaman register ve stack'i elle okursun."
+    },
+    {
+      topic: "Canlı takip kalıbı",
+      q: "Dönüşümlü bir crackme'de (girdi işlenip karşılaştırılıyor) beklenen değeri bulmanın dinamik kalıbı nedir?",
+      opts: ["Girdiyi bul → dönüşüm döngüsünü adımla → karşılaştırma anında her iki tarafı oku", "Programı 1000 kez rastgele girdiyle çalıştır", "Sadece strings'e bak", "Binary'yi hex editörle değiştir"],
+      a: [0],
+      why: "Statikte anlaşılmayan dönüşümü <b>gözünle görerek</b> çözersin: buffer'ı izle, her turda değişimi oku, <code>cmp</code>/<code>strcmp</code>'te beklenen değeri yakala. Sonra o değeri üreten girdiyi hesapla (keygen, Bölüm 5)."
+    },
+    {
+      topic: "x komutu",
+      q: "<code>x/s &buf</code> komutu ne yapar?",
+      opts: ["buf değişkeninin adresindeki string'i okur", "buf'un adresini decimal gösterir", "buf'a string yazar", "buf'u siler"],
+      a: [0],
+      why: "<code>&buf</code> = buf'un adresi; <code>x/s</code> = oradaki string'i oku. Girdinin yazıldığı buffer'ın içeriğini görmenin doğrudan yolu. <code>p buf</code> ise farklı (değerin kendisi/derleyiciye göre)."
+    },
+    {
+      topic: "Stack okuma",
+      q: "pwndbg'de <code>telescope $rsp</code> düz <code>x/xg $rsp</code>'ye göre ne ekstra sağlar?",
+      opts: ["Stack'teki pointer'ları takip edip nereyi gösterdiklerini çözerek gösterir", "Stack'i şifreler", "Sadece renk ekler, bilgi aynı", "Programı hızlandırır"],
+      a: [0],
+      why: "<b>telescope</b> her qword'ün bir pointer olup olmadığını kontrol eder ve zincirleme çözer (adres → gösterdiği string/kod). Ham hex dökümünden çok daha okunur bir stack görünümü verir."
+    },
+    {
+      topic: "Watchpoint",
+      q: "Watchpoint'ler hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Bir veriye kurulur; değer değişince otomatik durur", "<code>rwatch</code> değer okunduğunda durur", "Bir koda kurulur (breakpoint gibi)", "Sınırsız sayıda donanım watchpoint konabilir"],
+      a: [0, 1],
+      why: "<b>Watchpoint veriye kurulur</b> (breakpoint koda); <b>rwatch okuma</b>, watch yazma, awatch ikisi. Donanım watchpoint sayısı sınırlıdır (~4); aşınca yavaş software watch'a düşer."
+    },
+    {
+      topic: "x komutu",
+      q: "GDB <code>x</code> (examine) formatı hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>g</code> boyut harfi 8 byte (giant) demektir", "<code>i</code> format harfi komutu disassemble eder", "<code>b</code> boyut harfi 8 byte demektir", "<code>s</code> format harfi 'signed' demektir"],
+      a: [0, 1],
+      why: "<b>g=8 byte, i=instruction.</b> <code>b</code>=1 byte (8 değil), <code>s</code>=string (signed değil). Format/boyut harflerini karıştırmak yanlış okuma yaptırır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

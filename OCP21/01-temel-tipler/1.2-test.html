@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-1.2",
+  code: "Temel Tipler · 1.2",
+  title: "String, StringBuilder ve Text Block'lar",
+  back: "1.2-string-ve-stringbuilder.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Immutability",
+      q: "<pre>String s = \"hello\";\ns.toUpperCase();\ns.concat(\" world\");\nSystem.out.println(s);</pre>What is the result?",
+      opts: [
+        "hello",
+        "HELLO world",
+        "HELLO",
+        "hello world"
+      ],
+      a: [0],
+      why: "<code>String</code> <b>immutable</b>'dır: her metot <b>yeni</b> bir String döner, mevcut olanı değiştirmez. Dönüş değerleri hiçbir yere atanmadığı için iki satır da etkisizdir. <b>Kanca:</b> Immutable bir tipte dönüşü atanmayan satır gördüğünde o satırı kalemle çiz — yok say."
+    },
+    {
+      topic: "String pool",
+      q: "<pre>String a = \"java\";\nString b = \"ja\" + \"va\";\nString c = new String(\"java\");\nSystem.out.println((a == b) + \" \" + (a == c));</pre>What is the result?",
+      opts: [
+        "true false",
+        "true true",
+        "false false",
+        "false true"
+      ],
+      a: [0],
+      why: "<code>\"ja\" + \"va\"</code> iki <b>literal</b>in birleşimidir, derleyici bunu derleme zamanında <code>\"java\"</code>ya çevirir ve <b>havuzdaki</b> aynı nesneye bağlar → <code>true</code>. <code>new String(...)</code> ise <b>her zaman</b> havuz dışında yeni bir nesne üretir → <code>false</code>. <b>Kanca:</b> <code>==</code> sorusunda <code>new</code> görürsen cevap neredeyse kesin <code>false</code>."
+    },
+    {
+      topic: "String pool",
+      q: "<pre>String x = \"ja\";\nString y = x + \"va\";\nSystem.out.println((y == \"java\") + \" \" + (y.intern() == \"java\"));</pre>What is the result?",
+      opts: [
+        "false true",
+        "true true",
+        "false false",
+        "true false"
+      ],
+      a: [0],
+      why: "<code>x</code> <b>final değil</b>, bu yüzden <code>x + \"va\"</code> derleme zamanı sabiti sayılmaz ve birleştirme <b>çalışma zamanında</b> yeni bir nesne üretir → <code>==</code> false. <code>intern()</code> havuzdaki eşdeğer nesneyi döndürdüğü için ikinci karşılaştırma true. <b>Kanca:</b> <code>x</code> <code>final</code> olsaydı ilki de <code>true</code> olurdu."
+    },
+    {
+      topic: "substring sınırları",
+      q: "<pre>String s = \"abcdef\";\nSystem.out.println(\"[\" + s.substring(2, 2) + \"][\" + s.substring(6) + \"]\");</pre>What is the result?",
+      opts: [
+        "[][]",
+        "[c][f]",
+        "A StringIndexOutOfBoundsException is thrown at runtime.",
+        "[cd][]"
+      ],
+      a: [0],
+      why: "<code>substring(2, 2)</code> — başlangıç ve bitiş aynı olduğunda <b>boş String</b> döner, exception atmaz. <code>substring(6)</code> — indeks <code>length()</code>'e <b>eşit</b> olabilir, yine boş String. Exception yalnızca <code>length()</code>'i <b>aşarsan</b> ya da <code>begin &gt; end</code> olursa atılır. <b>Kanca:</b> \"length'e eşit serbest, bir fazlası patlar.\""
+    },
+    {
+      topic: "String metotları",
+      q: "Which statements about String methods are correct? (Choose TWO.)",
+      opts: [
+        "indexOf returns -1 when the substring is not found.",
+        "replace(CharSequence, CharSequence) replaces every occurrence and does not use regular expressions.",
+        "charAt returns -1 when the index is out of range.",
+        "trim() removes all Unicode whitespace characters."
+      ],
+      a: [0, 1],
+      why: "<code>indexOf</code> bulamazsa <b>-1</b> döner (exception atmaz). <code>replace</code> düz metinle çalışır ve <b>tüm</b> eşleşmeleri değiştirir; regex isteyen <code>replaceAll</code>'dır. <br>Yanlışlar: <code>charAt</code> sınır dışında <b>StringIndexOutOfBoundsException</b> atar, -1 dönmez. <code>trim()</code> yalnızca <code>U+0020</code> ve altını kırpar; Unicode boşluklar için <b>strip()</b> gerekir."
+    },
+    {
+      topic: "StringBuilder",
+      q: "<pre>StringBuilder sb = new StringBuilder(\"abc\");\nsb.append(\"de\").reverse().delete(0, 2);\nSystem.out.println(sb);</pre>What is the result?",
+      opts: [
+        "cba",
+        "abc",
+        "edcba",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Zincir soldan sağa işler: <code>append(\"de\")</code> → <code>abcde</code>, <code>reverse()</code> → <code>edcba</code>, <code>delete(0, 2)</code> ilk iki karakteri siler (bitiş <b>hariç</b>) → <b>cba</b>. Her metot <b>aynı nesneyi</b> (<code>this</code>) döndürdüğü için zincirleme çalışır ve <code>sb</code> gerçekten değişir — String'in tam tersi."
+    },
+    {
+      topic: "StringBuilder",
+      q: "<pre>StringBuilder a = new StringBuilder(\"ab\");\nStringBuilder b = new StringBuilder(\"ab\");\nSystem.out.println(a.equals(b) + \" \" + a.toString().equals(b.toString()));</pre>What is the result?",
+      opts: [
+        "false true",
+        "true true",
+        "false false",
+        "true false"
+      ],
+      a: [0],
+      why: "<code>StringBuilder</code> <b>equals()'ı override etmez</b>; <code>Object.equals</code> devreye girer ve <b>referans</b> karşılaştırır → farklı nesneler, <code>false</code>. Değer karşılaştırmak için <code>toString()</code> üzerinden gitmelisin. <b>Kanca:</b> StringBuilder'ı <code>Set</code> veya <code>Map</code> anahtarı olarak kullanmak da bu yüzden hatalıdır."
+    },
+    {
+      topic: "StringBuilder",
+      q: "<pre>StringBuilder sb = new StringBuilder(\"abc\");\nsb.delete(1, 99);\nSystem.out.println(\"[\" + sb + \"]\");</pre>What is the result?",
+      opts: [
+        "[a]",
+        "A StringIndexOutOfBoundsException is thrown at runtime.",
+        "[abc]",
+        "[]"
+      ],
+      a: [0],
+      why: "<code>StringBuilder.delete</code>, bitiş indeksi uzunluğu aşarsa onu <b>sessizce uzunluğa çeker</b> ve sona kadar siler — exception atmaz. Bu, <code>String.substring(1, 99)</code>'un davranışıyla <b>çelişir</b>: orada exception atılır. <b>Kanca:</b> delete toleranslı, substring katı."
+    },
+    {
+      topic: "Text block",
+      q: "<pre>String s = \"\"\"\n    a\n    b\"\"\";\nSystem.out.println(s.length());</pre>What is the result?",
+      opts: [
+        "3",
+        "4",
+        "9",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Girinti (incidental whitespace) silinir → <code>\"a\\nb\"</code>. Kapanış <code>\"\"\"</code> <b>son satırın sonunda</b> olduğu için metnin sonuna <code>\\n</code> eklenmez → 1 + 1 + 1 = <b>3</b>. Kapanış ayrı satırda olsaydı <b>4</b> olurdu. <b>Kanca:</b> \"Kapanış aşağı inerse sonda bir <code>\\n</code> kazanırsın.\""
+    },
+    {
+      topic: "Text block",
+      q: "Which statements about text blocks are correct? (Choose TWO.)",
+      opts: [
+        "The opening delimiter must be followed by a line terminator.",
+        "A backslash at the end of a line joins that line with the next one without adding a newline.",
+        "Trailing spaces at the end of each line are preserved automatically.",
+        "A text block may be written on a single line as in \"\"\"abc\"\"\"."
+      ],
+      a: [0, 1],
+      why: "Açılış <code>\"\"\"</code>'ten sonra <b>satır sonu zorunludur</b>; bu yüzden tek satırlık <code>\"\"\"abc\"\"\"</code> <b>derlenmez</b>. Satır sonundaki <code>\\</code> iki satırı birleştirir ve <code>\\n</code> eklemez. <br>Satır sonlarındaki boşluklar <b>otomatik silinir</b> — korumak istiyorsan <code>\\s</code> kaçışını kullanman gerekir."
+    },
+    {
+      topic: "String metotları",
+      q: "<pre>System.out.println(\"a,b,,\".split(\",\").length);</pre>What is the result?",
+      opts: [
+        "2",
+        "4",
+        "3",
+        "1"
+      ],
+      a: [0],
+      why: "<code>split</code> varsayılan olarak (limit = 0) <b>sondaki boş parçaları atar</b> → <code>[\"a\", \"b\"]</code>, uzunluk <b>2</b>. Bunları korumak için negatif limit verilir: <code>split(\",\", -1)</code> uzunluğu <b>4</b> yapar. <b>Kanca:</b> Sondaki boşlar sessizce kaybolur — ortadakiler kalır."
+    },
+    {
+      topic: "String metotları",
+      q: "<pre>String s = null;\nSystem.out.println(String.valueOf(s) + \"|\" + \"x\".equals(s));</pre>What is the result?",
+      opts: [
+        "null|false",
+        "A NullPointerException is thrown at runtime.",
+        "|false",
+        "null|true"
+      ],
+      a: [0],
+      why: "<code>String.valueOf(Object)</code> null için <b>\"null\" metnini</b> döner, NPE atmaz. <code>\"x\".equals(null)</code> da <b>false</b> döner — <code>equals</code> null argümanla patlamaz. <b>Kanca:</b> Bu yüzden null'a karşı güvenli yazım <code>sabit.equals(degisken)</code> şeklindedir (<i>Yoda condition</i>)."
+    },
+    {
+      topic: "String metotları",
+      q: "<pre>System.out.println(\"abc\".chars().count());</pre>Which type does <code>\"abc\".chars()</code> return?",
+      opts: [
+        "IntStream",
+        "Stream&lt;Character&gt;",
+        "CharStream",
+        "Stream&lt;String&gt;"
+      ],
+      a: [0],
+      why: "<code>CharSequence.chars()</code> <b>IntStream</b> döner — karakterler <code>int</code> kod noktası olarak akar. <code>CharStream</code> diye bir sınıf <b>yoktur</b>; <code>Stream&lt;Character&gt;</code> ise <code>mapToObj(c -&gt; (char) c)</code> ile elde edilir. <b>Kanca:</b> Java'da primitif stream'ler yalnızca üç tanedir: <code>IntStream</code>, <code>LongStream</code>, <code>DoubleStream</code> (6.4)."
+    },
+    {
+      topic: "Biçimlendirme",
+      q: "<pre>System.out.println(\"%d\".formatted(3.5));</pre>What is the result?",
+      opts: [
+        "An IllegalFormatConversionException is thrown at runtime.",
+        "Compilation fails.",
+        "3",
+        "3.5"
+      ],
+      a: [0],
+      why: "<code>%d</code> yalnızca <b>tamsayı</b> tipleri kabul eder; <code>double</code> verilince çalışma zamanında <b>IllegalFormatConversionException</b> atılır. Kod <b>derlenir</b>, çünkü <code>formatted</code> parametresi <code>Object...</code>'tir ve derleyici uyum kontrolü yapamaz. <b>Kanca:</b> Format hataları neredeyse her zaman <i>runtime</i> hatasıdır."
+    },
+    {
+      topic: "Immutability",
+      q: "<pre>String s = \"abc\";\ns += \"d\";\nStringBuilder sb = new StringBuilder(\"abc\");\nsb.append(\"d\");\nSystem.out.println(s + \" \" + sb);</pre>What is the result?",
+      opts: [
+        "abcd abcd",
+        "abc abcd",
+        "abcd abc",
+        "abc abc"
+      ],
+      a: [0],
+      why: "<code>s += \"d\"</code> yeni bir String üretir ama <b>sonucu s'e atar</b>, bu yüzden s değişmiş görünür — asıl nesne değil, referans değişti. <code>sb.append(\"d\")</code> ise nesnenin kendisini değiştirir. İkisi de <b>abcd</b>. <b>Kanca:</b> Immutability \"değişmez\" demek değil, \"<i>o nesne</i> değişmez\" demektir; değişkeni yeniden bağlayabilirsin."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

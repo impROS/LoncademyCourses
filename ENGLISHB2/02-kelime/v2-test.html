@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v2 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "v2",
+  code: "Kelime · v2",
+  title: "Eğitim, teknoloji ve medya",
+  back: "v2-egitim-teknoloji.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Eğitim",
+      q: "After failing two modules, he had to ______ them in the summer session.",
+      opts: ["resit", "revise", "enrol", "graduate"],
+      a: [0],
+      why: "<b>resit</b> = kalınan sınava yeniden girmek. <code>revise</code> sınava çalışmaktır (İngiliz İngilizcesi), sınava girmek değil — bu ikisi aynı cümlede sık karıştırılır."
+    },
+    {
+      topic: "Eğitim",
+      q: "She ______ from Hacettepe with a degree ______ pharmacy.",
+      opts: ["graduated / in", "graduated / of", "was graduated / in", "graduated from / on"],
+      a: [0],
+      why: "<b>graduate from</b> + kurum, <b>a degree in</b> + alan. Türkçedeki 'üniversiteyi bitirmek' nesne aldığı için <i>graduate the university</i> hatası çok yapılır; İngilizcede edat zorunludur."
+    },
+    {
+      topic: "Eğitim",
+      q: "He ______ of university in his second year and started his own business.",
+      opts: ["dropped out", "fell out", "gave up", "put off"],
+      a: [0],
+      why: "<b>drop out of</b> = okulu tamamlamadan bırakmak. <code>give up</code> genel bir vazgeçmedir ve resmî eğitim bağlamında bu özel anlamı taşımaz."
+    },
+    {
+      topic: "Teknoloji",
+      q: "The billing system is so ______ that no supplier will even maintain it any more.",
+      opts: ["obsolete", "outdated", "inefficient", "unavailable"],
+      a: [0],
+      why: "<b>obsolete</b> = artık kullanılamaz, desteklenmez hâle gelmiş. <code>outdated</code> daha yumuşaktır: eski ama hâlâ çalışabilir. Cümledeki 'kimse bakım yapmıyor' vurgusu daha güçlü kelimeyi gerektirir."
+    },
+    {
+      topic: "Teknoloji",
+      q: "Please ______ your work regularly; the server has crashed twice this month.",
+      opts: ["back up", "upgrade", "install", "log in"],
+      a: [0],
+      why: "<b>back up</b> (fiil, iki kelime) = yedeklemek. İsim hâli bitişik yazılır: <i>make a backup</i>. Bu yazım farkı sınavlarda kelime türü sorularında karşına çıkar."
+    },
+    {
+      topic: "Teknoloji",
+      q: "Many companies are becoming heavily ______ on a single cloud provider.",
+      opts: ["dependent", "dependable", "depending", "independent"],
+      a: [0],
+      why: "<b>dependent on</b> = bağımlı. <code>dependable</code> ise 'güvenilir' demektir ve tamamen farklı bir anlam taşır — aynı kökten türeyen iki sıfat, iki ayrı kavram."
+    },
+    {
+      topic: "Medya",
+      q: "The newspaper was accused of giving ______ coverage of the protests.",
+      opts: ["biased", "objective", "extensive", "broadcast"],
+      a: [0],
+      why: "<b>biased</b> = taraflı; 'suçlanmak' fiili olumsuz bir nitelik gerektirir. <code>objective</code> tam tersini söyler ve bir suçlama gerekçesi olamaz."
+    },
+    {
+      topic: "Medya",
+      q: "The clip ______ viral and was viewed six million times in two days.",
+      opts: ["went", "made", "became", "took"],
+      a: [0],
+      why: "<b>go viral</b> sabit bir collocation'dır. <code>become viral</code> anlaşılır ama doğal değildir; sınavlarda deyimsel eşleşme beklenir."
+    },
+    {
+      topic: "affect / effect",
+      q: "The new funding rules will ______ every department, and the ______ on research could be severe.",
+      opts: ["affect / effect", "effect / affect", "affect / affect", "effect / effect"],
+      a: [0],
+      why: "<b>affect</b> fiildir (etkilemek), <b>effect</b> isimdir (etki). Kanca: <i>a</i>ffect = <i>a</i>ction (eylem), <i>e</i>ffect = <i>e</i>nd result (sonuç)."
+    },
+    {
+      topic: "addictive / addicted",
+      q: "Choose the two correct sentences. (Choose TWO.)",
+      opts: ["Short-form video is highly addictive.", "My cousin is addicted to short-form video.", "Short-form video is highly addicted.", "My cousin is addictive to short-form video."],
+      a: [0, 1],
+      why: "<code>addictive</code> bağımlılık <i>yapan</i> şeyi niteler; <code>addicted (to)</code> bağımlı <i>olan</i> kişiyi. Aynı ayrım <i>boring/bored</i>, <i>interesting/interested</i> çiftlerinde de geçerlidir (bkz. v5)."
+    },
+    {
+      topic: "Word formation",
+      q: "There has been rapid ______ progress in battery design. (TECHNOLOGY)",
+      opts: ["technological", "technical", "technically", "technology"],
+      a: [0],
+      why: "<b>technological</b> = teknolojiye ilişkin, genel gelişme anlamında. <code>technical</code> ise ayrıntı/uzmanlık boyutunu anlatır: <i>a technical problem</i>. Aynı kökten iki sıfat, iki farklı iş."
+    },
+    {
+      topic: "Word formation",
+      q: "The website is not very ______ for people using screen readers. (ACCESS)",
+      opts: ["accessible", "accessing", "accessed", "accession"],
+      a: [0],
+      why: "<b>accessible</b> = erişilebilir. Word formation sorularında istenen tür, boşluğun cümledeki görevinden anlaşılır: <code>not very ___</code> yapısı bir sıfat bekler."
+    },
+    {
+      topic: "Tartışma dili",
+      q: "Remote learning has had a profound impact ______ students' motivation.",
+      opts: ["on", "to", "for", "in"],
+      a: [0],
+      why: "<b>impact on</b> — edat sabittir (<i>effect on</i>, <i>influence on</i> de aynı şekilde). Türkçedeki '-e etkisi' <i>to</i> demeye iter ama İngilizcede <code>on</code> kullanılır."
+    },
+    {
+      topic: "Tartışma dili",
+      q: "The main ______ of online courses is the lack of face-to-face interaction.",
+      opts: ["drawback", "benefit", "outcome", "background"],
+      a: [0],
+      why: "<b>drawback</b> = dezavantaj; cümlede eksiklik anlatılıyor. <code>benefit</code> tam tersidir ve 'lack of' ifadesiyle çelişir. Bu kelime for-and-against yazılarının omurgasıdır (bkz. s3)."
+    },
+    {
+      topic: "Sayılabilirlik",
+      q: "Which sentence is correct?",
+      opts: ["We collected several pieces of information.", "We collected several informations.", "We collected several information.", "We collected a few informations."],
+      a: [0],
+      why: "<code>information</code> sayılamaz bir isimdir; sayılmak için <b>pieces of</b> gibi bir ölçü ifadesi gerekir. Aynı grupta <i>advice, research, equipment, furniture, news</i> vardır ve hiçbiri çoğul almaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

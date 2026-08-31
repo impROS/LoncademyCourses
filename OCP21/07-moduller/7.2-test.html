@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-7.2",
+  code: "Modüller · 7.2",
+  title: "Derleme, jar, jlink ve Modüle Geçiş",
+  back: "7.2-derleme-ve-migrasyon.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "java komutu",
+      q: "Which command correctly runs the class <code>com.app.Main</code> in module <code>com.app</code> from the directory <code>out</code>?",
+      opts: [
+        "java -p out -m com.app/com.app.Main",
+        "java -p out -m com.app.com.app.Main",
+        "java -cp out -m com.app/com.app.Main",
+        "java -p out --module com.app.Main"
+      ],
+      a: [0],
+      why: "<code>-p</code> = <code>--module-path</code>, <code>-m</code> = <code>--module</code> ve değeri <b><code>modulAdi/SinifTamAdi</code></b> biçimindedir — arada <b>eğik çizgi</b> vardır. <br><code>-cp</code> classpath'tir ve modül yolu yerine geçmez; modül adı olmadan yalnızca sınıf adı vermek de yetmez. Jar'da <code>Main-Class</code> tanımlıysa <code>java -p jars -m com.app</code> kısaltması kullanılabilir."
+    },
+    {
+      topic: "javac komutu",
+      q: "Which option compiles a multi-module source tree in one command?",
+      opts: [
+        "--module-source-path",
+        "--module-path",
+        "--source-path",
+        "--add-modules"
+      ],
+      a: [0],
+      why: "<code>--module-source-path</code> derleyiciye \"bu kökün altındaki her klasör bir modüldür\" der ve hepsini tek seferde derler. <br><code>--module-path</code> <b>bağımlı</b> modüllerin (derlenmiş) bulunduğu yerdir — kaynak değil. <code>--add-modules</code> çözümleme kökü eklemek içindir."
+    },
+    {
+      topic: "jar komutu",
+      q: "Which jar option shows the module directives of a modular JAR?",
+      opts: [
+        "--describe-module",
+        "--list",
+        "--main-class",
+        "--update"
+      ],
+      a: [0],
+      why: "<code>jar --describe-module --file x.jar</code> modülün adını, <code>requires</code>, <code>exports</code>, <code>provides</code> ve <code>contains</code> satırlarını yazdırır. <br><code>--list</code> (<code>-t</code>) yalnızca <b>dosya içeriğini</b> listeler; <code>--main-class</code> manifest'e giriş noktası yazar; <code>--update</code> var olan jar'ı değiştirir."
+    },
+    {
+      topic: "jar komutu",
+      q: "<pre>jar --create --file app.jar --main-class com.app.Main -C out .</pre>What does the <code>-C out .</code> part do?",
+      opts: [
+        "It changes into the out directory and adds its contents to the jar.",
+        "It compiles the sources in out before packaging.",
+        "It sets the classpath to out.",
+        "It creates the out directory if it does not exist."
+      ],
+      a: [0],
+      why: "<code>-C dizin .</code> jar aracına \"o dizine geç ve oradaki her şeyi ekle\" der — böylece jar içinde <code>out/</code> öneki <b>oluşmaz</b>, paket yapısı kökten başlar. <br><code>jar</code> bir <b>paketleme</b> aracıdır, derleme yapmaz; classpath ile de ilgisi yoktur."
+    },
+    {
+      topic: "jdeps",
+      q: "What is the primary purpose of the <code>jdeps</code> tool?",
+      opts: [
+        "Analysing class and module dependencies.",
+        "Creating a custom runtime image.",
+        "Packaging classes into a modular JAR.",
+        "Running a modular application."
+      ],
+      a: [0],
+      why: "<code>jdeps</code> bir <b>statik analiz</b> aracıdır: hangi paketlerin/modüllerin kullanıldığını gösterir, <code>--jdk-internals</code> ile riskli iç API kullanımını bulur ve <code>--generate-module-info</code> ile <b>taslak</b> bir <code>module-info.java</code> üretir. <br>Runtime image üretmek <code>jlink</code>'in, paketlemek <code>jar</code>'ın, çalıştırmak <code>java</code>'nın işidir."
+    },
+    {
+      topic: "jlink",
+      q: "Which statements about jlink are correct? (Choose TWO.)",
+      opts: [
+        "It creates a runtime image containing only the required modules.",
+        "It cannot work with automatic modules.",
+        "It produces a modular JAR file.",
+        "It requires all dependencies to be on the classpath."
+      ],
+      a: [0, 1],
+      why: "<code>jlink</code> yalnızca gereken modülleri içeren, <b>ayrı bir JRE gerektirmeyen</b> çalışma zamanı görüntüsü üretir — dağıtım boyutunu ciddi biçimde küçültür. <br>Ancak <b>tüm</b> modüllerin adlandırılmış olmasını şart koşar: <b>automatic modüllerle çalışmaz</b>. Jar üretmez ve bağımlılıkları <b>modül yolundan</b> okur, classpath'ten değil."
+    },
+    {
+      topic: "jlink",
+      q: "What does <code>--launcher selam=com.app</code> do in a jlink command?",
+      opts: [
+        "It creates an executable script named selam that runs module com.app.",
+        "It renames the module com.app to selam.",
+        "It sets the main class of com.app to selam.",
+        "It adds selam as an additional module to the image."
+      ],
+      a: [0],
+      why: "<code>--launcher ad=modul</code> üretilen runtime'ın <code>bin/</code> dizinine <b>çalıştırılabilir bir betik</b> koyar; kullanıcı <code>./runtime/bin/selam</code> yazarak uygulamayı doğrudan başlatır. <br>Modülün <b>adı değişmez</b>; ana sınıf jar manifest'inden veya <code>modul/sinif</code> biçiminden gelir."
+    },
+    {
+      topic: "Migrasyon",
+      q: "Why is bottom-up migration usually preferred over top-down?",
+      opts: [
+        "Because a named module cannot read code on the classpath.",
+        "Because top-down migration is not supported by javac.",
+        "Because automatic modules cannot be compiled.",
+        "Because jlink only works top-down."
+      ],
+      a: [0],
+      why: "Adlandırılmış bir modül <b>unnamed (adsız) modülü okuyamaz</b>; bu yüzden bir modülü modülleştirdiğinde onun bağımlılıkları da modül yolunda olmak zorundadır. Doğal sıra <b>en alttaki bağımlılıktan başlamaktır</b>. <br>Top-down <b>desteklenir</b> ve gerçekte de kullanılır: bağımlılıklar <b>automatic modül</b> olarak bırakılır — ama o zaman <code>jlink</code> kullanılamaz."
+    },
+    {
+      topic: "Split package",
+      q: "Two different modules both contain the package <code>com.util</code>. What happens?",
+      opts: [
+        "The module system rejects it; a package may belong to only one module.",
+        "The first module on the module path wins silently.",
+        "The packages are merged automatically.",
+        "It is allowed as long as the class names differ."
+      ],
+      a: [0],
+      why: "<b>Split package</b> modül sisteminde yasaktır: bir paket <b>tam olarak bir</b> modüle ait olmalıdır — aksi hâlde derleyici hangi modülün o paketi okuduğunu belirleyemez. Derleme veya başlatma zamanında hata alınır. <br>Sınıf adlarının farklı olması <b>durumu değiştirmez</b>; kısıt paket düzeyindedir. Eski kütüphanelerde en sık karşılaşılan migrasyon engelidir."
+    },
+    {
+      topic: "Erişim kontrolü",
+      q: "A class is declared <code>public</code> but its package is not exported by the module. Can another module access it?",
+      opts: [
+        "No; the package must be exported for outside access.",
+        "Yes; public always means accessible from anywhere.",
+        "Yes, but only through reflection.",
+        "Only if the other module declares requires static."
+      ],
+      a: [0],
+      why: "Java 9'dan beri <code>public</code> tek başına <b>yetmez</b>: erişim için paketin <code>exports</code> edilmiş olması gerekir. Bu \"public ama exported değil\" durumu modül sisteminin özüdür — kütüphanelerin iç paketlerini gerçekten gizlemesini sağlar. <br>Yansıma da <b>çalışmaz</b>: onun için ayrıca <code>opens</code> gerekir (7.1). <code>requires static</code> bağımlılığın isteğe bağlılığıyla ilgilidir, erişimle değil."
+    },
+    {
+      topic: "java komutu",
+      q: "Which command lists the directives of module <code>com.app</code> found on the module path?",
+      opts: [
+        "java --module-path out --describe-module com.app",
+        "java --module-path out --list-modules com.app",
+        "jar --list --file com.app",
+        "jdeps --describe-module com.app"
+      ],
+      a: [0],
+      why: "<code>java --describe-module &lt;ad&gt;</code> modülün <code>requires</code>/<code>exports</code>/<code>provides</code> yönergelerini yazdırır. <br><code>--list-modules</code> <b>tüm</b> görünen modülleri listeler (ad almaz, filtre değildir). <code>jar --list</code> jar içeriğini listeler ve <code>--file</code> bir <b>jar dosyası</b> ister, modül adı değil."
+    },
+    {
+      topic: "Modül türleri",
+      q: "You place a plain JAR with no module-info on the module path. What is it treated as?",
+      opts: [
+        "An automatic module whose name derives from the JAR file name or the manifest.",
+        "An unnamed module.",
+        "A named module with an empty descriptor.",
+        "It is ignored by the module system."
+      ],
+      a: [0],
+      why: "Modül yoluna konan ve <code>module-info.class</code> içermeyen jar <b>automatic modül</b> olur; adı manifest'teki <code>Automatic-Module-Name</code>'den, yoksa jar adından türetilir. Tüm paketlerini <b>exports</b> eder ve tüm modülleri <b>requires</b> eder. <br><b>Unnamed modül</b> ise <b>classpath'e</b> konan koddur — konum farkı belirleyicidir."
+    },
+    {
+      topic: "javac komutu",
+      q: "Which javac option specifies where compiled dependency modules are located?",
+      opts: [
+        "--module-path",
+        "--module-source-path",
+        "-d",
+        "--add-exports"
+      ],
+      a: [0],
+      why: "<code>--module-path</code> (<code>-p</code>) <b>derlenmiş</b> bağımlı modüllerin (klasör veya jar) bulunduğu yeri gösterir — classpath'in modül karşılığıdır. <br><code>--module-source-path</code> <b>kaynak</b> ağacı içindir, <code>-d</code> çıktı dizinini belirler, <code>--add-exports</code> ise kapalı bir paketi derleme sırasında zorla açmak için kullanılan bir kaçış yoludur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

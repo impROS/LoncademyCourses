@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.1",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.1",
+  title: "Dağıtım ve İşletim Yöntemleri",
+  back: "3.1-dagitim-isletim.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "IaC / CloudFormation",
+      q: "A company wants to define its AWS infrastructure in version-controlled YAML templates so that identical environments can be created repeatedly. Which service should it use?",
+      opts: ["AWS CloudFormation", "AWS Elastic Beanstalk", "AWS Systems Manager", "AWS Config"],
+      a: [0],
+      why: "<b>CloudFormation</b> altyapıyı JSON/YAML <b>şablon</b> olarak tanımlar ve <b>stack</b> olarak oluşturur: tekrarlanabilir, sürüm kontrollü, hata durumunda <b>otomatik geri alma</b>lı. Servisin kendisi ücretsizdir. Config <b>uyumluluk izler</b>, altyapı oluşturmaz."
+    },
+    {
+      topic: "Elastic Beanstalk",
+      q: "A developer wants to upload application code and let AWS automatically provision the EC2 instances, load balancer, Auto Scaling group and monitoring. Which service does this?",
+      opts: ["AWS Elastic Beanstalk", "AWS CloudFormation", "Amazon EC2", "AWS Batch"],
+      a: [0],
+      why: "<b>Elastic Beanstalk</b>a <b>kodu</b> verirsin, altyapıyı o kurar ve yönetir (PaaS yaklaşımı). CloudFormationa ise <b>şablon</b> verirsin ve her kaynağı sen tanımlarsın. Beanstalkın kendisi ücretsizdir; altında oluşan EC2 ve ELB ücretlidir."
+    },
+    {
+      topic: "CloudFormation faydaları",
+      q: "What happens by default if a resource fails to be created during a CloudFormation stack deployment?",
+      opts: [
+        "The stack rolls back and previously created resources are removed",
+        "The stack stays half-created and must be fixed manually",
+        "AWS Support is automatically contacted",
+        "The failed resource is skipped and the stack completes"
+      ],
+      a: [0],
+      why: "CloudFormation varsayılan olarak <b>rollback</b> yapar: bir kaynak oluşamazsa o ana kadar oluşturulanları geri alır, böylece yarım kalmış bir ortam bırakmaz. Aynı mantık temizlikte de işe yarar — <b>stacki silmek</b> içindeki tüm kaynakları siler."
+    },
+    {
+      topic: "Erişim yolları",
+      q: "Which two are valid ways to interact with AWS services? (Choose TWO.)",
+      opts: [
+        "AWS Command Line Interface (CLI)",
+        "AWS SDKs for languages such as Python and Java",
+        "Direct SSH access to the AWS hypervisor",
+        "Editing AWS data center hardware settings",
+        "Physical access to the Availability Zone"
+      ],
+      a: [0, 1],
+      why: "AWSe erişim yolları: <b>Management Console, CLI, SDK, API</b> (ve tarayıcıdaki CloudShell). Hepsi aynı API çağrılarına dönüşür, hepsi <b>IAM</b> ile yetkilendirilir ve <b>CloudTrail</b>e loglanır. Hipervizöre, donanıma veya tesise erişim AWSin sorumluluk alanıdır ve müşteriye kapalıdır."
+    },
+    {
+      topic: "Erişim yolları",
+      q: "A developer needs to call AWS services from inside a Python application. Which option is designed for this?",
+      opts: ["An AWS SDK", "The AWS Management Console", "AWS CloudShell", "AWS Trusted Advisor"],
+      a: [0],
+      why: "Uygulama <b>kodu</b> içinden AWS çağırmak için <b>SDK</b> kullanılır (Pythonda boto3). CLI komut satırı/betikler içindir, CloudShell tarayıcıda çalışan hazır bir terminaldir, konsol ise grafik arayüzdür."
+    },
+    {
+      topic: "Bağlantı seçenekleri",
+      q: "A company requires a dedicated, private network connection from its data center to AWS that does not use the public internet and provides consistent bandwidth. Which service should it use?",
+      opts: ["AWS Direct Connect", "AWS Site-to-Site VPN", "Amazon CloudFront", "AWS Transit Gateway"],
+      a: [0],
+      why: "<b>Direct Connect</b> AWSe <b>özel fiziksel hat</b> sağlar: tutarlı gecikme ve bant genişliği, internetten bağımsız. Kurulumu haftalar sürer ve pahalıdır. Not: Direct Connect tek başına şifreli değildir; şifreleme isteniyorsa üzerine <b>VPN</b> eklenir."
+    },
+    {
+      topic: "Bağlantı seçenekleri",
+      q: "A company needs an encrypted connection between its on-premises network and its VPC that can be set up quickly and at low cost. Which option is MOST appropriate?",
+      opts: ["AWS Site-to-Site VPN", "AWS Direct Connect", "AWS PrivateLink", "Amazon Route 53"],
+      a: [0],
+      why: "<b>Site-to-Site VPN</b> internet üzerinden <b>şifreli tünel</b> kurar; hızlı ve ucuzdur ama performansı internetin durumuna bağlıdır. <i>Quickly</i> ve <i>low cost</i> ifadeleri VPNi, <i>dedicated</i> ve <i>consistent</i> ifadeleri Direct Connecti işaret eder."
+    },
+    {
+      topic: "Bağlantı seçenekleri",
+      q: "An application in a VPC must access Amazon S3 without the traffic traversing the public internet. Which solution meets this requirement?",
+      opts: [
+        "A VPC endpoint (AWS PrivateLink)",
+        "An internet gateway",
+        "A NAT gateway",
+        "An Elastic IP address"
+      ],
+      a: [0],
+      why: "<b>VPC endpoint / PrivateLink</b> trafiği <b>AWS omurgası</b> üzerinden taşır, public internete çıkmaz. Internet gateway ve NAT gateway ise trafiği tam da internete çıkarmak içindir — soruda <i>must not traverse the public internet</i> ifadesi varsa cevap PrivateLinktir."
+    },
+    {
+      topic: "Dağıtım modelleri",
+      q: "A manufacturing company must run AWS compute and storage services inside its own factory data center to process data with very low latency. Which service should it use?",
+      opts: ["AWS Outposts", "AWS Local Zones", "AWS Snowcone", "Amazon Lightsail"],
+      a: [0],
+      why: "<b>Outposts</b> AWSin fiziksel donanımını <b>müşterinin tesisine</b> koyar; aynı AWS API ve servisleri yerinde çalışır. Bu klasik <b>hibrit</b> senaryodur. Local Zones AWSin işlettiği, büyük şehirlere yakın uzantılardır — müşterinin veri merkezinde değildir."
+    },
+    {
+      topic: "Dağıtım modelleri",
+      q: "Which deployment model describes an architecture where part of the workload runs in AWS and part remains in the company's own data center, connected together?",
+      opts: ["Hybrid", "All-in cloud", "On-premises only", "Multi-tenant"],
+      a: [0],
+      why: "<b>Hibrit</b> model: iş yükünün bir kısmı bulutta, bir kısmı şirket içinde ve ikisi birbirine bağlı (Direct Connect veya VPN ile). Bunu destekleyen tipik servisler: <b>Outposts</b>, <b>Storage Gateway</b>, <b>Direct Connect</b>."
+    },
+    {
+      topic: "Uç (edge) seçenekleri",
+      q: "Which AWS offering places infrastructure inside telecommunications providers' 5G networks to deliver ultra-low latency to mobile devices?",
+      opts: ["AWS Wavelength", "AWS Local Zones", "Amazon CloudFront", "AWS Outposts"],
+      a: [0],
+      why: "<b>Wavelength</b> AWS altyapısını <b>5G operatör ağlarının içine</b> yerleştirir; mobil cihazlara ultra düşük gecikme sağlar. <b>Local Zones</b> ise büyük metropollerde tek haneli milisaniye gecikme için kullanılan AWS uzantılarıdır."
+    },
+    {
+      topic: "Çoklu VPC bağlantısı",
+      q: "A company has 60 VPCs and wants to connect them and its on-premises network through a single central hub. Which service should it use?",
+      opts: ["AWS Transit Gateway", "VPC peering between every pair of VPCs", "AWS Direct Connect only", "Amazon Route 53"],
+      a: [0],
+      why: "<b>Transit Gateway</b> merkezî bir hub gibi çalışır: onlarca VPCyi ve şirket içi ağı tek noktadan bağlar. VPC peering <b>bire bir</b> bağlantıdır; 60 VPC için yüzlerce eşleştirme gerekir ve yönetilemez hale gelir."
+    },
+    {
+      topic: "İşletim araçları",
+      q: "Which service provides a browser-based shell with your AWS credentials already configured, so you can run AWS CLI commands without installing anything?",
+      opts: ["AWS CloudShell", "AWS Systems Manager Session Manager", "AWS Cloud9 SSH", "Amazon WorkSpaces"],
+      a: [0],
+      why: "<b>CloudShell</b> konsolun içinden açılan, kimlik bilgileri hazır gelen bir Linux kabuğudur ve ücretsizdir. Session Manager <b>EC2 instanceına</b> bağlanmak için kullanılır — ikisi farklı işlerdir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

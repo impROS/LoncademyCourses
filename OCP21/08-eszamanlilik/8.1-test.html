@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-8.1",
+  code: "Eşzamanlılık · 8.1",
+  title: "Thread'ler ve Virtual Thread'ler",
+  back: "8.1-threadler-ve-virtual-threads.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "start vs run",
+      q: "<pre>Thread t = new Thread(() -&gt;\n    System.out.print(Thread.currentThread().getName()));\nt.run();</pre>What is the result?",
+      opts: [
+        "main",
+        "Thread-0",
+        "Nothing is printed.",
+        "An IllegalThreadStateException is thrown."
+      ],
+      a: [0],
+      why: "<code>run()</code> doğrudan çağrıldığında <b>yeni thread açılmaz</b>; sıradan bir metot çağrısı gibi <b>çağıran thread'de</b> çalışır → <code>main</code>. <br>Yeni thread yalnızca <code>start()</code> ile açılır. Bu, eşzamanlılık alanının <b>en sık sorulan</b> tuzağıdır — kodun \"thread\" içermesi paralel çalıştığı anlamına gelmez."
+    },
+    {
+      topic: "start vs run",
+      q: "<pre>Thread t = new Thread(() -&gt; {});\nt.start();\nt.start();</pre>What is the result?",
+      opts: [
+        "An IllegalThreadStateException is thrown at runtime.",
+        "The task runs twice.",
+        "Compilation fails.",
+        "An InterruptedException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Bir <code>Thread</code> nesnesi <b>tek kullanımlıktır</b>: <code>start()</code> yalnızca <code>NEW</code> durumundayken çağrılabilir. İkinci çağrı <b>IllegalThreadStateException</b> (bir <code>RuntimeException</code>) atar. <br>Aynı görevi tekrar çalıştırmak için <b>yeni bir Thread</b> nesnesi oluşturmalısın — ya da bir <code>ExecutorService</code> kullanmalısın (8.2)."
+    },
+    {
+      topic: "Virtual thread'ler",
+      q: "<pre>Thread v = Thread.ofVirtual().unstarted(() -&gt; {});\nv.setDaemon(false);</pre>What is the result?",
+      opts: [
+        "An IllegalArgumentException is thrown at runtime.",
+        "The code runs and v becomes a non-daemon thread.",
+        "Compilation fails.",
+        "An UnsupportedOperationException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Virtual thread'ler <b>her zaman daemon</b>'dır ve bu değiştirilemez; <code>setDaemon(false)</code> <b>IllegalArgumentException</b> atar (<code>setDaemon(true)</code> ise sessizce kabul edilir). <br>Sonuç olarak virtual thread'ler JVM'in kapanmasını <b>engellemez</b> — bu yüzden <code>main</code> biterse bekleyen virtual thread'ler öldürülür; <code>join()</code> veya bir executor gerekir."
+    },
+    {
+      topic: "Virtual thread'ler",
+      q: "Which statements about virtual threads in Java 21 are correct? (Choose TWO.)",
+      opts: [
+        "They are managed by the JVM, not the operating system.",
+        "Thread priority is effectively ignored for them.",
+        "They should be pooled like platform threads for efficiency.",
+        "They perform better than platform threads for CPU-bound work."
+      ],
+      a: [0, 1],
+      why: "Virtual thread'ler <b>JVM tarafından</b> yönetilir ve bir taşıyıcı (carrier) platform thread'i üzerinde çalışır. Öncelik ayarı <b>yok sayılır</b> — <code>getPriority()</code> hep 5 döner. <br><b>Havuzlanmazlar</b>: bu kadar ucuz oldukları için görev başına bir tane açmak normaldir (<code>newVirtualThreadPerTaskExecutor</code>). CPU-yoğun işte de avantaj sağlamazlar; asıl kazanç <b>I/O beklemede</b>dir."
+    },
+    {
+      topic: "Virtual thread'ler",
+      q: "What happens when a virtual thread blocks inside a <code>synchronized</code> block?",
+      opts: [
+        "It is pinned to its carrier thread, so the carrier cannot serve other virtual threads.",
+        "The JVM throws an IllegalMonitorStateException.",
+        "The virtual thread is automatically converted to a platform thread.",
+        "Nothing special; the carrier is released as usual."
+      ],
+      a: [0],
+      why: "Normalde bloklanan bir virtual thread taşıyıcıdan <b>sökülür (unmount)</b> ve taşıyıcı başka bir virtual thread'e geçer. Ama <code>synchronized</code> blok içindeyken bu mümkün değildir: virtual thread taşıyıcıya <b>çivilenir (pinned)</b> ve ölçek kazancı kaybolur. <br>Bu yüzden virtual thread kullanan kodda <code>synchronized</code> yerine <b><code>ReentrantLock</code></b> tercih edilir (8.3)."
+    },
+    {
+      topic: "Virtual thread'ler",
+      q: "Which expressions create AND start a virtual thread? (Choose TWO.)",
+      opts: [
+        "Thread.ofVirtual().start(r)",
+        "Thread.startVirtualThread(r)",
+        "Thread.ofVirtual().unstarted(r)",
+        "new Thread(r).virtual()"
+      ],
+      a: [0, 1],
+      why: "<code>Thread.ofVirtual().start(r)</code> ve kısayolu <code>Thread.startVirtualThread(r)</code> hem oluşturur hem <b>başlatır</b>. <br><code>unstarted(r)</code> yalnızca <b>oluşturur</b> — sonra <code>start()</code> çağırman gerekir. <code>new Thread(r).virtual()</code> diye bir metot <b>yoktur</b>; virtual thread yalnızca builder API'siyle üretilir."
+    },
+    {
+      topic: "Thread durumları",
+      q: "A thread is inside <code>Thread.sleep(1000)</code>. What is its state?",
+      opts: [
+        "TIMED_WAITING",
+        "WAITING",
+        "BLOCKED",
+        "RUNNABLE"
+      ],
+      a: [0],
+      why: "Süre belirtilen bekleme metotları (<code>sleep(n)</code>, <code>join(n)</code>, <code>wait(n)</code>) <b>TIMED_WAITING</b> üretir. <br><code>WAITING</code> süresiz bekleme (<code>join()</code>, <code>wait()</code>), <code>BLOCKED</code> ise <b><code>synchronized</code> kilidi</b> beklemektir. Bu üçünü ayırt etmek sınavda sorulur."
+    },
+    {
+      topic: "sleep ve kilitler",
+      q: "Which statements about Thread.sleep are correct? (Choose TWO.)",
+      opts: [
+        "It throws the checked exception InterruptedException.",
+        "It does not release any monitor locks the thread holds.",
+        "It releases all locks held by the thread.",
+        "It is a no-op on virtual threads."
+      ],
+      a: [0, 1],
+      why: "<code>sleep</code> <b>checked</b> <code>InterruptedException</code> atar — yakalanmalı veya bildirilmelidir (4.1). Ve <b>kilitleri bırakmaz</b>: uyuyan thread hâlâ monitörü tutar, bu yüzden başkaları bekler. <br>Kilit bırakan metot <code>wait()</code>'tir (8.3). Virtual thread'lerde <code>sleep</code> <b>gerçekten çalışır</b> — üstelik taşıyıcıyı serbest bıraktığı için oradaki asıl kazanç noktasıdır."
+    },
+    {
+      topic: "Daemon thread'ler",
+      q: "Which statement about daemon threads is correct?",
+      opts: [
+        "The JVM exits without waiting for daemon threads to finish.",
+        "Daemon threads always have higher priority.",
+        "setDaemon can be called at any time during the thread's life.",
+        "A platform thread is a daemon thread by default."
+      ],
+      a: [0],
+      why: "JVM yalnızca <b>daemon olmayan</b> thread'lerin bitmesini bekler; daemon thread'ler kalan iş varken bile <b>öldürülür</b>. <br><code>setDaemon</code> <b>yalnızca <code>start()</code> öncesi</b> çağrılabilir (sonrası <code>IllegalThreadStateException</code>). Platform thread'ler varsayılan olarak <b>daemon değildir</b>; virtual thread'ler ise her zaman daemon'dır. Öncelikle bir ilgisi yoktur."
+    },
+    {
+      topic: "Çalışma sırası",
+      q: "<pre>new Thread(() -&gt; System.out.print(\"A\")).start();\nnew Thread(() -&gt; System.out.print(\"B\")).start();\nSystem.out.print(\"C\");</pre>What is the result?",
+      opts: [
+        "The output order is not guaranteed.",
+        "ABC",
+        "CAB",
+        "CBA"
+      ],
+      a: [0],
+      why: "Thread zamanlaması <b>işletim sistemine bağlıdır</b>; <code>start()</code> çağrısı thread'in <b>hemen</b> çalışacağını garanti etmez. Üç yazdırma da herhangi bir sırada gerçekleşebilir. <br><b>Kanca:</b> Eşzamanlılık sorularında \"kesin çıktı\" şıkkı genelde tuzaktır; sıra garanti isteniyorsa <code>join()</code> veya bir executor gerekir."
+    },
+    {
+      topic: "Virtual thread'ler",
+      q: "Why are virtual threads a poor fit for CPU-bound work?",
+      opts: [
+        "Because their benefit comes from unmounting during blocking, which CPU-bound code never does.",
+        "Because the JVM limits them to one per core.",
+        "Because they cannot access shared memory.",
+        "Because they are always interrupted after 100 ms."
+      ],
+      a: [0],
+      why: "Virtual thread'lerin kazancı, <b>bloklama sırasında taşıyıcıyı serbest bırakmaktan</b> gelir. CPU-yoğun kod hiç bloklanmadığı için sökme/takma hiç gerçekleşmez ve elinde yine çekirdek sayısı kadar gerçek paralellik kalır — üstelik ek yönetim maliyeti eklenir. <br>Bu tür işler için klasik <b>sabit boyutlu platform thread havuzu</b> uygundur (8.2)."
+    },
+    {
+      topic: "Thread oluşturma",
+      q: "<pre>Callable&lt;Integer&gt; c = () -&gt; 42;\nThread t = new Thread(c);</pre>What is the result?",
+      opts: [
+        "Compilation fails because Thread does not accept a Callable.",
+        "The code compiles and the thread returns 42.",
+        "The code compiles but the return value is discarded.",
+        "An IllegalArgumentException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>Thread</code> constructor'ı yalnızca <b><code>Runnable</code></b> kabul eder; <code>Callable</code> <b>ilişkisiz</b> bir arayüzdür (değer döner ve checked exception atabilir). <br><code>Callable</code> kullanmak için bir <code>ExecutorService</code>'e <code>submit</code> etmelisin — dönüş değeri <code>Future</code> ile alınır (8.2)."
+    },
+    {
+      topic: "Thread builder",
+      q: "<pre>Thread t = Thread.ofVirtual();</pre>What is the result?",
+      opts: [
+        "Compilation fails because ofVirtual returns a Thread.Builder, not a Thread.",
+        "The code compiles and t is an unstarted virtual thread.",
+        "The code compiles and t is a started virtual thread.",
+        "Compilation fails because ofVirtual requires a Runnable argument."
+      ],
+      a: [0],
+      why: "<code>Thread.ofVirtual()</code> ve <code>Thread.ofPlatform()</code> bir <b><code>Thread.Builder</code></b> döner; thread'i elde etmek için <code>.unstarted(r)</code> veya <code>.start(r)</code> çağırmalısın. <br>Builder ayrıca <code>.name(...)</code>, <code>.daemon()</code>, <code>.inheritInheritableThreadLocals(...)</code> gibi ayarlar sunar. Argüman <b>builder aşamasında değil</b>, son adımda verilir."
+    },
+    {
+      topic: "interrupt",
+      q: "A thread sleeping in <code>Thread.sleep(5000)</code> is interrupted. What happens?",
+      opts: [
+        "sleep throws InterruptedException and the interrupt flag is cleared.",
+        "The thread is terminated immediately.",
+        "Nothing; interrupt only works on blocked threads.",
+        "The thread continues sleeping and the flag is set."
+      ],
+      a: [0],
+      why: "<code>sleep</code>, <code>join</code> ve <code>wait</code> gibi kesilebilir bloklama metotları <b>InterruptedException</b> atarak erken döner ve bu sırada <b>kesme bayrağı temizlenir</b>. <br><code>interrupt()</code> thread'i <b>öldürmez</b> — yalnızca \"durman isteniyor\" sinyalidir; nasıl davranılacağına kodun kendisi karar verir. Bayrağı korumak isteyen catch bloğunda <code>Thread.currentThread().interrupt()</code> çağırır."
+    },
+    {
+      topic: "Virtual thread'ler",
+      q: "<pre>try (var exec = Executors.newVirtualThreadPerTaskExecutor()) {\n    for (int i = 0; i &lt; 10_000; i++) exec.submit(() -&gt; { Thread.sleep(100); return null; });\n}</pre>Which statement is correct?",
+      opts: [
+        "10,000 virtual threads are created, one per task, and close() waits for all of them.",
+        "The tasks are queued and executed by a fixed pool of platform threads.",
+        "It throws OutOfMemoryError because 10,000 threads cannot be created.",
+        "The try-with-resources block returns immediately without waiting."
+      ],
+      a: [0],
+      why: "<code>newVirtualThreadPerTaskExecutor</code> <b>her görev için ayrı bir virtual thread</b> açar — havuz yoktur, çünkü gerek yoktur. <code>ExecutorService</code> Java 19'dan beri <code>AutoCloseable</code>'dır ve <code>close()</code> tüm görevlerin bitmesini <b>bekler</b> (8.2). <br>10.000 virtual thread bellek açısından sorun değildir; aynı sayıda <b>platform</b> thread ise makineyi zorlardı."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

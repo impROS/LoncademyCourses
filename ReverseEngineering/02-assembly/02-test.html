@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02-02 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-02-02",
+  code: "02 Assembly · Bellek & Flag",
+  title: "Bellek Erişimi, Adresleme, LEA, Flag'ler",
+  back: "02-bellek-flag.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Adresleme formülü",
+      q: "x86-64'te en genel bellek adresleme formülü hangisidir?",
+      opts: ["[taban + indeks*ölçek + offset]", "[taban - offset] yalnızca", "[indeks + taban] yalnızca", "[ölçek * offset]"],
+      a: [0],
+      why: "Tüm bellek operandları <b>[base + index*scale + disp]</b> formülünün özel halidir. Ölçek yalnızca 1/2/4/8 olabilir; bunu tanımak dizi/struct erişimini çözer."
+    },
+    {
+      topic: "Adresleme formülü",
+      q: "<code>mov eax, [rdx+rcx*4]</code> büyük olasılıkla neyi okuyor?",
+      opts: ["Bir int dizisinin rcx. elemanını (taban rdx)", "Bir char dizisinin elemanını", "Bir pointer dizisinin elemanını", "Bir yerel değişkeni"],
+      a: [0],
+      why: "Ölçek <b>*4</b> = 4 byte'lık eleman = <code>int</code>. rdx taban (dizinin başı), rcx indeks. <code>*8</code> olsaydı pointer/long dizisi olurdu."
+    },
+    {
+      topic: "Adresleme formülü",
+      q: "<code>mov rax, [rdi+0x8]</code> kalıbı en olası ne anlama gelir (rdi bir nesne pointer'ı ise)?",
+      opts: ["Bir struct'ın 0x8 offset'indeki alanını okuyor", "Bir dizinin 8. elemanı", "Yerel değişken", "Dönüş adresi"],
+      a: [0],
+      why: "İndeks/ölçek yok, sadece sabit offset → tipik <b>struct alanı</b> erişimi. rdi struct'ın başı, <code>+0x8</code> bir alanın offset'i. Dizi olsaydı indeks register'ı görürdün."
+    },
+    {
+      topic: "Adresleme formülü",
+      q: "Bir bellek erişiminde ölçek (scale) neyi yansıtır?",
+      opts: ["Eleman boyutunu (char=1, int=4, pointer/long=8)", "Dizinin uzunluğunu", "Offset'in işaretini", "Register sayısını"],
+      a: [0],
+      why: "Ölçek eleman boyutudur: <code>*1</code> char, <code>*4</code> int, <code>*8</code> pointer/long. Ölçeğe bakarak <b>eleman tipini</b> tahmin edebilirsin."
+    },
+    {
+      topic: "LEA",
+      q: "<code>lea rax, [rbp-0x40]</code> hemen bir <code>call gets</code> öncesinde. En olası anlamı?",
+      opts: ["Yerel bir buffer'ın adresi 1. argüman olarak hazırlanıyor", "rbp-0x40 adresindeki veri okunuyor", "Bir çarpma yapılıyor", "Stack temizleniyor"],
+      a: [0],
+      why: "lea burada <b>adres üretiyor</b>: yerel buffer'ın adresini rax'e (sonra rdi'ye). <code>gets</code> sınır kontrolü yapmaz → klasik overflow adayı (Bölüm 6)."
+    },
+    {
+      topic: "LEA",
+      q: "<code>lea rax, [rdi+rdi*4]</code> ne hesaplar?",
+      opts: ["rax = rdi * 5", "rax = rdi'nin gösterdiği bellek", "rax = rdi + 4", "rax = rdi * 4"],
+      a: [0],
+      why: "<code>rdi + rdi*4 = rdi*5</code>. lea belleğe dokunmaz; burada <b>çarpma hilesi</b> yapıyor. Köşeli parantez sizi 'bellek okuyor' sanmaya itmesin."
+    },
+    {
+      topic: "LEA",
+      q: "Aynı yazılmış <code>lea rax, [rbx]</code> ve <code>mov rax, [rbx]</code> nasıl farklıdır?",
+      opts: ["lea rbx'in değerini (adresi) verir; mov o adresteki veriyi okur", "İkisi aynıdır", "lea yazar, mov okur", "mov adres verir, lea veri okur"],
+      a: [0],
+      why: "<b>lea = adres, mov = veri.</b> Parantez ikisinde de var ama komut adı belirleyicidir. Bu ayrım pointer takibinde hayati."
+    },
+    {
+      topic: "Flag register",
+      q: "<code>cmp rax, rbx</code> sonrası <b>ZF=1</b> ise ne çıkarırsın?",
+      opts: ["rax == rbx (eşit)", "rax > rbx", "rax negatif", "rax sıfır"],
+      a: [0],
+      why: "cmp aslında <code>rax-rbx</code> hesaplar; sonuç 0 ise <b>ZF=1</b> → eşitlik. SF negatiflik, ZF sıfırlık/eşitlik içindir; karıştırma."
+    },
+    {
+      topic: "Flag register",
+      q: "SF (Sign Flag) 1 olduğunda ne anlatır?",
+      opts: ["Son sonucun en üst biti 1 — yani (işaretli okunursa) negatif", "Sonuç sıfır", "İşaretsiz taşma oldu", "Bir hata oluştu"],
+      a: [0],
+      why: "<b>SF = sonucun MSB'si.</b> İşaretli yorumda negatiflik demek. ZF (sıfır) ve CF (işaretsiz taşma) ile karıştırılır; her flag ayrı bir soruyu cevaplar."
+    },
+    {
+      topic: "Flag register",
+      q: "<code>cmp</code> ve <code>test</code> komutları hangi register'ı değiştirir?",
+      opts: ["Hiçbirini — sadece flag'leri kurarlar", "Her zaman rax'i", "Hedef operandı", "rsp'yi"],
+      a: [0],
+      why: "<b>cmp/test sonucu atar, sadece flag kurar.</b> 'cmp bir şey hesaplayıp saklıyor' sanmak yanlış; amaç sonraki koşullu atlamaya (je/jg…) zemin hazırlamaktır."
+    },
+    {
+      topic: "cmp ve test",
+      q: "<code>test rax, rax</code> tipik olarak ne için kullanılır?",
+      opts: ["rax'in sıfır (NULL) olup olmadığını kontrol için", "rax'i rbx ile karşılaştırmak", "rax'i sıfırlamak", "rax'i test verisiyle doldurmak"],
+      a: [0],
+      why: "<code>rax AND rax = rax</code>; sonuç 0 ise ZF=1. Yani <b>rax sıfır mı?</b> — malloc NULL kontrolü, string sonu gibi yerlerde standart kalıp. <code>xor rax,rax</code> ile karıştırma (o sıfırlar)."
+    },
+    {
+      topic: "cmp ve test",
+      q: "<code>cmp a, b</code> perde arkasında hangi işlemi yapar?",
+      opts: ["a - b hesaplar, sonucu atar, flag'leri kurar", "a + b hesaplar", "a AND b hesaplar", "a'yı b'ye kopyalar"],
+      a: [0],
+      why: "<b>cmp = sonucu atılan sub.</b> Bu yüzden karşılaştırma sonrası eşitlik/büyüklük koşulları çalışır. <code>test</code> ise AND yapar (genelde sıfır kontrolü)."
+    },
+    {
+      topic: "Bellek genişliği",
+      q: "<code>mov dword ptr [rax], 1</code>'de <code>dword ptr</code> neden gereklidir?",
+      opts: ["Sabit yazılırken kaç byte yazılacağı belirsiz; belirteç bunu 4 byte olarak sabitler", "Süs amaçlı, gereksizdir", "rax'in boyutunu belirtir", "İşaret bilgisini taşır"],
+      a: [0],
+      why: "Register operandı yoksa (<code>1</code> immediate) genişlik anlaşılamaz. <b>dword ptr = 4 byte yaz.</b> <code>byte/word/qword ptr</code> diğer boyutları belirtir."
+    },
+    {
+      topic: "Adresleme formülü",
+      q: "<code>[rbx+rsi*8]</code> hangi veri yapısına erişiyor olabilir?",
+      opts: ["8 byte'lık elemanlardan oluşan bir dizi (pointer/long dizisi)", "char dizisi", "2 byte'lık short dizisi", "Yerel bir int"],
+      a: [0],
+      why: "Ölçek <b>*8</b> = 8 byte eleman = <code>long</code> veya pointer. <code>*4</code> int, <code>*1</code> char olurdu. Ölçek eleman tipinin ipucudur."
+    },
+    {
+      topic: "Flag register",
+      q: "Bir koşullu atlama (<code>je</code>, <code>jg</code>) çalışmadan hemen önce mutlaka ne olmuş olmalıdır?",
+      opts: ["Flag'leri kuran bir komut (cmp/test/aritmetik) çalışmış olmalı", "Bir call yapılmış olmalı", "Stack temizlenmiş olmalı", "rax sıfırlanmış olmalı"],
+      a: [0],
+      why: "Koşullu atlamalar flag'leri <b>okur</b>, kurmaz. O yüzden önce <code>cmp</code>/<code>test</code>/aritmetik bir komut flag'leri set etmiş olmalı. Bu çift (kur → oku) kontrol akışının temelidir (2.3)."
+    },
+    {
+      topic: "cmp ve test",
+      q: "<code>cmp</code> ve <code>test</code> komutları hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["Sonuçlarını atarlar; hiçbir register'ı değiştirmezler", "Yalnızca flag'leri kurarlar", "Hedef register'a sonucu yazarlar", "Stack'e veri iterler"],
+      a: [0, 1],
+      why: "<b>cmp/test sonucu atar, sadece flag kurar.</b> Register değiştirmez, stack'e dokunmaz. Amaç sonraki koşullu atlamaya (je/jg…) zemin hazırlamaktır."
+    },
+    {
+      topic: "LEA",
+      q: "<code>lea</code> komutu hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Hesaplanan adresi register'a yazar, belleğe dokunmaz", "Hızlı aritmetik (örn. rdi*3) için kullanılabilir", "Köşeli parantezdeki adresteki veriyi okur", "Her zaman bir bellek yazması yapar"],
+      a: [0, 1],
+      why: "<b>lea = adresi hesapla, bellek okuma/yazma yok.</b> Sık sık aritmetik hile için kullanılır. Adresteki veriyi okuyan komut <code>mov [ ]</code>'dir — lea değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

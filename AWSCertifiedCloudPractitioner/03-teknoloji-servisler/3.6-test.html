@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.6 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.6",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.6",
+  title: "Depolama (Storage)",
+  back: "3.6-storage.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Nesne / blok / dosya",
+      q: "Which AWS service provides a shared file system that can be mounted simultaneously by many Linux EC2 instances across multiple Availability Zones?",
+      opts: ["Amazon EFS", "Amazon EBS", "Amazon S3", "Amazon FSx for Windows File Server"],
+      a: [0],
+      why: "<b>EFS</b> yönetilen bir <b>NFS</b> dosya sistemidir: birden çok Linux instance <b>aynı anda</b> ve <b>birden çok AZden</b> bağlanabilir, kapasitesi otomatik büyür. EBS tek bir AZde ve genelde tek instancea bağlıdır; FSx for Windows ise <b>SMB</b> ile Windows paylaşımları içindir."
+    },
+    {
+      topic: "Nesne / blok / dosya",
+      q: "Which storage type does Amazon EBS provide?",
+      opts: [
+        "Block storage attached to an EC2 instance",
+        "Object storage accessed over HTTP",
+        "Shared file storage using NFS",
+        "Archival tape storage"
+      ],
+      a: [0],
+      why: "<b>EBS = blok depolama</b>: EC2ye takılan sanal disktir, üzerine dosya sistemi kurulur ve işletim sistemi ya da veritabanı diski olarak kullanılır. <b>Tek bir AZde</b> yaşar. Nesne depolama S3, dosya depolama EFS/FSxtir."
+    },
+    {
+      topic: "S3 sınıfları",
+      q: "A company must archive records for 7 years. The data is almost never accessed, and a retrieval time of up to 12 hours is acceptable. Which S3 storage class is MOST cost-effective?",
+      opts: [
+        "S3 Glacier Deep Archive",
+        "S3 Glacier Instant Retrieval",
+        "S3 Standard-IA",
+        "S3 Intelligent-Tiering"
+      ],
+      a: [0],
+      why: "<b>Deep Archive</b> S3in <b>en ucuz</b> sınıfıdır; erişim <b>saatler</b> sürer (≈12 saat) ve minimum saklama süresi <b>180 gündür</b>. Uzun süreli mevzuat arşivi için tasarlanmıştır. Soruda erişim süresi <i>milisaniye</i> olsaydı doğru cevap Glacier Instant Retrieval olurdu."
+    },
+    {
+      topic: "S3 sınıfları",
+      q: "The access pattern for a new dataset is unknown and expected to change over time. Which S3 storage class minimizes cost without requiring manual management?",
+      opts: [
+        "S3 Intelligent-Tiering",
+        "S3 Standard",
+        "S3 One Zone-IA",
+        "S3 Glacier Flexible Retrieval"
+      ],
+      a: [0],
+      why: "<b>Intelligent-Tiering</b> nesneleri <b>gerçek erişim davranışına göre otomatik</b> olarak katmanlar arasında taşır; erişim deseni <b>bilinmiyor veya değişkense</b> doğru cevap budur. Alma (retrieval) ücreti yoktur, küçük bir izleme ücreti alır."
+    },
+    {
+      topic: "S3 sınıfları",
+      q: "Which S3 storage class stores data in a SINGLE Availability Zone and is suitable for easily reproducible data?",
+      opts: ["S3 One Zone-IA", "S3 Standard-IA", "S3 Standard", "S3 Glacier Instant Retrieval"],
+      a: [0],
+      why: "<b>One Zone-IA</b> veriyi <b>tek bir AZde</b> tutar; bu yüzden daha ucuzdur ama o AZ kaybedilirse <b>veri kaybolur</b>. Yalnızca kopyası başka yerde olan veya kolayca yeniden üretilebilen veriler için uygundur. Diğer sınıflar en az 3 AZye kopyalar."
+    },
+    {
+      topic: "S3 özellikleri",
+      q: "How can a company protect Amazon S3 objects against accidental deletion or overwrite?",
+      opts: [
+        "Enable S3 Versioning on the bucket",
+        "Enable S3 Transfer Acceleration",
+        "Change the storage class to S3 Standard-IA",
+        "Disable Block Public Access"
+      ],
+      a: [0],
+      why: "<b>Versioning</b> her yazma işleminde yeni bir sürüm tutar; silme işlemi ise nesneyi yok etmez, üzerine bir <b>delete marker</b> koyar — yani geri dönülebilir. Dikkat: eski sürümler de <b>depolama ücreti üretir</b>; lifecycle kuralıyla temizlenmelidir."
+    },
+    {
+      topic: "S3 özellikleri",
+      q: "A company wants objects to move automatically to cheaper storage classes as they age, and old versions to be deleted after 30 days. Which S3 feature provides this?",
+      opts: ["Lifecycle rules", "Bucket policies", "Cross-Region Replication", "Presigned URLs"],
+      a: [0],
+      why: "<b>Lifecycle kuralları</b> nesneleri yaşına göre otomatik olarak başka sınıfa taşır veya siler ve eski (noncurrent) sürümleri temizler. Sınavda <i>automatically reduce storage cost over time</i> ifadesinin cevabı budur."
+    },
+    {
+      topic: "S3 özellikleri",
+      q: "Which S3 feature enforces a write-once-read-many (WORM) model so that objects cannot be deleted or changed for a defined retention period?",
+      opts: ["S3 Object Lock", "S3 Versioning", "S3 Intelligent-Tiering", "S3 Transfer Acceleration"],
+      a: [0],
+      why: "<b>S3 Object Lock</b> nesneleri belirli bir süre boyunca <b>silinemez ve değiştirilemez</b> kılar (WORM). Finansal ve sağlık mevzuatı gibi saklama zorunluluğu olan senaryolarda kullanılır. Versioning tek başına bu garantiyi vermez."
+    },
+    {
+      topic: "S3 dayanıklılık",
+      q: "Amazon S3 Standard is designed to store objects redundantly across how many Availability Zones?",
+      opts: ["At least three", "Exactly one", "Exactly two", "All Availability Zones in all Regions"],
+      a: [0],
+      why: "S3 Standard nesneleri bir Region içinde <b>en az üç AZ</b>ye kopyalar — 11 dokuzluk dayanıklılık buradan gelir. Tek AZde tutan sınıf yalnızca <b>One Zone-IA</b>dır. Veri, müşteri yapılandırmadıkça <b>Regionlar arasında kopyalanmaz</b>."
+    },
+    {
+      topic: "EBS türleri",
+      q: "Which Amazon EBS volume type should be used for a mission-critical database that requires the highest, consistent IOPS?",
+      opts: [
+        "Provisioned IOPS SSD (io2/io1)",
+        "General Purpose SSD (gp3)",
+        "Throughput Optimized HDD (st1)",
+        "Cold HDD (sc1)"
+      ],
+      a: [0],
+      why: "<b>Provisioned IOPS SSD (io2/io1)</b> istediğin IOPS değerini garanti eder; kritik veritabanları içindir. <b>gp3</b> varsayılan ve dengeli seçenektir, <b>st1</b> büyük sıralı okuma (throughput), <b>sc1</b> ise en ucuz ve nadiren erişilen veri içindir."
+    },
+    {
+      topic: "EBS vs Instance store",
+      q: "What happens to the data on an EC2 instance store volume when the instance is stopped or terminated?",
+      opts: [
+        "The data is lost because instance store is ephemeral",
+        "The data is automatically backed up to Amazon S3",
+        "The data persists and can be reattached to another instance",
+        "The data is moved to Amazon EFS"
+      ],
+      a: [0],
+      why: "<b>Instance store geçicidir (ephemeral)</b>: fiziksel olarak host makineye bağlıdır ve instance durunca/silinince <b>veri kaybolur</b>. Kalıcı veri için <b>EBS</b> kullanılır — EBS ağ tabanlıdır ve instance silinse bile yaşayabilir."
+    },
+    {
+      topic: "FSx",
+      q: "A company needs a managed Windows file share that supports SMB and integrates with Active Directory. Which service should it use?",
+      opts: [
+        "Amazon FSx for Windows File Server",
+        "Amazon EFS",
+        "Amazon S3",
+        "Amazon FSx for Lustre"
+      ],
+      a: [0],
+      why: "<b>FSx for Windows File Server</b> SMB protokolünü ve <b>Active Directory</b> entegrasyonunu sağlar. <b>EFS</b> Linux/NFS içindir; <b>FSx for Lustre</b> ise yüksek performanslı hesaplama (HPC) ve makine öğrenmesi iş yükleri içindir."
+    },
+    {
+      topic: "Hibrit depolama",
+      q: "An on-premises application needs low-latency local access to data while storing it durably in AWS. Which service provides this hybrid capability?",
+      opts: ["AWS Storage Gateway", "AWS DataSync", "AWS Snowball Edge", "Amazon S3 Transfer Acceleration"],
+      a: [0],
+      why: "<b>Storage Gateway</b> şirket içi uygulamalara bulut depolamayı <b>yerel bir disk/paylaşım/teyp gibi</b> sunar (File, Volume ve Tape Gateway türleriyle) ve sık kullanılan veriyi yerelde önbellekler. DataSync bir <b>transfer</b> aracıdır, kalıcı hibrit erişim sağlamaz."
+    },
+    {
+      topic: "Yedekleme",
+      q: "Which service lets a company centrally configure and monitor backup policies across services such as Amazon EBS, Amazon RDS, Amazon DynamoDB and Amazon EFS?",
+      opts: ["AWS Backup", "Amazon S3 Versioning", "AWS Elastic Disaster Recovery", "AWS Config"],
+      a: [0],
+      why: "<b>AWS Backup</b> birçok AWS servisinin yedeklerini <b>tek merkezî politika</b> ile yönetir, saklama süresi ve uyumluluk raporlaması sağlar. <b>Elastic Disaster Recovery</b> ise sunucuları sürekli çoğaltıp felakette hızlı devreye almak içindir — yedekleme değil, kurtarma odaklıdır."
+    },
+    {
+      topic: "S3 temelleri",
+      q: "Which two statements about Amazon S3 are TRUE? (Choose TWO.)",
+      opts: [
+        "Bucket names must be globally unique across all AWS accounts",
+        "By default, new buckets block all public access",
+        "The maximum size of a single object is 5 GB",
+        "S3 requires you to provision storage capacity in advance",
+        "Objects can only be accessed from EC2 instances"
+      ],
+      a: [0, 1],
+      why: "S3 bucket isimleri <b>dünya genelinde benzersizdir</b> ve yeni bucketlarda <b>Block Public Access varsayılan olarak açıktır</b>. Tek nesne en fazla <b>5 TB</b> olabilir (5 GB değil), kapasite önceden ayrılmaz (sınırsızdır) ve nesnelere HTTP/HTTPS üzerinden her yerden erişilebilir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

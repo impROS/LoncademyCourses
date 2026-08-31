@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g1 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g1",
+  code: "Dilbilgisi · g1",
+  title: "Zaman sistemi: present ve past",
+  back: "g1-zaman-sistemi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Present simple vs continuous",
+      q: "Normally I work in the Ankara office, but this month I ______ in Istanbul.",
+      opts: ["am working", "work", "have worked", "was working"],
+      a: [0],
+      why: "<b>am working</b> — <code>this month</code> geçici bir durumu işaret eder, present continuous'un tam alanı. <code>work</code> kalıcı durum için doğru olurdu ve cümlenin ilk yarısında zaten öyle kullanılmış; <code>but</code> ile gelen ikinci yarı geçici olanı anlatır."
+    },
+    {
+      topic: "Stative verbs",
+      q: "Which sentence is INCORRECT?",
+      opts: ["I am knowing the answer.", "I am thinking about your offer.", "He is tasting the soup.", "I know the answer."],
+      a: [0],
+      why: "<b>I am knowing</b> yanlış — <code>know</code> durum (stative) fiilidir, continuous almaz. <code>think</code> ve <code>taste</code> anlam değiştirerek continuous alabilir: 'kafa yormak' ve 'tadına bakmak'. Kanca: durum fiili bir <i>eylem</i> değil, bir <i>hâl</i> anlatır; hâl 'sürmez', vardır."
+    },
+    {
+      topic: "Past simple vs present perfect",
+      q: "I ______ my wallet yesterday, but luckily someone returned it.",
+      opts: ["lost", "have lost", "have been losing", "was losing"],
+      a: [0],
+      why: "<b>lost</b> — <code>yesterday</code> bitmiş bir zaman dilimidir; bitmiş zaman ifadesiyle present perfect <i>kullanılamaz</i>. Altın kural: yesterday / last week / in 2019 / ago gördüğün an perfect'i ele."
+    },
+    {
+      topic: "Past simple vs present perfect",
+      q: "Which sentence means that the speaker NO LONGER works for the company?",
+      opts: ["I worked there for five years.", "I have worked there for five years.", "I have been working there for five years.", "I have worked there since 2019."],
+      a: [0],
+      why: "<b>I worked there for five years</b> — past simple, şimdiyle bağı koparır: süre bitmiştir. Diğer üçü present perfect ailesidir ve hepsi 'hâlâ devam ediyor' anlamı taşır. Kanca: perfect = ip şimdiye bağlı, past simple = ip kesik."
+    },
+    {
+      topic: "Perfect simple vs continuous",
+      q: "You look exhausted! ______ ?",
+      opts: ["Have you been running", "Have you run", "Did you run", "Are you running"],
+      a: [0],
+      why: "<b>Have you been running</b> — görünen iz/etki ve süreç vurgusu perfect continuous'un işidir. <code>Have you run</code> sonuç/miktar sorar ('kaç tur koştun?'), yorgun görünmenin sebebini sormaz."
+    },
+    {
+      topic: "Perfect simple vs continuous",
+      q: "She ______ four articles so far this year.",
+      opts: ["has written", "has been writing", "wrote", "is writing"],
+      a: [0],
+      why: "<b>has written</b> — <code>four articles</code> sayılabilir bir sonuçtur; sonuç/miktar perfect <i>simple</i> ister. Perfect continuous 'ne kadar süredir' sorusuna cevap verir, 'kaç tane' sorusuna değil."
+    },
+    {
+      topic: "for / since",
+      q: "Choose the two correct sentences. (Choose TWO.)",
+      opts: ["We have known each other since university.", "We have known each other for ten years.", "We have known each other since ten years.", "We are knowing each other for ten years."],
+      a: [0, 1],
+      why: "<b>since university</b> (başlangıç noktası) ve <b>for ten years</b> (süre uzunluğu) doğrudur. <code>since ten years</code> klasik hatadır: <code>since</code> bir <i>an</i> ister, süre değil. Dördüncü şıkta ayrıca <code>know</code> continuous'a sokulmuş."
+    },
+    {
+      topic: "Past continuous",
+      q: "I ______ dinner when the power ______ out.",
+      opts: ["was cooking / went", "cooked / was going", "have cooked / went", "was cooking / was going"],
+      a: [0],
+      why: "<b>was cooking / went</b> — uzun arka plan past continuous, onu kesen kısa olay past simple. Kanca: arka plan = film, kesen olay = flaş."
+    },
+    {
+      topic: "used to / be used to",
+      q: "It was hard at first, but now I ______ up at 5 a.m.",
+      opts: ["am used to getting", "used to get", "am used to get", "use to getting"],
+      a: [0],
+      why: "<b>am used to getting</b> — <code>be used to</code> + V-ing = alışkın olmak (şimdi geçerli). <code>used to get</code> ise 'eskiden kalkardım, artık kalkmıyorum' demektir ve <code>now</code> ile çelişir. Buradaki <code>to</code> mastar değil edattır, bu yüzden -ing gelir."
+    },
+    {
+      topic: "used to / would",
+      q: "Which sentence is INCORRECT?",
+      opts: ["I would live in Izmir when I was a child.", "I used to live in Izmir when I was a child.", "Every summer we would go camping.", "We used to go camping every summer."],
+      a: [0],
+      why: "<b>I would live</b> yanlış — <code>would</code> yalnızca tekrarlanan <i>eylemleri</i> anlatır, <code>live</code> gibi durumları anlatamaz. Durumlar için tek seçenek <code>used to</code>'dur. Kanca: would = hareket, used to = hareket + hâl."
+    },
+    {
+      topic: "Present perfect kullanımları",
+      q: "Choose the two sentences that are correct. (Choose TWO.)",
+      opts: ["Have you finished the report yet?", "I have already sent the invoice.", "I have sent the invoice yesterday.", "Have you already finished the report yet?"],
+      a: [0, 1],
+      why: "<b>yet</b> soru/olumsuzda ve cümle sonunda; <b>already</b> olumluda ve genelde yardımcı fiilden sonra. Üçüncü şık bitmiş zaman ifadesiyle perfect kullanıyor; dördüncüsü <code>already</code> ve <code>yet</code>'i aynı cümlede birleştiriyor."
+    },
+    {
+      topic: "Present perfect kullanımları",
+      q: "A: ______ to Japan? B: Yes, twice.",
+      opts: ["Have you ever been", "Did you ever go", "Have you ever gone", "Were you ever"],
+      a: [0],
+      why: "<b>Have you ever been</b> — deneyim sorusu, zaman belirsiz → present perfect, ve 'gidip dönmüş olmak' anlamı <code>been</code> ile verilir. <code>have gone</code> 'gitti ve hâlâ orada' demektir, bu yüzden 'twice' cevabıyla uyuşmaz."
+    },
+    {
+      topic: "Stative verbs",
+      q: "This sauce ______ too salty; add some water.",
+      opts: ["tastes", "is tasting", "has been tasting", "was tasting"],
+      a: [0],
+      why: "<b>tastes</b> — burada 'tadı ...dır' anlamı var, yani durum. <code>is tasting</code> ancak 'birisi tadına bakıyor' anlamında doğru olurdu, ki cümledeki özne bir sos."
+    },
+    {
+      topic: "Past simple vs present perfect",
+      q: "Which question is correctly formed if you want to know the date of someone's visit to Rome?",
+      opts: ["When did you go to Rome?", "When have you gone to Rome?", "When have you been to Rome?", "When were you going to Rome?"],
+      a: [0],
+      why: "<b>When did you go…</b> — 'ne zaman' sorusu belirli bir geçmiş anı ister, bu yüzden past simple zorunludur. <code>When have you…</code> hiçbir zaman doğru değildir; present perfect zamanı belirsiz bırakır. Bu 'always/never' türü mutlak bir kuraldır ve sınavlar bunu sever."
+    },
+    {
+      topic: "Perfect continuous",
+      q: "We ______ for this exam since the beginning of March.",
+      opts: ["have been preparing", "prepare", "prepared", "are preparing"],
+      a: [0],
+      why: "<b>have been preparing</b> — <code>since</code> + hâlâ süren çaba → present perfect continuous. <code>are preparing</code> şimdiki anı anlatır ama <code>since</code> ile birleşemez; şimdiki zaman geçmişe uzanan bir çizgi çizemez."
+    },
+    {
+      topic: "Present simple vs continuous",
+      q: "You ______ complaining about your job — why don't you look for another one?",
+      opts: ["are always", "always", "have always been", "were always"],
+      a: [0],
+      why: "<b>are always complaining</b> — <code>always</code> + present continuous, sinirlenme/şikâyet anlamı katar. Sadece <code>always complain</code> demek nötr bir rutin bildirir ve cümlenin sitem tonunu kaybettirir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.6 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.6",
+  code: "OOP · 3.6",
+  title: "Arayüzler ve Fonksiyonel Arayüzler",
+  back: "3.6-arayuzler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Örtük belirteçler",
+      q: "<pre>interface I { int SABIT; }</pre>What is the result?",
+      opts: [
+        "Compilation fails because the field is implicitly final and must be assigned.",
+        "The code compiles; SABIT defaults to 0.",
+        "Compilation fails because interfaces cannot declare fields.",
+        "Compilation fails because the field must be declared static."
+      ],
+      a: [0],
+      why: "Arayüz alanları örtük olarak <b>public static final</b>'dır; <code>final</code> olduğu için bildirim anında <b>değer atanmak zorundadır</b>. <br>Arayüzler alan bildirebilir (sabit olarak) ve <code>static</code> zaten örtüktür — yazmaya gerek yoktur. <b>Kanca:</b> Arayüzde alan gördüğünde \"bu bir sabittir\" diye oku."
+    },
+    {
+      topic: "Örtük belirteçler",
+      q: "<pre>interface I { void m(); }\nclass C implements I { void m() { } }</pre>What is the result?",
+      opts: [
+        "Compilation fails because m() in C has weaker access privileges.",
+        "The code compiles.",
+        "Compilation fails because C must be abstract.",
+        "The code compiles but m() in C is an overload."
+      ],
+      a: [0],
+      why: "Arayüz metotları örtük <b>public abstract</b>'tır. Uygulayan sınıfta belirteç yazılmazsa metot <b>paket-özel</b> olur ve bu erişim <b>daraltmadır</b> — override kuralı (3.4) ihlal edilir. <br>Bu, arayüz uygularken en sık yapılan hatadır; her metot başına <code>public</code> yazmayı unutma."
+    },
+    {
+      topic: "Örtük belirteçler",
+      q: "Which member declarations are illegal in an interface? (Choose TWO.)",
+      opts: [
+        "protected void m();",
+        "private void p();",
+        "private void p() { }",
+        "static void s() { }"
+      ],
+      a: [0, 1],
+      why: "<code>protected</code> arayüzde <b>hiçbir zaman</b> kullanılamaz — metotlar ya <code>public</code> (örtük) ya <code>private</code>'dır. <code>private</code> bir arayüz metodu ise <b>gövde zorunlu</b> olduğu için gövdesiz bildirim de hatadır. <br>Gövdeli <code>private</code> ve gövdeli <code>static</code> metotlar Java 9'dan beri <b>geçerlidir</b>."
+    },
+    {
+      topic: "static metotlar",
+      q: "<pre>interface I { static void s() { System.out.print(\"s\"); } }\nclass C implements I { }\n\nC.s();</pre>What is the result?",
+      opts: [
+        "Compilation fails because interface static methods are not inherited.",
+        "s",
+        "Compilation fails because an interface cannot declare static methods.",
+        "Nothing is printed."
+      ],
+      a: [0],
+      why: "Arayüzlerin <code>static</code> metotları uygulayan sınıfa <b>kalıtılmaz</b>; yalnızca <code>I.s()</code> biçiminde, arayüzün kendi adıyla çağrılır. <br>Bu, <b>sınıf</b> kalıtımından farklıdır: orada statik metotlar alt sınıfa geçer (ve gizlenebilir — 3.4). Sınav bu iki davranışı karşılaştırarak sorar."
+    },
+    {
+      topic: "Çakışma kuralları",
+      q: "<pre>interface I { default String m() { return \"I\"; } }\nclass A { public String m() { return \"A\"; } }\nclass B extends A implements I { }\n\nSystem.out.println(new B().m());</pre>What is the result?",
+      opts: [
+        "A",
+        "I",
+        "Compilation fails because of an ambiguous method.",
+        "AI"
+      ],
+      a: [0],
+      why: "<b>Sınıf her zaman arayüzü yener</b> (class wins): somut bir sınıf metodu varsa arayüzün <code>default</code>'u devreye girmez ve belirsizlik de oluşmaz. <br><b>Kanca:</b> <code>default</code> metotlar, sınıf hiyerarşisinde karşılık bulunamadığında devreye giren <b>yedek</b> uygulamalardır."
+    },
+    {
+      topic: "Çakışma kuralları",
+      q: "<pre>interface A { default void m() {} }\ninterface B { default void m() {} }\nclass C implements A, B { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because C inherits unrelated defaults for m().",
+        "The code compiles; A wins because it is listed first.",
+        "The code compiles; the JVM chooses one at runtime.",
+        "Compilation fails because a class cannot implement two interfaces."
+      ],
+      a: [0],
+      why: "Birbiriyle ilişkisiz iki arayüzden <b>aynı imzalı</b> <code>default</code> geldiğinde derleyici seçim yapmaz — sınıf metodu <b>override etmek zorundadır</b>. <br>Sıralama hiçbir şey ifade etmez. Çözüm: <code>public void m() { A.super.m(); }</code>. Çoklu <code>implements</code> ise tamamen serbesttir."
+    },
+    {
+      topic: "Çakışma kuralları",
+      q: "<pre>interface X { default String m() { return \"X\"; } }\ninterface Y extends X { default String m() { return \"Y\"; } }\nclass C implements X, Y { }\n\nSystem.out.println(new C().m());</pre>What is the result?",
+      opts: [
+        "Y",
+        "X",
+        "Compilation fails because of unrelated defaults.",
+        "Compilation fails because Y cannot override a default method."
+      ],
+      a: [0],
+      why: "İki arayüz <b>ilişkiliyse</b> (biri diğerini genişletiyorsa) belirsizlik yoktur: <b>daha spesifik</b> olan kazanır → <code>Y</code>. Derleme hatası yalnızca arayüzler <b>ilişkisizken</b> gelir. <br><code>default</code> metotlar alt arayüzde <b>override edilebilir</b> — bu tamamen normaldir."
+    },
+    {
+      topic: "Çakışma kuralları",
+      q: "Inside a class that implements interfaces A and B, how do you explicitly call A's default method m()?",
+      opts: [
+        "A.super.m()",
+        "super.A.m()",
+        "A.this.m()",
+        "((A) this).m()"
+      ],
+      a: [0],
+      why: "Doğru sözdizimi <code>ArayuzAdi.super.metot()</code>'tur ve yalnızca <b>doğrudan uygulanan</b> arayüzler için geçerlidir. <br><code>((A) this).m()</code> derlenir ama <b>işe yaramaz</b>: cast dinamik bağlamayı değiştirmez, yine sınıfın kendi <code>m()</code>'i çalışır ve sonsuz döngüye girersin. Diğer iki sözdizimi hiç yoktur."
+    },
+    {
+      topic: "Fonksiyonel arayüz",
+      q: "<pre>@FunctionalInterface\ninterface I {\n    int f(int x);\n    boolean equals(Object o);\n    default int g() { return 0; }\n    static int h() { return 0; }\n}</pre>What is the result?",
+      opts: [
+        "The code compiles because only f() counts as an abstract method.",
+        "Compilation fails because the interface has two abstract methods.",
+        "Compilation fails because a functional interface cannot have default methods.",
+        "Compilation fails because a functional interface cannot have static methods."
+      ],
+      a: [0],
+      why: "Fonksiyonel arayüz sayımında <b>yalnızca</b> abstract metotlar sayılır ve <code>Object</code>'in public metotlarının yeniden bildirimi (<code>equals</code>, <code>hashCode</code>, <code>toString</code>) <b>sayılmaz</b> — her nesnede zaten vardır. <br><code>default</code>, <code>static</code> ve <code>private</code> metotlar sınırsız sayıda olabilir. <b>Kanca:</b> <code>Comparator</code> tam da bu sayede fonksiyonel arayüzdür."
+    },
+    {
+      topic: "Fonksiyonel arayüz",
+      q: "<pre>interface I { void a(); void b(); }\nI x = () -> System.out.print(\"x\");</pre>What is the result?",
+      opts: [
+        "Compilation fails because I is not a functional interface.",
+        "The code compiles because @FunctionalInterface is missing.",
+        "The code compiles and the lambda implements a().",
+        "A runtime exception is thrown."
+      ],
+      a: [0],
+      why: "Lambda yalnızca <b>tek abstract metodu olan</b> bir arayüze atanabilir; iki abstract metot varsa derleyici hangisini uygulayacağını bilemez. <br><code>@FunctionalInterface</code>'in <b>olmaması bir şeyi kurtarmaz</b>: annotation yalnızca kuralı erken denetletir, lambda uygunluğunu belirleyen şey arayüzün <b>yapısıdır</b>."
+    },
+    {
+      topic: "Fonksiyonel arayüz",
+      q: "What is the purpose of the <code>@FunctionalInterface</code> annotation?",
+      opts: [
+        "It makes the compiler verify that the interface has exactly one abstract method.",
+        "It is required before an interface can be used as a lambda target.",
+        "It automatically generates a default implementation.",
+        "It prevents the interface from declaring default methods."
+      ],
+      a: [0],
+      why: "Annotation yalnızca bir <b>derleme zamanı denetimidir</b>: kural bozulursa hata verir ve niyeti belgeler. <br><b>Zorunlu değildir</b> — annotation olmayan bir arayüz de tek abstract metodu varsa lambda hedefi olur. <code>default</code> metotları da engellemez."
+    },
+    {
+      topic: "Arayüz kalıtımı",
+      q: "Which declarations are legal? (Choose TWO.)",
+      opts: [
+        "interface A extends B, C { }",
+        "class D implements B, C { }",
+        "interface A extends SomeConcreteClass { }",
+        "interface A { A() { } }"
+      ],
+      a: [0, 1],
+      why: "Arayüzler <b>birden çok arayüzü</b> genişletebilir ve sınıflar <b>birden çok arayüzü</b> uygulayabilir — Java'nın çoklu kalıtım kısıtı yalnızca <b>sınıf durumu</b> içindir. <br>Bir arayüz <b>sınıf genişletemez</b> ve <b>constructor'ı olamaz</b>: arayüzler nesne üretmez, durum tutmaz."
+    },
+    {
+      topic: "Dört metot tipi",
+      q: "<pre>interface I {\n    default int a() { return b(); }\n    private int b() { return 1; }\n}\nclass C implements I { }\n\nSystem.out.println(new C().a());</pre>What is the result?",
+      opts: [
+        "1",
+        "Compilation fails because a default method cannot call a private method.",
+        "Compilation fails because C must implement b().",
+        "0"
+      ],
+      a: [0],
+      why: "<code>private</code> arayüz metotları tam da bunun için vardır: <b>default metotlar arasındaki ortak kodu</b> dışarıya sızdırmadan paylaşmak. Arayüzün kendi içinden çağrılabilirler. <br>Uygulayan sınıf onları <b>görmez</b>, bu yüzden uygulamak zorunda da değildir — abstract sayılmazlar."
+    },
+    {
+      topic: "Dört metot tipi",
+      q: "Which interface methods must have a body? (Choose TWO.)",
+      opts: [
+        "default methods",
+        "private methods",
+        "abstract methods",
+        "methods declared without any modifier and without a body"
+      ],
+      a: [0, 1],
+      why: "<code>default</code>, <code>static</code>, <code>private</code> ve <code>private static</code> metotların <b>gövdesi zorunludur</b> — bunlar arayüzün somut kısmıdır. <br>Belirteçsiz ve gövdesiz bildirilen metot ise örtük olarak <b>public abstract</b>'tır; gövdesi <b>olamaz</b>."
+    },
+    {
+      topic: "Örtük belirteçler",
+      q: "<pre>interface I {\n    void m();\n    final void n();\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because n() is implicitly abstract and cannot be final.",
+        "The code compiles.",
+        "Compilation fails because m() has no body.",
+        "Compilation fails because interfaces cannot declare more than one method."
+      ],
+      a: [0],
+      why: "Gövdesiz bir arayüz metodu örtük olarak <code>abstract</code>'tır ve <code>abstract final</code> bir <b>çelişkidir</b>: biri \"uygulanmalı\", diğeri \"değiştirilemez\" der. <br><code>m()</code> tamamen normaldir — gövdesizlik arayüzde <b>beklenen</b> durumdur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8.3 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-8.3",
+  code: "Eşzamanlılık · 8.3",
+  title: "Thread-Safe Kod: Kilitler, Atomic ve Concurrent Koleksiyonlar",
+  back: "8.3-thread-safety.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "volatile",
+      q: "<pre>static volatile int sayac = 0;\n// 100 thread each run sayac++ a thousand times</pre>Is the final value guaranteed to be 100000?",
+      opts: [
+        "No, because volatile guarantees visibility but not atomicity.",
+        "Yes, volatile makes the increment atomic.",
+        "Yes, because int assignment is always atomic.",
+        "No, because volatile fields cannot be modified by multiple threads."
+      ],
+      a: [0],
+      why: "<code>sayac++</code> aslında <b>üç işlemdir</b>: oku, artır, yaz. <code>volatile</code> yalnızca bir thread'in yazdığının diğerlerince <b>görülmesini</b> sağlar; araya başka bir thread'in girmesini <b>engellemez</b>. <br>Doğru araçlar: <code>AtomicInteger</code>, <code>synchronized</code> veya <code>ReentrantLock</code>. <b>Kanca:</b> \"volatile görünürlük, atomic bütünlük.\""
+    },
+    {
+      topic: "volatile",
+      q: "For which use case is <code>volatile</code> alone sufficient?",
+      opts: [
+        "A boolean flag written by one thread and read by others.",
+        "A counter incremented by many threads.",
+        "A list appended to by many threads.",
+        "A compound check-then-act operation."
+      ],
+      a: [0],
+      why: "<code>volatile</code>, <b>tek yazan çok okuyan</b> basit bayrak senaryosunda tam olarak doğru araçtır: yazma tek işlemdir ve görünürlük garanti edilir (<code>while (calisiyor) { ... }</code> gibi). <br>Sayaç, liste ekleme ve \"kontrol et sonra davran\" gibi <b>bileşik</b> işlemler atomiklik gerektirir ve <code>volatile</code> yetmez."
+    },
+    {
+      topic: "synchronized",
+      q: "Which object does a <code>static synchronized</code> method lock on?",
+      opts: [
+        "The Class object of the declaring class.",
+        "this",
+        "A new object created for each call.",
+        "The thread's own monitor."
+      ],
+      a: [0],
+      why: "Statik metodun bir örneği olmadığı için kilit <b><code>SinifAdi.class</code></b> nesnesidir. Örnek metotlar ise <code>this</code>'i kilitler. <br>Bu ayrım önemlidir: bir statik ve bir örnek <code>synchronized</code> metot <b>farklı kilitleri</b> kullanır, yani birbirlerini engellemezler."
+    },
+    {
+      topic: "wait ve notify",
+      q: "<pre>Object o = new Object();\no.wait();</pre>What is the result?",
+      opts: [
+        "An IllegalMonitorStateException is thrown at runtime.",
+        "The thread waits indefinitely.",
+        "Compilation fails because wait() is final.",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "<code>wait()</code>, <code>notify()</code> ve <code>notifyAll()</code> yalnızca o nesnenin <b>monitörü tutulurken</b> çağrılabilir — yani bir <code>synchronized (o) { ... }</code> bloğu içinde. Aksi hâlde <b>IllegalMonitorStateException</b> atılır. <br>Not: <code>wait()</code> ayrıca <b>checked</b> <code>InterruptedException</code> bildirir, bu yüzden gerçek kodda try/catch de gerekir."
+    },
+    {
+      topic: "wait ve sleep",
+      q: "Which statements comparing wait() and sleep() are correct? (Choose TWO.)",
+      opts: [
+        "wait() releases the monitor lock; sleep() does not.",
+        "wait() must be called while holding the monitor; sleep() has no such requirement.",
+        "sleep() releases all locks held by the thread.",
+        "wait() is a static method on Thread."
+      ],
+      a: [0, 1],
+      why: "<code>wait()</code> <code>Object</code> üzerinde tanımlıdır, <b>kilidi bırakır</b> ve yalnızca kilit tutulurken çağrılabilir. <code>sleep()</code> <code>Thread</code>'in <b>static</b> metodudur, kilit gerektirmez ve <b>hiçbir kilidi bırakmaz</b>. <br>Bu yüzden <code>synchronized</code> blok içinde <code>sleep</code> çağırmak diğer thread'leri boşuna bekletir — klasik bir performans hatasıdır."
+    },
+    {
+      topic: "wait ve notify",
+      q: "Why should <code>wait()</code> always be called inside a <code>while</code> loop rather than an <code>if</code>?",
+      opts: [
+        "Because a thread can wake up spuriously or find the condition changed again.",
+        "Because wait() can only be called repeatedly.",
+        "Because if statements cannot appear in synchronized blocks.",
+        "Because while loops release the lock automatically."
+      ],
+      a: [0],
+      why: "Bir thread <b>sahte uyanma (spurious wakeup)</b> yaşayabilir ya da uyandığında koşul başka bir thread tarafından tekrar bozulmuş olabilir. <code>while</code> koşulu <b>yeniden kontrol eder</b>; <code>if</code> ise bir kez bakıp geçer ve hatalı duruma yol açar. <br>Bu, <code>wait</code>/<code>notify</code> kullanımının <b>standart kalıbıdır</b> ve sınavda \"doğru kalıp hangisi\" biçiminde sorulur."
+    },
+    {
+      topic: "Atomic sınıflar",
+      q: "<pre>AtomicInteger a = new AtomicInteger(5);\nSystem.out.println(a.getAndIncrement() + \" \" + a.get());</pre>What is the result?",
+      opts: [
+        "5 6",
+        "6 6",
+        "5 5",
+        "6 7"
+      ],
+      a: [0],
+      why: "<code>getAndIncrement</code> <b>eski</b> değeri döner ve sonra artırır — tıpkı <code>i++</code> gibi (1.1). Bu yüzden önce <b>5</b> yazılır, ardından alan 6 olur. <br><code>incrementAndGet</code> ise <b>yeni</b> değeri döner (<code>++i</code> karşılığı). Sınav bu ikisini yer değiştirerek sorar."
+    },
+    {
+      topic: "Atomic sınıflar",
+      q: "<pre>AtomicInteger a = new AtomicInteger(5);\nSystem.out.println(a.compareAndSet(4, 100) + \" \" + a.get());</pre>What is the result?",
+      opts: [
+        "false 5",
+        "true 100",
+        "false 100",
+        "true 5"
+      ],
+      a: [0],
+      why: "<code>compareAndSet(beklenen, yeni)</code> mevcut değer <b>beklenene eşitse</b> günceller ve <code>true</code> döner; değilse hiçbir şey yapmaz ve <code>false</code> döner. Mevcut değer 5, beklenen 4 olduğu için güncelleme <b>gerçekleşmez</b>. <br>Bu, kilitsiz (lock-free) eşzamanlılığın temel yapı taşıdır: CAS — <i>compare and swap</i>."
+    },
+    {
+      topic: "ReentrantLock",
+      q: "<pre>Lock l = new ReentrantLock();\nl.unlock();</pre>What is the result?",
+      opts: [
+        "An IllegalMonitorStateException is thrown at runtime.",
+        "Nothing happens; unlock on an unlocked lock is a no-op.",
+        "Compilation fails.",
+        "The lock becomes permanently unavailable."
+      ],
+      a: [0],
+      why: "Kilidi <b>almamış</b> bir thread <code>unlock()</code> çağırırsa <b>IllegalMonitorStateException</b> atılır. Bu yüzden standart kalıp <code>lock()</code> → <code>try</code> → iş → <code>finally { unlock(); }</code> şeklindedir. <br><code>unlock</code>'u <code>finally</code>'ye koymazsan gövdede exception oluştuğunda kilit <b>hiç bırakılmaz</b> ve uygulama kilitlenir."
+    },
+    {
+      topic: "ReentrantLock",
+      q: "Which capabilities does ReentrantLock provide that synchronized does not? (Choose TWO.)",
+      opts: [
+        "Attempting to acquire the lock without blocking (tryLock).",
+        "Waiting for the lock with a timeout.",
+        "Automatic release when the block exits.",
+        "Reentrancy for the same thread."
+      ],
+      a: [0, 1],
+      why: "<code>tryLock()</code> ve <code>tryLock(sure, birim)</code> <code>synchronized</code>'da <b>karşılığı olmayan</b> yeteneklerdir; <code>lockInterruptibly()</code> ve adalet (fairness) seçeneği de öyle. <br>Otomatik serbest bırakma <code>synchronized</code>'ın <b>avantajıdır</b> (<code>ReentrantLock</code>'ta elle yaparsın). Yeniden girişlilik ise <b>her ikisinde de</b> vardır — zaten adı oradan gelir."
+    },
+    {
+      topic: "Concurrent koleksiyonlar",
+      q: "<pre>new ConcurrentHashMap&lt;String,String&gt;().put(null, \"x\");</pre>What is the result?",
+      opts: [
+        "A NullPointerException is thrown at runtime.",
+        "The entry is stored with a null key.",
+        "Compilation fails.",
+        "An UnsupportedOperationException is thrown."
+      ],
+      a: [0],
+      why: "<code>ConcurrentHashMap</code> <b>null anahtar ve null değer kabul etmez</b> → <code>NullPointerException</code>. Sebep eşzamanlılıktır: <code>get</code> <code>null</code> döndüğünde \"anahtar yok\" mu \"değeri null\" mu olduğunu ayırt etmenin <b>atomik</b> bir yolu olmazdı. <br><code>HashMap</code> ise null anahtarı ve değerleri <b>kabul eder</b> (5.2)."
+    },
+    {
+      topic: "Concurrent koleksiyonlar",
+      q: "<pre>List&lt;String&gt; l = new CopyOnWriteArrayList&lt;&gt;(List.of(\"a\", \"b\"));\nfor (String s : l) l.add(\"x\");\nSystem.out.println(l.size());</pre>What is the result?",
+      opts: [
+        "4",
+        "A ConcurrentModificationException is thrown.",
+        "2",
+        "The loop never terminates."
+      ],
+      a: [0],
+      why: "<code>CopyOnWriteArrayList</code> her yazmada <b>iç diziyi kopyalar</b>; iterator ise iterasyon başladığı andaki <b>eski kopyayı</b> gezer. Bu yüzden döngü yalnızca <b>2 kez</b> döner, her turda bir eleman ekler → boyut <b>4</b>. <br>CME <b>atılmaz</b> ve sonsuz döngü de olmaz — aynı kod <code>ArrayList</code> ile <code>ConcurrentModificationException</code> atardı (2.2)."
+    },
+    {
+      topic: "BlockingQueue",
+      q: "<pre>BlockingQueue&lt;Integer&gt; q = new ArrayBlockingQueue&lt;&gt;(1);\nq.put(1);\nSystem.out.println(q.offer(2));</pre>What is the result?",
+      opts: [
+        "false",
+        "true",
+        "The call blocks forever.",
+        "An IllegalStateException is thrown."
+      ],
+      a: [0],
+      why: "Kuyruk doludur. <code>offer</code> \"nazik\" metottur: yer yoksa <b><code>false</code></b> döner. <br>Aynı durumda <code>put</code> yer açılana kadar <b>bloklar</b>, <code>add</code> ise <b><code>IllegalStateException</code></b> atar. Üç metot, üç farklı doluluk davranışı — sınav bunları yan yana sorar (5.2'deki Queue tablosunun eşzamanlı hâli)."
+    },
+    {
+      topic: "Eşzamanlılık sorunları",
+      q: "Two threads each hold one lock and wait for the other's lock. What is this called?",
+      opts: [
+        "Deadlock",
+        "Livelock",
+        "Starvation",
+        "Race condition"
+      ],
+      a: [0],
+      why: "<b>Deadlock</b>: her thread diğerinin tuttuğu kilidi bekler ve hiçbiri ilerleyemez. <br><b>Livelock</b>'ta thread'ler <b>sürekli tepki verir</b> ama iş ilerlemez; <b>starvation</b>'da bir thread kaynağa hiç erişemez; <b>race condition</b>'da ise sonuç <b>zamanlamaya</b> bağlı olarak değişir. Dördü de farklı sorunlardır ve sınav tanımları eşleştirmeni ister."
+    },
+    {
+      topic: "Virtual thread ve kilitler",
+      q: "Why is ReentrantLock preferred over synchronized in code that runs on virtual threads?",
+      opts: [
+        "Because blocking inside synchronized pins the virtual thread to its carrier.",
+        "Because synchronized is deprecated in Java 21.",
+        "Because virtual threads cannot enter synchronized blocks at all.",
+        "Because ReentrantLock is always faster."
+      ],
+      a: [0],
+      why: "<code>synchronized</code> blok içinde bloklanan bir virtual thread taşıyıcı platform thread'inden <b>sökülemez</b> (pinning) ve taşıyıcı boşa harcanır — virtual thread'lerin ölçek avantajı kaybolur (8.1). <code>ReentrantLock</code> bu sorunu yaşatmaz. <br><code>synchronized</code> <b>deprecated değildir</b>, virtual thread'ler ona <b>girebilir</b>, ve <code>ReentrantLock</code> her senaryoda daha hızlı <b>değildir</b>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

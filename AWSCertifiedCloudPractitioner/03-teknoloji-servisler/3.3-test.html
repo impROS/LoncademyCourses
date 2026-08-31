@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.3 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.3",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.3",
+  title: "Hesaplama (Compute)",
+  back: "3.3-compute.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Instance aileleri",
+      q: "Which Amazon EC2 instance family is BEST suited for a large in-memory database workload?",
+      opts: ["Memory optimized", "Compute optimized", "Storage optimized", "Accelerated computing"],
+      a: [0],
+      why: "Bellek ağırlıklı iş yükleri için <b>memory optimized</b> (R, X, z serileri). Hatırlama tüyosu: <b>C</b>=CPU, <b>R</b>=RAM, <b>I/D/H</b>=disk, <b>P/G</b>=GPU, <b>M/T</b>=genel amaçlı. Compute optimized yoğun CPU, storage optimized yüksek disk I/O, accelerated computing GPU işleri içindir."
+    },
+    {
+      topic: "Instance aileleri",
+      q: "A workload performs heavy batch scientific computation that is CPU-bound. Which instance family should be selected?",
+      opts: ["Compute optimized", "Memory optimized", "General purpose", "Storage optimized"],
+      a: [0],
+      why: "CPU yoğun işler için <b>compute optimized</b> (C serisi): toplu hesaplama, oyun sunucuları, bilimsel modelleme, yüksek performanslı web sunucuları. General purpose dengeli bir profildir ve CPU yoğun işlerde daha pahalıya gelir."
+    },
+    {
+      topic: "EC2 yaşam döngüsü",
+      q: "An EC2 instance is in the stopped state. What does the customer continue to pay for?",
+      opts: [
+        "The attached Amazon EBS volumes",
+        "The instance compute hours",
+        "Nothing at all",
+        "Data transfer for the stopped instance"
+      ],
+      a: [0],
+      why: "<b>Stop</b> edildiğinde compute ücreti durur ama <b>EBS diski durmaya devam eder ve ücretlenir</b> — veri korunduğu için. <b>Terminate</b> ederse instance ve (varsayılan olarak) kök diski silinir, ücret tamamen biter. Bu ayrım sınavda düzenli sorulur."
+    },
+    {
+      topic: "EC2 kavramları",
+      q: "Which EC2 feature allows a customer to run a script automatically the first time an instance boots, for example to install a web server?",
+      opts: ["User data", "Key pair", "Security group", "Elastic IP address"],
+      a: [0],
+      why: "<b>User data</b>, instance ilk açılışta <b>bir kez</b> çalışan başlangıç betiğidir; yazılım kurulumu ve yapılandırma için kullanılır. Bu, sunucuları elle kurmak yerine <b>otomatik ve tekrarlanabilir</b> kurmayı sağlar — immutable infrastructure yaklaşımının temelidir."
+    },
+    {
+      topic: "EC2 kavramları",
+      q: "What is an Amazon Machine Image (AMI)?",
+      opts: [
+        "A template containing the operating system and software used to launch an EC2 instance",
+        "A snapshot of an Amazon S3 bucket",
+        "A network firewall configuration",
+        "A billing report for EC2 usage"
+      ],
+      a: [0],
+      why: "<b>AMI</b> instanceın açılış şablonudur: işletim sistemi, önceden kurulu yazılım ve ayarlar. Kendi AMIni oluşturup aynı sunucuyu defalarca, saniyeler içinde açabilirsin — Auto Scalingin sağlıksız instanceı değiştirebilmesi de buna dayanır."
+    },
+    {
+      topic: "Lambda",
+      q: "A data processing job takes about 45 minutes to complete. Is AWS Lambda an appropriate service for it?",
+      opts: [
+        "No — Lambda functions have a maximum execution time of 15 minutes",
+        "Yes — Lambda has no execution time limit",
+        "Yes — but only if the memory is set to the maximum",
+        "No — Lambda cannot process data at all"
+      ],
+      a: [0],
+      why: "Lambdanın <b>maksimum çalışma süresi 15 dakikadır</b>; daha uzun işler için <b>ECS/Fargate, AWS Batch</b> veya EC2 kullanılır. Bu limit sınavda doğrudan sorulan sayısal bilgilerden biridir."
+    },
+    {
+      topic: "Lambda",
+      q: "How is AWS Lambda billed?",
+      opts: [
+        "By the number of requests and the compute duration consumed",
+        "By a fixed monthly fee per function",
+        "By the number of EC2 instances running the function",
+        "By the amount of data stored in the function"
+      ],
+      a: [0],
+      why: "Lambda <b>istek sayısı + çalışma süresi (ayrılan belleğe göre)</b> üzerinden ücretlendirilir; fonksiyon çalışmıyorken <b>ücret yoktur</b>. Bu, <i>pay only when the code runs</i> ifadesinin karşılığıdır ve serverless ekonomisinin özüdür."
+    },
+    {
+      topic: "Konteynerler",
+      q: "A company wants to run Docker containers on AWS without provisioning or managing any EC2 instances. Which service should it use?",
+      opts: ["AWS Fargate", "Amazon EC2", "Amazon ECR", "AWS Batch"],
+      a: [0],
+      why: "<b>Fargate</b>, ECS ve EKS için <b>sunucusuz çalıştırma motorudur</b>: sunucu yamalamaz, kapasite planlamazsın ve konteynerin kullandığı vCPU/bellek kadar ödersin. <b>ECR</b> imaj deposudur, konteyner çalıştırmaz."
+    },
+    {
+      topic: "Konteynerler",
+      q: "Which AWS service provides a managed Kubernetes control plane?",
+      opts: ["Amazon EKS", "Amazon ECS", "Amazon ECR", "AWS Elastic Beanstalk"],
+      a: [0],
+      why: "<b>EKS</b> yönetilen <b>Kubernetes</b>tir; Kubernetes standardına ve taşınabilirliğe ihtiyaç duyanlar içindir. <b>ECS</b> AWSin kendi, daha basit orkestrasyon servisidir. <b>ECR</b> ise konteyner <b>imajlarının</b> saklandığı registrydir."
+    },
+    {
+      topic: "Load balancing",
+      q: "Which load balancer type should be used for an HTTP application that needs path-based and host-based routing rules?",
+      opts: [
+        "Application Load Balancer",
+        "Network Load Balancer",
+        "Gateway Load Balancer",
+        "Classic Load Balancer"
+      ],
+      a: [0],
+      why: "<b>ALB</b> katman 7de (HTTP/HTTPS) çalışır ve yol/host bazlı yönlendirme, mikroservis ve konteyner senaryoları için tasarlanmıştır. <b>NLB</b> katman 4tür: TCP/UDP, ultra düşük gecikme, statik IP. <b>GWLB</b> üçüncü parti güvenlik cihazlarını devreye almak içindir."
+    },
+    {
+      topic: "Auto Scaling",
+      q: "Which two services work together to provide both elasticity and high availability for a web tier? (Choose TWO.)",
+      opts: [
+        "Amazon EC2 Auto Scaling",
+        "Elastic Load Balancing",
+        "Amazon S3 Glacier",
+        "AWS Cost Explorer",
+        "AWS Artifact"
+      ],
+      a: [0, 1],
+      why: "<b>Auto Scaling</b> talebe göre instance ekler/çıkarır (elastikiyet) ve sağlıksız instanceı değiştirir (self-healing); <b>ELB</b> trafiği sağlıklı hedeflere ve birden çok AZye dağıtır (yüksek erişilebilirlik). Bu ikili sınavın en sevdiği kombinasyondur."
+    },
+    {
+      topic: "Auto Scaling",
+      q: "What happens when an EC2 Auto Scaling group detects that an instance has failed its health check?",
+      opts: [
+        "It terminates the unhealthy instance and launches a replacement",
+        "It reboots the instance and keeps it in the group permanently",
+        "It sends a bill credit to the customer",
+        "It converts the instance to a Spot Instance"
+      ],
+      a: [0],
+      why: "Auto Scaling sağlıksız instanceı <b>sonlandırır ve launch templatee göre yenisini açar</b> — buna <b>self-healing</b> denir. Bu, sunucuların <b>harcanabilir (disposable)</b> görülmesi prensibinin pratik karşılığıdır."
+    },
+    {
+      topic: "Diğer compute servisleri",
+      q: "A small business wants to host a WordPress site with a simple setup and a predictable fixed monthly price. Which service is MOST appropriate?",
+      opts: ["Amazon Lightsail", "Amazon EC2 with Auto Scaling", "AWS Lambda", "AWS Batch"],
+      a: [0],
+      why: "<b>Lightsail</b> basitleştirilmiş, <b>sabit aylık fiyatlı</b> paketler sunar (sanal sunucu + depolama + veri transferi dahil) ve hazır uygulama şablonları (WordPress gibi) içerir. AWSe yeni başlayan ve öngörülebilir fatura isteyen küçük iş yükleri için tasarlanmıştır."
+    },
+    {
+      topic: "Diğer compute servisleri",
+      q: "Which service is designed to plan, schedule and run large numbers of batch computing jobs while managing the compute capacity automatically?",
+      opts: ["AWS Batch", "AWS Lambda", "Amazon Lightsail", "AWS Elastic Beanstalk"],
+      a: [0],
+      why: "<b>AWS Batch</b> toplu iş yüklerini kuyruklar, önceliklendirir ve gereken compute kapasitesini (EC2 veya Fargate, isteğe bağlı Spot ile) otomatik ayarlar. Uzun süren bilimsel hesaplama ve render işleri için Lambdanın 15 dakikalık limitine takılmayan doğru seçenektir."
+    },
+    {
+      topic: "Serverless kavramı",
+      q: "Which two AWS services are considered serverless? (Choose TWO.)",
+      opts: [
+        "AWS Lambda",
+        "Amazon DynamoDB",
+        "Amazon EC2",
+        "Amazon EKS with EC2 launch type",
+        "AWS Outposts"
+      ],
+      a: [0, 1],
+      why: "Serverless = <b>sunucu sağlamaz, yamalamaz, ölçeklemezsin</b>. Bu tanıma uyanlar: Lambda, Fargate, S3, <b>DynamoDB</b>, SQS, SNS, API Gateway, EventBridge, Step Functions, Aurora Serverless, Athena. EC2 ve EC2 launch typeli EKS sunucu yönetimi gerektirir; Outposts ise fiziksel donanımdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

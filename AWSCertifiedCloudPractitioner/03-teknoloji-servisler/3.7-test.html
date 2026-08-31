@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.7 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.7",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.7",
+  title: "AI/ML ve Analitik",
+  back: "3.7-ai-ml-analitik.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Ses servisleri",
+      q: "Which AWS service converts speech in recorded audio files into text?",
+      opts: ["Amazon Transcribe", "Amazon Polly", "Amazon Comprehend", "Amazon Translate"],
+      a: [0],
+      why: "<b>Transcribe</b> = ses → metin (<i>transcript</i> = döküm). Ters yön <b>Polly</b>dir: metin → doğal ses. Bu ikisinin yönünü karıştırmak sınavda en sık yapılan hatalardan biridir."
+    },
+    {
+      topic: "Ses servisleri",
+      q: "A company wants its news application to read articles aloud in a natural-sounding voice. Which service should it use?",
+      opts: ["Amazon Polly", "Amazon Transcribe", "Amazon Lex", "Amazon Kendra"],
+      a: [0],
+      why: "<b>Polly</b> metni <b>doğal sese</b> çevirir (text-to-speech); sesli okuma, IVR anonsu ve erişilebilirlik senaryolarında kullanılır. <b>Lex</b> sohbet botu, <b>Kendra</b> kurumsal arama servisidir."
+    },
+    {
+      topic: "Görüntü ve belge",
+      q: "A company needs to extract text, tables and form fields from scanned invoices and identity documents. Which service is designed for this?",
+      opts: ["Amazon Textract", "Amazon Rekognition", "Amazon Comprehend", "Amazon Polly"],
+      a: [0],
+      why: "<b>Textract</b> taranmış <b>belgelerden</b> metin, <b>tablo</b> ve <b>form alanları</b> çıkarır. <b>Rekognition</b> ise görüntü/videoda <b>nesne ve yüz</b> tanır. Ayırt edici kelime: belge/fatura/form → Textract; fotoğraf/video/yüz → Rekognition."
+    },
+    {
+      topic: "Görüntü ve belge",
+      q: "Which service can detect objects, faces and inappropriate content in images and videos?",
+      opts: ["Amazon Rekognition", "Amazon Textract", "Amazon Forecast", "Amazon Personalize"],
+      a: [0],
+      why: "<b>Rekognition</b> görüntü ve video analizidir: nesne/sahne etiketleme, yüz tanıma ve karşılaştırma, uygunsuz içerik tespiti, görüntüdeki metni okuma. Hafıza kancası: <i>Rekognition = gör</i>."
+    },
+    {
+      topic: "Metin analizi",
+      q: "A company wants to analyze thousands of customer reviews to determine whether they are positive or negative and to extract entities such as company names and locations. Which service should it use?",
+      opts: ["Amazon Comprehend", "Amazon Translate", "Amazon Textract", "Amazon Kendra"],
+      a: [0],
+      why: "<b>Comprehend</b> doğal dil işleme servisidir: <b>duygu analizi (sentiment)</b>, varlık (entity) çıkarma, anahtar ifade, dil tespiti ve konu modelleme. Elindeki metnin <b>anlamını</b> çıkarmak istiyorsan cevap budur."
+    },
+    {
+      topic: "Kendi modelin",
+      q: "A data science team needs to build, train, tune and deploy its own custom machine learning models. Which service provides this end-to-end platform?",
+      opts: ["Amazon SageMaker AI", "Amazon Rekognition", "Amazon Comprehend", "Amazon Q"],
+      a: [0],
+      why: "<b>SageMaker AI</b> ML yaşam döngüsünün tamamını kapsar: veri hazırlama, eğitim, ayarlama, dağıtım ve izleme. Rekognition ve Comprehend <b>hazır (pre-trained)</b> servislerdir — model eğitmezsin. Ayırt edici ifade: <i>custom model</i> veya <i>train their own</i> → SageMaker."
+    },
+    {
+      topic: "Üretken yapay zekâ",
+      q: "Which AWS service provides access to foundation models from multiple providers through a single API for building generative AI applications?",
+      opts: ["Amazon Bedrock", "Amazon SageMaker AI", "Amazon Lex", "Amazon Personalize"],
+      a: [0],
+      why: "<b>Bedrock</b> farklı sağlayıcıların <b>temel modellerine (foundation models)</b> tek API ile erişim sunar ve üretken yapay zekâ uygulamaları geliştirmeyi kolaylaştırır. SageMaker kendi modelini eğitmek, <b>Amazon Q</b> ise AWS ve iş verisi üzerinde çalışan bir <b>asistandır</b>."
+    },
+    {
+      topic: "Athena",
+      q: "Which service allows running standard SQL queries directly against data stored in Amazon S3 without provisioning any infrastructure?",
+      opts: ["Amazon Athena", "Amazon Redshift", "Amazon EMR", "AWS Glue"],
+      a: [0],
+      why: "<b>Athena</b> sunucusuzdur: veri <b>S3te olduğu yerde</b> kalır, sen SQL yazarsın ve <b>taranan veri kadar</b> ödersin. Ara sıra yapılan (ad-hoc) sorgular için idealdir. Redshift ise veriyi kendi ambarına yükler ve sürekli ağır BI iş yükleri içindir."
+    },
+    {
+      topic: "ETL",
+      q: "Which service provides serverless extract, transform and load (ETL) capabilities along with a central data catalog?",
+      opts: ["AWS Glue", "Amazon Athena", "Amazon Kinesis", "Amazon QuickSight"],
+      a: [0],
+      why: "<b>Glue</b> sunucusuz ETL servisidir ve <b>Data Catalog</b> ile veri şemalarını merkezî olarak tutar; crawlerları S3teki veriyi tarayıp şemasını çıkarır. Athena sorgular, Glue <b>hazırlar ve dönüştürür</b>."
+    },
+    {
+      topic: "Akış verisi",
+      q: "A company needs to collect and process clickstream and IoT telemetry data in real time. Which service is designed for this?",
+      opts: ["Amazon Kinesis", "Amazon Athena", "Amazon Redshift", "AWS Glue"],
+      a: [0],
+      why: "<b>Kinesis</b> gerçek zamanlı <b>akış (streaming)</b> verisi toplama ve işleme ailesidir. Akış verisini bir hedefe (S3, Redshift, OpenSearch) teslim etmek için <b>Amazon Data Firehose</b> kullanılır. Athena ve Redshift <b>toplu (batch)</b> analiz içindir."
+    },
+    {
+      topic: "Görselleştirme",
+      q: "Which service lets business users build interactive dashboards and visualizations from AWS data sources?",
+      opts: ["Amazon QuickSight", "Amazon OpenSearch Service", "Amazon EMR", "AWS Data Exchange"],
+      a: [0],
+      why: "<b>QuickSight</b> AWSin bulut tabanlı <b>iş zekâsı (BI)</b> servisidir: panolar, grafikler ve paylaşılabilir raporlar üretir. <b>OpenSearch Service</b> ise arama ve <b>log analizi</b> içindir."
+    },
+    {
+      topic: "Büyük veri",
+      q: "Which service provides a managed cluster platform for running big data frameworks such as Apache Spark and Apache Hadoop?",
+      opts: ["Amazon EMR", "Amazon Redshift", "Amazon Athena", "Amazon Neptune"],
+      a: [0],
+      why: "<b>EMR</b> (Elastic MapReduce) Spark, Hadoop, Hive ve Presto gibi büyük veri çerçevelerini <b>yönetilen küme</b> olarak çalıştırır. Soruda bir framework adı (Spark/Hadoop) geçiyorsa cevap neredeyse her zaman EMRdir."
+    },
+    {
+      topic: "Data lake",
+      q: "Which AWS service is typically the foundation of a data lake, storing raw data of any type at any scale?",
+      opts: ["Amazon S3", "Amazon Redshift", "Amazon RDS", "Amazon EBS"],
+      a: [0],
+      why: "Data lakein merkezinde <b>Amazon S3</b> vardır: ucuz, sınırsız, dayanıklı ve her formatta ham veriyi saklar (<b>schema-on-read</b>). Üzerinde Glue, Athena, EMR, Redshift ve SageMaker çalışır. <b>Redshift</b> ise temizlenmiş, yapılandırılmış veriyi tutan <b>data warehouse</b>tur."
+    },
+    {
+      topic: "Servis eşleştirme",
+      q: "Which two statements correctly match an AWS service to its purpose? (Choose TWO.)",
+      opts: [
+        "Amazon Translate converts text from one language to another",
+        "Amazon Lex builds conversational chatbots using voice and text",
+        "Amazon Polly extracts text from scanned documents",
+        "Amazon Athena trains custom machine learning models",
+        "Amazon Kinesis stores archived data at the lowest cost"
+      ],
+      a: [0, 1],
+      why: "<b>Translate</b> diller arası çeviri, <b>Lex</b> ise sohbet botu (Alexanın motoru) servisidir. Yanlış eşleştirmeler: taranmış belgeden metin çıkarma <b>Textract</b>ın, model eğitme <b>SageMaker</b>ın, en ucuz arşiv ise <b>S3 Glacier Deep Archive</b>ın işidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

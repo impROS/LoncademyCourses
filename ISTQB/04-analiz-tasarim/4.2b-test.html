@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2b Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-4-2b",
+  code: "Test Analysis and Design · 4.2b",
+  title: "Karar Tablosu ve Durum Geçiş Testi",
+  back: "4.2b-karar-durum.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe. Kâğıt kalem kullan.",
+  questions: [
+    {
+      topic: "Karar tablosu kural sayısı",
+      q: "A decision table has four independent Boolean conditions. How many rules does the FULL decision table contain?",
+      opts: ["16", "8", "4", "32"],
+      a: [0],
+      why: "<b>n bağımsız Boolean koşul için tam tabloda 2ⁿ kural vardır: 2⁴ = 16.</b> 8 cevabı üç koşulun karşılığıdır. Soruda <code>FULL</code> yazması önemli — collapsed (sadeleştirilmiş) tablo daha az kural içerebilir."
+    },
+    {
+      topic: "Karar tablosu kural sayısı",
+      q: "In a decision table, one condition has three possible values (none / silver / gold) and another condition has two possible values (cart under 100 / cart 100 or more). How many rules does the full decision table contain?",
+      opts: ["6", "4", "8", "5"],
+      a: [0],
+      why: "<b>Koşullar Boolean değilse 2ⁿ formülü geçmez; her koşulun değer sayısı çarpılır: 3 × 2 = 6.</b> 4 cevabı iki koşulu da Boolean sanmaktan çıkar. Bu, formülü ezberleyip senaryoyu okumayanın kaçırdığı tipik sorudur."
+    },
+    {
+      topic: "Karar tablosu kapsamı",
+      q: "What does 100% decision table coverage require?",
+      opts: [
+        "At least one test case for every rule (column) in the table",
+        "At least one test case for every condition (row) in the table",
+        "At least one test case for every action in the table",
+        "One test case per table, exercising the most common rule"
+      ],
+      a: [0],
+      why: "<b>Karar tablosunda coverage item kuraldır, yani bir sütundur.</b> Satırlar koşulları ve eylemleri listeler ama kapsam birimi değildir. Her kural bir koşul bileşimini temsil ettiği için, kuralı atlamak bir bileşimi hiç test etmemek demektir."
+    },
+    {
+      topic: "Karar tablosu gösterimi",
+      q: "In a collapsed decision table, what does the '–' symbol mean?",
+      opts: [
+        "The condition does not affect the outcome for that rule (don't care)",
+        "The condition is false for that rule",
+        "The condition has not yet been specified",
+        "The rule is invalid and should not be tested"
+      ],
+      a: [0],
+      why: "<b>'–' don't care demektir: o kural için koşulun T ya da F olması sonucu değiştirmez.</b> Bu yüzden birden fazla tam-tablo kuralı tek bir sütunda birleştirilebilir. İkinci şık en yakın çeldirici — F belirli bir değerdir, '–' ise belirsizlik değil <i>ilgisizliktir</i>."
+    },
+    {
+      topic: "Karar tablosunun faydası",
+      q: "Besides generating test cases, what is a valuable side effect of building a decision table from a specification?",
+      opts: [
+        "It reveals combinations of conditions that the specification does not define, or that contradict each other",
+        "It measures the statement coverage of the implementation",
+        "It guarantees that the specification contains no defects",
+        "It removes the need for boundary value analysis"
+      ],
+      a: [0],
+      why: "<b>Tabloyu doldururken tanımsız veya çelişkili kombinasyonlar ortaya çıkar</b> — bu bir statik test kazancıdır ve kod yazılmadan kusur bulmanı sağlar. İkinci şık beyaz kutu ölçümüdür; üçüncüde <code>guarantees</code> var."
+    },
+    {
+      topic: "Karar tablosu uygulaması",
+      q: "A discount is 20% for students, plus 10% for annual subscriptions, plus 5% with a coupon; discounts are cumulative. Can the full decision table for these three Boolean conditions be collapsed?",
+      opts: [
+        "No, because every condition affects the outcome in every combination",
+        "Yes, into two rules, because only the student condition matters",
+        "Yes, into four rules, because the coupon condition is a don't care",
+        "No, because collapsed tables are only allowed for non-Boolean conditions"
+      ],
+      a: [0],
+      why: "<b>İndirimler toplandığı için her koşulun T/F olması sonucu değiştirir; hiçbir yerde don't care oluşmaz.</b> Bu önemli bir ders: collapse her tabloda mümkün değildir. Dördüncü şık uydurma bir kısıt getiriyor."
+    },
+    {
+      topic: "Durum geçiş bileşenleri",
+      q: "Which four elements make up a state transition model?",
+      opts: [
+        "States, events, transitions and actions",
+        "Conditions, rules, actions and coverage items",
+        "Partitions, boundaries, states and events",
+        "Statements, branches, paths and decisions"
+      ],
+      a: [0],
+      why: "<b>Durum, olay, geçiş ve eylem durum geçiş modelinin dört bileşenidir.</b> İkinci şık karar tablosunun terimlerini, dördüncü şık beyaz kutu terimlerini karıştırıyor. Terim ailelerini birbirine karıştırmamak sınavda ciddi puan kazandırır."
+    },
+    {
+      topic: "Diyagram ve tablo",
+      q: "Which representation of a state transition model shows the INVALID transitions?",
+      opts: [
+        "The state table",
+        "The state transition diagram",
+        "Both show invalid transitions equally",
+        "Neither representation can show invalid transitions"
+      ],
+      a: [0],
+      why: "<b>State table her durum-olay kombinasyonu için bir hücre içerir, dolayısıyla geçersiz (imkânsız) geçişler de görünür.</b> Diyagram yalnızca geçerli geçişleri ok olarak çizer. Geçersiz geçişleri test etmek istiyorsan tabloya bakmak zorundasın."
+    },
+    {
+      topic: "Kapsam seviyeleri",
+      q: "100% all states coverage has been achieved for a state machine. Does this guarantee 100% valid transitions coverage?",
+      opts: [
+        "No; but 100% valid transitions coverage would guarantee 100% all states coverage",
+        "Yes; visiting every state necessarily exercises every transition",
+        "No; and 100% valid transitions coverage would not guarantee all states coverage either",
+        "Yes, provided that the state table contains no invalid transitions"
+      ],
+      a: [0],
+      why: "<b>İlişki tek yönlüdür.</b> Her geçişi koşarsan zorunlu olarak her duruma uğrarsın; ama her duruma uğramak, o durumlara giden <i>tüm</i> yolları denediğin anlamına gelmez. Bu tek cümle sınavda birden fazla soruyu çözer."
+    },
+    {
+      topic: "Kapsam seviyeleri",
+      q: "Order the following state transition coverage levels from WEAKEST to STRONGEST.",
+      opts: [
+        "All states coverage, valid transitions coverage, all transitions coverage",
+        "All transitions coverage, valid transitions coverage, all states coverage",
+        "Valid transitions coverage, all states coverage, all transitions coverage",
+        "All states coverage, all transitions coverage, valid transitions coverage"
+      ],
+      a: [0],
+      why: "<b>All states en zayıfı, all transitions (geçersizler dahil) en güçlüsüdür.</b> İkinci şık sırayı tersten veriyor; sorudaki <code>WEAKEST to STRONGEST</code> ifadesini kaçırırsan onu seçersin."
+    },
+    {
+      topic: "Geçiş sayma",
+      q: "A media player has 3 states (Stopped, Playing, Paused) and 3 events (Play, Pause, Stop). The diagram shows 5 valid transitions. How many cells does the state table contain, and how many represent invalid transitions?",
+      opts: [
+        "9 cells, 4 invalid",
+        "5 cells, 0 invalid",
+        "9 cells, 5 invalid",
+        "6 cells, 1 invalid"
+      ],
+      a: [0],
+      why: "<b>State table hücre sayısı = durum × olay = 3 × 3 = 9.</b> Bunların 5'i geçerli geçiş olduğuna göre 9 − 5 = 4'ü geçersizdir. All transitions coverage bu 9 hücrenin hepsini test etmeyi gerektirir; 0-switch ise yalnızca 5'ini."
+    },
+    {
+      topic: "Kapsam seviyeleri",
+      q: "A card can be Active, Blocked or Cancelled. Valid transitions are: Active→Blocked, Blocked→Active, Active→Cancelled, Blocked→Cancelled. The sequence Active → Blocked → Cancelled is executed. What coverage has been achieved?",
+      opts: [
+        "100% all states coverage, but only 50% valid transitions coverage",
+        "100% all states coverage and 100% valid transitions coverage",
+        "50% all states coverage and 50% valid transitions coverage",
+        "100% valid transitions coverage, but only 66% all states coverage"
+      ],
+      a: [0],
+      why: "<b>Dizi üç durumun hepsini ziyaret ediyor (%100 all states) ama 4 geçerli geçişin yalnızca 2'sini kapsıyor (%50).</b> Kapsanmayanlar: Blocked→Active ve Active→Cancelled. Bu, iki kapsam seviyesi arasındaki farkın somut kanıtıdır."
+    },
+    {
+      topic: "Teknik seçimi",
+      q: "An application's response to pressing the same button depends on which screen the user navigated from. Which technique is MOST appropriate?",
+      opts: [
+        "State transition testing",
+        "Decision table testing",
+        "Boundary value analysis",
+        "Equivalence partitioning"
+      ],
+      a: [0],
+      why: "<b>Cevap sistemin geçmişine bağlıysa durum geçiş testi kullanılır.</b> Karar tablosu <i>anlık</i> koşulların kombinasyonuna bakar ve hafızayı modelleyemez. Kanca: <b>karar tablosu = kombinasyon, durum geçiş = hafıza.</b>"
+    },
+    {
+      topic: "Teknik seçimi",
+      q: "An insurance premium depends on whether the applicant is a smoker, whether they have a chronic condition, and whether they are over 60. All eight combinations are defined in the business rules. Which technique is MOST appropriate?",
+      opts: [
+        "Decision table testing",
+        "State transition testing",
+        "Boundary value analysis",
+        "Checklist-based testing"
+      ],
+      a: [0],
+      why: "<b>Birden fazla bağımsız koşulun kombinasyonu tanımlıysa karar tablosu kullanılır</b> ve 2³ = 8 kural elde edilir. Yaş için 60 sınırı ayrıca BVA gerektirebilir, ama sorunun asıl konusu <i>kombinasyon</i>dur — teknikler birlikte kullanılır."
+    },
+    {
+      topic: "Durum geçiş bileşenleri",
+      q: "Which two statements about state transition testing are correct? (Choose TWO.)",
+      opts: [
+        "A transition may lead from a state back to the same state",
+        "An action is the output produced when a transition occurs",
+        "Every state must have at least one outgoing transition",
+        "The state table shows only the transitions drawn in the diagram"
+      ],
+      a: [0, 1],
+      why: "<b>Bir geçiş kendi durumuna dönebilir (self-transition) ve eylem, geçişle birlikte üretilen çıktıdır.</b> Üçüncü şık yanlış: terminal (final) durumlardan çıkış olmayabilir — örneğin iptal edilmiş bir kart. Dördüncü şık diyagram ile tabloyu karıştırıyor."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

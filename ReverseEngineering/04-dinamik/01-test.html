@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>04-01 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-04-01",
+  code: "04 Dinamik · GDB Temel",
+  title: "GDB + pwndbg: Breakpoint, Adımlama, Register",
+  back: "01-gdb-temel.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "pwndbg",
+      q: "pwndbg (veya GEF) çıplak GDB'ye ne katar?",
+      opts: ["Her durakta register/stack/disassembly context'ini düzenli ve renkli gösterir", "Programı otomatik çözer", "Binary'yi decompile eder", "Kaynak kodu geri getirir"],
+      a: [0],
+      why: "<b>pwndbg</b> RE/exploit için tasarlanmış bir GDB eklentisidir: her durakta context (register, stack, kod) basar. Çözümü sen yaparsın; o görünürlüğü sağlar."
+    },
+    {
+      topic: "Başlat/durdur",
+      q: "<code>start</code> komutu <code>run</code>'dan nasıl farklıdır?",
+      opts: ["start önce main'e geçici breakpoint koyup öyle çalıştırır", "start programı çalıştırmaz", "start binary'yi siler", "İkisi tamamen aynıdır"],
+      a: [0],
+      why: "<b>start = main'e tbreak + run.</b> Program main'in başında durur. run ise doğrudan çalıştırır (breakpoint yoksa sonuna kadar gider)."
+    },
+    {
+      topic: "Başlat/durdur",
+      q: "Dosyadan girdi vererek bir programı çalıştırmak için doğru komut?",
+      opts: ["<code>run &lt; input.txt</code>", "<code>run input.txt</code> her zaman", "<code>read input.txt</code>", "<code>load input.txt</code>"],
+      a: [0],
+      why: "<b>run &lt; input.txt</b> standart girdiyi dosyadan besler. <code>run input.txt</code> ise dosyayı bir <i>argüman</i> olarak geçirir — farklı şey. stdin okuyan programlar için yönlendirme kullan."
+    },
+    {
+      topic: "Breakpoint",
+      q: "Bir parola karşılaştırmasını yakalamak için en pratik breakpoint hangisidir?",
+      opts: ["<code>break strcmp</code> — her çağrıda durur, argümanları ($rdi/$rsi) okursun", "<code>break 1</code>", "<code>break exit</code>", "Breakpoint gereksizdir"],
+      a: [0],
+      why: "<code>break strcmp</code> karşılaştırma anında durdurur; <code>x/s $rdi</code>/<code>x/s $rsi</code> ile karşılaştırılan iki string'i (biri beklenen parola) okursun. En hızlı dinamik crackme yolu."
+    },
+    {
+      topic: "Breakpoint",
+      q: "PIE (position independent) bir binary'de <code>break *0x1169</code> beklediğin yerde durmuyor. Neden?",
+      opts: ["ASLR ile yükleme tabanı her çalıştırmada değişir; gerçek adres kaydı", "Adres yanlış yazılmış olmalı", "PIE breakpoint'e izin vermez", "0x1169 geçersiz bir adrestir"],
+      a: [0],
+      why: "PIE + ASLR: kod her çalıştırmada farklı bir base'e yüklenir. Sabit dosya-offset'i çalışmaz. <b>Sembol (<code>break main</code>) veya base+offset</b> kullan; pwndbg base'i gösterir."
+    },
+    {
+      topic: "Breakpoint",
+      q: "<code>tbreak main</code> ile <code>break main</code> arasındaki fark nedir?",
+      opts: ["tbreak tek seferliktir: bir kez durur ve otomatik silinir", "tbreak daha yavaş durur", "tbreak sadece PIE'de çalışır", "İkisi aynıdır"],
+      a: [0],
+      why: "<b>tbreak = temporary breakpoint</b>: ilk vuruşta durur, sonra kaldırılır. Bir yere sadece bir kez uğramak istediğinde kullanışlıdır."
+    },
+    {
+      topic: "Adımlama",
+      q: "Bir <code>call</code> satırında <code>step</code> (s) ile <code>next</code> (n) arasındaki fark nedir?",
+      opts: ["step fonksiyonun içine girer; next üstünden atlar", "step atlar, next girer", "İkisi de içine girer", "İkisi de programı bitirir"],
+      a: [0],
+      why: "<b>step içine girer, next atlar.</b> Assembly seviyesinde karşılıkları <code>stepi</code>/<code>nexti</code>. Yanlış seçim ya çağrıyı kaçırır ya gereksiz derinliğe iner."
+    },
+    {
+      topic: "Adımlama",
+      q: "İçeriğiyle ilgilenmediğin bir <code>call printf</code>'e geldin. Hangi komut doğru?",
+      opts: ["<code>ni</code> (nexti) — çağrının üstünden atla", "<code>si</code> (stepi) — libc'nin içine gir", "<code>finish</code> — hemen çık", "<code>continue</code> — programı bitir"],
+      a: [0],
+      why: "<code>si</code> ile printf'e girersen <b>libc'nin yüzlerce komutunda kaybolursun.</b> İlgilenmediğin kütüphane çağrılarını <code>ni</code> ile atla; sadece kendi kodunu <code>si</code> ile izle."
+    },
+    {
+      topic: "Adımlama",
+      q: "Bir fonksiyonun içindeyken onun geri kalanını çalıştırıp çağırana dönmek için hangi komut?",
+      opts: ["<code>finish</code>", "<code>step</code>", "<code>break</code>", "<code>kill</code>"],
+      a: [0],
+      why: "<b>finish</b> mevcut fonksiyon dönene kadar çalıştırır ve dönüş değerini gösterir. Yanlışlıkla girdiğin bir fonksiyondan hızlıca çıkmanın yolu."
+    },
+    {
+      topic: "Register okuma",
+      q: "<code>x/s $rdi</code> ile <code>p $rdi</code> arasındaki fark nedir?",
+      opts: ["x/s rdi'nin gösterdiği bellekteki string'i gösterir; p $rdi sadece rdi'nin sayısal değerini", "İkisi de string gösterir", "p $rdi string, x/s sayı gösterir", "İkisi aynıdır"],
+      a: [0],
+      why: "<code>p $rdi</code> = register'daki değer (bir adres). <code>x/s $rdi</code> = o adresteki string'i oku (dereference). Bir pointer'ın işaret ettiği veriyi görmek için <code>x</code> gerekir."
+    },
+    {
+      topic: "Register okuma",
+      q: "<code>x/4xg $rsp</code> komutu ne gösterir?",
+      opts: ["rsp'den başlayarak 4 adet 8-byte (giant) değeri hex olarak", "rsp'nin 4. byte'ını", "4 string", "rsp adresini decimal"],
+      a: [0],
+      why: "<code>x/[sayı][format][boyut]</code>: <b>4</b> adet, <b>x</b>=hex, <b>g</b>=giant (8 byte). Stack'in tepesindeki 4 qword'ü dökmek için standart komut. b=byte, w=4, g=8."
+    },
+    {
+      topic: "Register okuma",
+      q: "<code>x</code> (examine) komutunda <code>s</code> ve <code>i</code> format harfleri ne anlama gelir?",
+      opts: ["s = string olarak oku, i = instruction (disassemble) olarak oku", "s = signed, i = int", "s = stack, i = index", "İkisi de hex gösterir"],
+      a: [0],
+      why: "<b>s=string, i=instruction</b> (ayrıca x=hex, d=decimal). <code>x/i $rip</code> sıradaki komutu disassemble eder — nerede olduğunu görmenin hızlı yolu."
+    },
+    {
+      topic: "Değer değiştirme",
+      q: "Bir karşılaştırmayı canlı olarak geçmek için <code>set $rax = 0</code> yaptın. Ne yapmış oldun?",
+      opts: ["Register değerini değiştirip akışı istediğin dala zorladım (dinamik patch)", "Programı kalıcı olarak değiştirdim (binary'yi)", "rax'i sildim", "Yeni bir breakpoint koydum"],
+      a: [0],
+      why: "<b>set $reg = deger</b> çalışan process'in register'ını değiştirir — binary'ye dokunmaz, sadece bu oturumda akışı yönlendirir. Kalıcı değişiklik için binary patching gerekir (Bölüm 5)."
+    },
+    {
+      topic: "Breakpoint",
+      q: "<code>info breakpoints</code> ne işe yarar?",
+      opts: ["Koyduğun tüm breakpoint'leri (numara, konum, durum) listeler", "Yeni bir breakpoint koyar", "Programı durdurur", "Register'ları gösterir"],
+      a: [0],
+      why: "<b>info breakpoints</b> mevcut breakpoint'leri listeler; sonra <code>delete N</code>, <code>disable N</code>, <code>enable N</code> ile yönetirsin. Karmaşık oturumlarda düzen sağlar."
+    },
+    {
+      topic: "Adımlama",
+      q: "RE'de kaynak kodu olmayan bir binary'de neden çoğunlukla <code>si</code>/<code>ni</code> (komut seviyesi) kullanılır, <code>s</code>/<code>n</code> (satır seviyesi) değil?",
+      opts: ["Kaynak satır bilgisi yok; ilerleme assembly komutları düzeyinde yapılır", "si daha hızlıdır her zaman", "s/n stripped binary'de çöker", "ni programı bitirir"],
+      a: [0],
+      why: "<code>step</code>/<code>next</code> <b>kaynak satırı</b> temellidir; debug bilgisi (-g) yoksa satır kavramı olmaz. RE'de <code>stepi</code>/<code>nexti</code> ile <b>komut komut</b> ilerlersin."
+    },
+    {
+      topic: "Adımlama",
+      q: "RE'de adımlama hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["<code>si</code> bir call'ın içine girer", "<code>ni</code> bir call'ın üstünden atlar", "<code>si</code> her zaman call'ı atlar", "<code>ni</code> her zaman fonksiyonun içine girer"],
+      a: [0, 1],
+      why: "<b>si (stepi) girer, ni (nexti) atlar.</b> İlgilenmediğin libc çağrılarını <code>ni</code> ile atla, kendi kodunu <code>si</code> ile izle. Yanlış seçim zaman kaybettirir."
+    },
+    {
+      topic: "Register okuma",
+      q: "GDB'de değer inceleme hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>x/s $rdi</code> rdi'nin gösterdiği string'i okur", "<code>set $rax = 0</code> çalışan process'in register'ını değiştirir", "<code>p $rdi</code> rdi'nin gösterdiği string'i okur", "<code>x/s $rdi</code> sadece rdi'nin sayısal değerini verir"],
+      a: [0, 1],
+      why: "<b>x/s</b> dereference edip string okur; <b>set</b> register'ı canlı değiştirir. <code>p $rdi</code> ise sadece register'daki sayıyı (adresi) verir — string için x gerekir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

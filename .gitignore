@@ -20,3 +20,9 @@ build/
 
 # Kurs klasörünün eski git geçmişi (bkz. README) — devre dışı bırakıldı, izlenmez
 .git-devredisi/
+
+# Reverse engineering lab ortamı — kursun kendisi ReverseEngineering/ klasöründe.
+# Burada indirilen Ghidra (352 MB), derlenmiş ikili dosyalar ve lab çıktıları
+# duruyor; hiçbiri kurs içeriği değil ve depoya girerse senkronun indirdiği
+# tarball'ı gereksiz yere şişirir.
+ReverseEnginering/

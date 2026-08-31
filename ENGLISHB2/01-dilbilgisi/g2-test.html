@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g2 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g2",
+  code: "Dilbilgisi · g2",
+  title: "Past perfect ve anlatı zamanları",
+  back: "g2-past-perfect.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Past perfect temel kullanım",
+      q: "By the time the technician arrived, the server ______ for two hours.",
+      opts: ["had been down", "was down", "has been down", "is down"],
+      a: [0],
+      why: "<b>had been down</b> — <code>by the time</code> bir referans nokta kurar ve ondan önceki durumu past perfect ister. <code>was down</code> aynı anda olmayı anlatır, iki saatlik önceliği göstermez."
+    },
+    {
+      topic: "Sıralama",
+      q: "Which sentence means the guests arrived AFTER dinner was ready?",
+      opts: ["When the guests arrived, she had cooked dinner.", "When the guests arrived, she cooked dinner.", "When the guests arrived, she was cooking dinner.", "When the guests had arrived, she cooked dinner."],
+      a: [0],
+      why: "<b>had cooked</b> yemeğin gelişten önce bittiğini söyler. İkincisinde yemek gelişten sonra pişer; üçüncüsünde tam o sırada pişmektedir; dördüncüsü ise gelişi öne alır."
+    },
+    {
+      topic: "Fazla kullanım",
+      q: "Which sentence contains an UNNECESSARY past perfect?",
+      opts: ["I had got up, had showered and had gone to work.", "I had already left when she called.", "She was upset because she had failed the exam.", "By the time we found the hotel, it had closed."],
+      a: [0],
+      why: "İlk cümle sıralı bir zincirdir; sıra zaten açıkken past perfect gereksizdir ve hatalıdır — <b>got up, showered and went</b> olmalı. Diğer üçünde ikinci bir referans nokta var, yani geri adım anlamlı."
+    },
+    {
+      topic: "Past perfect continuous",
+      q: "His shirt was covered in paint — he ______ the fence all afternoon.",
+      opts: ["had been painting", "had painted", "was painting", "painted"],
+      a: [0],
+      why: "<b>had been painting</b> — görünen iz + <code>all afternoon</code> süre vurgusu. <code>had painted</code> işin bittiğini söyler ama boyanın gömlekteki izini ve süreyi anlatmaz."
+    },
+    {
+      topic: "Past perfect continuous",
+      q: "Choose the two correct sentences. (Choose TWO.)",
+      opts: ["I had known him for years before he moved abroad.", "They had been waiting for an hour when the train finally came.", "I had been knowing him for years.", "They had waited an hour when the train had come."],
+      a: [0, 1],
+      why: "<code>know</code> durum fiilidir, continuous almaz — bu yüzden üçüncü şık yanlış. Dördüncü şıkta trenin gelişi de past perfect'e çekilmiş, oysa o referans noktadır ve past simple olmalıdır."
+    },
+    {
+      topic: "after / before",
+      q: "______ he had submitted the form, he received a confirmation email.",
+      opts: ["After", "Before", "Until", "By"],
+      a: [0],
+      why: "<b>After</b> — past perfect'li fiil önce olanı gösterir ve <code>after</code> bununla uyumludur. <code>Before</code> deseydin sıra ters dönerdi; <code>By</code> ise cümle değil isim alır."
+    },
+    {
+      topic: "by / by the time / until",
+      q: "Please don't start the presentation ______ I get back.",
+      opts: ["until", "by", "by the time", "after that"],
+      a: [0],
+      why: "<b>until</b> — 'ben dönene kadar (o süre boyunca)' anlamı. <code>by</code> bir isim/zaman ister (<i>by 5 o'clock</i>), cümle alamaz; <code>by the time</code> ise 'o an geldiğinde iş bitmiş olur' der, yasak bildirmez."
+    },
+    {
+      topic: "Anlatı zamanları",
+      q: "It ______ heavily when I ______ home and found that someone ______ the window.",
+      opts: ["was raining / got / had broken", "rained / had got / broke", "had rained / was getting / broke", "was raining / had got / has broken"],
+      a: [0],
+      why: "Arka plan past continuous (<b>was raining</b>), ana olay past simple (<b>got</b>), daha önce olan past perfect (<b>had broken</b>). Anlatının üç katmanı budur."
+    },
+    {
+      topic: "Sinyal kelimeler",
+      q: "I ______ such a beautiful view before that trip.",
+      opts: ["had never seen", "have never seen", "never saw", "was never seeing"],
+      a: [0],
+      why: "<b>had never seen</b> — <code>before that trip</code> geçmişte bir referans nokta kurar; deneyimin ondan öncesine bakıyoruz. Present perfect kullanılsaydı referans nokta 'şimdi' olurdu, oysa cümle geçmişe bakıyor."
+    },
+    {
+      topic: "Inversion (no sooner / hardly)",
+      q: "No sooner ______ the meeting started than the fire alarm went off.",
+      opts: ["had", "did", "has", "was"],
+      a: [0],
+      why: "<b>had</b> — kalıp: <code>No sooner had + özne + V3 + than…</code>. <code>Hardly had … when …</code> aynı yapının ikizidir. Bu kalıplar g10'daki inversion konusuna bağlanır."
+    },
+    {
+      topic: "Sıralama",
+      q: "Combine correctly: 'The concert finished. We arrived at the hall.'",
+      opts: ["The concert had finished by the time we arrived at the hall.", "The concert finished by the time we had arrived at the hall.", "The concert has finished when we arrived at the hall.", "The concert had finished until we arrived at the hall."],
+      a: [0],
+      why: "Önce biten olay past perfect, referans nokta past simple: <b>had finished … arrived</b>. Dördüncü şıktaki <code>until</code> yanlış: konser bitişi bir an, süre boyu devam eden bir yasak değil."
+    },
+    {
+      topic: "Past perfect temel kullanım",
+      q: "She apologised because she ______ my message.",
+      opts: ["hadn't seen", "didn't see", "hasn't seen", "wasn't seeing"],
+      a: [0],
+      why: "<b>hadn't seen</b> — özür geçmişte bir an, görmemek ondan öncesine ait. <code>didn't see</code> teknik olarak anlaşılır ama sebebin önceliğini göstermez; sınavda sıralamayı ölçen soruda perfect beklenir."
+    },
+    {
+      topic: "Past perfect simple vs continuous",
+      q: "By lunchtime she ______ three complaints, and she ______ since eight o'clock without a break.",
+      opts: ["had handled / had been working", "had been handling / had worked", "handled / was working", "had handled / worked"],
+      a: [0],
+      why: "Sayı/sonuç (<i>three complaints</i>) perfect <b>simple</b>, süre (<i>since eight</i>) perfect <b>continuous</b> ister. Aynı cümlede iki biçimin iş bölümünü görmek bu ayrımı ezberletir."
+    },
+    {
+      topic: "Fazla kullanım",
+      q: "Which sentence is correct?",
+      opts: ["We had lived in Bursa for ten years before we moved to Izmir.", "We lived in Bursa for ten years before we had moved to Izmir.", "We have lived in Bursa for ten years before we moved to Izmir.", "We had been living in Bursa before we had moved to Izmir."],
+      a: [0],
+      why: "Önceki dönem past perfect, sonraki olay past simple. İkinci ve dördüncü şıklar taşınmayı da perfect'e çekiyor; oysa <i>moved</i> referans noktadır. Üçüncüsü present perfect'i geçmiş bir referansla birleştiriyor, bu hiçbir zaman doğru olmaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

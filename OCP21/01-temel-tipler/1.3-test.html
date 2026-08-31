@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-1.3",
+  code: "Temel Tipler · 1.3",
+  title: "Date-Time API: LocalDate, Duration, Period, Instant",
+  back: "1.3-date-time-api.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Nesne üretme",
+      q: "<pre>LocalDate d = new LocalDate(2026, 8, 23);\nSystem.out.println(d);</pre>What is the result?",
+      opts: [
+        "Compilation fails.",
+        "2026-08-23",
+        "A DateTimeException is thrown at runtime.",
+        "2026-08-23T00:00"
+      ],
+      a: [0],
+      why: "<code>java.time</code> tiplerinin <b>public constructor'ı yoktur</b>; nesneler yalnızca <code>of()</code>, <code>parse()</code>, <code>now()</code> gibi <b>static fabrika</b> metotlarıyla üretilir. Bu yüzden <code>new</code> derleme hatası verir. <b>Kanca:</b> <code>java.time</code>'da <code>new</code> gördüğün an cevap \"Compilation fails\"tir."
+    },
+    {
+      topic: "Nesne üretme",
+      q: "<pre>LocalDate d = LocalDate.of(2026, 2, 30);\nSystem.out.println(d);</pre>What is the result?",
+      opts: [
+        "A DateTimeException is thrown at runtime.",
+        "Compilation fails.",
+        "2026-03-02",
+        "2026-02-28"
+      ],
+      a: [0],
+      why: "30 Şubat diye bir gün yoktur; <code>of()</code> geçersiz değeri <b>çalışma zamanında</b> <code>DateTimeException</code> ile reddeder. Kod sorunsuz derlenir çünkü değerler sadece <code>int</code>'tir. <b>Kanca:</b> <code>of()</code> asla düzeltmez — tarih taşırma davranışı yalnızca <code>plusMonths</code> gibi metotlarda vardır."
+    },
+    {
+      topic: "Immutability",
+      q: "<pre>LocalDate d = LocalDate.of(2026, 1, 1);\nd.plusDays(30);\nSystem.out.println(d);</pre>What is the result?",
+      opts: [
+        "2026-01-01",
+        "2026-01-31",
+        "2026-02-01",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Tüm <code>java.time</code> tipleri <b>immutable</b>'dır: <code>plusDays</code> <b>yeni</b> bir nesne döner, mevcut olanı değiştirmez. Dönüş bir yere atanmadığı için satır etkisizdir. <b>Kanca:</b> Bu, <code>String</code>'deki <code>s.concat(...)</code> tuzağının tarih versiyonudur (1.2)."
+    },
+    {
+      topic: "Ay taşması",
+      q: "<pre>LocalDate a = LocalDate.of(2026, 1, 31).plusMonths(1).plusMonths(1);\nLocalDate b = LocalDate.of(2026, 1, 31).plusMonths(2);\nSystem.out.println(a + \" \" + b);</pre>What is the result?",
+      opts: [
+        "2026-03-28 2026-03-31",
+        "2026-03-31 2026-03-31",
+        "2026-03-28 2026-03-28",
+        "A DateTimeException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Ay eklerken taşan gün <b>ayın son gününe çekilir</b> ve geri gelmez. Zincirli hesapta ara adımda 28 Şubat'a düşülür ve mart'a <b>28</b> olarak taşınır. Tek adımda ise doğrudan mart hesaplanır ve mart'ta 31 gün olduğu için <b>31</b> kalır. <b>Kanca:</b> Aynı işlem, farklı adım sayısı, farklı cevap — sınavın en sevdiği tarih tuzağı."
+    },
+    {
+      topic: "Period ve Duration",
+      q: "<pre>LocalDate d = LocalDate.of(2026, 1, 1);\nSystem.out.println(d.plus(Duration.ofDays(1)));</pre>What is the result?",
+      opts: [
+        "An UnsupportedTemporalTypeException is thrown at runtime.",
+        "Compilation fails.",
+        "2026-01-02",
+        "A DateTimeException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>Duration</code> <b>saat/dakika/saniye</b> tabanlıdır; <code>LocalDate</code>'in saat alanı olmadığı için birimi destekleyemez ve <b>UnsupportedTemporalTypeException</b> atar. Kod <b>derlenir</b>, çünkü hem <code>Period</code> hem <code>Duration</code> <code>TemporalAmount</code>'tur. <b>Kanca:</b> \"Tarihe Duration, saate Period\" → ikisi de runtime hatası."
+    },
+    {
+      topic: "Period ve Duration",
+      q: "<pre>System.out.println(Period.ofYears(1).ofMonths(2).ofDays(3));</pre>What is the result?",
+      opts: [
+        "P3D",
+        "P1Y2M3D",
+        "Compilation fails.",
+        "P1Y"
+      ],
+      a: [0],
+      why: "<code>ofYears</code>, <code>ofMonths</code>, <code>ofDays</code> hepsi <b>static fabrika</b> metotlarıdır; zincirlendiklerinde birbirini <b>tamamlamaz, ezerler</b> ve yalnızca sonuncusu kalır → <b>P3D</b>. Üçünü birden istiyorsan <code>Period.of(1, 2, 3)</code> yazılır. <b>Kanca:</b> Static metot zinciri gördüğünde \"acaba ezyor mu\" diye sor."
+    },
+    {
+      topic: "Period ve Duration",
+      q: "Which expressions throw an exception at runtime? (Choose TWO.)",
+      opts: [
+        "Duration.of(1, ChronoUnit.MONTHS)",
+        "LocalTime.of(10, 0).plus(Period.ofDays(1))",
+        "LocalDateTime.of(2026, 1, 1, 10, 0).plus(Duration.ofHours(2))",
+        "Instant.now().plus(1, ChronoUnit.DAYS)"
+      ],
+      a: [0, 1],
+      why: "<code>Duration</code> yalnızca <b>kesin</b> birimleri kabul eder (<code>DAYS</code> ve altı); <code>MONTHS</code> takvime bağlı olduğu için reddedilir. <code>LocalTime</code>'ın tarih alanı yoktur, <code>Period</code> uygulanamaz. <br>Diğer ikisi geçerlidir: <code>LocalDateTime</code> hem tarih hem saat tutar, <code>Instant</code> ise <code>DAYS</code>'i kesin 24 saat olarak kabul eder."
+    },
+    {
+      topic: "Period ve Duration",
+      q: "<pre>System.out.println(Duration.ofDays(1) + \" \" + Duration.ofMinutes(90));</pre>What is the result?",
+      opts: [
+        "PT24H PT1H30M",
+        "P1D PT90M",
+        "PT1D PT1H30M",
+        "P1D PT1H30M"
+      ],
+      a: [0],
+      why: "<code>Duration</code> kendini <b>saat/dakika/saniye</b> olarak normalleştirir: bir gün <b>PT24H</b>, 90 dakika <b>PT1H30M</b> olur. Gün gösterimi (<code>P1D</code>) <code>Period</code>'a aittir. <b>Kanca:</b> <code>P</code> ile başlayıp <code>T</code> içermeyen gösterim <b>Period</b>, <code>PT</code> ile başlayan <b>Duration</b>'dır."
+    },
+    {
+      topic: "Instant ve saat dilimleri",
+      q: "Which statement about converting a LocalDateTime to an Instant is correct?",
+      opts: [
+        "A time zone must be supplied, for example ldt.atZone(zoneId).toInstant().",
+        "LocalDateTime has a toInstant() method that requires no arguments.",
+        "The conversion is impossible in the java.time API.",
+        "Instant.from(ldt) performs the conversion using UTC by default."
+      ],
+      a: [0],
+      why: "<code>LocalDateTime</code> <b>hangi dilimde</b> olduğunu bilmez; bir <code>Instant</code> ise evrensel bir andır. Aradaki eksik bilgi <b>saat dilimidir</b>, bu yüzden önce <code>atZone(...)</code> ile dilim verilir. Argümansız <code>toInstant()</code> yalnızca <code>ZonedDateTime</code> ve <code>OffsetDateTime</code>'da vardır; <code>Instant.from(ldt)</code> ise dilim bilgisi olmadığı için exception atar."
+    },
+    {
+      topic: "Instant ve saat dilimleri",
+      q: "In a zone that observes daylight saving time, a ZonedDateTime at 12:00 the day before the spring-forward transition is advanced. Which statement is correct?",
+      opts: [
+        "plus(Period.ofDays(1)) keeps the wall-clock time at 12:00, while plus(Duration.ofDays(1)) shows 13:00.",
+        "Both produce exactly the same result because one day always equals 24 hours.",
+        "plus(Period.ofDays(1)) throws an exception because that local time does not exist.",
+        "plus(Duration.ofDays(1)) keeps the wall-clock time at 12:00, while plus(Period.ofDays(1)) shows 13:00."
+      ],
+      a: [0],
+      why: "<code>Period</code> <b>takvim</b> günü ekler: kadran saati korunur, gerçekte 23 saat geçmiştir. <code>Duration</code> <b>tam 24 saat</b> ekler: geçişte bir saat atlandığı için kadran 13:00'ü gösterir. <b>Mutlak ifade uyarısı:</b> \"one day always equals 24 hours\" şıkkındaki <i>always</i> DST'de yanlıştır."
+    },
+    {
+      topic: "Aralık hesaplama",
+      q: "<pre>LocalDate a = LocalDate.of(2026, 1, 1);\nLocalDate b = LocalDate.of(2026, 3, 15);\nSystem.out.println(Period.between(a, b));</pre>What is the result?",
+      opts: [
+        "P2M14D",
+        "P73D",
+        "PT1752H",
+        "P0Y2M14D"
+      ],
+      a: [0],
+      why: "<code>Period.between</code> farkı <b>yıl/ay/gün</b> olarak ayrıştırır: 1 Ocak'tan 1 Mart'a 2 ay, oradan 15 Mart'a 14 gün → <b>P2M14D</b>. Sıfır olan bileşenler <code>toString</code>'de <b>yazılmaz</b>, bu yüzden <code>P0Y2M14D</code> yanlıştır. Toplam gün sayısını istiyorsan <code>ChronoUnit.DAYS.between(a, b)</code> kullanılır (73)."
+    },
+    {
+      topic: "Alan erişimi",
+      q: "<pre>LocalDate d = LocalDate.of(2026, 8, 23);\nSystem.out.println(d.getMonth() + \" \" + d.getMonthValue());</pre>What is the result?",
+      opts: [
+        "AUGUST 8",
+        "8 8",
+        "AUGUST AUGUST",
+        "AUGUST 7"
+      ],
+      a: [0],
+      why: "<code>getMonth()</code> <b>Month enum</b> döner (<code>AUGUST</code>), <code>getMonthValue()</code> ise <b>int</b> döner. Ay numarası <b>1 tabanlıdır</b> — eski <code>Calendar</code> API'sinin 0 tabanlı davranışı burada geçerli değildir, bu yüzden <code>7</code> şıkkı tuzaktır."
+    },
+    {
+      topic: "Biçimlendirme",
+      q: "<pre>LocalDate d = LocalDate.of(2026, 8, 23);\nDateTimeFormatter f = DateTimeFormatter.ofPattern(\"dd/MM/yyyy\");\nSystem.out.println(d.format(f) + \" \" + f.format(d));</pre>What is the result?",
+      opts: [
+        "23/08/2026 23/08/2026",
+        "23/08/2026 2026-08-23",
+        "Compilation fails.",
+        "An UnsupportedTemporalTypeException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Biçimlendirme <b>iki yönden de</b> çağrılabilir: <code>temporal.format(formatter)</code> ve <code>formatter.format(temporal)</code> aynı sonucu verir. Sınav bunu \"biri derlenmez\" sanmanı umarak sorar. <b>Kanca:</b> <code>UnsupportedTemporalTypeException</code> ancak desenle tip uyuşmazsa gelir — örneğin <code>LocalDate</code>'i <code>\"HH:mm\"</code> ile biçimlendirmek."
+    },
+    {
+      topic: "Biçimlendirme",
+      q: "In a DateTimeFormatter pattern, which pairs are matched correctly? (Choose TWO.)",
+      opts: [
+        "MM represents the month and mm represents the minute.",
+        "HH represents the hour in the 0-23 range and hh represents the 1-12 range.",
+        "DD represents the day of the month and dd represents the day of the year.",
+        "yy represents the minute and ss represents the month."
+      ],
+      a: [0, 1],
+      why: "Büyük <code>MM</code> <b>ay</b>, küçük <code>mm</code> <b>dakika</b>dır — bu ikisini karıştırmak en sık yapılan hatadır. <code>HH</code> 0-23, <code>hh</code> 1-12 saatidir (<code>hh</code> ile <code>a</code> yani AM/PM birlikte kullanılır). <br>Üçüncü şık <b>terstir</b>: <code>dd</code> ayın günü, <code>DD</code> yılın günüdür. Dördüncü şık tamamen uydurmadır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

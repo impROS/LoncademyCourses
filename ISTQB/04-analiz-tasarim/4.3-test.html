@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.3 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-4-3",
+  code: "Test Analysis and Design · 4.3",
+  title: "Beyaz Kutu Test Teknikleri",
+  back: "4.3-beyaz-kutu.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe. Kâğıt kalem kullan.",
+  questions: [
+    {
+      topic: "Statement coverage",
+      q: "Consider this code:<pre>int y = 0;\nif (x &gt; 10) {\n    y = 1;\n}\nreturn y;</pre>What is the MINIMUM number of test cases required for 100% statement coverage?",
+      opts: ["1", "2", "3", "4"],
+      a: [0],
+      why: "<b>x &gt; 10 olan tek bir test (örneğin x = 20) tüm çalıştırılabilir satırları çalıştırır.</b> Ancak bu test <code>if</code>'in FALSE dalını hiç denemez — statement coverage'ın zayıflığı tam olarak budur. Aynı kod için branch coverage 2 test gerektirir."
+    },
+    {
+      topic: "Branch coverage",
+      q: "For the SAME code as the previous question, what is the minimum number of test cases required for 100% branch coverage?",
+      opts: ["2", "1", "3", "4"],
+      a: [0],
+      why: "<b>Her karar hem TRUE hem FALSE sonuçlanmalıdır: x = 20 ve x = 5.</b> <code>else</code> bloğu olmasa bile <code>if</code>'in atlandığı FALSE dalı vardır ve test edilmelidir. Bu soru çifti, iki kapsamın farkının en net göstergesidir."
+    },
+    {
+      topic: "Branch coverage hesabı",
+      q: "Consider this code:<pre>if (a &gt; 0) { x = 1; }\nif (b &gt; 0) { y = 2; }</pre>What is the MINIMUM number of test cases for 100% branch coverage?",
+      opts: ["2", "4", "1", "3"],
+      a: [0],
+      why: "<b>4 dal var ama 2 test yeterli:</b> (a&gt;0, b&gt;0) iki TRUE dalını, (a≤0, b≤0) iki FALSE dalını kapsar. <b>4 cevabı, 'dal sayısı = test case sayısı' yanılgısından çıkar</b> — bir test case birden fazla dalı aynı anda kapsayabilir. Bu sınavın en sevdiği tuzaktır."
+    },
+    {
+      topic: "Kapsam ilişkisi",
+      q: "Which statement about the relationship between statement and branch coverage is correct?",
+      opts: [
+        "100% branch coverage implies 100% statement coverage, but not vice versa",
+        "100% statement coverage implies 100% branch coverage, but not vice versa",
+        "Each implies the other",
+        "Neither implies the other"
+      ],
+      a: [0],
+      why: "<b>Her dalı çalıştırırsan içindeki tüm satırları da çalıştırmış olursun; ama her satırı çalıştırmak her kararın iki sonucunu da denediğin anlamına gelmez.</b> İkinci şık ilişkiyi ters kuruyor ve en yakın çeldiricidir. Kanca: <b>branch, statement'ı yutar.</b>"
+    },
+    {
+      topic: "Kapsamın sınırı",
+      q: "A module has 100% branch coverage and all its tests pass. What can be concluded?",
+      opts: [
+        "Only that every branch was exercised at least once",
+        "That the module contains no defects",
+        "That the module correctly implements its specification",
+        "That no further testing of the module is needed"
+      ],
+      a: [0],
+      why: "<b>Kapsam bir ölçüdür, doğruluk kanıtı değildir.</b> Beklenen sonuçlar yanlış yazılmışsa hatalı kod %100 kapsamla tüm testleri geçebilir. Ayrıca %100 dal kapsamı, hiç yazılmamış bir özelliği göstermez. Diğer üç şık prensip 1'i ihlal ediyor."
+    },
+    {
+      topic: "Kapsamın sınırı",
+      q: "Which defect can 100% branch coverage NOT detect?",
+      opts: [
+        "A required feature that was never implemented in the code",
+        "A branch that returns the wrong value when the condition is false",
+        "A statement that is never executed by the current test suite",
+        "An incorrect comparison operator on a covered decision"
+      ],
+      a: [0],
+      why: "<b>Olmayan kodun dalı da yoktur, dolayısıyla kapsam ölçümünde hiç görünmez.</b> Bu, beyaz kutunun temel kör noktasıdır ve kara kutu tekniklerinin neden vazgeçilmez olduğunu açıklar. Diğer üç şık, uygun beklenen sonuçlarla birlikte yakalanabilir."
+    },
+    {
+      topic: "Dal kavramı",
+      q: "An <code>if</code> statement has no <code>else</code> block. How many branches does this decision have?",
+      opts: ["Two", "One", "Zero", "It depends on the number of statements inside the if block"],
+      a: [0],
+      why: "<b>Her kararın iki dalı vardır: koşulun doğru olduğu yol ve <code>if</code>'in atlandığı yol.</b> FALSE dalı kod satırı içermez, bu yüzden statement coverage onu hiç görmez — ama branch coverage için mutlaka test edilmelidir."
+    },
+    {
+      topic: "İç içe kararlar",
+      q: "Consider this code:<pre>if (score &gt;= 50) {\n    if (bonus) { return \"A\"; }\n    return \"B\";\n}\nreturn \"F\";</pre>What is the minimum number of test cases for 100% branch coverage?",
+      opts: ["3", "2", "4", "1"],
+      a: [0],
+      why: "<b>score=80/bonus=true, score=80/bonus=false, score=30 → 3 test.</b> Dış kararın FALSE dalını denemek ayrı bir test gerektirir, çünkü o durumda iç karar hiç çalışmaz ve onun dallarını kapsayamazsın. İç içe yapılarda dallar birleştirilemez."
+    },
+    {
+      topic: "Statement coverage hesabı",
+      q: "A method contains 20 executable statements. A test suite executes 15 of them. What is the statement coverage?",
+      opts: ["75%", "80%", "15%", "133%"],
+      a: [0],
+      why: "<b>15 / 20 × 100 = %75.</b> Kapsam formülü her zaman (kapsanan coverage item / toplam coverage item) × 100'dür ve statement coverage için coverage item çalıştırılabilir ifadedir. Bu, 4.1'deki genel formülün doğrudan uygulanmasıdır."
+    },
+    {
+      topic: "Beyaz kutunun değeri",
+      q: "Which of the following are benefits of white-box testing? (Choose TWO.)",
+      opts: [
+        "Coverage can be measured objectively and numerically",
+        "It considers the entire implementation, including code that the specification does not mention",
+        "It can detect requirements that were specified but never implemented",
+        "It guarantees that the software is free of defects when coverage reaches 100%"
+      ],
+      a: [0, 1],
+      why: "<b>Sayısal kapsam ölçümü ve spesifikasyonda geçmeyen fazladan kod yollarını görebilmek beyaz kutunun iki temel avantajıdır.</b> Üçüncü şık tam tersini iddia ediyor — bu beyaz kutunun kör noktasıdır. Dördüncü şıkta <code>guarantees</code> var."
+    },
+    {
+      topic: "Branch coverage hesabı",
+      q: "A component contains 3 decisions, giving 6 branches in total. A test suite exercises 5 of them. What is the branch coverage?",
+      opts: ["83%", "50%", "60%", "100%"],
+      a: [0],
+      why: "<b>5 / 6 × 100 ≈ %83.</b> Kaçırılan tek dal, muhtemelen hiç denenmemiş bir FALSE yoludur — ve genellikle kusurun saklandığı yer tam olarak orasıdır. Bu yüzden regüle sektörlerde %100 dal kapsamı zorunlu kılınır."
+    },
+    {
+      topic: "Coverage item",
+      q: "What is the coverage item for branch testing?",
+      opts: [
+        "A branch: one outcome of a decision, or an unconditional jump",
+        "An executable statement",
+        "An equivalence partition",
+        "A rule in a decision table"
+      ],
+      a: [0],
+      why: "<b>Branch testing'in coverage item'ı daldır</b> — bir kararın sonuçlarından biri ya da koşulsuz bir atlama. Çalıştırılabilir ifade statement testing'in, eşdeğerlik bölümü EP'nin, kural ise karar tablosunun coverage item'ıdır. Coverage item'ı teknikle eşleştirmek sınavda sık sorulur."
+    },
+    {
+      topic: "Beyaz kutunun değeri",
+      q: "Why is white-box testing typically used TOGETHER with black-box techniques rather than instead of them?",
+      opts: [
+        "Because white-box techniques cannot reveal functionality that is missing from the code",
+        "Because white-box techniques cannot be automated",
+        "Because white-box coverage cannot be measured",
+        "Because white-box techniques can only be applied at the acceptance test level"
+      ],
+      a: [0],
+      why: "<b>Eksik kod, kapsam ölçümünde hiç görünmez; onu ancak spesifikasyondan türetilen kara kutu testleri yakalar.</b> Diğer üç şık beyaz kutunun gerçek özelliklerini yanlış tarif ediyor — otomatikleştirilebilir, ölçülebilir ve tipik olarak bileşen seviyesinde uygulanır."
+    },
+    {
+      topic: "Statement ve branch farkı",
+      q: "A single test with age=10 and member=true is run against:<pre>int rate = 0;\nif (age &lt; 18) { rate = 20; }\nif (member) { rate = rate + 10; }\nreturn rate;</pre>Which coverage levels are achieved?",
+      opts: [
+        "100% statement coverage and 50% branch coverage",
+        "100% statement coverage and 100% branch coverage",
+        "50% statement coverage and 50% branch coverage",
+        "50% statement coverage and 100% branch coverage"
+      ],
+      a: [0],
+      why: "<b>Tek test tüm satırları çalıştırır (%100 statement) ama 4 dalın yalnızca 2 TRUE dalını kapsar (%50 branch).</b> JaCoCo bunu sarı satırlarla ve 'Missed Branches: 2' ile gösterir. Bu soru, pratikte elinle ölçtüğün durumun birebir karşılığıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

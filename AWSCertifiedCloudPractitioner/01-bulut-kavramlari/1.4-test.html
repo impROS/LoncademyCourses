@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.4 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.4",
+  code: "1. alan · Bulut Kavramları · Görev 1.4",
+  title: "Bulut Ekonomisi",
+  back: "1.4-bulut-ekonomisi.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "TCO kalemleri",
+      q: "Which two costs are typically ELIMINATED when a company moves workloads from its own data center to AWS? (Choose TWO.)",
+      opts: [
+        "Power and cooling for servers",
+        "Physical data center floor space",
+        "Application developer salaries",
+        "Data transfer out to the internet",
+        "Database license fees in all cases"
+      ],
+      a: [0, 1],
+      why: "Buluta geçişte yok olan kalemler <b>fiziksel altyapıya</b> aittir: elektrik, soğutma, alan/rack, kablolama, yedek donanım, fiziksel güvenlik. Geliştirici maaşı devam eder; <b>veri transfer çıkışı AWSte ücretlidir</b>; lisans ise BYOL veya lisans-dahil olarak <b>yine ödenir</b>."
+    },
+    {
+      topic: "Sabit vs değişken maliyet",
+      q: "A company no longer buys servers upfront and instead pays monthly only for the compute hours it consumes. Which economic change does this represent?",
+      opts: [
+        "Fixed expense replaced by variable expense",
+        "Variable expense replaced by fixed expense",
+        "Operating expense converted to capital expense",
+        "Depreciation replaced by amortization"
+      ],
+      a: [0],
+      why: "Peşin donanım = <b>sabit maliyet (CapEx)</b>; kullandıkça ödeme = <b>değişken maliyet (OpEx)</b>. Asıl kazanç muhasebe değil <b>risk</b>tir: kapasiteyi yanlış tahmin ettiğinde elinde atıl donanım kalmaz, sadece o ayki fatura değişir."
+    },
+    {
+      topic: "Right-sizing",
+      q: "A review shows that several EC2 instances have been running at under 8% CPU utilization for months. Which practice should the company apply to reduce cost?",
+      opts: [
+        "Right-sizing the instances to smaller types",
+        "Purchasing additional Elastic IP addresses",
+        "Enabling versioning on Amazon S3",
+        "Migrating the instances to a different Region"
+      ],
+      a: [0],
+      why: "Düşük kullanım = <b>aşırı boyutlandırma</b>; çözüm <b>right-sizing</b>tir. Bulutun avantajı tam da budur: şirket içinde makineyi küçültemezsin, AWSte istediğin an değiştirirsin. Öneriyi <b>AWS Compute Optimizer</b> veya <b>Trusted Advisor</b> verir."
+    },
+    {
+      topic: "Right-sizing",
+      q: "Which AWS service uses machine learning to analyze utilization metrics and recommend optimal compute resources?",
+      opts: [
+        "AWS Compute Optimizer",
+        "AWS Pricing Calculator",
+        "AWS Budgets",
+        "AWS Config"
+      ],
+      a: [0],
+      why: "<b>Compute Optimizer</b> CloudWatch metriklerini makine öğrenmesiyle analiz eder ve <b>daha uygun instance tipi</b> önerir. Pricing Calculator önden tahmin yapar, Budgets eşik uyarısı verir, Config konfigürasyon uyumluluğunu izler."
+    },
+    {
+      topic: "İşgücü / operational overhead",
+      q: "A company wants to run a relational database with the LEAST operational overhead. Which option should it choose?",
+      opts: [
+        "Amazon RDS",
+        "A self-managed MySQL server on Amazon EC2",
+        "MySQL installed on AWS Outposts hardware",
+        "A database running in the company data center"
+      ],
+      a: [0],
+      why: "<b>LEAST operational overhead</b> = en <b>yönetilen</b> seçenek. RDSte yama, yedekleme, failover ve altyapı AWSindir; EC2 üzerinde kendin kurarsan hepsi senin olur. Sınavda bu ifadeyi gördüğünde her zaman yönetilen/serverless şıkkı seç."
+    },
+    {
+      topic: "İşgücü / operational overhead",
+      q: "Which benefit is gained by replacing manually managed infrastructure with automation such as AWS CloudFormation?",
+      opts: [
+        "Reduced labor cost and fewer manual configuration errors",
+        "Elimination of all AWS service charges",
+        "Guaranteed 100% application uptime",
+        "Automatic conversion of CapEx to revenue"
+      ],
+      a: [0],
+      why: "Otomasyonun ekonomik faydası <b>adam-saat</b> tasarrufu ve <b>insan hatasının azalması</b>dır. Diğer şıklar mutlak/imkânsız ifadeler içeriyor — <i>elimination of all charges</i>, <i>guaranteed 100%</i> gibi ifadeler sınavda neredeyse her zaman yanlış şıkkın işaretidir."
+    },
+    {
+      topic: "Maliyet araçları",
+      q: "A company is designing a new architecture and wants to estimate its monthly AWS cost BEFORE deploying anything. Which tool should it use?",
+      opts: [
+        "AWS Pricing Calculator",
+        "AWS Cost Explorer",
+        "AWS Cost and Usage Report",
+        "AWS Trusted Advisor"
+      ],
+      a: [0],
+      why: "Henüz hiçbir şey çalışmıyorsa <b>geçmiş veri yoktur</b>; ileriye dönük tahmin aracı <b>Pricing Calculator</b>dır. Cost Explorer ve Cost and Usage Report <b>gerçekleşmiş</b> kullanımı analiz eder; Trusted Advisor mevcut hesabı tarayıp öneri verir."
+    },
+    {
+      topic: "Lisans",
+      q: "A company has existing Microsoft Windows Server licenses with mobility rights and wants to use them on AWS instead of paying for new ones. Which model is this?",
+      opts: [
+        "Bring Your Own License (BYOL)",
+        "License Included",
+        "Consolidated billing",
+        "Savings Plans"
+      ],
+      a: [0],
+      why: "Mevcut lisansı AWSe taşımak = <b>BYOL</b>. Alternatif <b>License Included</b> modelinde lisans bedeli saatlik AWS fiyatına gömülüdür (Windowslu EC2, SQL Serverlı RDS gibi). Bazı BYOL senaryoları fiziksel çekirdek bazlı lisanslama nedeniyle <b>Dedicated Host</b> gerektirir."
+    },
+    {
+      topic: "Lisans",
+      q: "Which AWS service helps a company track software license usage and stay within its licensing agreements?",
+      opts: [
+        "AWS License Manager",
+        "AWS Artifact",
+        "AWS Config",
+        "AWS Service Catalog"
+      ],
+      a: [0],
+      why: "<b>AWS License Manager</b> lisans kullanımını takip eder, kuralları uygular ve aşımı engeller. <b>Artifact</b> AWSin uyumluluk raporlarına (SOC, ISO, PCI) erişim noktasıdır; <b>Config</b> kaynak konfigürasyonlarını izler; <b>Service Catalog</b> onaylı ürün kataloğu sunar."
+    },
+    {
+      topic: "TCO kalemleri",
+      q: "Which statement BEST describes total cost of ownership (TCO) in a cloud migration discussion?",
+      opts: [
+        "The full cost of running a workload including hardware, facilities, power, staffing and licenses",
+        "The monthly invoice amount that AWS charges the customer",
+        "The one-time cost of purchasing servers",
+        "The discount received from Reserved Instances"
+      ],
+      a: [0],
+      why: "<b>TCO</b> görünen ve görünmeyen <b>tüm</b> maliyetleri kapsar: donanım, tesis, elektrik/soğutma, ağ, yedek donanım, personel, lisans. Şirket içi ile bulutu karşılaştırırken sadece sunucu fiyatına bakmak klasik hatadır — AWSin vurguladığı nokta budur."
+    },
+    {
+      topic: "Elastikiyetin ekonomisi",
+      q: "A development environment is used only during business hours. Which action MOST directly reduces its cost?",
+      opts: [
+        "Stop or terminate the instances outside business hours",
+        "Enable Amazon S3 versioning on the environment buckets",
+        "Move the environment to a Region with more Availability Zones",
+        "Attach additional Elastic IP addresses to the instances"
+      ],
+      a: [0],
+      why: "Kullanılmayan kaynağı <b>kapatmak</b> bulutun en doğrudan tasarrufudur; şirket içinde sunucuyu kapatsan da parasını ödemişsindir. Test/geliştirme ortamlarını gece ve hafta sonu durdurmak EC2 faturasını ciddi biçimde düşürür (Instance Scheduler / Systems Manager ile otomatikleştirilir). Boşta duran Elastic IP ise <b>ek ücret</b> doğurur."
+    },
+    {
+      topic: "Maliyet araçları",
+      q: "Which service produces a business case with projected savings by analyzing an existing on-premises environment before migration?",
+      opts: [
+        "Migration Evaluator",
+        "AWS Application Migration Service",
+        "AWS Compute Optimizer",
+        "AWS Cost Explorer"
+      ],
+      a: [0],
+      why: "<b>Migration Evaluator</b> göç <b>öncesinde</b> şirket içi ortamı analiz eder ve tasarruf projeksiyonlu bir <b>iş gerekçesi</b> üretir. Application Migration Service taşımayı <i>yapar</i>; Compute Optimizer <b>AWSte çalışan</b> kaynaklar için öneri verir; Cost Explorer ise mevcut AWS harcamasını analiz eder."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

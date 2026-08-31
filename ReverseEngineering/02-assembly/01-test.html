@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02-01 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-02-01",
+  code: "02 Assembly · Register & Komut",
+  title: "Register'lar ve Temel Komut Seti",
+  back: "01-register-komut.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Register haritası",
+      q: "<code>eax</code>, <code>rax</code> ile nasıl ilişkilidir?",
+      opts: ["eax, rax'in alt 32 bitidir", "eax, rax'in üst 32 bitidir", "eax ayrı bir register'dır", "eax rax'in 64-bit takma adıdır"],
+      a: [0],
+      why: "<b>eax = rax'in alt 32 biti.</b> ax alt 16, al alt 8. Hepsi aynı fiziksel register'a farklı boyutta bakar."
+    },
+    {
+      topic: "Register haritası",
+      q: "<code>mov eax, 5</code> çalıştıktan sonra <code>rax</code>'in tamamı ne olur?",
+      opts: ["Tam olarak 5 (üst 32 bit sıfırlanır)", "Üst 32 bit korunur, alt 32 bit 5 olur", "Sadece son byte 5 olur", "Değişmez"],
+      a: [0],
+      why: "Kritik kural: <b>32-bit register'a yazmak üst 32 biti sıfırlar.</b> Yani rax = 5. Bu, 8/16-bit yazmadan farklıdır."
+    },
+    {
+      topic: "Register haritası",
+      q: "<code>mov al, 0x41</code> bir döngüde çalışıyor; <code>rax</code> daha önce büyük bir değerdi. rax'e etkisi?",
+      opts: ["Sadece alt byte 0x41 olur; üst 56 bit korunur", "rax tamamen 0x41 olur", "Üst 56 bit sıfırlanır", "rax sıfırlanır"],
+      a: [0],
+      why: "8-bit yazma (<code>al</code>) üstü <b>korur</b> — sadece son byte değişir. 32-bit yazmanın üstü sıfırlamasıyla karıştırma; en sık register tuzağı budur."
+    },
+    {
+      topic: "mov ailesi",
+      q: "Intel sözdiziminde <code>mov rdi, rax</code> ne yapar?",
+      opts: ["rax'i rdi'ye kopyalar (kaynak → hedef)", "rdi'yi rax'e kopyalar", "rdi ve rax'i takas eder", "rdi'yi belleğe yazar"],
+      a: [0],
+      why: "Intel: <b>hedef önce, kaynak sonra</b>; kopya kaynaktan hedefe. Yani rax → rdi. AT&T sözdizimi tersidir — hangi sözdizimde olduğunu bil."
+    },
+    {
+      topic: "mov ailesi",
+      q: "Aşağıdaki komutlardan hangisi x86-64'te <b>geçersizdir</b>?",
+      opts: ["<code>mov [rbx], [rax]</code>", "<code>mov [rbx], rax</code>", "<code>mov rax, [rbx]</code>", "<code>mov rax, 5</code>"],
+      a: [0],
+      why: "Bellekten belleğe doğrudan <code>mov</code> <b>yoktur</b>; önce bir register'a alınır. İki köşeli parantezi bir arada görürsen okuman yanlıştır."
+    },
+    {
+      topic: "mov ailesi",
+      q: "<code>movzx eax, byte [rbx]</code> ile <code>movsx eax, byte [rbx]</code> arasındaki fark nedir?",
+      opts: ["movzx sıfırla, movsx işaret koruyarak genişletir", "movzx byte, movsx word okur", "İkisi aynıdır", "movzx belleğe yazar, movsx okur"],
+      a: [0],
+      why: "<b>movzx</b> = zero-extend (üstü 0 doldur), <b>movsx</b> = sign-extend (işaret bitini yay). İşaretli/işaretsiz veriyi genişletirken doğru olanı seçmek değeri değiştirir."
+    },
+    {
+      topic: "Aritmetik/mantık",
+      q: "<code>xor eax, eax</code> tipik olarak ne yapar?",
+      opts: ["eax'i (ve rax'i) sıfırlar — hızlı sıfırlama deyimi", "eax'i şifreler", "eax'i tersine çevirir", "eax'i 1 yapar"],
+      a: [0],
+      why: "Bir değerin kendisiyle XOR'u 0'dır. Derleyici <code>mov eax,0</code> yerine bunu kullanır (daha kısa/hızlı). <b>XOR görünce şifreleme sanma</b> — çoğu zaman sadece sıfırlama."
+    },
+    {
+      topic: "Aritmetik/mantık",
+      q: "<code>shl rax, 3</code> matematiksel olarak ne yapar?",
+      opts: ["rax'i 8 ile çarpar (×2³)", "rax'i 3 ile çarpar", "rax'i 8'e böler", "rax'in 3. bitini set eder"],
+      a: [0],
+      why: "Sola kaydırma <b>×2ⁿ</b>: <code>shl 3</code> = ×8. Sağa kaydırma (<code>shr</code>) bölmedir. Derleyici çarpma/bölmeyi sık sık kaydırmaya çevirir."
+    },
+    {
+      topic: "Aritmetik/mantık",
+      q: "<code>sub rax, rbx</code>, çıkarma dışında hangi yan etkiyi yapar?",
+      opts: ["Flag'leri (ZF, SF, CF...) günceller", "rbx'i de değiştirir", "Stack'e yazar", "Hiçbir yan etkisi yok"],
+      a: [0],
+      why: "Aritmetik komutlar <b>flag'leri günceller</b>. <code>cmp</code> aslında sonucu atmayan bir <code>sub</code>'dır; bu yüzden karşılaştırmadan sonra koşullu atlama çalışır (2.3)."
+    },
+    {
+      topic: "lea",
+      q: "<code>lea rax, [rbx+8]</code> ile <code>mov rax, [rbx+8]</code> arasındaki fark?",
+      opts: ["lea rbx+8 adresini (sayıyı) hesaplar; mov o adresteki veriyi okur", "İkisi aynıdır", "lea belleğe yazar", "mov adres hesaplar, lea veri okur"],
+      a: [0],
+      why: "<b>lea = adresi hesapla, belleğe dokunma.</b> mov köşeli parantezle bellekten okur. lea sık sık aritmetik hile için kullanılır (bellek erişimi değil)."
+    },
+    {
+      topic: "lea",
+      q: "<code>lea rax, [rdi+rdi*2]</code> sonucu nedir?",
+      opts: ["rax = rdi * 3", "rax = rdi + 2", "rax = rdi'nin gösterdiği bellek", "rax = rdi * 2"],
+      a: [0],
+      why: "<code>rdi + rdi*2 = rdi*3</code>. lea burada bellek değil <b>çarpma</b> yapıyor. Derleyici küçük çarpımları böyle kodlar; \"bellek okuyor\" sanmak yanlış olur."
+    },
+    {
+      topic: "Akış komutları",
+      q: "<code>push rax</code> mikro-adımları nedir?",
+      opts: ["rsp -= 8; sonra [rsp] = rax", "[rsp] = rax; sonra rsp += 8", "rsp += 8; sonra [rsp] = rax", "rax = [rsp]; rsp -= 8"],
+      a: [0],
+      why: "Stack aşağı büyür: <b>önce rsp azalır, sonra yazılır.</b> pop tersidir (önce okur, sonra rsp artar). Yönü karıştırmak stack okumayı bozar."
+    },
+    {
+      topic: "Akış komutları",
+      q: "<code>call fonksiyon</code> atlamadan önce stack'e ne koyar?",
+      opts: ["Dönüş adresini (call'dan sonraki komut)", "Tüm register'ları", "rbp değerini", "Argümanları"],
+      a: [0],
+      why: "<b>call = dönüş adresini push et + hedefe jmp.</b> <code>jmp</code> ise hiçbir şey push etmez. ret bu adresi çeker; overflow'da onu ezmek exploit'in temelidir."
+    },
+    {
+      topic: "Akış komutları",
+      q: "<code>ret</code> komutu tam olarak ne yapar?",
+      opts: ["Stack'ten dönüş adresini pop edip oraya atlar", "rax'i sıfırlar", "Programı sonlandırır", "Bir sonraki komuta geçer"],
+      a: [0],
+      why: "<b>ret = pop rip.</b> Stack tepesindeki adresi alır ve oraya döner. Bu yüzden stack'teki dönüş adresini ezersen (buffer overflow) programı istediğin yere atlatabilirsin (Bölüm 6)."
+    },
+    {
+      topic: "Sözdizimi",
+      q: "Bu kurs ve Ghidra/pwndbg varsayılanı hangi assembly sözdizimini kullanır ve operand sırası nasıldır?",
+      opts: ["Intel; hedef önce, kaynak sonra", "AT&T; kaynak önce, hedef sonra", "Intel; kaynak önce, hedef sonra", "AT&T; hedef önce, kaynak sonra"],
+      a: [0],
+      why: "<b>Intel: <code>mov hedef, kaynak</code></b> ($ ve % işaretleri yok). AT&T tersidir ve <code>%rax</code>, <code>$5</code> yazar. objdump'ta <code>-M intel</code> ile Intel'e geçirilir."
+    },
+    {
+      topic: "Aritmetik/mantık",
+      q: "<code>mov [rbp-0x4], edi</code> bir fonksiyonun başında görülüyor. En olası anlamı?",
+      opts: ["1. argüman (edi/rdi) bir yerel değişkene kaydediliyor", "Yerel değişken siliniyor", "Dönüş değeri ayarlanıyor", "Stack temizleniyor"],
+      a: [0],
+      why: "System V ABI'de 1. argüman <code>rdi</code>/<code>edi</code>. Fonksiyon başında argümanı <code>[rbp-0x4]</code> gibi bir yerele kopyalamak <code>-O0</code> derlemesinin tipik prologue kalıbıdır (2.4)."
+    },
+    {
+      topic: "Aritmetik/mantık",
+      q: "Bir register'ı sıfırlamanın yolları hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>xor eax, eax</code> eax'i (ve rax'i) sıfırlar", "<code>mov eax, 0</code> da eax'i sıfırlar", "<code>xor eax, eax</code> eax'i şifreler", "<code>and eax, eax</code> eax'i sıfırlar"],
+      a: [0, 1],
+      why: "<b>xor r,r</b> ve <b>mov r,0</b> ikisi de sıfırlar; derleyici genelde kısa/hızlı olan xor'u seçer. <code>and eax,eax</code> değeri değiştirmez (sadece flag kurar); xor şifreleme değildir."
+    },
+    {
+      topic: "Akış komutları",
+      q: "<code>call</code> komutu hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Dönüş adresini stack'e push eder", "Ardından hedef adrese atlar", "Hiçbir şey push etmez, sadece atlar", "rax'i sıfırlar"],
+      a: [0, 1],
+      why: "<b>call = dönüş adresini push et + hedefe jmp.</b> Push etmeden atlayan komut <code>jmp</code>'tir. <code>ret</code> daha sonra o dönüş adresini pop eder."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

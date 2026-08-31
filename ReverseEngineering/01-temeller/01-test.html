@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>01 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-01-01",
+  code: "01 Temeller · Sayılar & Bellek",
+  title: "Sayı Sistemleri, Bit, Byte, Endianness",
+  back: "01-sayilar-bellek.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Hex okuma",
+      q: "Disassembly'de <code>mov eax, [rbp-0x10]</code> görüyorsun. Değer <code>rbp</code>'den kaç byte geride?",
+      opts: ["16 byte", "10 byte", "8 byte", "0x10 = 100 byte"],
+      a: [0],
+      why: "<b>0x10 = 16.</b> Offset'ler her zaman hex yazılır. '10' onluk sanmak en sık hatadır — <code>0x</code> öneki hex demektir."
+    },
+    {
+      topic: "Hex okuma",
+      q: "Aşağıdakilerden hangisi <b>65</b> sayısına eşit <b>değildir</b>?",
+      opts: ["<code>0x14</code>", "<code>0x41</code>", "<code>0b01000001</code>", "<code>'A'</code>"],
+      a: [0],
+      why: "<b>0x14 = 20</b>, 65 değil. Diğer üçü aynı sayının farklı gösterimi: <code>0x41=65</code>, ikilik <code>1000001=65</code>, ASCII <code>'A'=0x41=65</code>."
+    },
+    {
+      topic: "Byte genişlikleri",
+      q: "Assembly sözlüğünde <b>word</b> kaç bittir?",
+      opts: ["16 bit", "8 bit", "32 bit", "64 bit"],
+      a: [0],
+      why: "Assembly'de <b>word=16</b>, dword=32, qword=64. Tuzak: günlük dilde 'word' işlemci kelime boyu (64) sanılır; RE'de Intel sözlüğü geçerli."
+    },
+    {
+      topic: "Byte genişlikleri",
+      q: "<code>rax</code> register'ı kaç bit, <code>eax</code> onun kaç bitlik parçası?",
+      opts: ["rax 64 bit, eax alt 32 bit", "rax 32 bit, eax alt 16 bit", "İkisi de 64 bit", "rax 64 bit, eax üst 32 bit"],
+      a: [0],
+      why: "<b>rax = 64 bit (qword)</b>, <b>eax = alt 32 bit (dword)</b>. eax'e yazmak üst 32 biti sıfırlar — 2. bölümde göreceksin."
+    },
+    {
+      topic: "İşaretli/işaretsiz",
+      q: "Tek bir byte <code>0xFF</code>. <b>Signed</b> (işaretli) olarak değeri kaçtır?",
+      opts: ["−1", "255", "−255", "127"],
+      a: [0],
+      why: "Two's complement: en üst bit 1 → negatif. <code>0xFF</code> signed = <b>−1</b>. Unsigned okunursa 255. Aynı bitler, iki okuma."
+    },
+    {
+      topic: "İşaretli/işaretsiz",
+      q: "<code>0x80</code> tek byte olarak signed kaçtır ve neden?",
+      opts: ["−128, çünkü en üst bit 1 (negatif) ve kalanı 0", "128, çünkü byte'ın yarısı", "−127, en üst bit dışında hepsi 0", "0, çünkü sadece bir bit set"],
+      a: [0],
+      why: "<code>0x80 = 1000 0000</code>. MSB=1 → negatif; two's complement'te bu <b>−128</b>'dir (signed byte'ın en küçük değeri). Unsigned okunsa 128."
+    },
+    {
+      topic: "İşaretli/işaretsiz",
+      q: "Bir decompiler değeri hem <code>4294967295</code> hem <code>-1</code> gösterebiliyor. Bu neden mümkün?",
+      opts: ["İkisi de aynı <code>0xFFFFFFFF</code> bit örüntüsü; biri unsigned biri signed okuma", "Decompiler hatası, ikisinden biri yanlış", "Değer taşmış (overflow) ve rastgele", "32 ve 64 bitlik iki farklı değişken"],
+      a: [0],
+      why: "<b>0xFFFFFFFF</b> unsigned = 4294967295, signed = −1. Karşılaştırmanın <code>ja</code> (unsigned) mı <code>jg</code> (signed) mi olduğu bu yoruma bağlıdır."
+    },
+    {
+      topic: "Endianness",
+      q: "x86-64 bir sistemde bellekte byte'lar (düşük adresten) <code>44 43 42 41</code>. Buradaki <b>dword</b> değeri nedir?",
+      opts: ["<code>0x41424344</code>", "<code>0x44434241</code>", "<code>0x14243444</code>", "<code>0x41244342</code>"],
+      a: [0],
+      why: "x86-64 <b>little-endian</b>: düşük byte düşük adreste. Bellekteki <code>44 43 42 41</code> tersten birleşir → <b>0x41424344</b>."
+    },
+    {
+      topic: "Endianness",
+      q: "'küçük uç önce' kuralı hangi mimari ve bağlam için doğrudur?",
+      opts: ["Little-endian; x86-64 böyledir", "Big-endian; x86-64 böyledir", "Little-endian; ağ (network) byte order böyledir", "Big-endian; Intel işlemciler böyledir"],
+      a: [0],
+      why: "<b>Little-endian = küçük uç önce</b>, ve <b>x86-64 little-endian'dır</b>. Ağ byte order ise big-endian'dır — sık karıştırılır."
+    },
+    {
+      topic: "Endianness",
+      q: "GDB'de <code>x/4xb $rsp</code> çıktısı <code>0x41 0x42 0x43 0x44</code>. Bu byte'lar bir C string olarak ne yazar?",
+      opts: ["<code>\"ABCD\"</code>", "<code>\"DCBA\"</code>", "<code>0x41424344</code>", "String olamaz, sadece sayı"],
+      a: [0],
+      why: "Byte'lar <b>artan adres sırasında</b> okunur: <code>0x41='A'</code>, 42='B'... → <b>\"ABCD\"</b>. String'lerde endianness dönmez; endianness sadece çok-baytlı <i>sayı</i> okurken devreye girer."
+    },
+    {
+      topic: "ASCII",
+      q: "<code>cmp al, 0x41</code> komutu hangi karaktere karşı kontrol yapıyor?",
+      opts: ["<code>'A'</code>", "<code>'a'</code>", "<code>'0'</code>", "<code>'Z'</code>"],
+      a: [0],
+      why: "<b>0x41 = 'A'</b>. Kancalar: <code>'a'=0x61</code>, <code>'0'=0x30</code>. Büyük ve küçük harf arası tam <code>0x20</code> fark var."
+    },
+    {
+      topic: "ASCII",
+      q: "Bir programda <code>sub al, 0x30</code> görüyorsun; <code>al</code> bir rakam karakteri tutuyor. Bu satır ne yapar?",
+      opts: ["'0'–'9' karakterini sayısal değerine çevirir", "Karakteri büyük harfe çevirir", "Karakteri 48 kat büyütür", "Karakteri küçük harfe çevirir"],
+      a: [0],
+      why: "<code>'0'=0x30</code>. Karakterden <code>0x30</code> çıkarınca sayısal değeri gelir (<code>'7'-0x30=7</code>). Klasik 'char to int' kalıbı."
+    },
+    {
+      topic: "ASCII",
+      q: "<code>or al, 0x20</code> bir ASCII harf üzerinde çalışırsa tipik etkisi nedir?",
+      opts: ["Büyük harfi küçük harfe çevirir", "Küçük harfi büyük harfe çevirir", "Harfi rakama çevirir", "Hiçbir etkisi olmaz"],
+      a: [0],
+      why: "Büyük ve küçük harf tam <code>0x20</code> bitiyle ayrılır. <code>or 0x20</code> o biti set eder → küçük harf (<code>'A'|0x20='a'</code>). Silmek için <code>and 0xDF</code> kullanılır."
+    },
+    {
+      topic: "Nibble/hex yapısı",
+      q: "Neden RE dünyası onluk yerine hex ile konuşur?",
+      opts: ["Bir byte tam olarak iki hex hanesine denk gelir; byte sınırları hizalı görünür", "Hex daha kısa yazıldığı için, başka sebep yok", "İşlemci sadece hex anlar, onluğu anlamaz", "Onluk negatif sayı gösteremez"],
+      a: [0],
+      why: "Her hex hane = 4 bit (nibble), bir byte = 2 hane. Bu yüzden <code>0xFF</code> tam bir byte, <code>0xFFFF</code> tam iki byte — hizalama gözle görünür. İşlemci aslında ikilik çalışır; hex insan içindir."
+    },
+    {
+      topic: "Hex okuma",
+      q: "Aşağıdakilerden hangi <b>ikisi</b> 255 sayısına eşittir? <b>(Choose TWO.)</b>",
+      opts: ["<code>0xFF</code>", "<code>0b11111111</code>", "<code>0x0F</code>", "<code>0xFE</code>"],
+      a: [0, 1],
+      why: "<code>0xFF = 255</code> ve ikilik <code>11111111 = 255</code>. <code>0x0F=15</code>, <code>0xFE=254</code>. Bir byte'ın tavanı 255'tir (iki dolu hex hane / sekiz 1)."
+    },
+    {
+      topic: "Endianness",
+      q: "x86-64 little-endian hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["En düşük değerli byte en düşük adreste durur", "Bir dword'ün ham byte'ları soldan sağa 'ters' görünebilir", "String'lerin karakter sırası da tersine döner", "Ağ (network) byte order ile aynıdır"],
+      a: [0, 1],
+      why: "Little-endian: <b>düşük byte düşük adreste</b>, bu yüzden çok-baytlı sayının ham dökümü ters görünür. String'lerde endianness dönmez (karakterler artan adreste okunur); ağ byte order big-endian'dır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>04-03 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-04-03",
+  code: "04 Dinamik · Birlikte Analiz",
+  title: "Statik + Dinamik Birlikte Çözmek",
+  back: "03-birlikte-analiz.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İş bölümü",
+      q: "'Bu XOR döngüsü girdiyi tam olarak neye çeviriyor?' sorusunu en verimli hangi araç cevaplar?",
+      opts: ["Dinamik (GDB): girdi ver, adımla, belleği oku", "Statik (Ghidra): sadece decompile'ı oku", "file komutu", "strings"],
+      a: [0],
+      why: "Somut dönüşümü <b>gözünle görmek</b> en hızlı dinamikte olur: girdi ver, döngüyü adımla, her turda buffer'ı oku. Statik 'ne yaptığını' anlatır ama gerçek ara değerleri dinamik gösterir."
+    },
+    {
+      topic: "İş bölümü",
+      q: "'Program genel olarak ne yapıyor, bu string'i kim kullanıyor?' soruları için en iyi araç?",
+      opts: ["Statik (Ghidra decompile + xref)", "Dinamik (GDB adımlama)", "Sadece çalıştırmak", "checksec"],
+      a: [0],
+      why: "Genel yapı ve 'kim kullanıyor' (xref) <b>statik</b> analizin gücüdür — tüm kod yollarını çalıştırmadan görür. Dinamik ise anlık değerler içindir."
+    },
+    {
+      topic: "İş bölümü",
+      q: "Tüm kod yollarını (çalışma sırasında hiç tetiklenmeyen dallar dahil) görmek istiyorsun. Hangi yaklaşım?",
+      opts: ["Statik — çalıştırmadan tüm dalları kapsar", "Dinamik — sadece çalışan yolu izler", "Her ikisi de aynı kapsamı verir", "Bu imkânsızdır"],
+      a: [0],
+      why: "<b>Dinamik yalnızca gerçekten çalışan yolu</b> gösterir; girilmeyen dallar görünmez. Statik analiz kodun tamamını kapsar — kapsam için statik, kesinlik için dinamik."
+    },
+    {
+      topic: "Çözüm akışı",
+      q: "Standart crackme çözüm akışının doğru sırası hangisidir?",
+      opts: ["Kimlik (file/strings) → harita (Ghidra) → hipotez → doğrula (GDB) → çöz → kanıtla", "GDB'de rastgele adımla → tahmin et → gönder", "Sadece strings'e bak → bitir", "Binary'yi sil → yeniden derle"],
+      a: [0],
+      why: "Akış bir <b>spiraldir</b>: statik harita bir hipotez kurar, dinamik onu doğrular, çözüm üretilir ve çalıştırarak kanıtlanır. Her tur hedefe yaklaştırır."
+    },
+    {
+      topic: "Çözüm akışı",
+      q: "Çözüm akışında 'hipotez' adımı ne işe yarar?",
+      opts: ["Statikten bir tahmin kurup (örn. 'toplam 0x1a4 olmalı') dinamikte test edilecek hedefi belirlemek", "Programı çökertmek", "Binary'yi patch'lemek", "Rastgele girdi denemek"],
+      a: [0],
+      why: "Statik gözlemden bir <b>test edilebilir tahmin</b> kurarsın; sonra GDB'de doğru breakpoint'i koyup gerçek değerlerle sınarsın. Hipotezsiz dinamik = körlemesine adımlama."
+    },
+    {
+      topic: "Adres eşleme",
+      q: "Ghidra <code>0x1169</code> gösteriyor ama <code>break *0x1169</code> GDB'de beklediğin yerde tutmuyor. İlk şüphen ne olmalı?",
+      opts: ["Binary PIE; ASLR ile gerçek yükleme tabanı farklı — sembol veya base+offset kullan", "Adres kesin yanlıştır", "GDB bozuktur", "Ghidra hep yanlış adres verir"],
+      a: [0],
+      why: "PIE + ASLR en yaygın sebep: Ghidra taban-göreli adres gösterir, gerçek base çalıştırmada değişir. <b>break main (sembol)</b> veya base+offset ile eşle. pwndbg base'i gösterir."
+    },
+    {
+      topic: "Adres eşleme",
+      q: "PIE olmayan (sabit yüklenen) bir binary'de Ghidra adresi ile GDB adresi ilişkisi nasıldır?",
+      opts: ["Aynıdır; <code>break *0xADDR</code> doğrudan çalışır", "Her zaman 0x100000 farklıdır", "GDB adresi iki katıdır", "İlişkisizdir"],
+      a: [0],
+      why: "PIE değilse yükleme tabanı sabittir → <b>Ghidra adresi = GDB adresi.</b> PIE tuzağı sadece position-independent binary'lerde ortaya çıkar."
+    },
+    {
+      topic: "Araç değiştirme",
+      q: "Statik analizde bir dönüşümü 20 dakikadır çözemiyorsun. En verimli hamle?",
+      opts: ["GDB'ye geçip girdiyi vererek gerçek ara değerleri gözlemlemek", "Aynı decompile'ı 1 saat daha okumak", "Binary'yi silmek", "Rastgele girdiler göndermek"],
+      a: [0],
+      why: "20 dakika kuralı: tek araçta inatlaşma. Karmaşık dönüşüm <b>dinamikte gözle</b> çok daha hızlı çözülür. Amaç, hangi sorunun hangi araçla hızlı çözüldüğünü öğrenmek."
+    },
+    {
+      topic: "Araç değiştirme",
+      q: "GDB'de nereye breakpoint koyacağını bilmiyorsun. Ne yaparsın?",
+      opts: ["Ghidra'ya dönüp xref/decompile ile ilgili fonksiyon adresini bulmak", "Her adrese breakpoint koymak", "Programı çalıştırıp tahmin etmek", "Vazgeçmek"],
+      a: [0],
+      why: "Statik harita, dinamik keşfin nereye bakacağını söyler. <b>Ghidra'da hedefi bul → GDB'de o adrese/sembole breakpoint.</b> İki araç birbirini besler."
+    },
+    {
+      topic: "Packed kod",
+      q: "Statik analizde kod anlamsız/açılmamış görünüyor (muhtemelen packed). Ne zaman gerçek mantığı görürsün?",
+      opts: ["Dinamik: program çalışıp kodu bellekte açtıktan sonra dump alarak", "Hiçbir zaman", "Sadece strings ile", "Yeniden derleyerek"],
+      a: [0],
+      why: "Packer gerçek kodu runtime'da bellekte açar. <b>Statik packed kodu göremez</b>; program açtıktan sonra bellekten dump alıp (dinamik) incelersin."
+    },
+    {
+      topic: "İki koşul",
+      q: "Bir crackme 'Correct!' için hem uzunluk (==8) hem de toplam (==0x3e8) şartı istiyor. Bunu nasıl ele alırsın?",
+      opts: ["Statikte && zincirini görürüm, dinamikte her iki koşulu ayrı ayrı doğrularım, sonra ikisini birden sağlayan girdi üretirim", "Sadece uzunluğu sağlarım", "Sadece toplamı sağlarım", "İki koşul aynı anda sağlanamaz"],
+      a: [0],
+      why: "&& zinciri (2.3) her iki koşulu da ister. Çözüm ikisini <b>birlikte</b> sağlamalı: doğru uzunlukta VE doğru toplamı üreten bir girdi (keygen problemi, Bölüm 5)."
+    },
+    {
+      topic: "Çözüm akışı",
+      q: "Çözümün son adımı 'kanıtla' ne demektir?",
+      opts: ["Bulduğun girdiyle programı çalıştırıp 'Correct!' çıktısını gerçekten görmek", "Writeup yazmak", "Binary'yi silmek", "Ghidra projesini kaydetmek"],
+      a: [0],
+      why: "RE'de ölçüt nettir (00-genel-bakis): <b>flag'i/parolayı gerçekten geçirdin mi.</b> Teorik çözümü çalıştırarak kanıtlamak, kendini kandırmadığından emin olmanın yoludur."
+    },
+    {
+      topic: "İş bölümü",
+      q: "Bir dalın (branch) hangi koşulda alındığını canlı olarak görmek istiyorsun. En iyi yol?",
+      opts: ["Dinamik: karşılaştırmaya breakpoint koyup register/flag değerlerini okumak", "Statik: sadece decompile'a bakmak", "strings", "file"],
+      a: [0],
+      why: "Bir dalın <b>gerçekte</b> hangi değerlerle alındığını görmek dinamik iştir: <code>cmp</code>'e breakpoint koy, register ve flag'leri oku. Statik dalların varlığını gösterir, hangisinin alındığını değil."
+    },
+    {
+      topic: "Adres eşleme",
+      q: "pwndbg'de PIE bir binary'de bir offset'e breakpoint koymak için kullanılabilecek yardımcı hangisidir? (⚠️ komut sürüme göre değişebilir)",
+      opts: ["<code>break $rebase(0x1169)</code> gibi bir rebase yardımcısı", "<code>break 0x1169 fixed</code>", "<code>run --no-aslr</code> zorunlu", "Hiçbir yolu yok"],
+      a: [0],
+      why: "pwndbg <b>$rebase(offset)</b> ile dosya-offset'ini çalışan process'in base'ine ekler. Komut adı sürüme göre değişebilir (⚠️ doğrula); alternatif olarak sembol veya <code>info proc mappings</code> ile base'i elle eklersin."
+    },
+    {
+      topic: "İş bölümü",
+      q: "Statik analizin en iyi cevapladığı <b>iki</b> soru hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Program genel olarak ne yapıyor?", "Bu string'i kim kullanıyor (xref)?", "Bu değişkenin şu anki gerçek değeri ne?", "Bu XOR döngüsü girdiyi somut olarak neye çeviriyor?"],
+      a: [0, 1],
+      why: "<b>'Ne yapıyor' ve 'kim kullanıyor'</b> statik (harita) sorularıdır. 'Şu anki değer' ve 'somut dönüşüm sonucu' <b>dinamik</b> (keşif) sorularıdır — doğru soruya doğru araç."
+    },
+    {
+      topic: "Adres eşleme",
+      q: "PIE bir binary'de Ghidra adresi ile GDB breakpoint'i hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["ASLR ile gerçek yükleme tabanı her çalıştırmada değişebilir", "Sembol (break main) base'den bağımsız çalışır", "Sabit dosya-offset'i (break *0x1189) her zaman tutar", "Ghidra adresi = GDB adresi her durumda"],
+      a: [0, 1],
+      why: "PIE'de <b>base değişir</b> (sabit offset tutmaz); <b>sembol</b> güvenlidir. Ghidra=GDB adresi eşitliği yalnızca <b>PIE olmayan</b> binary'lerde geçerlidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

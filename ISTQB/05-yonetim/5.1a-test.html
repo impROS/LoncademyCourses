@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1a Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-5-1a",
+  code: "Managing the Test Activities · 5.1a",
+  title: "Test Planlama ve Giriş/Çıkış Kriterleri",
+  back: "5.1a-test-planlama.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Giriş ve çıkış kriterleri",
+      q: "Which of the following is an EXIT criterion?",
+      opts: [
+        "The defined coverage level has been achieved",
+        "The test environment is available and configured",
+        "Testable code has been delivered to the test environment",
+        "The required test data has been prepared"
+      ],
+      a: [0],
+      why: "<b>Kapsam hedefine ulaşmak, aktiviteyi sonlandırma koşuludur.</b> Diğer üç şık test ortamı, kod teslimi ve veri hazırlığı ile ilgilidir — bunlar teste <i>başlamak</i> için gereken giriş kriterleridir. Kanca: en<b>TR</b>y = gi<b>R</b>iş."
+    },
+    {
+      topic: "Giriş ve çıkış kriterleri",
+      q: "In Agile development, the Definition of Ready is the equivalent of which concept?",
+      opts: ["Entry criteria", "Exit criteria", "The test completion report", "The risk register"],
+      a: [0],
+      why: "<b>DoR, bir story'nin sprint'e alınabilmesi için sağlanması gereken ön koşullardır — yani giriş kriteri.</b> DoD ise çıkış kriteridir. Sınav bu ikisini bilerek ters vererek sorar; <b>Ready = başla, Done = bitir</b> kancasını kullan."
+    },
+    {
+      topic: "Giriş ve çıkış kriterleri",
+      q: "The Definition of Done corresponds to which concept in test management?",
+      opts: ["Exit criteria", "Entry criteria", "Test conditions", "Coverage items"],
+      a: [0],
+      why: "<b>DoD, bir iş öğesinin tamamlanmış sayılması için karşılanması gereken koşullardır — yani çıkış kriteri.</b> Test conditions test analizinin çıktısıdır (1.4), coverage item ise tekniklere bağlı kapsam birimidir (4.1). Terim ailelerini karıştırma."
+    },
+    {
+      topic: "Çıkış kriterlerinin karşılanmaması",
+      q: "An exit criterion has not been met, but the release date cannot be moved. What is the CORRECT approach?",
+      opts: [
+        "Relax the criterion as a conscious decision and communicate the residual risk to stakeholders",
+        "Declare the criterion met because the schedule has been reached",
+        "Delete the criterion from the test plan so that it is no longer violated",
+        "Stop all testing immediately without any report"
+      ],
+      a: [0],
+      why: "<b>Kriteri gevşetmek meşru bir seçenektir, ama bilinçli bir yönetim kararı olmalı ve kalan risk açıkça bildirilmelidir.</b> Zamanın dolması bir çıkış kriteri değildir — 'test tükendi' ile 'test tamamlandı' aynı şey değil. Testerın işi kararı vermek değil, riski görünür kılmaktır."
+    },
+    {
+      topic: "Çıkış kriterleri",
+      q: "Which of the following are typical exit criteria? (Choose TWO.)",
+      opts: [
+        "The number of unresolved defects is within an agreed limit",
+        "The residual risk is at an acceptable level",
+        "The test environment has been set up",
+        "The testers have completed their training"
+      ],
+      a: [0, 1],
+      why: "<b>Açık kusur sayısının eşiğin altında olması ve kalan riskin kabul edilebilir olması klasik çıkış kriterleridir.</b> Ortam kurulumu ve eğitim tamamlanması ise teste başlamak için gereken ön koşullardır — yani giriş kriteri."
+    },
+    {
+      topic: "Testerın planlama katkısı",
+      q: "What does a tester contribute to ITERATION planning? (Choose TWO.)",
+      opts: [
+        "Performing a detailed risk analysis of the user stories",
+        "Breaking down user stories into tasks, particularly testing tasks",
+        "Signing the contract with the customer",
+        "Deciding the price of the product release"
+      ],
+      a: [0, 1],
+      why: "<b>Testerın iterasyon planlamasındaki katkısı story'lerin detaylı risk analizini yapmak, testlenebilirliği belirlemek, story'leri test görevlerine bölmek, kestirim yapmak ve test conditions'ı belirlemektir.</b> Son iki şık testerın rolüne ait değildir."
+    },
+    {
+      topic: "Testerın planlama katkısı",
+      q: "What does a tester contribute to RELEASE planning?",
+      opts: [
+        "Writing and refining the product backlog, performing risk analysis, and creating the test approach and estimate",
+        "Executing all regression tests for the release",
+        "Approving the release on behalf of the customer",
+        "Debugging the defects found in the previous release"
+      ],
+      a: [0],
+      why: "<b>Sürüm planlamasında tester backlog yazımına katılır, risk analizi yapar, testlenebilirliği sağlar, test yaklaşımını ve kestirimini oluşturur.</b> İkinci şık planlama değil yürütme; üçüncüsü müşterinin kararı; dördüncüsü ise geliştirmenin işidir (debugging test aktivitesi değildir)."
+    },
+    {
+      topic: "Test planının içeriği",
+      q: "Which of the following is typically part of a test plan?",
+      opts: [
+        "The test approach, including test levels, test types, techniques and entry and exit criteria",
+        "The source code of the automated test scripts",
+        "The debugging steps for each defect found",
+        "The completed test logs from the previous release"
+      ],
+      a: [0],
+      why: "<b>Test yaklaşımı test planının merkezî bileşenidir</b> ve içinde seviyeler, tipler, teknikler, giriş/çıkış kriterleri, bağımsızlık derecesi, metrikler ve araçlar yer alır. Diğer şıklar test planının değil, diğer testware'lerin içeriğidir."
+    },
+    {
+      topic: "Test planının amacı",
+      q: "Which statement about test planning in Agile projects is correct?",
+      opts: [
+        "Test planning still takes place, but it is lighter and more iterative",
+        "Test planning is not needed because the team is self-organizing",
+        "Test planning is replaced entirely by the Definition of Done",
+        "Test planning is performed only once, at the start of the project"
+      ],
+      a: [0],
+      why: "<b>Çevik projelerde planlama ortadan kalkmaz; daha hafif ve her iterasyonda tekrarlanan bir hale gelir.</b> DoD planlamanın yerine geçmez, planın <i>bir parçasıdır</i>. Dördüncü şık ise şelale bile olsa yanlış: plan proje boyunca güncellenir."
+    },
+    {
+      topic: "Test planının amacı",
+      q: "What is a PRIMARY purpose of the test plan?",
+      opts: [
+        "To guide the test activities and serve as a means of communication with stakeholders",
+        "To record every defect found during test execution",
+        "To measure the branch coverage of the implementation",
+        "To document the debugging steps taken by developers"
+      ],
+      a: [0],
+      why: "<b>Test planı hem test aktivitelerini yönlendirir hem paydaşlarla iletişim aracıdır</b>; ayrıca gereken araç, zaman, efor ve kaynağı belirler. Kusur kaydı, kapsam ölçümü ve debugging farklı aktivitelerin ürünleridir."
+    },
+    {
+      topic: "Giriş ve çıkış kriterleri",
+      q: "Why are entry criteria defined for a test activity?",
+      opts: [
+        "To avoid wasting effort on an activity whose preconditions are not yet satisfied",
+        "To guarantee that no defects will be found during the activity",
+        "To measure the coverage achieved by the activity",
+        "To replace the need for a test plan"
+      ],
+      a: [0],
+      why: "<b>Ön koşullar sağlanmadan başlamak eforu boşa harcar</b> — kararlı olmayan bir build üzerinde test koşmak bunun tipik örneğidir. İkinci şıkta <code>guarantee</code> var; kapsam ölçümü ise çıkış kriterinin konusudur."
+    },
+    {
+      topic: "Risk ve plan",
+      q: "Where is the risk register typically documented?",
+      opts: [
+        "As part of the test plan",
+        "In the test completion report only",
+        "In the source code repository",
+        "In the individual defect reports"
+      ],
+      a: [0],
+      why: "<b>Ürün ve proje risklerini içeren risk kaydı test planının bileşenlerinden biridir.</b> Risk, test yaklaşımını ve önceliklendirmeyi doğrudan belirlediği için planın dışında tutulamaz — 5.2'de bu bağlantıyı derinleştireceksin."
+    },
+    {
+      topic: "Giriş ve çıkış kriterleri",
+      q: "A team stops testing because the allocated time has run out, although several planned tests were not executed. Which statement is correct?",
+      opts: [
+        "The exit criteria have not been met, and the residual risk must be reported",
+        "The exit criteria have been met, because the schedule is an exit criterion",
+        "The entry criteria have been violated",
+        "Testing is complete because no further budget is available"
+      ],
+      a: [0],
+      why: "<b>Zamanın dolması bir çıkış kriteri değildir.</b> Planlanan testler koşulmadıysa kriter karşılanmamıştır ve kalan risk paydaşlara bildirilmelidir. 'Test tükendi' ile 'test tamamlandı' arasındaki fark, testerın raporlama sorumluluğunun tam olarak durduğu yerdir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

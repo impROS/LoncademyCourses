@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g6 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g6",
+  code: "Dilbilgisi · g6",
+  title: "Edilgen çatı ve causative",
+  back: "g6-passive.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Edilgen biçimler",
+      q: "The lift ______ at the moment, so please use the stairs.",
+      opts: ["is being serviced", "is serviced", "has been serviced", "was serviced"],
+      a: [0],
+      why: "<b>is being serviced</b> — <code>at the moment</code> şu an süren bir işi gösterir, yani present continuous edilgeni. <code>is serviced</code> düzenli bir rutin bildirir ve merdiven uyarısını gereksiz kılar."
+    },
+    {
+      topic: "Edilgen biçimler",
+      q: "All applications ______ before the end of the month.",
+      opts: ["must be submitted", "must submit", "must be submit", "must have submitted"],
+      a: [0],
+      why: "<b>must be submitted</b> — modal edilgeninin formülü <code>modal + be + V3</code>. <code>must submit</code> başvuruların kendi kendilerini göndermesi anlamına gelirdi."
+    },
+    {
+      topic: "Edilgen biçimler",
+      q: "We ______ about the change of venue — nobody told us anything.",
+      opts: ["should have been informed", "should have informed", "should be informing", "should inform"],
+      a: [0],
+      why: "<b>should have been informed</b> — modal + perfect + edilgen: 'bilgilendirilmeliydik ama bilgilendirilmedik'. <code>should have informed</code> suçu bize yükler, oysa cümle tam tersini söylüyor."
+    },
+    {
+      topic: "Edilgen biçimler",
+      q: "Which form is NOT used in English?",
+      opts: ["The room has been being cleaned.", "The room has been cleaned.", "The room is being cleaned.", "The room had been cleaned."],
+      a: [0],
+      why: "<code>has been being + V3</code> pratikte kullanılmaz; İngilizce bu yığılmadan kaçınır. Böyle bir şık gördüğünde neredeyse her zaman çeldiricidir."
+    },
+    {
+      topic: "by kullanımı",
+      q: "Which sentence uses 'by' appropriately?",
+      opts: ["The mosque was designed by Sinan.", "My wallet was stolen by someone.", "The window was broken by a person.", "The email was sent by somebody."],
+      a: [0],
+      why: "<b>by Sinan</b> yeni ve önemli bir bilgi taşır. <code>by someone / by a person / by somebody</code> hiçbir bilgi eklemez; edilgen zaten 'kim olduğu bilinmiyor' demektir, bu yüzden bu ekler gereksizdir."
+    },
+    {
+      topic: "İki nesneli fiiller",
+      q: "The board offered Kaan the director's post. Which passive is more natural?",
+      opts: ["Kaan was offered the director's post.", "The director's post was offered Kaan.", "Kaan was offered by the director's post.", "The director's post offered Kaan."],
+      a: [0],
+      why: "<b>Kaan was offered…</b> — iki nesneli fiillerde insanı özne yapan biçim tercih edilir. İkinci şık dilbilgisi olarak eksiktir: <i>was offered <b>to</b> Kaan</i> olmalıydı."
+    },
+    {
+      topic: "Kişisel olmayan edilgen",
+      q: "People believe that the factory will close. → It ______ that the factory will close.",
+      opts: ["is believed", "believes", "is believing", "has believed"],
+      a: [0],
+      why: "<b>It is believed that…</b> — genel kanıyı aktaran kişisel olmayan edilgen kalıbı. Bu yapı haber ve akademik dilde standarttır ve öznesi daima biçimsel <code>it</code>'tir."
+    },
+    {
+      topic: "Kişisel olmayan edilgen",
+      q: "People say he lived in Paris for years. → He is said ______ in Paris for years.",
+      opts: ["to have lived", "to live", "to be lived", "living"],
+      a: [0],
+      why: "<b>to have lived</b> — aktarılan eylem, aktarma fiilinden <i>daha eski</i> olduğunda <code>to have + V3</code> gelir. <code>to live</code> deseydik hâlâ Paris'te yaşadığı anlamı çıkardı."
+    },
+    {
+      topic: "Causative",
+      q: "The screen was cracked, so I ______ last week.",
+      opts: ["had it replaced", "had replaced it", "have replaced it", "had it replace"],
+      a: [0],
+      why: "<b>had it replaced</b> — causative sırası sabittir: <code>have + NESNE + V3</code>. <code>had replaced it</code> past perfect olur ve işi benim yaptığımı söyler."
+    },
+    {
+      topic: "Causative",
+      q: "I'm going to ______ next Tuesday.",
+      opts: ["have my eyes tested", "have tested my eyes", "test my eyes have", "be tested my eyes"],
+      a: [0],
+      why: "<b>have my eyes tested</b> — testi yapan ben değil, göz doktoru. Türkçedeki '-tir-' ettirgen ekinin İngilizce karşılığı budur ve Türkçe konuşanların çok az kullandığı bir yapıdır."
+    },
+    {
+      topic: "Causative",
+      q: "Choose the two sentences that describe something unpleasant that happened TO the subject. (Choose TWO.)",
+      opts: ["She had her bag stolen on the metro.", "He got his car towed away.", "She had her hair cut at a new salon.", "He got the mechanic to check the brakes."],
+      a: [0, 1],
+      why: "Aynı <code>have/get + nesne + V3</code> kalıbı, bağlam olumsuzsa 'başına gelmek' anlamı verir. Üçüncü cümle istenen bir hizmet, dördüncüsü ise <code>get + kişi + to V1</code> yapısıdır."
+    },
+    {
+      topic: "Causative",
+      q: "I finally ______ my flatmate ______ the dishwasher.",
+      opts: ["got / to empty", "had / to empty", "got / empty", "made / to empty"],
+      a: [0],
+      why: "<b>got … to empty</b> — <code>get + kişi + to V1</code> ikna ederek yaptırmayı anlatır ve <i>finally</i> ile uyumludur. <code>have</code> ve <code>make</code> ise yalın fiil alır: <i>had him empty</i>, <i>made him empty</i>."
+    },
+    {
+      topic: "Edilgen biçimler",
+      q: "When we phoned, the flat ______ already ______ .",
+      opts: ["had / been sold", "has / been sold", "was / sold being", "had / sold"],
+      a: [0],
+      why: "<b>had been sold</b> — telefon anından önce tamamlanmış edilgen bir olay: past perfect passive. Sıralamayı gösterdiği için g2'deki past perfect mantığı burada da geçerlidir."
+    },
+    {
+      topic: "Edilgen kullanım gerekçesi",
+      q: "In a set of laboratory instructions, why is the passive normally used?",
+      opts: ["Because the process matters more than who performs it.", "Because the passive is always more polite.", "Because instructions can never use imperatives.", "Because the passive shortens every sentence."],
+      a: [0],
+      why: "Süreç anlatımında eylemi kimin yaptığı değişkendir ve önemsizdir; odak işlemin kendisindedir. Diğer şıklar mutlak ifadeler (<i>always, never</i>) içerir ve bu tür şıklar sınavda genellikle yanlıştır — edilgen ne her zaman kibardır ne de cümleyi kısaltır."
+    },
+    {
+      topic: "Hata bulma",
+      q: "Which sentence is INCORRECT?",
+      opts: ["The winners will announced tomorrow.", "The winners will be announced tomorrow.", "The winners are going to be announced tomorrow.", "The winners should be announced tomorrow."],
+      a: [0],
+      why: "İlk cümlede <code>be</code> düşmüş: edilgen her zaman <code>be + V3</code> ister. Bu, yazma görevlerinde en sık gözden kaçan edilgen hatasıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

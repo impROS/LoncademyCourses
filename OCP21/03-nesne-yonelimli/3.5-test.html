@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.5 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.5",
+  code: "OOP · 3.5",
+  title: "Abstract Sınıflar ve Sealed Tipler",
+  back: "3.5-abstract-ve-sealed.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Sealed kuralları",
+      q: "<pre>sealed interface S permits A {}\nclass A implements S {}</pre>What is the result?",
+      opts: [
+        "Compilation fails because A must be final, sealed, or non-sealed.",
+        "The code compiles.",
+        "Compilation fails because an interface cannot be sealed.",
+        "Compilation fails because A must be in a different package."
+      ],
+      a: [0],
+      why: "Bir <code>sealed</code> tipin <b>izin verilen her doğrudan alt tipi</b> üç belirteçten birini almak zorundadır: <code>final</code> (zincir biter), <code>sealed</code> (kontrollü devam), <code>non-sealed</code> (serbestçe açılır). Hiçbiri yoksa derleyici <i>sealed, non-sealed or final modifiers expected</i> der. <br>Arayüzler <b>sealed olabilir</b>; alt tipler ise <b>aynı</b> pakette/modülde olmak zorundadır — farklı pakette olmaları hata sebebi olurdu, aynı pakette olmaları değil."
+    },
+    {
+      topic: "Sealed kuralları",
+      q: "<pre>sealed interface S permits A {}\nrecord A() implements S {}</pre>What is the result?",
+      opts: [
+        "The code compiles because records are implicitly final.",
+        "Compilation fails because A needs an explicit final modifier.",
+        "Compilation fails because a record cannot implement a sealed interface.",
+        "Compilation fails because permits cannot reference a record."
+      ],
+      a: [0],
+      why: "Record'lar <b>implicitly final</b>'dır (3.3), bu yüzden sealed hiyerarşinin \"zincir burada bitmeli\" şartını zaten sağlarlar ve ek belirteç istemezler. <br>Bu, <code>sealed interface + record</code> ikilisinin neden bu kadar yaygın olduğunu açıklar: kapalı hiyerarşi + exhaustive <code>switch</code> + hazır <code>equals</code>/<code>toString</code>."
+    },
+    {
+      topic: "Sealed kuralları",
+      q: "Which modifiers may a permitted direct subclass of a sealed class use? (Choose TWO.)",
+      opts: [
+        "non-sealed",
+        "sealed",
+        "abstract without any of the sealed-related modifiers",
+        "private"
+      ],
+      a: [0, 1],
+      why: "İzin verilen alt tip <code>final</code>, <code>sealed</code> veya <code>non-sealed</code> olabilir — burada iki geçerli seçenek <b>non-sealed</b> ve <b>sealed</b>'dir. <br><code>abstract</code> tek başına <b>yetmez</b>: <code>abstract sealed</code> veya <code>abstract non-sealed</code> yazılmalıdır. Üst düzey bir sınıf <code>private</code> olamaz."
+    },
+    {
+      topic: "Sealed kuralları",
+      q: "When can the <code>permits</code> clause be omitted from a sealed type declaration?",
+      opts: [
+        "When all permitted subtypes are declared in the same source file.",
+        "When the sealed type is an interface rather than a class.",
+        "It can never be omitted.",
+        "When all permitted subtypes are records."
+      ],
+      a: [0],
+      why: "Alt tipler <b>aynı kaynak dosyada</b> bildirilmişse derleyici onları kendisi bulur ve <code>permits</code> yazmak gereksizdir. Ayrı dosyalardaysa <b>zorunludur</b>. <br>Tipin arayüz olması ya da alt tiplerin record olması bu kuralı değiştirmez — belirleyici olan tek şey <b>aynı dosyada olup olmadıklarıdır</b>."
+    },
+    {
+      topic: "Exhaustive switch",
+      q: "<pre>sealed interface S permits A, B {}\nrecord A() implements S {}\nrecord B() implements S {}\n\nstatic int f(S s) {\n    return switch (s) {\n        case A a -> 1;\n        case B b -> 2;\n    };\n}</pre>What is the result?",
+      opts: [
+        "The code compiles without a default branch.",
+        "Compilation fails because a default branch is required.",
+        "Compilation fails because sealed types cannot be used in switch.",
+        "A MatchException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Derleyici <code>sealed</code> sayesinde alt tiplerin <b>tamamını</b> bilir; iki dal hiyerarşiyi kapsadığı için <code>switch</code> <b>exhaustive</b> sayılır ve <code>default</code> istenmez. <br>Bu, sealed'ın asıl kazancıdır: hiyerarşiye üçüncü bir tip eklersen bu <code>switch</code> <b>derlenmez</b> ve derleyici seni uyarır — <code>default</code> yazsaydın sessizce yanlış çalışırdı."
+    },
+    {
+      topic: "Exhaustive switch",
+      q: "Why is it usually a bad idea to add a <code>default</code> branch to a switch over a sealed hierarchy?",
+      opts: [
+        "Because the compiler can no longer warn you when a new subtype is added.",
+        "Because default branches are not allowed in switch expressions.",
+        "Because it causes a MatchException at runtime.",
+        "Because sealed hierarchies cannot have more than three subtypes."
+      ],
+      a: [0],
+      why: "<code>default</code> her ihtimali kapattığı için, hiyerarşiye yeni bir alt tip eklendiğinde <code>switch</code> <b>derlenmeye devam eder</b> ve yeni tip sessizce <code>default</code> dalına düşer. <code>default</code> olmadan derleyici hatayı <b>derleme zamanında</b> gösterir. <br><code>default</code> teknik olarak <b>serbesttir</b> ve exception atmaz; sorun güvenliğin kaybolmasıdır."
+    },
+    {
+      topic: "Abstract sınıflar",
+      q: "<pre>abstract class A {\n    A() { System.out.print(\"A\"); }\n}\nclass B extends A { }\n\nnew B();</pre>What is the result?",
+      opts: [
+        "A",
+        "Compilation fails because an abstract class cannot have a constructor.",
+        "Nothing is printed because A cannot be instantiated.",
+        "Compilation fails because B must be abstract."
+      ],
+      a: [0],
+      why: "Abstract sınıfların <b>constructor'ı olabilir</b> ve alt sınıf nesnesi üretilirken <b>çalışır</b> — <code>B</code>'nin varsayılan constructor'ı örtük <code>super()</code> ile onu çağırır. <br>\"<code>new</code> edilemez\" demek \"constructor'ı yok\" demek <b>değildir</b>; constructor ortak durumu kurmak için vardır. <code>A</code>'nın abstract metodu olmadığı için <code>B</code>'nin abstract olmasına da gerek yoktur."
+    },
+    {
+      topic: "Abstract sınıflar",
+      q: "<pre>abstract class A {\n    abstract void m() { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because an abstract method cannot have a body.",
+        "The code compiles; m() has an empty default implementation.",
+        "Compilation fails because A has no concrete methods.",
+        "The code compiles but m() cannot be overridden."
+      ],
+      a: [0],
+      why: "<code>abstract</code> metot yalnızca <b>imzadan</b> oluşur ve noktalı virgülle biter; boş süslü parantez bile hata verir (<i>abstract methods cannot have a body</i>). Gövde istiyorsan <code>abstract</code> belirtecini silmelisin. <br>Bir abstract sınıfın <b>hiç somut metodu olmaması</b> ise tamamen geçerlidir."
+    },
+    {
+      topic: "Abstract sınıflar",
+      q: "Which method declarations are illegal inside an abstract class? (Choose TWO.)",
+      opts: [
+        "abstract private void m();",
+        "abstract static void m();",
+        "abstract protected void m();",
+        "public void m() { }"
+      ],
+      a: [0, 1],
+      why: "<code>abstract</code> bir metot alt sınıf tarafından <b>uygulanmak</b> içindir; <code>private</code> olursa alt sınıf onu göremez, <code>static</code> olursa polimorfik çözümleme yapılamaz — ikisi de çelişkidir. <br><code>protected</code> abstract metot <b>geçerlidir</b>, ve abstract bir sınıf <b>somut metotlar</b> da barındırabilir."
+    },
+    {
+      topic: "Abstract sınıflar",
+      q: "<pre>abstract class Hayvan { abstract String ses(); }\nabstract class Kus extends Hayvan { }\nclass Serce extends Kus { String ses() { return \"cik\"; } }</pre>What is the result?",
+      opts: [
+        "The code compiles because an abstract subclass may leave methods unimplemented.",
+        "Compilation fails because Kus does not implement ses().",
+        "Compilation fails because Serce must also be abstract.",
+        "Compilation fails because ses() must be public."
+      ],
+      a: [0],
+      why: "Yalnızca <b>somut (concrete)</b> alt sınıflar tüm abstract metotları uygulamak zorundadır; <b>abstract</b> bir alt sınıf sorumluluğu bir alt seviyeye devredebilir. <code>Serce</code> somut olduğu için uygulamayı o yapar. <br><code>ses()</code>'in erişimi paket-özeldir ve üsttekiyle aynı seviyededir — daraltma olmadığı için sorun yoktur (3.4)."
+    },
+    {
+      topic: "Sealed kuralları",
+      q: "<pre>sealed interface S permits A {}\nfinal class A implements S {}\nfinal class B implements S {}</pre>What is the result?",
+      opts: [
+        "Compilation fails because B is not listed in the permits clause.",
+        "The code compiles because B is final.",
+        "Compilation fails because A and B cannot both be final.",
+        "The code compiles but B is excluded from exhaustive switches."
+      ],
+      a: [0],
+      why: "<code>permits</code> listesi <b>bağlayıcıdır</b>: listede olmayan hiçbir tip sealed tipi uygulayamaz. <code>B</code>'nin <code>final</code> olması bunu değiştirmez — <i>class is not allowed to extend sealed class</i>. <br>Tersi de hata verir: <code>permits</code>'te yazılıp gerçekte uygulamayan bir tip de derleme hatasıdır."
+    },
+    {
+      topic: "Sealed kuralları",
+      q: "What does the <code>non-sealed</code> modifier do?",
+      opts: [
+        "It reopens the hierarchy so that any class may extend that subtype.",
+        "It removes the sealed restriction from the parent type.",
+        "It makes the subtype final.",
+        "It allows the subtype to be declared in another module."
+      ],
+      a: [0],
+      why: "<code>non-sealed</code> yalnızca <b>o alt tipin kendisini</b> yeniden açar: artık herkes onu genişletebilir. Üst tipin <code>sealed</code>'lığına dokunmaz — hiyerarşinin ilk seviyesi hâlâ <code>permits</code> ile kapalıdır. <br><code>final</code>'ın tam <b>tersidir</b> ve modül/paket kuralını değiştirmez. Not: <code>non-sealed</code>, Java'nın <b>tek tireli anahtar kelimesidir</b>."
+    },
+    {
+      topic: "Sealed kuralları",
+      q: "<pre>sealed final class A { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because sealed and final are contradictory.",
+        "The code compiles; final wins.",
+        "The code compiles; sealed wins.",
+        "Compilation fails because a sealed class needs a permits clause."
+      ],
+      a: [0],
+      why: "<code>sealed</code> \"alt tiplerim şunlar\" der, <code>final</code> \"hiç alt tipim yok\" der — bunlar birbirini dışlar. Aynı çelişki <code>abstract final</code>'da da vardır. <br><code>permits</code>'in yokluğu tek başına hata değildir: alt tipler aynı dosyadaysa yazılmayabilir."
+    },
+    {
+      topic: "MatchException",
+      q: "In which situation can a <code>MatchException</code> be thrown at runtime?",
+      opts: [
+        "When a sealed hierarchy is recompiled separately after an exhaustive switch was compiled against it.",
+        "Whenever a switch expression lacks a default branch.",
+        "When a record pattern is matched against null.",
+        "When two case labels dominate each other."
+      ],
+      a: [0],
+      why: "Exhaustive <code>switch</code> derlenirken hiyerarşinin o anki hâli varsayılır. Yalnızca hiyerarşi yeniden derlenip yeni bir alt tip eklenirse, eski <code>switch</code> hiçbir dalla eşleşmeyebilir → <b>MatchException</b>. <br>Diğer üç durum <b>derleme zamanı</b> olaylarıdır: <code>default</code> eksikliği ve dominance derleme hatası verir, record pattern null'la sadece eşleşmez (false döner)."
+    },
+    {
+      topic: "Tasarım seçimi",
+      q: "Which statements comparing abstract classes and interfaces are correct? (Choose TWO.)",
+      opts: [
+        "An abstract class can declare instance fields with state, an interface cannot.",
+        "A class can extend only one abstract class but implement multiple interfaces.",
+        "An interface can declare constructors just like an abstract class.",
+        "An abstract class must declare at least one abstract method."
+      ],
+      a: [0, 1],
+      why: "Abstract sınıflar <b>durum</b> (örnek alanı) ve constructor tutabilir; arayüzlerin alanları yalnızca örtük <code>public static final</code> sabitlerdir (3.6). Java tek kalıtıma izin verir ama <b>çoklu <code>implements</code></b> serbesttir. <br>Arayüzlerin <b>constructor'ı yoktur</b>, ve abstract bir sınıfın <b>hiç abstract metodu olmayabilir</b>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.3 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.3",
+  code: "OOP · 3.3",
+  title: "Record'lar",
+  back: "3.3-recordlar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Üretilen üyeler",
+      q: "<pre>record P(int x, int y) {}\n\nP p = new P(1, 2);\nSystem.out.println(p);</pre>What is the result?",
+      opts: [
+        "P[x=1, y=2]",
+        "P@1b6d3586",
+        "P(1, 2)",
+        "{x=1, y=2}"
+      ],
+      a: [0],
+      why: "Record'un ürettiği <code>toString</code> biçimi sabittir: <b>TipAdı[bileşen=değer, ...]</b>. Köşeli parantez ve <code>=</code> kullanılır. <br><code>P@1b6d3586</code> <code>Object.toString</code>'in çıktısıdır — record bunu <b>override eder</b>, bu yüzden hash görünmez."
+    },
+    {
+      topic: "Üretilen üyeler",
+      q: "<pre>record P(int x) {}\n\nP p = new P(5);\nSystem.out.println(p.getX());</pre>What is the result?",
+      opts: [
+        "Compilation fails because getX() does not exist.",
+        "5",
+        "Compilation fails because x is private.",
+        "0"
+      ],
+      a: [0],
+      why: "Record accessor'ının adı <b>bileşen adının aynısıdır</b>: <code>p.x()</code>. JavaBean tarzı <code>getX()</code> <b>üretilmez</b>. <br>Alan gerçekten <code>private</code>'dır ama hata mesajı <i>cannot find symbol: method getX()</i> olur — çünkü öyle bir metot hiç yoktur."
+    },
+    {
+      topic: "Üretilen üyeler",
+      q: "<pre>record P(int x, int y) {}\n\nSystem.out.println(new P(1,2).equals(new P(1,2)));</pre>What is the result?",
+      opts: [
+        "true",
+        "false",
+        "Compilation fails because equals is not defined.",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "Record <code>equals</code> ve <code>hashCode</code>'u <b>tüm bileşenlere göre</b> otomatik üretir: primitifler <code>==</code>, referanslar <code>equals</code> ile karşılaştırılır. İki farklı nesne aynı değerlere sahipse <b>eşittir</b>. <b>Kanca:</b> Bu, record'ları <code>Set</code> elemanı ve <code>Map</code> anahtarı olarak güvenli kılan özelliktir."
+    },
+    {
+      topic: "Yasaklar",
+      q: "<pre>record P(int x) {\n    private int y;\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a record cannot declare instance fields.",
+        "The code compiles; y defaults to 0.",
+        "Compilation fails because the field must be final.",
+        "Compilation fails because the field must be public."
+      ],
+      a: [0],
+      why: "Record'un <b>tüm örnek durumu</b> bileşen listesinde bildirilir; ek örnek alanı eklemek yasaktır — aksi hâlde <code>equals</code>/<code>toString</code> nesnenin tamamını yansıtmazdı. <br><b>Statik</b> alan eklemek ise <b>serbesttir</b>, çünkü nesnenin durumuna ait değildir."
+    },
+    {
+      topic: "Yasaklar",
+      q: "Which are allowed inside a record body? (Choose TWO.)",
+      opts: [
+        "A static field.",
+        "An instance method.",
+        "An instance initializer block.",
+        "An instance field that is not a component."
+      ],
+      a: [0, 1],
+      why: "Statik alanlar ve örnek metotları <b>serbesttir</b> — record bir sınıftır, sadece durumu kısıtlıdır. <br>Örnek initializer bloğu ve ek örnek alanı <b>yasaktır</b>: örnek durumu yalnızca bileşenlerden oluşmalı ve yalnızca canonical constructor tarafından kurulmalıdır."
+    },
+    {
+      topic: "Yasaklar",
+      q: "<pre>record P(int x) extends Object {}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a record cannot use extends.",
+        "The code compiles.",
+        "Compilation fails because records must be final.",
+        "Compilation fails because Object cannot be extended."
+      ],
+      a: [0],
+      why: "Her record örtük olarak <code>java.lang.Record</code>'u genişletir ve Java tek kalıtıma izin verdiği için <code>extends</code> yazmak <b>her durumda</b> hatadır — <code>Object</code> bile olsa. <br>Record'lar zaten <b>implicitly final</b>'dır, bu yüzden başka bir sınıf da onları genişletemez. <code>implements</code> ise serbesttir."
+    },
+    {
+      topic: "Compact constructor",
+      q: "<pre>record P(int x) {\n    P { this.x = x * 2; }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a compact constructor cannot assign to a field.",
+        "The code compiles and doubles x.",
+        "Compilation fails because the compact constructor needs a parameter list.",
+        "A StackOverflowError is thrown at runtime."
+      ],
+      a: [0],
+      why: "Compact constructor <b>parametre değişkenleri</b> üzerinde çalışır; alanlara atamayı <b>derleyici blok bittikten sonra</b> kendisi yapar. Doğru yazım <code>x = x * 2;</code>'dir. <br>Parametre listesi yazılmaması compact biçimin <b>tanımıdır</b>, hata değil — yazarsan artık canonical constructor olur ve o zaman alanlara atamak <b>zorunlu</b> hâle gelir."
+    },
+    {
+      topic: "Compact constructor",
+      q: "<pre>record Aralik(int alt, int ust) {\n    Aralik {\n        if (alt &gt; ust) throw new IllegalArgumentException();\n        alt = Math.max(alt, 0);\n    }\n}\nSystem.out.println(new Aralik(-5, 10));</pre>What is the result?",
+      opts: [
+        "Aralik[alt=0, ust=10]",
+        "Aralik[alt=-5, ust=10]",
+        "An IllegalArgumentException is thrown.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Compact constructor'da parametreye yapılan atama <b>alana yansır</b>, çünkü derleyici blok sonunda <code>this.alt = alt;</code> satırlarını ekler. <code>-5</code> önce <code>0</code>'a normalleştirilir, sonra alana yazılır. <b>Kanca:</b> Compact constructor'ın iki işi vardır: <b>doğrulama</b> ve <b>normalleştirme</b>."
+    },
+    {
+      topic: "Ek constructor",
+      q: "<pre>record P(int x, int y) {\n    P(int x) { this.x = x; this.y = 0; }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a non-canonical constructor must delegate to the canonical one.",
+        "The code compiles.",
+        "Compilation fails because a record cannot have overloaded constructors.",
+        "Compilation fails because y cannot be assigned a literal."
+      ],
+      a: [0],
+      why: "Canonical olmayan her constructor'ın <b>ilk deyimi</b> <code>this(...)</code> olmak zorundadır; doğrusu <code>P(int x) { this(x, 0); }</code>'dır. Böylece tüm doğrulama tek noktada, canonical constructor'da kalır. <br>Overload edilmiş constructor'lar <b>serbesttir</b> — yasak olan yalnızca canonical'ı atlamaktır."
+    },
+    {
+      topic: "Shallow immutability",
+      q: "<pre>record Kutu(List&lt;String&gt; icerik) {}\n\nvar l = new ArrayList&lt;String&gt;(List.of(\"a\"));\nvar k = new Kutu(l);\nl.add(\"b\");\nSystem.out.println(k);</pre>What is the result?",
+      opts: [
+        "Kutu[icerik=[a, b]]",
+        "Kutu[icerik=[a]]",
+        "An UnsupportedOperationException is thrown.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Record <b>shallow immutable</b>'dır: alan referansı değişmez ama <b>işaret ettiği nesne</b> değişebilir. Dışarıdaki liste hâlâ aynı nesneyi gösterdiği için record'un içeriği değişmiş görünür. <br>Gerçek immutability için compact constructor'da <code>icerik = List.copyOf(icerik);</code> yazılmalıdır. <b>Kanca:</b> \"final referans, mutable nesne\" — 3.2'deki aynı tuzağın record hâli."
+    },
+    {
+      topic: "Record pattern",
+      q: "<pre>record Nokta(int x, int y) {}\nObject o = null;\n\nif (o instanceof Nokta(int x, int y)) {\n    System.out.println(\"eslesti\");\n} else {\n    System.out.println(\"eslesmedi\");\n}</pre>What is the result?",
+      opts: [
+        "eslesmedi",
+        "eslesti",
+        "A NullPointerException is thrown at runtime.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "Record pattern (tüm <code>instanceof</code> desenleri gibi) <b><code>null</code> ile eşleşmez</b> ve NPE de atmaz — sadece <code>false</code> döner. <br>NPE riski <code>switch</code> tarafındadır: orada selector null olduğunda <code>case null</code> yoksa exception atılır (2.1)."
+    },
+    {
+      topic: "İç içe record",
+      q: "<pre>class Dis {\n    record Ic(int x) {}\n}</pre>Which statement is correct?",
+      opts: [
+        "Ic is implicitly static, so it can be created without an instance of Dis.",
+        "Ic is an inner class and requires an instance of Dis to be created.",
+        "Compilation fails because a record cannot be nested.",
+        "Ic must be declared static explicitly."
+      ],
+      a: [0],
+      why: "İç içe record'lar <b>implicitly static</b>'tir; dış sınıfın örneğine bağlı değildirler ve <code>new Dis.Ic(5)</code> ile doğrudan üretilir. <br>Bu, record'un \"kendi kendine yeten veri taşıyıcısı\" olma ilkesinden gelir — dış örneğe gizli bir referans tutsaydı <code>equals</code> anlamını yitirirdi. Aynı kural iç içe <code>enum</code> ve <code>interface</code> için de geçerlidir (3.8)."
+    },
+    {
+      topic: "Üretilen üyeler",
+      q: "Which members does the compiler generate for <code>record P(int x) {}</code>? (Choose TWO.)",
+      opts: [
+        "A public accessor named x().",
+        "A canonical constructor P(int x).",
+        "A public setter named setX(int).",
+        "A public field named x."
+      ],
+      a: [0, 1],
+      why: "Derleyici <b>bileşen adıyla aynı</b> public accessor'ı ve tüm bileşenleri alan <b>canonical constructor</b>'ı üretir (ayrıca <code>equals</code>, <code>hashCode</code>, <code>toString</code>). <br>Record'lar immutable olduğu için <b>setter üretilmez</b>; alanlar da <code>public</code> değil <b><code>private final</code></b>'dır."
+    },
+    {
+      topic: "Compact constructor",
+      q: "<pre>record P(int x) {\n    P { }\n    P(int x) { this.x = x; }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because compact and canonical constructors cannot both be declared.",
+        "The code compiles; the compact form runs first.",
+        "Compilation fails because the compact constructor body is empty.",
+        "The code compiles and both constructors are available as overloads."
+      ],
+      a: [0],
+      why: "Compact biçim ile açık canonical biçim <b>aynı constructor'ın</b> iki yazımıdır; ikisini birden bildirmek <i>constructor is already defined</i> hatası verir. Birini seç. <br>Boş bir compact constructor <b>geçerlidir</b> (gereksiz olsa da), yani hata gövdenin boşluğundan kaynaklanmaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

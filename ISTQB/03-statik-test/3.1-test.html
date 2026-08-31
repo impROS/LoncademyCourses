@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-3-1",
+  code: "Static Testing · 3.1",
+  title: "Statik Test Temelleri",
+  back: "3.1-statik-test-temelleri.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Statik testin nesneleri",
+      q: "Which of the following can be examined by static testing? (Choose TWO.)",
+      opts: [
+        "User stories with their acceptance criteria",
+        "Automated test scripts",
+        "The actual memory consumption of the running application",
+        "The response time measured under peak load"
+      ],
+      a: [0, 1],
+      why: "<b>Okunabilir ve anlaşılabilir olan her iş ürünü statik test edilebilir — testware dahil.</b> Test script'ini review etmek statik testtir. Son iki şık ancak yazılım <i>çalışırken</i> gözlenebilir, dolayısıyla dinamik testin konusudur."
+    },
+    {
+      topic: "Statik ve dinamik test",
+      q: "Which statement about static testing is correct?",
+      opts: [
+        "It can find defects directly, without needing to observe a failure first",
+        "It observes failures and then requires debugging to locate the defect",
+        "It can only be applied after the code has been compiled successfully",
+        "It measures the external behavior of the running system"
+      ],
+      a: [0],
+      why: "<b>Statik test kusuru doğrudan gösterir</b> — ortada bir belirti yoktur ki sebebini araştırasın. Bu yüzden debugging'in <i>diagnosis</i> adımı gerekmez. İkinci şık dinamik testi tarif ediyor ve en yakın çeldiricidir."
+    },
+    {
+      topic: "Statik ve dinamik test",
+      q: "Which of the following can NOT be evaluated by static testing?",
+      opts: [
+        "The actual response time of the system under load",
+        "Whether a requirement is ambiguous",
+        "Whether the code contains unreachable statements",
+        "Whether the code violates the coding standard"
+      ],
+      a: [0],
+      why: "<b>Statik test gerçek çalışma davranışını ölçemez.</b> Bir performans <i>gereksinimini</i> inceleyip 'bu ölçülebilir mi?' diye sorabilir, ama yanıt süresini ölçmek için sistemin çalışması gerekir. Diğer üç şık statik testin en güçlü olduğu alanlardır."
+    },
+    {
+      topic: "Statik testin değeri",
+      q: "What is the MAIN benefit of applying static testing to requirements before development begins?",
+      opts: [
+        "Defects can be prevented from being built into the software, reducing rework and cost",
+        "It guarantees that the delivered software will contain no defects",
+        "It removes the need for system testing",
+        "It measures code coverage before the code exists"
+      ],
+      a: [0],
+      why: "<b>Statik testin en büyük değeri kusur önlemedir</b> — belirsizlik koda dönüşmeden çözülürse kusur hiç oluşmaz. İkinci şıkta <code>guarantees</code> + prensip 1 ihlali var; üçüncü şık statik testin dinamik testin yerine geçtiğini iddia ediyor, ki yanlış."
+    },
+    {
+      topic: "Statik testin bulduğu kusurlar",
+      q: "Which type of defect is typically EASIER to find with static testing than with dynamic testing?",
+      opts: [
+        "Unreachable (dead) code",
+        "A memory leak that appears after 12 hours of operation",
+        "A race condition between two threads",
+        "A slow database query under concurrent load"
+      ],
+      a: [0],
+      why: "<b>Ölü kod dinamik testle bulunamaz çünkü hiç çalışmaz</b> — statik analiz ise onu anında görür. Diğer üç şık yalnızca sistem çalışırken ortaya çıkan kusurlardır ve statik testin sınırını gösterir."
+    },
+    {
+      topic: "Statik testin bulduğu kusurlar",
+      q: "Two systems exchange data, but the calling system sends a value in kilometres while the called system expects miles. Which category of defect is this, and how is it typically found?",
+      opts: [
+        "An incorrect interface specification, typically found by static testing",
+        "A performance defect, typically found by load testing",
+        "A usability defect, typically found by user acceptance testing",
+        "A race condition, typically found by dynamic testing only"
+      ],
+      a: [0],
+      why: "<b>Çağıran ve çağrılan sistemin farklı birim/protokol kullanması, müfredatın açıkça saydığı bir arayüz spesifikasyonu kusurudur</b> ve iki spesifikasyonu yan yana koymakla, yani statik testle bulunur. Dinamik testle de bulunabilir ama çok daha geç ve pahalıya."
+    },
+    {
+      topic: "Statik analiz araçları",
+      q: "A team wants to detect coding standard violations and unused variables across 200,000 lines of code. Which approach is MOST appropriate?",
+      opts: [
+        "Static analysis using a tool",
+        "A formal inspection meeting with the whole team",
+        "Exploratory testing of the user interface",
+        "Load testing in a production-like environment"
+      ],
+      a: [0],
+      why: "<b>Mekanik, kural tabanlı ve büyük hacimli kontroller araç işidir.</b> İnsan review'ı 200 bin satırı tarayamaz. Buna karşılık araç da <i>anlamı</i> göremez — yanlış bir iş kuralı için insan review'ı gerekir. İkisi farklı kusur sınıflarını yakalar."
+    },
+    {
+      topic: "Statik analiz araçları",
+      q: "Which defect can a static analysis tool typically NOT detect?",
+      opts: [
+        "A business rule that is implemented consistently but is the wrong rule",
+        "A variable that is declared but never used",
+        "Code that exceeds the configured complexity threshold",
+        "A deviation from the naming convention"
+      ],
+      a: [0],
+      why: "<b>Araç sözdizimini ve desenleri görür, anlamı görmez.</b> Kod tertemiz ve standarda uygun olabilir ama yanlış kuralı uyguluyordur — bunu ancak alan bilgisi olan bir insan review'ı yakalar. Bu, manuel review'ın araca karşı asıl üstünlüğüdür."
+    },
+    {
+      topic: "Statik ve dinamik test",
+      q: "Which statement about the relationship between static and dynamic testing is correct?",
+      opts: [
+        "They are complementary: they find different kinds of defects and both are needed",
+        "Static testing can fully replace dynamic testing if it is thorough enough",
+        "Dynamic testing can fully replace static testing if coverage is 100%",
+        "They have completely different objectives and share no common goal"
+      ],
+      a: [0],
+      why: "<b>İkisi tamamlayıcıdır ve ortak amacı paylaşır: kusur bulmak ve kaliteyi değerlendirmek.</b> Statik test belirsiz gereksinimi bulur ama bellek sızıntısını bulamaz; dinamik test tersini yapar. Son şık ortak amacı yok sayıyor."
+    },
+    {
+      topic: "Statik testin nesneleri",
+      q: "What are the two conditions a work product must meet in order to be examined by static testing?",
+      opts: [
+        "It must be readable and understandable",
+        "It must be executable and compiled",
+        "It must be written in a formal modelling language",
+        "It must already have passed a dynamic test"
+      ],
+      a: [0],
+      why: "<b>Okunabilirlik ve anlaşılabilirlik yeterlidir.</b> Bu yüzden sözleşme, bütçe, kullanıcı kılavuzu ve BPMN modeli bile statik test edilebilir. İkinci şık statik testin tanımıyla doğrudan çelişiyor — çalıştırılabilirlik gerekmez."
+    },
+    {
+      topic: "Statik testin değeri",
+      q: "Which of the following are benefits of static testing? (Choose TWO.)",
+      opts: [
+        "It can detect defects at the earliest possible stage, when they are cheapest to remove",
+        "It creates a shared understanding within the team",
+        "It measures the performance efficiency of the system",
+        "It removes the need for confirmation testing after a fix"
+      ],
+      a: [0, 1],
+      why: "<b>Erken kusur tespiti ve ortak anlayış statik testin iki temel faydasıdır.</b> Review sırasında ekip aynı belgeyi birlikte okuduğu için yorum farkları erkenden ortadan kalkar. Üçüncü şık statik testin yapamayacağı bir şeyi iddia ediyor, dördüncüsü alakasız."
+    },
+    {
+      topic: "Statik testin bulduğu kusurlar",
+      q: "During a review of a requirements document, the team finds that section 4 contradicts section 9. Which category of defect is this?",
+      opts: [
+        "A requirement defect: inconsistency and contradiction",
+        "A design defect: high coupling",
+        "A code defect: an undefined variable",
+        "A security vulnerability"
+      ],
+      a: [0],
+      why: "<b>Tutarsızlık, çelişki, belirsizlik, eksiklik ve gereksiz tekrar müfredatın saydığı gereksinim kusurlarıdır.</b> Bu kusur türü dinamik testle bulunamaz: hangi bölümün doğru olduğunu bilmediğin için beklenen sonucu bile yazamazsın."
+    },
+    {
+      topic: "Statik ve dinamik test",
+      q: "A defect is found during a code review. Which statement is correct?",
+      opts: [
+        "The defect was found directly, so no failure was observed and no diagnosis is needed",
+        "A failure was observed, so the developer must first reproduce it",
+        "The defect can only be confirmed by running a dynamic test first",
+        "Review findings are not defects until they cause a failure in production"
+      ],
+      a: [0],
+      why: "<b>Statik testte kusur doğrudan görünür; ortada gözlemlenmiş bir arıza yoktur.</b> Dördüncü şık kusurun tanımını yanlış kuruyor: kusur, tetiklenmese de vardır (1.2). Bu ayrım sınavda hem 1.1 hem 1.2 hem 3.1 sorularında karşına çıkar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

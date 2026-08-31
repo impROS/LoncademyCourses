@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.2 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-3-2",
+  code: "Static Testing · 3.2",
+  title: "Geri Bildirim ve Gözden Geçirme Süreci",
+  back: "3.2-gozden-gecirme.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Review tipleri",
+      q: "The author presents the work product to the team step by step and leads the discussion. Preparation by the participants is optional. Which review type is this?",
+      opts: ["Walkthrough", "Inspection", "Technical review", "Informal review"],
+      a: [0],
+      why: "<b>Walkthrough, author'ın yönettiği tek review tipidir</b> ve hazırlık isteğe bağlıdır. Inspection ve technical review'da toplantıyı moderator yönetir, author yönetemez. Informal review'da genelde toplantı bile yoktur."
+    },
+    {
+      topic: "Review tipleri",
+      q: "Which review type uses defined entry and exit criteria, requires individual preparation, collects metrics, and aims at process improvement?",
+      opts: ["Inspection", "Technical review", "Walkthrough", "Informal review"],
+      a: [0],
+      why: "<b>Inspection en resmî review tipidir</b>; metrik toplaması ve süreç iyileştirme hedefi onu technical review'dan ayıran iki özelliktir. Technical review de hazırlık ister ve resmîdir ama amacı <i>teknik karar almaktır</i>, süreç iyileştirmek değil."
+    },
+    {
+      topic: "Review tipleri",
+      q: "A group of technical peers meets to resolve a design problem and decide which of two architectures to adopt. Individual preparation was required. Which review type is this?",
+      opts: ["Technical review", "Walkthrough", "Inspection", "Informal review"],
+      a: [0],
+      why: "<b>Teknik problem çözmek ve teknik karar almak technical review'ın tanımlı amacıdır.</b> Walkthrough ortak anlayış ve eğitim odaklıdır. Inspection'ın birincil amacı maksimum anomali bulmaktır, karar almak değil."
+    },
+    {
+      topic: "Review tipleri",
+      q: "Order the following review types from the LEAST formal to the MOST formal.",
+      opts: [
+        "Informal review, walkthrough, technical review, inspection",
+        "Walkthrough, informal review, inspection, technical review",
+        "Inspection, technical review, walkthrough, informal review",
+        "Technical review, inspection, informal review, walkthrough"
+      ],
+      a: [0],
+      why: "<b>Resmiyet merdiveni: informal → walkthrough → technical review → inspection.</b> Üçüncü şık doğru sırayı tersten veriyor; <code>LEAST to MOST</code> ifadesini kaçırırsan onu seçersin. Büyük harfli yön kelimelerini işaretleme alışkanlığı edin."
+    },
+    {
+      topic: "Review rolleri",
+      q: "Who is responsible for recording the anomalies and the decisions taken during a review meeting?",
+      opts: ["The scribe", "The moderator", "The review leader", "The author"],
+      a: [0],
+      why: "<b>Scribe (recorder) anomalileri ve kararları kaydeder.</b> Moderator toplantıyı yürütür ve tartışmanın güvenli, verimli geçmesini sağlar — iki rol aynı kişide birleşebilir ama sorumlulukları ayrıdır. Kanca: <b>Scri</b>be = <b>scri</b>bbles."
+    },
+    {
+      topic: "Review rolleri",
+      q: "Who decides that reviews will be carried out and allocates the necessary resources and staff?",
+      opts: ["The manager", "The review leader", "The moderator", "The scribe"],
+      a: [0],
+      why: "<b>Manager review yapılmasına karar verir, bütçe ve personel ayırır.</b> Review leader ise <i>kimin katılacağına</i> ve toplantının ne zaman/nerede yapılacağına karar verir — bu ikisi sınavda sürekli yan yana sorulur. Kanca: <b>M</b>anager = <b>M</b>akes it happen."
+    },
+    {
+      topic: "Review rolleri",
+      q: "Which two statements about review roles are correct? (Choose TWO.)",
+      opts: [
+        "One person may take on more than one role",
+        "The author should not act as the moderator",
+        "Every review type requires all six roles to be present",
+        "The reviewer is responsible for fixing the defects that are found"
+      ],
+      a: [0, 1],
+      why: "<b>Roller kişi değil sorumluluktur ve birleştirilebilir; ancak author moderator olmamalıdır</b> çünkü kendi ürününü savunma eğilimi tartışmayı bozar. Üçüncü şık yanlış: informal review'da moderator ve scribe hiç olmayabilir. Kusuru <i>author</i> düzeltir, reviewer değil."
+    },
+    {
+      topic: "Review süreci",
+      q: "During which review activity is it decided whether a reported anomaly is actually a defect?",
+      opts: [
+        "Communication and analysis",
+        "Individual review",
+        "Review initiation",
+        "Planning"
+      ],
+      a: [0],
+      why: "<b>Bireysel incelemede bulunanlar 'anomali' olarak kaydedilir; kusur olup olmadıklarına communication and analysis aşamasında karar verilir.</b> Bir anomali, inceleyenin yanlış anlaması da olabilir. Bu yüzden iki aktivite ayrı tutulmuştur."
+    },
+    {
+      topic: "Review süreci",
+      q: "What are the five review activities, in the correct order?",
+      opts: [
+        "Planning, review initiation, individual review, communication and analysis, fixing and reporting",
+        "Review initiation, planning, individual review, fixing and reporting, communication and analysis",
+        "Individual review, planning, communication and analysis, review initiation, fixing and reporting",
+        "Planning, individual review, review initiation, fixing and reporting, communication and analysis"
+      ],
+      a: [0],
+      why: "<b>Önce planlarsın, sonra materyali dağıtıp katılımcıları hazırlarsın, sonra bireysel inceleme, sonra tartışma ve analiz, en son düzeltme ve raporlama.</b> Diğer şıklar mantık sırasını bozuyor: dağıtım olmadan bireysel inceleme, analiz olmadan düzeltme yapılamaz."
+    },
+    {
+      topic: "Review süreci",
+      q: "Which of the following is performed during review planning? (Choose TWO.)",
+      opts: [
+        "Defining the scope and the exit criteria of the review",
+        "Deciding which roles are needed and what level of formality applies",
+        "Recording the anomalies found by each participant",
+        "Creating defect reports for the confirmed defects"
+      ],
+      a: [0, 1],
+      why: "<b>Kapsam, çıkış kriterleri, roller ve resmiyet düzeyi planning aşamasında belirlenir.</b> Anomali kaydı individual review'da, kusur raporu oluşturma ise fixing and reporting aşamasında yapılır."
+    },
+    {
+      topic: "Başarı faktörleri",
+      q: "Which of the following is a success factor for reviews?",
+      opts: [
+        "Review results are not used to evaluate the performance of individual participants",
+        "Reviews should always be as formal as possible, regardless of context",
+        "The author should moderate the review to defend the work product",
+        "Reviews should cover the whole work product in a single long session"
+      ],
+      a: [0],
+      why: "<b>Güven ortamı review'ın en kritik başarı faktörüdür.</b> Sonuçlar performans değerlendirmesinde kullanılırsa insanlar kusur bulmayı bırakır ve savunmaya geçer. İkinci şık prensip 6'yı ihlal ediyor, üçüncüsü author kısıtına aykırı, dördüncüsü ise 'küçük parçalara böl' faktörünün tersi."
+    },
+    {
+      topic: "Başarı faktörleri",
+      q: "Which two of the following are success factors for reviews? (Choose TWO.)",
+      opts: [
+        "Splitting large work products into smaller parts that can be reviewed in manageable chunks",
+        "Giving participants adequate time to prepare",
+        "Selecting the most formal review type for every work product",
+        "Keeping the review findings secret from the author"
+      ],
+      a: [0, 1],
+      why: "<b>Küçük parçalara bölmek dikkat dağılmasını önler; yeterli hazırlık süresi ise bireysel incelemenin kalitesini belirler.</b> Üçüncü şık bağlamı yok sayıyor — uygun review tipi seçilmelidir. Dördüncü şık saçma: bulguların author'a iletilmesi sürecin amacıdır."
+    },
+    {
+      topic: "Erken geri bildirim",
+      q: "What is the MAIN benefit of obtaining stakeholder feedback early and frequently?",
+      opts: [
+        "Misunderstandings are detected early and the wrong features are not built",
+        "It removes the need for acceptance testing",
+        "It guarantees that the project will finish on schedule",
+        "It allows the team to skip the requirements documentation"
+      ],
+      a: [0],
+      why: "<b>Erken geri bildirim, yanlış özelliğin hiç geliştirilmemesini sağlar</b> — en pahalı israf, kusursuz ama kimsenin istemediği bir özelliktir. İkinci ve dördüncü şıklar gerekli aktiviteleri iptal ediyor; üçüncüde <code>guarantees</code> var."
+    },
+    {
+      topic: "Review tipleri",
+      q: "Which review type may produce no documented results at all?",
+      opts: ["Informal review", "Inspection", "Technical review", "Walkthrough"],
+      a: [0],
+      why: "<b>Informal review en az resmî tiptir; sonuçları dokümante edilmeyebilir ve genelde toplantı bile yapılmaz.</b> Ucuz olduğu için sık uygulanır. Inspection'da ise metrik toplanması ve raporlama zorunludur — iki uç bunlardır."
+    },
+    {
+      topic: "Review tipleri",
+      q: "In which review types is individual preparation by the participants expected? (Choose TWO.)",
+      opts: [
+        "Technical review",
+        "Inspection",
+        "Informal review",
+        "Walkthrough"
+      ],
+      a: [0, 1],
+      why: "<b>Technical review ve inspection'da bireysel hazırlık beklenir</b>; bu, iki tipin resmiyetinin bir sonucudur. Walkthrough'ta hazırlık <i>isteğe bağlıdır</i> ve informal review'da hiç beklenmez. Bu ayrım, tipleri birbirinden ayırmanın en pratik yoludur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

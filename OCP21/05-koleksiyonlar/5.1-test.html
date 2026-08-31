@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-5.1",
+  code: "Koleksiyonlar · 5.1",
+  title: "Diziler ve Arrays API",
+  back: "5.1-diziler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Bildirim sözdizimi",
+      q: "<pre>int a[], b;\nb = new int[3];</pre>What is the result?",
+      opts: [
+        "Compilation fails because b is an int, not an int[].",
+        "The code compiles.",
+        "Compilation fails because a is not initialized.",
+        "A NegativeArraySizeException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Köşeli parantez <b>değişkenin yanındaysa</b> yalnızca o değişkene uygulanır: <code>a</code> bir <code>int[]</code>, <code>b</code> ise düz bir <code>int</code>'tir. <br>Hepsini dizi yapmak için parantez <b>tipin yanında</b> olmalı: <code>int[] a, b;</code>. <b>Kanca:</b> Sınav bu iki yazımı yan yana koyar; parantezin hangi tarafta olduğuna bak."
+    },
+    {
+      topic: "Bildirim sözdizimi",
+      q: "<pre>int[] a = {1, 2, 3};\nSystem.out.println(a.length());</pre>What is the result?",
+      opts: [
+        "Compilation fails because length is a field, not a method.",
+        "3",
+        "Compilation fails because the array must use new.",
+        "2"
+      ],
+      a: [0],
+      why: "Dizide uzunluk <b><code>length</code> alanıdır</b> (parantezsiz); <code>length()</code> metodu <b>String</b>'e aittir. Koleksiyonlarda ise <code>size()</code> kullanılır — üçü üç ayrı yazımdır. <br><code>{1, 2, 3}</code> kısayolu <b>bildirimde geçerlidir</b>, <code>new</code> zorunlu değildir."
+    },
+    {
+      topic: "Bildirim sözdizimi",
+      q: "<pre>int[] d;\nd = {1, 2, 3};</pre>What is the result?",
+      opts: [
+        "Compilation fails because the array initializer shortcut works only in a declaration.",
+        "The code compiles.",
+        "Compilation fails because d must be final.",
+        "The code compiles but d remains null."
+      ],
+      a: [0],
+      why: "<code>{1, 2, 3}</code> kısayolu <b>yalnızca bildirimle aynı satırda</b> kullanılabilir. Ayrı bir atama deyiminde tip bilgisi gerekir: <code>d = new int[]{1, 2, 3};</code>. <br>Aynı kural metot argümanlarında da geçerlidir — <code>f({1,2})</code> derlenmez, <code>f(new int[]{1,2})</code> derlenir."
+    },
+    {
+      topic: "Arrays API",
+      q: "<pre>int[] a = {10, 20, 30, 40};\nSystem.out.println(Arrays.binarySearch(a, 25));</pre>What is the result?",
+      opts: [
+        "-3",
+        "-1",
+        "2",
+        "-2"
+      ],
+      a: [0],
+      why: "Bulunamadığında <code>binarySearch</code> <b>-(ekleme noktası) - 1</b> döner. 25, sıralı dizide <b>2. indekse</b> eklenirdi → <code>-(2) - 1 = -3</code>. <br>Bu formül, dönen negatif değerden ekleme noktasını geri hesaplamayı sağlar: <code>-(sonuc) - 1</code>. Basitçe <code>-1</code> dönmez."
+    },
+    {
+      topic: "Arrays API",
+      q: "<pre>int[] a = {30, 10, 20, 40};\nSystem.out.println(Arrays.binarySearch(a, 30));</pre>What is the result?",
+      opts: [
+        "The result is undefined because the array is not sorted.",
+        "0",
+        "An IllegalArgumentException is thrown at runtime.",
+        "-1"
+      ],
+      a: [0],
+      why: "<code>binarySearch</code> dizinin <b>sıralı olduğunu varsayar</b>; değilse davranış <b>tanımsızdır</b> — exception atmaz, sessizce anlamsız bir değer döner. Bu dizide 30 aslında 0. indekstedir ama metot <code>-4</code> döndürür. <br><b>Kanca:</b> Şıklarda \"undefined\" görürsen ve dizi sıralı değilse cevap odur; sınav bunu \"exception atar\" sandırmak için sorar."
+    },
+    {
+      topic: "Arrays API",
+      q: "<pre>int[] a = {3, 1, 2};\nint[] b = Arrays.sort(a);</pre>What is the result?",
+      opts: [
+        "Compilation fails because Arrays.sort returns void.",
+        "The code compiles and b is {1, 2, 3}.",
+        "The code compiles and b is a copy of a.",
+        "The code compiles but b is null."
+      ],
+      a: [0],
+      why: "<code>Arrays.sort</code> diziyi <b>yerinde</b> sıralar ve <code>void</code> döner; dönüşünü bir değişkene atamak derleme hatasıdır. <br>Doğru kullanım: <code>Arrays.sort(a);</code> ardından <code>a</code>'yı kullan. Kopya isteyen <code>a.clone()</code> veya <code>Arrays.copyOf</code> ile önce kopyalar, sonra sıralar."
+    },
+    {
+      topic: "Arrays.asList",
+      q: "<pre>String[] dizi = {\"a\", \"b\"};\nList&lt;String&gt; l = Arrays.asList(dizi);\nl.set(0, \"z\");\nSystem.out.println(dizi[0]);</pre>What is the result?",
+      opts: [
+        "z",
+        "a",
+        "An UnsupportedOperationException is thrown at runtime.",
+        "null"
+      ],
+      a: [0],
+      why: "<code>Arrays.asList</code> diziyi <b>kopyalamaz</b>; dizinin üzerine bir <b>görünüm (view)</b> koyar. <code>set</code> ile yapılan değişiklik <b>diziye de yansır</b> ve tersi de doğrudur. <br><code>UnsupportedOperationException</code> yalnızca <b>boyut değiştiren</b> işlemlerde (<code>add</code>, <code>remove</code>) atılır — <code>set</code> boyutu değiştirmediği için serbesttir."
+    },
+    {
+      topic: "Arrays.asList",
+      q: "Which operations throw UnsupportedOperationException on a list returned by Arrays.asList? (Choose TWO.)",
+      opts: [
+        "add",
+        "remove",
+        "set",
+        "get"
+      ],
+      a: [0, 1],
+      why: "<code>Arrays.asList</code> <b>sabit boyutlu</b> bir liste döndürür: boyutu değiştiren <code>add</code> ve <code>remove</code> exception atar. <br><code>set</code> ve <code>get</code> boyutu değiştirmediği için <b>çalışır</b> — bu, <code>List.of(...)</code>'tan farkıdır: orada <code>set</code> de yasaktır ve <code>null</code> eleman bile kabul edilmez."
+    },
+    {
+      topic: "Kovaryans",
+      q: "<pre>Object[] o = new String[2];\no[0] = \"metin\";\no[1] = 42;</pre>What is the result?",
+      opts: [
+        "An ArrayStoreException is thrown at runtime on the last line.",
+        "Compilation fails on the first line.",
+        "Compilation fails on the last line.",
+        "The code compiles and runs without error."
+      ],
+      a: [0],
+      why: "Diziler <b>kovaryanttır</b>: <code>String[]</code> bir <code>Object[]</code> sayılır, bu yüzden ilk satır derlenir. Ama çalışma zamanında dizi gerçek eleman tipini <b>bilir</b> ve uymayan bir değer yazılmaya çalışılınca <b>ArrayStoreException</b> atar. <br>Generics'te bu delik yoktur: <code>List&lt;Object&gt; l = new ArrayList&lt;String&gt;();</code> <b>derlenmez</b> — koleksiyonlar bu yüzden daha güvenlidir."
+    },
+    {
+      topic: "Çok boyutlu diziler",
+      q: "<pre>int[][] m = new int[2][];\nm[0] = new int[]{1, 2};\nSystem.out.println(m[1]);</pre>What is the result?",
+      opts: [
+        "null",
+        "Compilation fails because the second dimension must be specified.",
+        "[]",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>new int[2][]</code> yalnızca dış diziyi oluşturur; iç diziler <b><code>null</code></b> olarak başlar (dizi elemanları referans tipiyse varsayılan <code>null</code>'dır). <code>println</code> null referansı <code>\"null\"</code> yazar, NPE atmaz. <br>Dikkat: <code>new int[][]</code> (iki boyut da boş) <b>derlenmez</b>; en az ilk boyut verilmelidir."
+    },
+    {
+      topic: "Çok boyutlu diziler",
+      q: "<pre>int[][] x = {{1, 2}};\nint[][] y = {{1, 2}};\nSystem.out.println(Arrays.equals(x, y) + \" \" + Arrays.deepEquals(x, y));</pre>What is the result?",
+      opts: [
+        "false true",
+        "true true",
+        "false false",
+        "true false"
+      ],
+      a: [0],
+      why: "<code>Arrays.equals</code> elemanları <b>tek seviye</b> karşılaştırır; çok boyutlu dizide elemanlar <b>dizi referanslarıdır</b> ve <code>equals</code> onlarda referans karşılaştırması yapar → <b>false</b>. <br><code>Arrays.deepEquals</code> iç içe inip değerleri karşılaştırır → <b>true</b>. Aynı ayrım <code>toString</code> / <code>deepToString</code> için de geçerlidir."
+    },
+    {
+      topic: "Arrays API",
+      q: "<pre>int[] a = {1, 2, 3};\nSystem.out.println(Arrays.toString(Arrays.copyOf(a, 5)));</pre>What is the result?",
+      opts: [
+        "[1, 2, 3, 0, 0]",
+        "[1, 2, 3]",
+        "An ArrayIndexOutOfBoundsException is thrown.",
+        "[1, 2, 3, null, null]"
+      ],
+      a: [0],
+      why: "<code>copyOf</code> istenen uzunlukta <b>yeni</b> bir dizi üretir; kaynak kısa kalırsa geri kalanı <b>tip varsayılanıyla</b> doldurur. <code>int</code> için bu <b>0</b>'dır, <code>null</code> değil (primitif dizide null olamaz). <br>Uzunluk küçültülürse fazlalık <b>kırpılır</b>; exception atılmaz."
+    },
+    {
+      topic: "Arrays API",
+      q: "<pre>System.out.println(Arrays.mismatch(new int[]{1,2,3}, new int[]{1,2,3}));</pre>What is the result?",
+      opts: [
+        "-1",
+        "0",
+        "3",
+        "true"
+      ],
+      a: [0],
+      why: "<code>Arrays.mismatch</code> ilk <b>farklı indeksi</b> döner; diziler tamamen aynıysa <b>-1</b> döner. <br>Karıştırma: <code>Arrays.compare</code> eşitlikte <b>0</b> döner. \"Eşitse 0\" <code>compare</code>'in, \"eşitse -1\" <code>mismatch</code>'in davranışıdır — sınav bu ikisini yan yana sorar."
+    },
+    {
+      topic: "Dizi temelleri",
+      q: "<pre>int boyut = -1;\nint[] a = new int[boyut];</pre>What is the result?",
+      opts: [
+        "A NegativeArraySizeException is thrown at runtime.",
+        "Compilation fails.",
+        "An empty array is created.",
+        "An ArrayIndexOutOfBoundsException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Dizi boyutu çalışma zamanında hesaplandığı için derleyici negatifliği yakalayamaz; JVM <b>NegativeArraySizeException</b> atar. <br><code>new int[0]</code> ise tamamen <b>geçerlidir</b> — boş dizi üretir ve <code>length</code> 0 olur. Sınır dışı <b>erişim</b> ise farklı bir hatadır: <code>ArrayIndexOutOfBoundsException</code>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

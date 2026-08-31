@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-1.1",
+  code: "Temel Tipler · 1.1",
+  title: "Primitifler, Wrapper'lar, Operatörler ve Tip Dönüşümleri",
+  back: "1.1-primitifler-ve-operatorler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Compound assignment",
+      q: "<pre>byte b = 10;\nb = b + 300;\nSystem.out.println(b);</pre>What is the result?",
+      opts: [
+        "Compilation fails.",
+        "54",
+        "310",
+        "An exception is thrown at runtime."
+      ],
+      a: [0],
+      why: "<b>b + 300</b> ifadesi <code>int</code> üretir (sayısal terfi kural 4: byte/short/char ikili operatörde int'e terfi eder). <code>int</code> bir değer <code>byte</code>'a cast'siz atanamaz → <i>possible lossy conversion</i>. <b>Kanca:</b> <code>b += 300;</code> yazsaydı derlenir ve <b>54</b> verirdi, çünkü compound assignment gizli cast ekler. Sınav bu iki satırı sürekli yer değiştirerek sorar."
+    },
+    {
+      topic: "Compound assignment",
+      q: "<pre>int i = 5;\ni /= 2;\ni *= 1.5;\nSystem.out.println(i);</pre>What is the result?",
+      opts: [
+        "3",
+        "Compilation fails because a double cannot be assigned to an int.",
+        "4",
+        "3.75"
+      ],
+      a: [0],
+      why: "<code>i /= 2</code> → tamsayı bölmesi, <b>2</b>. <code>i *= 1.5</code> aslında <code>i = (int)(i * 1.5)</code> demektir → <code>(int)3.0</code> = <b>3</b>. En yakın çeldirici derleme hatası şıkkıdır: compound assignment <b>her zaman</b> gizli cast içerdiği için derlenir. <b>Kanca:</b> <code>*=</code> gördüğünde \"derlenmez\" deme."
+    },
+    {
+      topic: "Sabit ifade ve daraltma",
+      q: "<pre>final int a = 5;\nint b = 5;\nbyte c = a;   // line 3\nbyte d = b;   // line 4</pre>What is the result?",
+      opts: [
+        "Compilation fails on line 4 only.",
+        "Compilation fails on line 3 only.",
+        "Compilation fails on both line 3 and line 4.",
+        "The code compiles."
+      ],
+      a: [0],
+      why: "<code>a</code> <b>final</b> ve derleme zamanında değeri bilindiği için <i>constant expression</i>'dır; 5 <code>byte</code>'a sığdığından cast gerekmez. <code>b</code> final olmadığı için derleyici değerini garanti sayamaz → line 4 hata verir. <b>Kanca:</b> Bu istisna sadece <code>byte</code>, <code>short</code>, <code>char</code> içindir; <code>int i = 10L;</code> sabit olsa bile derlenmez."
+    },
+    {
+      topic: "Literaller",
+      q: "Which of the following declarations compile? (Choose TWO.)",
+      opts: [
+        "long big = 3_000_000_000L;",
+        "int oct = 017;",
+        "float f = 1.5;",
+        "long big2 = 3_000_000_000;"
+      ],
+      a: [0, 1],
+      why: "<code>3_000_000_000L</code> — <b>L</b> eki literali <code>long</code> yapar, doğru. <code>017</code> — <code>0</code> öneki <b>sekizlik</b> demektir, geçerli bir <code>int</code> (değeri 15). <br><code>float f = 1.5;</code> derlenmez: <code>1.5</code> bir <b>double</b> literalidir, <code>1.5f</code> olmalı. <code>3_000_000_000</code> (L'siz) derlenmez: literal <code>int</code> sayılır ve int aralığını aşar (<i>integer number too large</i>)."
+    },
+    {
+      topic: "Integer cache",
+      q: "<pre>Integer a = 127, b = 127;\nInteger c = 128, d = 128;\nSystem.out.println((a == b) + \" \" + (c == d));</pre>What is the result?",
+      opts: [
+        "true false",
+        "true true",
+        "false false",
+        "false true"
+      ],
+      a: [0],
+      why: "<code>Integer.valueOf</code> <b>−128 … 127</b> aralığını önbellekler; 127 için iki referans <b>aynı nesneyi</b> gösterir → <code>==</code> true. 128 aralığın dışında, her atama yeni nesne üretir → false. <code>equals()</code> ikisinde de true döner. <b>Kanca:</b> \"Wrapper'da <code>==</code> görürsen 127'yi düşün.\" Aynı cache Byte, Short, Long, Character (0..127) ve Boolean'da vardır; <b>Float ve Double'da yoktur</b>."
+    },
+    {
+      topic: "Autoboxing",
+      q: "<pre>Integer boxed = 1000;\nint plain = 1000;\nSystem.out.println(boxed == plain);</pre>What is the result?",
+      opts: [
+        "true",
+        "false",
+        "Compilation fails.",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "Karşılaştırmanın bir tarafı <b>primitif</b> olduğu için derleyici <code>boxed</code>'ı <b>unbox</b> eder ve iki <code>int</code> değeri karşılaştırılır → <b>true</b>. En yakın çeldirici <code>false</code>: \"1000 cache dışında\" refleksi burada yanıltır — cache kuralı yalnızca <b>iki taraf da wrapper</b> olduğunda devreye girer."
+    },
+    {
+      topic: "Autoboxing",
+      q: "<pre>Integer count = null;\nint total = count + 1;\nSystem.out.println(total);</pre>What is the result?",
+      opts: [
+        "A NullPointerException is thrown at runtime.",
+        "Compilation fails.",
+        "1",
+        "null1"
+      ],
+      a: [0],
+      why: "<code>count + 1</code> aritmetik bir ifadedir, bu yüzden <code>count</code> <b>unbox</b> edilmeye çalışılır: <code>count.intValue()</code> → <b>NPE</b>. Kod sorunsuz derlenir; hata çalışma zamanındadır. <b>Kanca:</b> Wrapper bir değişken aritmetiğe girdiği anda gizli bir <code>.xxxValue()</code> çağrısı vardır ve null ise patlar."
+    },
+    {
+      topic: "Sayısal terfi",
+      q: "<pre>System.out.print('a' + 1);\nSystem.out.print(\" | \");\nSystem.out.print(\"\" + 'a' + 1);</pre>What is the result?",
+      opts: [
+        "98 | a1",
+        "a1 | a1",
+        "98 | 98",
+        "b | a1"
+      ],
+      a: [0],
+      why: "İlk satırda iki operand da sayısaldır: <code>char</code> <b>int</b>'e terfi eder, 97+1 = <b>98</b>. İkinci satırda soldan sağa gidilir; ilk işlem <code>\"\" + 'a'</code> olduğu için <b>String birleştirme</b> başlar ve sonrası da metin olarak eklenir → <b>a1</b>. <b>Kanca:</b> <code>+</code> soldan sağa değerlendirilir; String bir kez devreye girdiyse geri dönüş yok."
+    },
+    {
+      topic: "Operatörler",
+      q: "<pre>int i = 3;\ni = i++ + --i;\nSystem.out.println(i);</pre>What is the result?",
+      opts: [
+        "6",
+        "5",
+        "7",
+        "8"
+      ],
+      a: [0],
+      why: "<code>i++</code> önce <b>3</b> değerini verir, sonra i=4 olur. Ardından <code>--i</code> önce i'yi 3 yapar ve <b>3</b> verir. Toplam 3+3 = <b>6</b> ve bu değer i'ye atanır — atama en son yapıldığı için ara artışlar silinir. <b>Kanca:</b> postfix değeri <i>önce</i> verir, prefix <i>önce</i> değiştirir."
+    },
+    {
+      topic: "Operatörler",
+      q: "Which statements about short-circuit operators are correct? (Choose TWO.)",
+      opts: [
+        "The && operator does not evaluate its right operand when the left operand is false.",
+        "The & operator always evaluates both operands, even when the left operand is false.",
+        "The && operator always evaluates both operands for boolean values.",
+        "The & operator cannot be applied to boolean operands."
+      ],
+      a: [0, 1],
+      why: "<code>&&</code> ve <code>||</code> <b>kısa devre</b> yapar: sonuç zaten belliyse sağ taraf hiç çalıştırılmaz. <code>&</code> ve <code>|</code> boolean'larda da <b>geçerlidir</b> ama her iki tarafı da değerlendirir — bu yüzden <code>if (dizi != null &amp; dizi.length &gt; 0)</code> NPE atar. <b>Mutlak ifade uyarısı:</b> \"cannot be applied\" gibi kesin ifadeli şıklara dikkat; <code>&</code> boolean'da pekâlâ kullanılır."
+    },
+    {
+      topic: "Math API ve özel değerler",
+      q: "<pre>System.out.println((10 / 0.0) + \" \" + (0.0 / 0.0));</pre>What is the result?",
+      opts: [
+        "Infinity NaN",
+        "An ArithmeticException is thrown at runtime.",
+        "Infinity Infinity",
+        "NaN NaN"
+      ],
+      a: [0],
+      why: "Kayan noktalı bölmede sıfıra bölmek <b>exception atmaz</b>: pozitif/negatif sonsuz veya belirsizlik için <code>NaN</code> üretir. <code>ArithmeticException</code> yalnızca <b>tamsayı</b> bölme ve mod işlemlerinde (<code>10 / 0</code>, <code>10 % 0</code>) atılır. <b>Kanca:</b> Bölmede sıfır görünce önce operandların tipine bak."
+    },
+    {
+      topic: "Math API ve özel değerler",
+      q: "<pre>System.out.println(Math.round(-2.5) + \" \" + (-7 % 3));</pre>What is the result?",
+      opts: [
+        "-2 -1",
+        "-3 -1",
+        "-2 2",
+        "-3 2"
+      ],
+      a: [0],
+      why: "<code>Math.round</code> <b>her zaman yukarı</b> yuvarlar (matematiksel olarak <code>floor(x + 0.5)</code>), sıfıra doğru değil → <code>-2.5</code> için <b>-2</b>. <code>%</code> sonucunun işareti <b>sol</b> operanddan gelir → <b>-1</b>. En yakın çeldirici <code>2</code>: o <code>Math.floorMod(-7, 3)</code>'ün sonucudur. <b>Kanca:</b> <code>%</code> işareti soldan, <code>floorMod</code> bölenden alır."
+    },
+    {
+      topic: "Math API ve özel değerler",
+      q: "Which expressions evaluate to <code>false</code>? (Choose TWO.)",
+      opts: [
+        "Double.NaN == Double.NaN",
+        "0.1 + 0.2 == 0.3",
+        "Integer.MAX_VALUE + 1 == Integer.MIN_VALUE",
+        "Math.abs(Integer.MIN_VALUE) == Integer.MIN_VALUE"
+      ],
+      a: [0, 1],
+      why: "<code>NaN</code> hiçbir değere, <b>kendine bile</b> eşit değildir → <code>false</code>; kontrol için <code>Double.isNaN()</code> kullanılır. <code>0.1 + 0.2</code> ikili kayan noktada tam olarak <code>0.3</code> etmez → <code>false</code>. <br>Diğer ikisi <b>true</b>'dur: taşma sessizce sarar (<code>MAX_VALUE + 1</code> → <code>MIN_VALUE</code>) ve <code>Math.abs(Integer.MIN_VALUE)</code> pozitif karşılığı int'e sığmadığı için yine <code>MIN_VALUE</code> döner."
+    },
+    {
+      topic: "Wrapper API",
+      q: "Which of the following method calls does NOT compile?",
+      opts: [
+        "Character.parseChar(\"a\");",
+        "Integer.parseInt(\"42\");",
+        "Boolean.parseBoolean(\"TRUE\");",
+        "Double.valueOf(\"4.2\");"
+      ],
+      a: [0],
+      why: "<code>Character</code> sınıfında <b>parseChar</b> diye bir metot yoktur — sınav var olmayan API isimlerini şık olarak koymayı sever. Diğer üçü geçerlidir; <code>Boolean.parseBoolean(\"TRUE\")</code> büyük/küçük harf duyarsızdır ve <b>true</b> döner (<code>\"evet\"</code> verseydin <b>false</b> dönerdi, exception değil). <b>Kanca:</b> Bilmediğin bir metot adı gördüğünde \"acaba var mı\" diye sor — genelde yoktur."
+    },
+    {
+      topic: "Ternary ve tip birleştirme",
+      q: "<pre>System.out.println(true ? 1 : 2.0);</pre>What is the result?",
+      opts: [
+        "1.0",
+        "1",
+        "Compilation fails because the branches have different types.",
+        "2.0"
+      ],
+      a: [0],
+      why: "Ternary ifadenin <b>tek bir tipi</b> olmak zorundadır; iki dal sayısalsa ortak tipe <b>terfi</b> ettirilir. <code>int</code> ve <code>double</code> → <code>double</code>, bu yüzden çalışmayan dal bile sonucu etkiler ve <b>1.0</b> yazdırılır. En yakın çeldirici <code>1</code>: \"koşul true, o hâlde 1 basılır\" refleksi tipi göz ardı eder."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

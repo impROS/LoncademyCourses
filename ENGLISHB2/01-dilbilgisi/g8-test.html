@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>g8 Testi — İngilizce B2</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "g8",
+  code: "Dilbilgisi · g8",
+  title: "Relative clauses",
+  back: "g8-relative-clauses.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce, açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Zamir seçimi",
+      q: "That's the architect ______ designed the new terminal.",
+      opts: ["who", "which", "whose", "whom"],
+      a: [0],
+      why: "<b>who</b> — insan ve özne konumunda. <code>whom</code> yalnızca nesne konumunda kullanılır; burada mimar tasarlayan kişidir, yani özne."
+    },
+    {
+      topic: "Zamir seçimi",
+      q: "We hired a consultant ______ previous clients included two banks.",
+      opts: ["whose", "who", "which", "that"],
+      a: [0],
+      why: "<b>whose</b> — sahiplik bildirir: danışmanın önceki müşterileri. <code>who</code> koyarsak cümlede iki özne çakışır ve yapı çöker."
+    },
+    {
+      topic: "Defining vs non-defining",
+      q: "Which sentence means that ALL of the employees were given a bonus?",
+      opts: ["The employees, who exceeded their targets, were given a bonus.", "The employees who exceeded their targets were given a bonus.", "The employees that exceeded their targets were given a bonus.", "Employees exceeding their targets were given a bonus."],
+      a: [0],
+      why: "Virgüllü (non-defining) biçim ek bilgi verir: <i>hepsi</i> hedefi aştı ve hepsi bonus aldı. Virgülsüz biçimler grubu daraltır — sadece hedefi aşanlar. Virgül burada süs değil, anlam taşır."
+    },
+    {
+      topic: "Defining vs non-defining",
+      q: "Which sentence is INCORRECT?",
+      opts: ["My manager, that joined last year, is from Adana.", "My manager, who joined last year, is from Adana.", "The manager who joined last year is from Adana.", "Adana, which is in the south, is very hot in summer."],
+      a: [0],
+      why: "Non-defining clause'da <code>that</code> kullanılamaz — bu istisnasız bir kuraldır. Virgül gördüğünde <code>that</code>'i ele; yerine <code>who</code> ya da <code>which</code> gelir."
+    },
+    {
+      topic: "Zamirin düşmesi",
+      q: "In which sentence can the relative pronoun be left out?",
+      opts: ["The message that I sent yesterday came back.", "The message that arrived yesterday was strange.", "The colleague who reported the fault has left.", "The road which leads to the village is closed."],
+      a: [0],
+      why: "<b>that I sent</b> — zamirden sonra bir özne (<i>I</i>) geliyorsa zamir nesnedir ve düşebilir. Diğer üçünde zamirden hemen sonra fiil geliyor, yani zamir öznedir ve düşemez."
+    },
+    {
+      topic: "which ile cümle nitelemesi",
+      q: "He turned up an hour late, ______ made a very poor impression.",
+      opts: ["which", "that", "what", "who"],
+      a: [0],
+      why: "<b>which</b> — önündeki tüm cümleyi niteleyebilen tek zamirdir ve bu kullanım her zaman virgüllüdür. <code>what</code> bu konumda İngilizcede kullanılmaz; Türkçe konuşanların sık yaptığı bir hatadır."
+    },
+    {
+      topic: "where / when",
+      q: "1999 was the year ______ the big earthquake struck.",
+      opts: ["when", "which", "where", "what"],
+      a: [0],
+      why: "<b>when</b> — zaman ismini niteler. <code>which</code> ancak edatla kullanılabilirdi: <i>the year <b>in which</b></i>. Tek başına <code>which</code> bu boşlukta eksiktir."
+    },
+    {
+      topic: "Edatlı relative clause",
+      q: "This is the supplier ______ we signed the contract.",
+      opts: ["with whom", "with who", "whom with", "which with"],
+      a: [0],
+      why: "<b>with whom</b> — edat öne alındığında ardından yalnızca <code>whom</code> ya da <code>which</code> gelir, asla <code>who</code>. Günlük dilde <i>the supplier (who) we signed the contract <b>with</b></i> denir."
+    },
+    {
+      topic: "Reduced relative clauses",
+      q: "The parcels ______ last Friday still haven't arrived.",
+      opts: ["dispatched", "dispatching", "which dispatched", "to dispatch"],
+      a: [0],
+      why: "<b>dispatched</b> — edilgen anlam (kolileri biri gönderdi) kısaltmada V3 ile verilir. <code>dispatching</code> kolilerin kendi kendine gönderdiğini söylerdi."
+    },
+    {
+      topic: "Reduced relative clauses",
+      q: "The woman ______ at the reception desk can help you.",
+      opts: ["sitting", "sat", "who sitting", "which sits"],
+      a: [0],
+      why: "<b>sitting</b> — etken anlam kısaltmada V-ing alır (<i>who is sitting → sitting</i>). <code>sat</code> burada edilgen okunur ve kadının oturtulduğu gibi tuhaf bir anlam verir."
+    },
+    {
+      topic: "Reduced relative clauses",
+      q: "She was the first person ______ the fault in the code.",
+      opts: ["to spot", "spotting", "spotted", "who spotting"],
+      a: [0],
+      why: "<b>to spot</b> — <code>the first / the last / the only / the best</code> gibi ifadelerden sonra kısaltma <code>to + V1</code> ile yapılır. Bu kalıp yazma görevlerinde metni belirgin şekilde yükseltir."
+    },
+    {
+      topic: "Zamir tekrarı",
+      q: "Which sentence is INCORRECT?",
+      opts: ["The technician who he fixed the printer has gone.", "The technician who fixed the printer has gone.", "The technician that fixed the printer has gone.", "The technician fixing the printer has gone."],
+      a: [0],
+      why: "<code>who he</code> — zamir zaten özneyi taşır, ikinci bir özne eklemek hatadır. Türkçede özne tekrarı doğal olduğu için bu hata çok sık yapılır."
+    },
+    {
+      topic: "Miktar ifadeleri",
+      q: "We received forty applications, ______ were incomplete.",
+      opts: ["many of which", "many of them", "many of that", "many which"],
+      a: [0],
+      why: "<b>many of which</b> — non-defining clause'da miktar ifadesi <code>of which / of whom</code> ile bağlanır. <code>many of them</code> ile yazsaydık iki bağımsız cümleyi virgülle birleştirmiş olurduk, bu da noktalama hatasıdır."
+    },
+    {
+      topic: "Defining vs non-defining",
+      q: "Choose the two correct sentences. (Choose TWO.)",
+      opts: ["Izmir, where my grandparents live, has changed a lot.", "The town where my grandparents live has changed a lot.", "Izmir where my grandparents live has changed a lot.", "Izmir, that my grandparents live, has changed a lot."],
+      a: [0, 1],
+      why: "Özel isimler her zaman non-defining alır, yani virgüllü (birinci şık). İkinci şıkta <i>the town</i> genel bir isim olduğu için tanımlayıcı clause virgülsüz gelir. Üçüncüsünde virgül eksik, dördüncüsünde hem <code>that</code> hem de <code>where</code> eksikliği var."
+    },
+    {
+      topic: "Zamir seçimi",
+      q: "Nobody could explain the reason ______ the system kept crashing.",
+      opts: ["why", "which", "where", "whose"],
+      a: [0],
+      why: "<b>why</b> — <code>the reason why</code> sabit bir eşleşmedir (alternatifi <i>the reason for which</i> ya da sadece <i>the reason that</i>). <code>which</code> tek başına <i>reason</i> ile bu boşlukta çalışmaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

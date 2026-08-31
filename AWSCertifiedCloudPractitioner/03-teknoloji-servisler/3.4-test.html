@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.4 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.4",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.4",
+  title: "Veritabanları",
+  back: "3.4-veritabanlari.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Multi-AZ vs Read Replica",
+      q: "A company wants its Amazon RDS database to fail over automatically to another Availability Zone if the primary instance fails. Which feature should it enable?",
+      opts: ["Multi-AZ deployment", "Read replica", "Cross-Region snapshot copy", "RDS Proxy"],
+      a: [0],
+      why: "<b>Multi-AZ</b> başka bir AZde <b>senkron</b> bir standby tutar ve arıza anında <b>otomatik failover</b> yapar — amacı <b>yüksek erişilebilirliktir</b>. Ezber cümlesi: <i>Multi-AZ = ayakta kal, Read Replica = hızlan.</i>"
+    },
+    {
+      topic: "Multi-AZ vs Read Replica",
+      q: "An application's reporting queries are slowing down the primary RDS database. Which feature should be used to offload read traffic?",
+      opts: ["Read replica", "Multi-AZ deployment", "Automated backups", "Point-in-time recovery"],
+      a: [0],
+      why: "<b>Read replica</b> asenkron kopyadır ve <b>okuma trafiği alabilir</b>; raporlama gibi ağır okumaları birincil veritabanından ayırır. Klasik Multi-AZ standbysine <b>okuma yapılamaz</b> — o yalnızca failover içindir."
+    },
+    {
+      topic: "Multi-AZ vs Read Replica",
+      q: "Which statement about RDS read replicas is TRUE?",
+      opts: [
+        "They use asynchronous replication and can be created in another Region",
+        "They use synchronous replication and automatically fail over",
+        "They can only exist in the same Availability Zone as the primary",
+        "They replace the need for automated backups"
+      ],
+      a: [0],
+      why: "Read replicalar <b>asenkron</b> çoğaltma kullanır ve <b>farklı bir Regionda</b> oluşturulabilir (küresel okuma performansı ve DR desteği). Senkron çoğaltma ve otomatik failover <b>Multi-AZ</b>nin özelliğidir; yedeklerin yerini tutmazlar."
+    },
+    {
+      topic: "DynamoDB",
+      q: "Which AWS service is a fully managed, serverless NoSQL key-value database that delivers single-digit millisecond performance at any scale?",
+      opts: ["Amazon DynamoDB", "Amazon RDS", "Amazon Redshift", "Amazon Neptune"],
+      a: [0],
+      why: "<b>DynamoDB</b>: sunucusuz, anahtar-değer/doküman, <b>milisaniye altı</b> gecikme, otomatik ölçek. Sunucu yamalamaz, kapasite planlamazsın. <b>DAX</b> önbelleğiyle mikrosaniye seviyesine iner; <b>Global Tables</b> ile çok Regionlı çalışır."
+    },
+    {
+      topic: "Yönetilen vs kendi kurduğun",
+      q: "A company wants to run a MySQL database with the LEAST operational overhead. Which option should it choose?",
+      opts: [
+        "Amazon RDS for MySQL",
+        "MySQL installed on an Amazon EC2 instance",
+        "MySQL on AWS Outposts",
+        "MySQL in the company data center"
+      ],
+      a: [0],
+      why: "<b>RDS</b>te OS ve motor yaması, otomatik yedekleme, Multi-AZ ve izleme AWSe geçer. EC2ye kendin kurmak <b>tam kontrol</b> verir ama tüm işletim yükünü sende bırakır — bu yalnızca <b>OS seviyesinde erişim şart</b> olduğunda doğru cevaptır."
+    },
+    {
+      topic: "Aurora",
+      q: "Which statement about Amazon Aurora is correct?",
+      opts: [
+        "It is MySQL- and PostgreSQL-compatible and replicates data across multiple Availability Zones",
+        "It is a NoSQL document database",
+        "It is a data warehouse optimized for analytical queries",
+        "It runs only on customer-managed EC2 instances"
+      ],
+      a: [0],
+      why: "<b>Aurora</b> bulut için tasarlanmış, <b>MySQL ve PostgreSQL uyumlu</b> ilişkisel veritabanıdır; veriyi <b>3 AZde 6 kopya</b> halinde tutar ve depolaması otomatik büyür. Değişken iş yükleri için <b>Aurora Serverless</b> seçeneği vardır."
+    },
+    {
+      topic: "ElastiCache",
+      q: "An application repeatedly queries the same rows from a relational database, creating heavy load. Which service can reduce this load with an in-memory cache?",
+      opts: ["Amazon ElastiCache", "Amazon Redshift", "AWS Glue", "Amazon DocumentDB"],
+      a: [0],
+      why: "<b>ElastiCache</b> (Redis veya Memcached) sık okunan veriyi <b>bellekte</b> tutar; veritabanı yükünü ve gecikmeyi düşürür. Soruda <i>cache</i>, <i>reduce database load</i> veya <i>in-memory</i> geçiyorsa cevap budur."
+    },
+    {
+      topic: "Redshift ve OLAP",
+      q: "A company needs to run complex analytical SQL queries over petabytes of historical data for business intelligence dashboards. Which service is designed for this?",
+      opts: ["Amazon Redshift", "Amazon RDS", "Amazon DynamoDB", "Amazon ElastiCache"],
+      a: [0],
+      why: "<b>Redshift</b> bir <b>veri ambarıdır (OLAP)</b>: petabayt ölçeğinde, karmaşık analitik sorgular için sütun tabanlı olarak optimize edilmiştir. RDS ve DynamoDB ise <b>OLTP</b> — çok sayıda küçük işlem — için tasarlanmıştır."
+    },
+    {
+      topic: "Özel amaçlı veritabanları",
+      q: "Which AWS database service is purpose-built for highly connected data such as social networks, recommendation engines and fraud detection relationships?",
+      opts: ["Amazon Neptune", "Amazon DocumentDB", "Amazon Keyspaces", "Amazon Timestream"],
+      a: [0],
+      why: "<b>Neptune</b> bir <b>graf veritabanıdır</b>; düğümler ve aralarındaki ilişkiler üzerinde sorgu yapar. <b>DocumentDB</b> MongoDB uyumlu doküman, <b>Keyspaces</b> Cassandra uyumlu geniş sütun, <b>Timestream</b> ise zaman serisi veritabanıdır."
+    },
+    {
+      topic: "Özel amaçlı veritabanları",
+      q: "A team is migrating a MongoDB workload and wants a managed, MongoDB-compatible database on AWS. Which service should it use?",
+      opts: ["Amazon DocumentDB", "Amazon DynamoDB", "Amazon Neptune", "Amazon RDS for PostgreSQL"],
+      a: [0],
+      why: "<b>DocumentDB</b> <b>MongoDB uyumlu</b> yönetilen doküman veritabanıdır; mevcut MongoDB sürücü ve araçlarıyla çalışır. DynamoDB de NoSQLdir ama MongoDB API uyumluluğu sunmaz — soruda <i>MongoDB compatible</i> geçtiğinde cevap DocumentDBdir."
+    },
+    {
+      topic: "IoT / zaman serisi",
+      q: "Which service is optimized for storing and analyzing time-series data such as IoT sensor readings?",
+      opts: ["Amazon Timestream", "Amazon Redshift", "Amazon Neptune", "Amazon RDS"],
+      a: [0],
+      why: "<b>Timestream</b> zaman damgalı veriler (IoT telemetrisi, uygulama metrikleri) için tasarlanmış <b>zaman serisi veritabanıdır</b>; verinin yaşına göre otomatik katmanlama yapar."
+    },
+    {
+      topic: "Veritabanı göçü",
+      q: "Which service migrates a database to AWS with minimal downtime while the source database remains operational?",
+      opts: [
+        "AWS Database Migration Service (DMS)",
+        "AWS Schema Conversion Tool (SCT)",
+        "AWS DataSync",
+        "AWS Snowball Edge"
+      ],
+      a: [0],
+      why: "<b>DMS</b> kaynak veritabanı <b>çalışmaya devam ederken</b> veriyi taşır, böylece kesinti en aza iner. <b>SCT</b> yalnızca <b>şema ve kod dönüşümü</b> yapar ve motor değiştiğinde (Oracle → PostgreSQL) DMSten <b>önce</b> kullanılır."
+    },
+    {
+      topic: "DynamoDB",
+      q: "Which two statements about Amazon DynamoDB are TRUE? (Choose TWO.)",
+      opts: [
+        "It is serverless — there are no database instances to provision or patch",
+        "It supports on-demand capacity mode where you pay per request",
+        "It requires the customer to patch the underlying operating system",
+        "It is optimized for complex multi-table SQL joins",
+        "It can only be deployed in a single Availability Zone"
+      ],
+      a: [0, 1],
+      why: "DynamoDB <b>sunucusuzdur</b> (instance yönetimi yok) ve <b>on-demand</b> kapasite modunda istek başına ödeme yaparsın. Karmaşık JOINler için uygun değildir (orası ilişkisel veritabanlarının işi) ve verisi bir Region içinde <b>birden çok AZye</b> otomatik kopyalanır."
+    },
+    {
+      topic: "Bağlantı yönetimi",
+      q: "Many AWS Lambda functions open connections to an RDS database, exhausting the connection limit. Which service helps by pooling and sharing database connections?",
+      opts: ["Amazon RDS Proxy", "Amazon ElastiCache", "AWS Global Accelerator", "Amazon DAX"],
+      a: [0],
+      why: "<b>RDS Proxy</b> veritabanı bağlantılarını <b>havuzlar ve paylaştırır</b>; özellikle çok sayıda eşzamanlı Lambda çağrısının bağlantı limitini tüketmesini önler, ayrıca failover süresini kısaltır. <b>DAX</b> DynamoDB önbelleğidir, RDS ile ilgisi yoktur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

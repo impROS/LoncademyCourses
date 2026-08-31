@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deneme Sınavı 1 — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-deneme-1",
+  code: "ISTQB CTFL v4.0 · Deneme Sınavı 1",
+  title: "Deneme Sınavı 1 — 40 soru / 60 dakika",
+  back: "cheatsheet.md",
+  backLabel: "Cheatsheet'e dön",
+  mode: "exam",
+  time: 3600,
+  pass: 65,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe. Kâğıt kalem hazırla.",
+  passNote: "gerçek sınav 26/40 = %65 — burada da aynı eşik",
+  notes: [
+    "Soru dağılımı resmî ağırlıklara birebir uyar: B1=8, B2=5, B3=4, B4=11, B5=9, B6=3.",
+    "Süre dolunca sınav otomatik biter. Boş bırakma — yanlış cezası yok.",
+    "Sonuç ekranındaki zayıf alan raporu sana hangi konu dosyasına döneceğini söyler."
+  ],
+  questions: [
+    {
+      topic: "1.1 Test nedir",
+      q: "Which of the following BEST describes the relationship between testing and debugging?",
+      opts: [
+        "Testing can trigger a failure; debugging finds and removes the underlying defect",
+        "Debugging can trigger a failure; testing finds and removes the underlying defect",
+        "Testing and debugging are two names for the same activity",
+        "Debugging is the final activity of the test process"
+      ],
+      a: [0],
+      why: "<b>Test arızayı ortaya çıkarır, debugging sebebi bulup düzeltir.</b> Debugging bir test aktivitesi değildir; geliştirmenin işidir. Dördüncü şık onu test sürecinin parçası sayarak bu sınırı siliyor. Dosya: <b>1.1</b>"
+    },
+    {
+      topic: "1.2 Test neden gerekli",
+      q: "A component contains a coding defect in an error-handling branch. In two years of production use, the condition that triggers that branch has never occurred. Which statement is correct?",
+      opts: [
+        "A defect exists but has never caused a failure",
+        "There is no defect, because no failure has been observed",
+        "A failure exists but has not been reported",
+        "The defect became a failure as soon as the code was deployed"
+      ],
+      a: [0],
+      why: "<b>Kusur tetiklenmediği sürece arıza üretmez, ama var olmaya devam eder.</b> Kusurun varlığı gözlemlenebilirliğe bağlı değildir. Bu, 'her defect failure üretmez' ilkesinin doğrudan uygulamasıdır. Dosya: <b>1.2</b>"
+    },
+    {
+      topic: "1.2 QA ve test",
+      q: "Which pair correctly describes quality assurance and quality control?",
+      opts: [
+        "Quality assurance is preventive and process-oriented; quality control is corrective and product-oriented",
+        "Quality assurance is corrective and product-oriented; quality control is preventive and process-oriented",
+        "Both are product-oriented, but quality control is performed earlier",
+        "Quality control is a subset of testing"
+      ],
+      a: [0],
+      why: "<b>QA süreci, QC ürünü hedefler; test QC'nin bir parçasıdır.</b> Dördüncü şık ilişkiyi ters kuruyor: test QC'nin alt kümesidir, QC testin değil. Dosya: <b>1.2</b>"
+    },
+    {
+      topic: "1.3 Test prensipleri",
+      q: "A team spends its entire budget testing the reporting module because it is easy to test, while the payment module remains largely untested. Which principle is being neglected?",
+      opts: [
+        "Exhaustive testing is impossible, so testing must be focused using risk analysis and priorities",
+        "Tests wear out",
+        "Testing is context dependent",
+        "Absence-of-defects fallacy"
+      ],
+      a: [0],
+      why: "<b>Tüketici test imkânsız olduğu için efor risk ve önceliğe göre yönlendirilmelidir</b> — kolaylığa göre değil. Ekip eforu yanlış yere harcamış. Diğer prensipler bu senaryoyu açıklamıyor. Dosya: <b>1.3</b>"
+    },
+    {
+      topic: "1.4 Test aktiviteleri",
+      q: "Which sequence correctly orders these test activities?",
+      opts: [
+        "Test analysis, test design, test implementation, test execution",
+        "Test design, test analysis, test execution, test implementation",
+        "Test implementation, test analysis, test design, test execution",
+        "Test analysis, test implementation, test design, test execution"
+      ],
+      a: [0],
+      why: "<b>Önce neyi test edeceğini belirlersin (analysis), sonra nasıl (design), sonra koşulabilir hale getirirsin (implementation), sonra koşarsın (execution).</b> Bu mantıksal sıra bozulamaz: test case olmadan test verisi hazırlanamaz. Dosya: <b>1.4</b>"
+    },
+    {
+      topic: "1.4 İzlenebilirlik",
+      q: "An auditor asks the team to demonstrate that every safety requirement has been covered by at least one executed test. Which property makes this possible?",
+      opts: ["Traceability between the test basis and the testware", "The Definition of Done", "The test pyramid", "Branch coverage measurement"],
+      a: [0],
+      why: "<b>İzlenebilirlik, test tabanının hangi kısımlarının hangi testlerle kapsandığını gösterir</b> ve denetlenebilirliği (auditability) mümkün kılar. Branch coverage kodun kapsamını ölçer, gereksinimlerinkini değil. Dosya: <b>1.4</b>"
+    },
+    {
+      topic: "1.5 Bağımsızlık",
+      q: "A company moves all system testing to a separate department. Six months later, developers say quality is \"the test department's problem\". Which drawback of independence does this illustrate?",
+      opts: [
+        "Developers may lose a sense of responsibility for quality",
+        "Testers may lack the necessary technical skills",
+        "Independent testing always finds fewer defects",
+        "Independent testing violates the whole team approach by definition"
+      ],
+      a: [0],
+      why: "<b>Yüksek bağımsızlığın klasik yan etkilerinden biri, geliştiricilerde kalite sorumluluğunun kaybolmasıdır.</b> Diğer bir yan etki testerların izolasyonudur. Üçüncü şıkta <code>always</code> var ve olgusal olarak yanlış. Dosya: <b>1.5</b>"
+    },
+    {
+      topic: "1.5 Whole team",
+      q: "In which situation is a HIGH degree of test independence MOST justified?",
+      opts: [
+        "A safety-critical medical device requiring external certification",
+        "An internal prototype built in two days to explore an idea",
+        "A small Agile team with daily customer contact",
+        "A marketing landing page with a one-week lifespan"
+      ],
+      a: [0],
+      why: "<b>Güvenlik-kritik ve regüle bağlamlarda dış bağımsız test gerekir</b>; ortak varsayımların yarattığı kör noktalar kabul edilemez. Diğer üç bağlamda bağımsızlığın maliyeti faydasını aşar — bu, prensip 6'nın uygulamasıdır. Dosya: <b>1.5</b>"
+    },
+    {
+      topic: "2.1 SDLC ve shift left",
+      q: "Which pair of practices BEST implements shift left?",
+      opts: [
+        "Reviewing acceptance criteria before development, and running static analysis in CI",
+        "Running the full regression suite in the final week, and delaying performance testing",
+        "Automating the UI test suite, and increasing the number of testers",
+        "Writing the test completion report earlier, and shortening the retrospective"
+      ],
+      a: [0],
+      why: "<b>Shift left, test aktivitelerini yaşam döngüsünde daha erkene taşımaktır</b> ve en güçlü araçları statik testtir. İkinci şık tam tersini yapıyor. Otomasyon ve tester sayısı testi erkene taşımaz, sadece hızlandırır. Dosya: <b>2.1</b>"
+    },
+    {
+      topic: "2.2 Test seviyeleri",
+      q: "Which test level uses sequence diagrams and the software architecture as its typical test basis?",
+      opts: ["Component integration testing", "Acceptance testing", "Component testing", "System testing"],
+      a: [0],
+      why: "<b>Bileşenler arası arayüzler test edildiğinde test tabanı tasarım, mimari ve sequence diagram'lardır.</b> Component testing detaylı tasarım ve koda, sistem testi sistem gereksinimlerine, kabul testi ise iş süreçlerine dayanır. Dosya: <b>2.2</b>"
+    },
+    {
+      topic: "2.2 Test tipleri",
+      q: "Which of the following are TEST TYPES? (Choose TWO.)",
+      opts: [
+        "Functional testing",
+        "White-box testing",
+        "System integration testing",
+        "Acceptance testing"
+      ],
+      a: [0, 1],
+      why: "<b>Fonksiyonel ve beyaz kutu testi birer tiptir — neyin ve nasıl test edildiğini söylerler.</b> System integration ve acceptance birer <i>seviyedir</i>. Seviye 'nerede', tip 'ne' sorusunu cevaplar ve iki eksen birbirinden bağımsızdır. Dosya: <b>2.2</b>"
+    },
+    {
+      topic: "2.2 Regresyon",
+      q: "A team upgrades the JVM version used in production. The application code is unchanged. What testing is MOST appropriate?",
+      opts: [
+        "Regression testing, because a change in the environment can affect existing behavior",
+        "Confirmation testing only, because no defect was fixed",
+        "No testing, because the application code did not change",
+        "Component testing only, because the JVM affects individual classes"
+      ],
+      a: [0],
+      why: "<b>Ortam değişikliği regresyon testinin klasik bir tetikleyicisidir</b> — kod değişmese bile davranış değişebilir. Confirmation testing yalnızca düzeltilmiş bir kusur olduğunda anlamlıdır; burada öyle bir kusur yok. Dosya: <b>2.2 / 2.3</b>"
+    },
+    {
+      topic: "2.3 Bakım testi",
+      q: "Which of the following triggers maintenance testing? (Choose TWO.)",
+      opts: [
+        "Migration of the application to a new cloud platform",
+        "Retirement of a system whose data must be retained by law",
+        "Writing the test plan for the next release",
+        "Holding a specification workshop for a new user story"
+      ],
+      a: [0, 1],
+      why: "<b>Göç (ek olarak veri dönüştürme testi gerektirir) ve emeklilik (arşivleme ve geri yükleme testi gerektirir) müfredatın saydığı tetikleyicilerdir.</b> Plan yazmak ve workshop yapmak canlıdaki sistemin davranışını değiştirmez. Dosya: <b>2.3</b>"
+    },
+    {
+      topic: "3.1 Statik test",
+      q: "Which of the following defects is a review of the requirements MOST likely to find, and dynamic testing least likely to find?",
+      opts: [
+        "A requirement that contradicts another requirement",
+        "A memory leak that appears after prolonged use",
+        "A slow database query under load",
+        "An intermittent race condition between threads"
+      ],
+      a: [0],
+      why: "<b>Çelişkili gereksinim dinamik testle bulunamaz</b>: hangi bölümün doğru olduğunu bilmediğin için beklenen sonucu bile yazamazsın. Diğer üç şık yalnızca sistem çalışırken görülebilen kusurlardır. Dosya: <b>3.1</b>"
+    },
+    {
+      topic: "3.2 Review tipleri",
+      q: "Which two characteristics distinguish an inspection from a technical review? (Choose TWO.)",
+      opts: [
+        "Metrics are collected during the inspection",
+        "Process improvement is an explicit objective of the inspection",
+        "Only the inspection requires individual preparation",
+        "Only the inspection is led by the author"
+      ],
+      a: [0, 1],
+      why: "<b>Metrik toplama ve süreç iyileştirme hedefi inspection'a özgüdür.</b> Bireysel hazırlık her iki tipte de beklenir, dolayısıyla üçüncü şık ayırt edici değildir. Author'ın yönettiği tip walkthrough'tur — dördüncü şık olgusal olarak yanlış. Dosya: <b>3.2</b>"
+    },
+    {
+      topic: "3.2 Review rolleri",
+      q: "During a review meeting, one participant keeps the record of all anomalies raised, while another ensures the discussion stays focused and everyone can speak safely. Which roles are these, respectively?",
+      opts: [
+        "Scribe and moderator",
+        "Moderator and scribe",
+        "Review leader and manager",
+        "Author and reviewer"
+      ],
+      a: [0],
+      why: "<b>Kaydeden scribe, tartışmayı yürüten ve güvenli ortamı sağlayan moderator'dür.</b> İkinci şık ikisini yer değiştirmiş — soruda <code>respectively</code> yazması sıranın önemli olduğunu haber veriyor. Dosya: <b>3.2</b>"
+    },
+    {
+      topic: "3.2 Başarı faktörleri",
+      q: "A manager proposes using the number of defects each developer's code received in reviews as an input to annual performance ratings. What is the MOST likely consequence?",
+      opts: [
+        "Participants will become defensive and the effectiveness of reviews will decline",
+        "Review effectiveness will increase because of the added accountability",
+        "The reviews will automatically become more formal",
+        "Traceability between reviews and defects will improve"
+      ],
+      a: [0],
+      why: "<b>Review sonuçlarının bireysel performans değerlendirmesinde kullanılmaması, müfredatın saydığı en kritik başarı faktörüdür.</b> Kullanıldığı anda güven ortamı bozulur, insanlar kusur bulmayı bırakır ve savunmaya geçer. Dosya: <b>3.2</b>"
+    },
+    {
+      topic: "4.2 Eşdeğerlik bölümleme",
+      q: "A field accepts integer quantities from 1 to 20 inclusive; anything else is rejected. How many test cases are needed for 100% equivalence partition coverage?",
+      opts: ["3", "2", "4", "6"],
+      a: [0],
+      why: "<b>Bölümler: &lt;1 (invalid), 1–20 (valid), &gt;20 (invalid) = 3 bölüm, 3 test case.</b> %100 EP kapsamı hem geçerli hem geçersiz bölümlerin tamamını gerektirir; sadece geçerli bölümü test etmek %100 saymaz. Dosya: <b>4.2a</b>"
+    },
+    {
+      topic: "4.2 Sınır değer analizi",
+      q: "For the same field (integers 1 to 20 inclusive), which values are tested using 3-value boundary value analysis?",
+      opts: [
+        "0, 1, 2, 19, 20, 21",
+        "0, 1, 20, 21",
+        "1, 2, 3, 18, 19, 20",
+        "0, 1, 2, 20, 21, 22"
+      ],
+      a: [0],
+      why: "<b>3-value BVA her sınır için sınır−1, sınır ve sınır+1'i alır: 1 → 0,1,2 ve 20 → 19,20,21.</b> İkinci şık 2-value cevabıdır. Dördüncü şık üst sınırın komşularını yanlış almış (20 için 19 gerekir, 22 değil). Dosya: <b>4.2a</b>"
+    },
+    {
+      topic: "4.2 Karar tablosu",
+      q: "A rule depends on three independent Boolean conditions. How many rules does the full decision table contain, and what does 100% decision table coverage require?",
+      opts: [
+        "8 rules; at least one test case per rule",
+        "6 rules; at least one test case per condition",
+        "8 rules; at least one test case per condition",
+        "3 rules; one test case per condition"
+      ],
+      a: [0],
+      why: "<b>2³ = 8 kural, ve coverage item kuraldır — her sütun için en az bir test case.</b> Koşul (satır) başına test yazmak kombinasyonları kapsamaz; kural bir koşul <i>bileşimini</i> temsil eder. Dosya: <b>4.2b</b>"
+    },
+    {
+      topic: "4.2 Durum geçiş",
+      q: "A state machine has 4 states and 3 events, with 7 valid transitions shown in the diagram. How many cells does the state table have, and how many represent invalid transitions?",
+      opts: ["12 cells, 5 invalid", "7 cells, 0 invalid", "12 cells, 7 invalid", "10 cells, 3 invalid"],
+      a: [0],
+      why: "<b>Hücre sayısı = durum × olay = 4 × 3 = 12; geçerli 7 olduğuna göre 12 − 7 = 5 geçersizdir.</b> Diyagram yalnızca geçerli geçişleri gösterir; geçersizleri görmek için state table gerekir. Dosya: <b>4.2b</b>"
+    },
+    {
+      topic: "4.2 Durum geçiş",
+      q: "Which statement about state transition coverage is correct?",
+      opts: [
+        "Achieving 100% valid transitions coverage also achieves 100% all states coverage",
+        "Achieving 100% all states coverage also achieves 100% valid transitions coverage",
+        "All states coverage is the strongest of the three coverage levels",
+        "All transitions coverage excludes invalid transitions"
+      ],
+      a: [0],
+      why: "<b>Her geçerli geçişi koşarsan zorunlu olarak her duruma uğrarsın; ilişki tek yönlüdür.</b> All states en zayıf, all transitions (geçersizler <i>dahil</i>) en güçlü seviyedir. Dördüncü şık son seviyenin tanımını ters çeviriyor. Dosya: <b>4.2b</b>"
+    },
+    {
+      topic: "4.3 Beyaz kutu",
+      q: "Consider:<pre>if (a &gt; 0) { x = 1; }\nif (b &gt; 0) { x = x + 1; }\nreturn x;</pre>What is the MINIMUM number of test cases for 100% statement coverage and for 100% branch coverage respectively?",
+      opts: ["1 and 2", "2 and 4", "2 and 2", "4 and 4"],
+      a: [0],
+      why: "<b>a&gt;0 ve b&gt;0 olan tek test tüm satırları çalıştırır; dallar için ayrıca a≤0 ve b≤0 olan bir test gerekir.</b> 4 cevabı 'dal sayısı = test case sayısı' yanılgısından çıkar — bir test birden fazla dalı kapsayabilir. Dosya: <b>4.3</b>"
+    },
+    {
+      topic: "4.3 Beyaz kutu",
+      q: "A safety standard requires 100% branch coverage. The team achieves it and all tests pass. Which conclusion is JUSTIFIED?",
+      opts: [
+        "Every decision outcome in the existing code has been exercised at least once",
+        "The code correctly implements all specified requirements",
+        "No defects remain in the component",
+        "Black-box testing is no longer necessary"
+      ],
+      a: [0],
+      why: "<b>Kapsam yalnızca neyin çalıştırıldığını söyler; doğruluk veya eksiksizlik hakkında bir şey söylemez.</b> Hiç yazılmamış bir gereksinim dal olarak görünmez, dolayısıyla kara kutu testleri hâlâ gereklidir. Dosya: <b>4.3</b>"
+    },
+    {
+      topic: "4.4 Deneyim tabanlı",
+      q: "A tester runs 90-minute sessions guided by a written charter, records findings, and refines the approach as the session progresses. Which technique is this?",
+      opts: ["Exploratory testing", "Checklist-based testing", "Error guessing", "Decision table testing"],
+      a: [0],
+      why: "<b>Charter, zaman kutusu ve eşzamanlı öğrenme keşif testinin işaretleridir</b> — bu, keşif testinin 'rastgele test' olmadığının kanıtıdır. Checklist-based testte önceden hazırlanmış sabit bir liste vardır. Dosya: <b>4.4</b>"
+    },
+    {
+      topic: "4.5 İşbirliği tabanlı",
+      q: "A user story reads: \"As a user, I want the system to be fast.\" Which INVEST characteristics are MOST clearly violated? (Choose TWO.)",
+      opts: [
+        "Testable",
+        "Estimable",
+        "Independent",
+        "Negotiable"
+      ],
+      a: [0, 1],
+      why: "<b>'Hızlı' ölçülebilir bir eşik içermediği için doğrulanamaz (Testable) ve kapsam belirsiz olduğu için efor tahmini yapılamaz (Estimable).</b> Bağımlılık veya pazarlığa kapalılık konusunda bilgi yok, dolayısıyla diğer iki madde için kanıt yoktur. Dosya: <b>4.5</b>"
+    },
+    {
+      topic: "4.5 İşbirliği tabanlı",
+      q: "What is the PRIMARY value of ATDD compared with writing acceptance tests after implementation?",
+      opts: [
+        "Ambiguities in the acceptance criteria are resolved before they can be built into the code",
+        "It produces test cases faster",
+        "It removes the need for regression testing",
+        "It guarantees 100% requirements coverage"
+      ],
+      a: [0],
+      why: "<b>ATDD'nin asıl değeri kusur bulmak değil, kusuru önlemektir.</b> Specification workshop'ta çözülen bir belirsizlik hiç koda dönüşmez. Dördüncü şıkta <code>guarantees</code> ve <code>100%</code> birlikte geçiyor — çift mutlak ifade. Dosya: <b>4.5</b>"
+    },
+    {
+      topic: "4.1 Teknik seçimi",
+      q: "Which factors influence the choice of test techniques? (Choose TWO.)",
+      opts: [
+        "The types of defects expected in the test object",
+        "The available tools and the skills of the testers",
+        "The alphabetical order of the components",
+        "The number of testers who attended the last retrospective"
+      ],
+      a: [0, 1],
+      why: "<b>Beklenen kusur tipi, mevcut araçlar ve tester becerileri müfredatın saydığı faktörler arasındadır</b> — ayrıca sistem tipi ve karmaşıklığı, regülasyon, sözleşme, risk, dokümantasyon, zaman/bütçe ve yaşam döngüsü de sayılır. Dosya: <b>4.1</b>"
+    },
+    {
+      topic: "5.1 Test planlama",
+      q: "Which of the following is an ENTRY criterion rather than an exit criterion?",
+      opts: [
+        "The build has been deployed to the test environment and smoke tests pass",
+        "The residual risk has been assessed as acceptable",
+        "The agreed coverage target has been reached",
+        "All high-priority defects have been closed"
+      ],
+      a: [0],
+      why: "<b>Build'in ortama kurulmuş ve çalışır durumda olması, teste başlamanın ön koşuludur.</b> Diğer üç şık aktiviteyi normal olarak sonlandırma koşullarıdır. Kanca: en<b>TR</b>y = gi<b>R</b>iş. Dosya: <b>5.1a</b>"
+    },
+    {
+      topic: "5.1 Kestirim",
+      q: "The optimistic estimate is 4 days, the most likely 7 days, and the pessimistic 16 days. What is the three-point estimate?",
+      opts: ["8 days", "9 days", "7 days", "10 days"],
+      a: [0],
+      why: "<b>E = (4 + 4×7 + 16) / 6 = (4 + 28 + 16) / 6 = 48 / 6 = 8.</b> 9 cevabı düz ortalamadır ((4+7+16)/3) ve <code>m</code>'yi 4 ile çarpmayanın bulduğu değerdir. Kanca: <b>a, dört m, b — böl altıya.</b> Dosya: <b>5.1b</b>"
+    },
+    {
+      topic: "5.1 Testing quadrants",
+      q: "Security testing and load testing belong to which quadrant, and how are they typically performed?",
+      opts: [
+        "Q4, using tools",
+        "Q3, manually",
+        "Q1, automated at unit level",
+        "Q2, either automated or manual"
+      ],
+      a: [0],
+      why: "<b>Q4 teknolojiye dönüktür, ürünü eleştirir ve araç gerektirir.</b> Q3 de ürünü eleştirir ama iş tarafına dönüktür ve manuel yapılır (keşif, kullanılabilirlik, UAT). İki quadrant'ı ayıran eksen 'iş mi teknoloji mi' sorusudur. Dosya: <b>5.1b</b>"
+    },
+    {
+      topic: "5.2 Risk yönetimi",
+      q: "Which of the following is a PRODUCT risk?",
+      opts: [
+        "The system may fail to encrypt personal data in transit",
+        "A key supplier may go out of business",
+        "The team may lack experience with the new framework",
+        "The test environment may be delayed by three weeks"
+      ],
+      a: [0],
+      why: "<b>Şifrelemenin başarısız olması iş ürününün kalitesiyle ilgilidir ve testle doğrudan azaltılır.</b> Diğer üç şık tedarikçi, organizasyonel ve teknik kategorilerdeki proje riskleridir ve yönetim tedbirleriyle ele alınır. Dosya: <b>5.2</b>"
+    },
+    {
+      topic: "5.2 Risk yönetimi",
+      q: "Risk A has likelihood 5 and impact 1. Risk B has likelihood 2 and impact 5. Which statement is correct?",
+      opts: [
+        "Risk B has the higher risk level and should receive more test effort",
+        "Risk A has the higher risk level because it occurs more often",
+        "The two risks have the same level and deserve equal effort",
+        "Risk levels cannot be compared without knowing the coverage"
+      ],
+      a: [0],
+      why: "<b>Risk seviyesi = olasılık × etki: A = 5, B = 10.</b> Yüksek olasılık tek başına yüksek risk üretmez — sık oluşan ama önemsiz bir sorun düşük risklidir. Test eforu B'ye yönlendirilmelidir. Dosya: <b>5.2</b>"
+    },
+    {
+      topic: "5.3 İzleme ve kontrol",
+      q: "Which of the following are TEST CONTROL actions? (Choose TWO.)",
+      opts: [
+        "Reallocating testers to a module where risk has increased",
+        "Revising the exit criteria after discussing the residual risk with stakeholders",
+        "Recording how many test cases were executed this week",
+        "Producing a chart of defects found per iteration"
+      ],
+      a: [0, 1],
+      why: "<b>Kaynak kaydırmak ve kriter gözden geçirmek düzeltici eylemlerdir, yani control.</b> Test sayısı kaydetmek ve grafik üretmek bilgi toplamadır, yani monitoring. Sınır <i>eylem</i>dir: ölçmek izleme, müdahale etmek kontroldür. Dosya: <b>5.3</b>"
+    },
+    {
+      topic: "5.3 Raporlama",
+      q: "Which report contains an evaluation of the quality achieved, the residual risk, and lessons learned?",
+      opts: ["The test completion report", "The test progress report", "The test plan", "The defect report"],
+      a: [0],
+      why: "<b>Kalan risk değerlendirmesi ve öğrenilen dersler yalnızca test completion report'ta bulunur.</b> Progress report devam eden dönemi anlatır: durum, sapmalar, engelleyiciler ve sonraki dönem planı. Kanca: <b>completion = bitti ve ders çıkardık.</b> Dosya: <b>5.3</b>"
+    },
+    {
+      topic: "5.4 Konfigürasyon yönetimi",
+      q: "A defect report says the application crashes, but the developer cannot reproduce it. Which configuration management shortcoming is the MOST likely cause?",
+      opts: [
+        "The exact version of the test object and test data was not identified in the report",
+        "The defect was not assigned a severity",
+        "The test case was not reviewed before execution",
+        "The exit criteria were not defined for the test level"
+      ],
+      a: [0],
+      why: "<b>Hangi build ve hangi veriyle kusurun ortaya çıktığı bilinmezse yeniden üretim mümkün olmaz</b> — ve bu tip kusurlar tipik olarak 'reproduce edilemedi' diye kapanır. CM'in benzersiz tanımlama ve sürümleme işlevi tam olarak bunu önler. Dosya: <b>5.4</b>"
+    },
+    {
+      topic: "5.5 Kusur yönetimi",
+      q: "An administrative screen used by two people once a month becomes completely unusable. How should this defect MOST appropriately be classified?",
+      opts: [
+        "High severity, low priority",
+        "High severity, high priority",
+        "Low severity, low priority",
+        "Low severity, high priority"
+      ],
+      a: [0],
+      why: "<b>Ekranın tamamen kullanılamaz olması yüksek teknik etkidir (severity), ama iki kişiyi ayda bir etkilemesi düşük aciliyet demektir (priority).</b> Severity ve priority bağımsız eksenlerdir ve dört kombinasyon da gerçekte karşımıza çıkar. Dosya: <b>5.5</b>"
+    },
+    {
+      topic: "6.1 Araç desteği",
+      q: "Which of the following activities can be supported by tools? (Choose TWO.)",
+      opts: [
+        "Detecting coding standard violations across a large codebase",
+        "Managing traceability between requirements, tests and defects",
+        "Deciding whether the residual risk is acceptable to the business",
+        "Judging whether error messages are understandable to novice users"
+      ],
+      a: [0, 1],
+      why: "<b>Statik analiz ve izlenebilirlik yönetimi tipik araç destekli aktivitelerdir.</b> Riskin kabul edilebilirliği bir iş kararıdır; mesajların anlaşılırlığı ise insan yargısıdır (Q3, manuel). Araçlar ölçer ve izler, karar vermez. Dosya: <b>6.1</b>"
+    },
+    {
+      topic: "6.2 Otomasyon riskleri",
+      q: "Which of the following is a RISK associated with introducing a test automation tool?",
+      opts: [
+        "Underestimating the effort needed to introduce, use and maintain the tool",
+        "Achieving more repeatable test execution",
+        "Freeing testers to perform exploratory testing",
+        "Providing objective coverage measurements"
+      ],
+      a: [0],
+      why: "<b>Aracın tanıtılması, anlamlı kullanımı ve bakımı için gereken eforun hafife alınması, müfredatın açıkça saydığı bir risktir.</b> Diğer üç şık otomasyonun faydalarıdır; soru <code>RISK</code> diye büyük harfle uyarıyor. Dosya: <b>6.2</b>"
+    },
+    {
+      topic: "6.2 Otomasyonun sınırı",
+      q: "Which statement about test automation is correct?",
+      opts: [
+        "Automating a poorly designed test suite makes ineffective tests run faster and adds maintenance cost",
+        "Automation improves the quality of the tests being automated",
+        "Automation removes the need for configuration management of test assets",
+        "Automation eliminates the pesticide paradox"
+      ],
+      a: [0],
+      why: "<b>Otomasyon bir çarpandır: iyi bir süreci hızlandırır, kötü bir süreci daha hızlı kötüleştirir.</b> Önce suite gözden geçirilmelidir (prensip 5). Otomasyon ne test kalitesini yükseltir, ne CM ihtiyacını kaldırır, ne de yıpranmayı engeller. Dosya: <b>6.2</b>"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

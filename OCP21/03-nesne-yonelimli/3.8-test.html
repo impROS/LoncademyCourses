@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.8 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.8",
+  code: "OOP · 3.8",
+  title: "İç Sınıflar (Nested Classes)",
+  back: "3.8-ic-siniflar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Üretim sözdizimi",
+      q: "<pre>class Dis {\n    class Ic { }\n}\n\nDis.Ic i = new Dis.Ic();</pre>What is the result?",
+      opts: [
+        "Compilation fails because an inner class requires an enclosing instance.",
+        "The code compiles.",
+        "Compilation fails because Ic must be declared static.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "<code>static</code> olmayan bir iç sınıf, dış sınıfın <b>örneğine gizli bir referans</b> taşır; bu yüzden bir dış örnek olmadan üretilemez. Doğru sözdizimi: <code>new Dis().new Ic()</code> — <code>new</code> anahtar kelimesi <b>noktadan sonra</b> gelir. <br><code>Ic</code>'i <code>static</code> yapmak <b>bir çözümdür</b> ama zorunluluk değil; kod olduğu gibi de doğru sözdizimiyle derlenir."
+    },
+    {
+      topic: "Erişim kuralları",
+      q: "<pre>class Dis {\n    int x = 1;\n    static int sx = 2;\n    static class N {\n        int m() { return x + sx; }\n    }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because x cannot be referenced from a static nested class.",
+        "3",
+        "Compilation fails because sx cannot be referenced from a nested class.",
+        "The code compiles and m() returns 2."
+      ],
+      a: [0],
+      why: "<code>static</code> iç sınıfın dış <b>örneğe</b> referansı yoktur, bu yüzden örnek alanı <code>x</code>'e erişemez — tıpkı statik bir metodun erişemediği gibi (3.2). Statik alan <code>sx</code>'e erişmek ise serbesttir. <br><code>static</code> olmayan (inner) bir sınıf olsaydı <b>her ikisine de</b> erişirdi, <code>private</code> olsalar bile."
+    },
+    {
+      topic: "Gölgeleme",
+      q: "<pre>class Dis {\n    int x = 1;\n    class Ic {\n        int x = 2;\n        void m() {\n            int x = 3;\n            System.out.print(x + \"\" + this.x + Dis.this.x);\n        }\n    }\n}</pre>What is printed by <code>m()</code>?",
+      opts: [
+        "321",
+        "123",
+        "333",
+        "111"
+      ],
+      a: [0],
+      why: "En içteki bildirim kazanır: yalın <code>x</code> <b>yerel değişkendir</b> (3). <code>this.x</code> <b>iç sınıfın</b> alanıdır (2). <code>Dis.this.x</code> <b>dış sınıfın</b> alanıdır (1). <br><b>Kanca:</b> <code>DisSinif.this</code> sözdizimi yalnızca <code>static</code> olmayan iç sınıflarda geçerlidir — çünkü yalnızca onların dış örneğe referansı vardır."
+    },
+    {
+      topic: "Local sınıflar",
+      q: "<pre>void m() {\n    public class Yerel { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a local class cannot have an access modifier.",
+        "The code compiles.",
+        "Compilation fails because a local class must be static.",
+        "Compilation fails because a local class cannot be declared inside a void method."
+      ],
+      a: [0],
+      why: "Local sınıflar yalnızca bildirildikleri <b>blok içinde</b> görünür; dışarıdan zaten erişilemedikleri için <code>public</code>, <code>private</code>, <code>protected</code> yazmak anlamsızdır ve <b>yasaktır</b>. <br><code>final</code> ve <code>abstract</code> ise <b>yazılabilir</b>. Metodun dönüş tipi hiçbir kısıt getirmez."
+    },
+    {
+      topic: "Local sınıflar",
+      q: "<pre>void m() {\n    int i = 0;\n    Runnable r = () -> System.out.println(i);\n    i++;\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because i is not effectively final.",
+        "The code compiles and prints 0.",
+        "The code compiles and prints 1.",
+        "Compilation fails because a lambda cannot print."
+      ],
+      a: [0],
+      why: "Lambda'lar, anonim sınıflar ve local sınıflar yalnızca <b>effectively final</b> yerel değişkenleri yakalayabilir — yani hiç yeniden atanmamış olanları. <code>i++</code> bu niteliği bozar ve hata <b>lambda satırında</b> raporlanır. <br>Sebep: yakalanan değer bir <b>kopyadır</b>; değişkenin sonradan değişmesi kopyayı güncellemeyeceği için Java bu tutarsızlığı baştan yasaklar."
+    },
+    {
+      topic: "Java 16 değişikliği",
+      q: "<pre>class Dis {\n    class Ic {\n        static int SAYAC = 0;\n    }\n}</pre>What is the result in Java 21?",
+      opts: [
+        "The code compiles because inner classes may declare static members since Java 16.",
+        "Compilation fails because an inner class cannot declare static members.",
+        "Compilation fails because the field must be final.",
+        "The code compiles only if Ic is declared static."
+      ],
+      a: [0],
+      why: "Java 16'ya kadar <code>static</code> olmayan iç sınıflar <b>yalnızca <code>static final</code> sabit</b> bildirebiliyordu. Java 16'dan itibaren bu kısıt kaldırıldı — inner ve local sınıflar artık her türlü <code>static</code> üyeyi bildirebilir. <br><b>Uyarı:</b> Eski OCP kaynakları (Java 11/17 öncesi) bu soruya \"derlenmez\" der; 1Z0-830 için <b>güncel kural</b> geçerlidir."
+    },
+    {
+      topic: "Anonim sınıflar",
+      q: "<pre>Runnable r = new Runnable() {\n    public void run() { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a semicolon is missing.",
+        "The code compiles.",
+        "Compilation fails because Runnable is an interface and cannot be instantiated.",
+        "Compilation fails because run() must be declared in a named class."
+      ],
+      a: [0],
+      why: "Anonim sınıf bir <b>ifadedir</b>, bildirim değil — bu yüzden atama deyimi <b>noktalı virgülle</b> bitmek zorundadır. Kapanış parantezinden sonra <code>;</code> gelir. <br><code>new Runnable() { ... }</code> yazımı arayüzü <b>örneklemez</b>; isimsiz bir uygulayan sınıf tanımlayıp onu örnekler."
+    },
+    {
+      topic: "Anonim sınıflar",
+      q: "Which statements about anonymous classes are correct? (Choose TWO.)",
+      opts: [
+        "An anonymous class cannot declare a constructor.",
+        "An anonymous class can extend exactly one class or implement exactly one interface.",
+        "An anonymous class can implement two interfaces at once.",
+        "An anonymous class can be declared static."
+      ],
+      a: [0, 1],
+      why: "Anonim sınıfın <b>adı yoktur</b>, constructor da sınıf adını gerektirdiği için bildirilemez — kurulum kodu <b>initializer bloğuna</b> yazılır, üst sınıf argümanları ise <code>new Tip(arg) { }</code> ile verilir. <br>Anonim sınıf <b>tam olarak bir</b> tipi genişletir veya uygular; iki arayüz veya <code>static</code> belirteci mümkün değildir."
+    },
+    {
+      topic: "this farkı",
+      q: "Inside an anonymous class body and inside a lambda body, what does <code>this</code> refer to?",
+      opts: [
+        "In an anonymous class it refers to the anonymous instance; in a lambda it refers to the enclosing instance.",
+        "In both cases it refers to the enclosing instance.",
+        "In both cases it refers to the newly created instance.",
+        "In an anonymous class it refers to the enclosing instance; in a lambda it is undefined."
+      ],
+      a: [0],
+      why: "Anonim sınıf gerçek bir <b>yeni sınıftır</b> ve kendi <code>this</code>'ini getirir. Lambda ise yeni bir kapsam açmaz — <code>this</code>, <code>toString</code>, alanlar hepsi <b>çevreleyen sınıfa</b> aittir. <br>Bu, lambda'nın \"anonim sınıfın kısa yazımı\" <b>olmadığını</b> gösteren en somut farktır ve sınavda sorulur."
+    },
+    {
+      topic: "Dört tür",
+      q: "Which nested types are implicitly static? (Choose TWO.)",
+      opts: [
+        "A record declared inside a class.",
+        "An enum declared inside a class.",
+        "A class declared inside a class without the static keyword.",
+        "A class declared inside a method."
+      ],
+      a: [0, 1],
+      why: "İç içe <code>record</code>, <code>enum</code> ve <code>interface</code> bildirimleri <b>örtük olarak <code>static</code></b>'tir; dış örneğe bağlı değildirler ve <code>new Dis.Ic(...)</code> ile üretilirler. <br><code>static</code> yazılmadan bildirilen bir <b>sınıf</b> ise inner'dır (dış örneğe bağlıdır); metot içindeki sınıf ise local'dir."
+    },
+    {
+      topic: "Erişim kuralları",
+      q: "<pre>class Dis {\n    private int gizli = 42;\n    class Ic {\n        int oku() { return gizli; }\n    }\n}</pre>What is the result?",
+      opts: [
+        "The code compiles; an inner class can access private members of the enclosing class.",
+        "Compilation fails because gizli is private.",
+        "Compilation fails because Ic must declare gizli as protected.",
+        "The code compiles but oku() returns 0."
+      ],
+      a: [0],
+      why: "İç sınıflar dış sınıfın <b>tüm</b> üyelerine, <code>private</code> olanlar dahil erişebilir — ikisi de aynı üst düzey sınıfın parçasıdır. Derleyici gerektiğinde köprü (bridge) metotları üretir. <br>Ters yön de doğrudur: dış sınıf, iç sınıfın <code>private</code> üyelerine erişebilir."
+    },
+    {
+      topic: "Üretim sözdizimi",
+      q: "<pre>class Dis {\n    static class N { }\n}</pre>Which statement correctly creates an instance of N?",
+      opts: [
+        "new Dis.N()",
+        "new Dis().new N()",
+        "Dis.new N()",
+        "new N.Dis()"
+      ],
+      a: [0],
+      why: "<code>static</code> iç sınıf dış örneğe bağlı olmadığı için doğrudan <b>nitelenmiş adıyla</b> üretilir: <code>new Dis.N()</code>. <br><code>new Dis().new N()</code> sözdizimi <b>inner</b> (static olmayan) sınıflar içindir ve burada derleme hatası verir. Diğer iki yazım hiç geçerli değildir."
+    },
+    {
+      topic: "Anonim sınıflar",
+      q: "<pre>abstract class Sekil {\n    Sekil(String ad) { }\n    abstract double alan();\n}\n\nSekil s = new Sekil(\"kare\") {\n    double alan() { return 1; }\n};</pre>What is the result?",
+      opts: [
+        "The code compiles; the argument is passed to the superclass constructor.",
+        "Compilation fails because an anonymous class cannot take constructor arguments.",
+        "Compilation fails because an abstract class cannot be instantiated.",
+        "Compilation fails because alan() must be public."
+      ],
+      a: [0],
+      why: "Anonim sınıfın kendi constructor'ı yoktur ama <code>new Tip(arg) { }</code> yazımındaki argümanlar <b>üst sınıfın constructor'ına</b> iletilir. Bu, abstract sınıfların anonim alt sınıfla \"örneklenmesinin\" standart yoludur. <br><code>alan()</code>'ın erişimi üst bildirimle aynı seviyededir; daraltma olmadığı için sorun yoktur (3.4)."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

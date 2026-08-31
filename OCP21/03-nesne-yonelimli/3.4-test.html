@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.4 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-3.4",
+  code: "OOP · 3.4",
+  title: "Kalıtım, Override, Polimorfizm ve Cast",
+  back: "3.4-kalitim-ve-polimorfizm.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Override mi hiding mi",
+      q: "<pre>class Ust {\n    String ad = \"ust\";\n    String i() { return \"ust-i\"; }\n}\nclass Alt extends Ust {\n    String ad = \"alt\";\n    String i() { return \"alt-i\"; }\n}\n\nUst u = new Alt();\nSystem.out.println(u.ad + \" \" + u.i());</pre>What is the result?",
+      opts: [
+        "ust alt-i",
+        "alt alt-i",
+        "ust ust-i",
+        "alt ust-i"
+      ],
+      a: [0],
+      why: "<b>Alanlar override edilmez, gizlenir (hiding)</b> ve erişim <b>referansın bildirilmiş tipine</b> göre çözülür → <code>ust</code>. Örnek metotlar ise <b>dinamik bağlanır</b>, yani <b>nesnenin gerçek tipine</b> göre → <code>alt-i</code>. <b>Kanca:</b> \"Metot nesneye, alan referansa.\" Bu tek cümle bu konudaki soruların yarısını çözer."
+    },
+    {
+      topic: "Override mi hiding mi",
+      q: "<pre>class Ust { static String s() { return \"ust\"; } }\nclass Alt extends Ust { static String s() { return \"alt\"; } }\n\nUst u = new Alt();\nSystem.out.println(u.s());</pre>What is the result?",
+      opts: [
+        "ust",
+        "alt",
+        "Compilation fails because a static method cannot be redeclared.",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "Statik metotlar <b>override edilmez, gizlenir</b>; çağrı derleme zamanında <b>referansın tipine</b> göre bağlanır → <code>ust</code>. <br>Statik metodu alt sınıfta yeniden bildirmek <b>yasak değildir</b> (aynı imzayla) — yalnızca polimorfik davranmaz. <b>Kanca:</b> Statik üyeye örnek referansı üzerinden erişmek zaten stil hatasıdır; sınav bunu tuzak olarak kullanır."
+    },
+    {
+      topic: "Override kuralları",
+      q: "<pre>class A { public void m() {} }\nclass B extends A { void m() {} }</pre>What is the result?",
+      opts: [
+        "Compilation fails because the overriding method has weaker access privileges.",
+        "The code compiles.",
+        "Compilation fails because m must be declared final in A.",
+        "Compilation fails because B must call super.m()."
+      ],
+      a: [0],
+      why: "Override eden metot erişimi <b>daraltamaz</b>; belirteçsiz (paket-özel) <code>public</code>'ten dardır. Sıra: <code>private</code> &lt; paket-özel &lt; <code>protected</code> &lt; <code>public</code> — alt sınıf aynı seviyede veya <b>daha açık</b> olabilir. <b>Kanca:</b> Bu kural Liskov ilkesinden gelir: alt tip, üst tipin sözünü tutmalıdır."
+    },
+    {
+      topic: "Override kuralları",
+      q: "<pre>class A { Object m() { return null; } }\nclass B extends A { String m() { return \"\"; } }</pre>What is the result?",
+      opts: [
+        "The code compiles because the return type is covariant.",
+        "Compilation fails because the return types differ.",
+        "Compilation fails because String is not a subtype of Object.",
+        "The code compiles but m in B is an overload."
+      ],
+      a: [0],
+      why: "Java 5'ten beri <b>covariant dönüş tipi</b> desteklenir: override eden metot, üst metodun dönüş tipinin <b>alt tipini</b> döndürebilir. <code>String</code> bir <code>Object</code>'tir, bu yüzden geçerlidir. <br>Ters yön (<code>String</code> → <code>Object</code>) <b>derleme hatasıdır</b>. Overload olmaz — imza yalnızca ad ve parametrelerden oluşur (3.2)."
+    },
+    {
+      topic: "Override kuralları",
+      q: "Which changes are allowed when overriding a method? (Choose TWO.)",
+      opts: [
+        "Declaring fewer checked exceptions than the overridden method.",
+        "Widening the access from protected to public.",
+        "Declaring a new checked exception that the parent does not declare.",
+        "Changing the return type from String to Object."
+      ],
+      a: [0, 1],
+      why: "Override eden metot <b>daha az</b> (veya daha dar) checked exception bildirebilir — hiç bildirmemek de serbesttir. Erişimi <b>genişletmek</b> de serbesttir. <br>Yeni bir checked exception eklemek yasaktır (unchecked serbest). Dönüş tipini <b>genişletmek</b> de yasaktır; yalnızca daraltılabilir (covariant)."
+    },
+    {
+      topic: "Override kuralları",
+      q: "<pre>class A { public final void m() {} }\nclass B extends A { public void m() {} }</pre>What is the result?",
+      opts: [
+        "Compilation fails because m() is final in A.",
+        "The code compiles and B.m() overrides A.m().",
+        "The code compiles but B.m() hides A.m().",
+        "Compilation fails because B must be declared final."
+      ],
+      a: [0],
+      why: "<code>final</code> bir metot <b>override edilemez</b> — <i>cannot override; overridden method is final</i>. Aynı şekilde <code>final</code> bir sınıf genişletilemez. <br>Hiding yalnızca <b>statik</b> metotlarda ve alanlarda söz konusudur; <code>final</code> bir örnek metodu için böyle bir kaçış yoktur."
+    },
+    {
+      topic: "private metotlar",
+      q: "<pre>class A {\n    private void m() { System.out.print(\"A\"); }\n    void cagir() { m(); }\n}\nclass B extends A {\n    void m() { System.out.print(\"B\"); }\n}\n\nnew B().cagir();</pre>What is the result?",
+      opts: [
+        "A",
+        "B",
+        "Compilation fails because B.m() has weaker access than A.m().",
+        "Nothing is printed."
+      ],
+      a: [0],
+      why: "<code>private</code> metotlar <b>kalıtılmaz</b>, bu yüzden <code>B.m()</code> bir override <b>değil</b>, tamamen yeni bir metottur. <code>A.cagir()</code> içindeki çağrı derleme zamanında <code>A</code>'nın kendi <code>m()</code>'ine bağlanır → <b>A</b>. <br>Erişim daraltma kuralı da işlemez, çünkü ortada override ilişkisi yoktur."
+    },
+    {
+      topic: "Cast",
+      q: "<pre>Object o = Integer.valueOf(5);\nString s = (String) o;</pre>What is the result?",
+      opts: [
+        "A ClassCastException is thrown at runtime.",
+        "Compilation fails.",
+        "The code runs and s is \"5\".",
+        "The code runs and s is null."
+      ],
+      a: [0],
+      why: "Değişkenin <b>bildirilmiş tipi</b> <code>Object</code> olduğu için derleyici cast'in mümkün olabileceğini varsayar ve izin verir; hata <b>çalışma zamanında</b> gerçek tip kontrol edilince gelir. <br>Değişken doğrudan <code>Integer i = 5;</code> olsaydı <code>(String) i</code> <b>derleme hatası</b> verirdi (<i>inconvertible types</i>) — ilişkisiz tipler."
+    },
+    {
+      topic: "Cast",
+      q: "<pre>System.out.println((String) null);\nSystem.out.println(null instanceof String);</pre>What is the result?",
+      opts: [
+        "null false",
+        "A NullPointerException is thrown at runtime.",
+        "null true",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>null</code> her referans tipine cast edilebilir ve cast <b>exception atmaz</b>; <code>println</code> null referansı <code>\"null\"</code> metnine çevirir. <br><code>instanceof</code> <code>null</code> için <b>her zaman <code>false</code></b> döner — bu yüzden <code>if (o instanceof X x)</code> yazımı null kontrolünü de içerir ve ayrıca null denetimi gerekmez."
+    },
+    {
+      topic: "Polimorfizm",
+      q: "<pre>class A { void m() {} }\nclass B extends A { void ozel() {} }\n\nA a = new B();\na.ozel();</pre>What is the result?",
+      opts: [
+        "Compilation fails because ozel() is not defined in A.",
+        "The code compiles and runs.",
+        "A ClassCastException is thrown at runtime.",
+        "Compilation fails because B must override m()."
+      ],
+      a: [0],
+      why: "<b>Referansın tipi neyi çağırabileceğini belirler</b>; nesnenin gerçekte <code>B</code> olması derleyiciyi ilgilendirmez. <code>A</code> arayüzünde <code>ozel()</code> yoktur → <i>cannot find symbol</i>. <br>Çözüm: <code>((B) a).ozel();</code> veya <code>if (a instanceof B b) b.ozel();</code>. <b>Kanca:</b> \"Referans neyi görebileceğini, nesne hangi gövdenin çalışacağını söyler.\""
+    },
+    {
+      topic: "equals ve hashCode",
+      q: "<pre>class P {\n    int x;\n    P(int x) { this.x = x; }\n    public boolean equals(P p) { return p.x == x; }\n    public int hashCode() { return x; }\n}\n\nSet&lt;P&gt; s = new HashSet&lt;&gt;();\ns.add(new P(1));\ns.add(new P(1));\nSystem.out.println(s.size());</pre>What is the result?",
+      opts: [
+        "2",
+        "1",
+        "Compilation fails.",
+        "0"
+      ],
+      a: [0],
+      why: "<code>equals(P)</code> bir <b>overload</b>'dur, override değil — <code>Object.equals(Object)</code> hâlâ yürürlüktedir ve referans karşılaştırır. <code>HashSet</code> her zaman <b><code>Object</code> parametreli</b> sürümü çağırdığı için iki nesne farklı sayılır → <b>2</b>. <br><code>@Override</code> yazsaydın derleyici bunu <b>derleme zamanında</b> yakalardı; annotation'ın tek işlevi budur."
+    },
+    {
+      topic: "equals ve hashCode",
+      q: "Which statements about the equals/hashCode contract are correct? (Choose TWO.)",
+      opts: [
+        "If two objects are equal according to equals, they must have the same hashCode.",
+        "x.equals(null) must return false and must not throw an exception.",
+        "If two objects have the same hashCode, they must be equal.",
+        "Overriding equals without overriding hashCode causes a compilation error."
+      ],
+      a: [0, 1],
+      why: "Sözleşme <b>tek yönlüdür</b>: eşit nesnelerin hash'i eşit olmak zorundadır. Tersi <b>şart değildir</b> — farklı nesneler aynı hash'e düşebilir (collision), bu normaldir. <code>equals(null)</code> her zaman <code>false</code> dönmelidir. <br><code>hashCode</code>'u atlamak <b>derleme hatası değildir</b> — sessizce yanlış çalışan bir <code>HashSet</code>/<code>HashMap</code> üretir; asıl tehlike budur."
+    },
+    {
+      topic: "Kalıtım temelleri",
+      q: "<pre>class A { void m() {} }\nclass B extends A { void m() {} }\nclass C extends B {\n    void deneme() { super.super.m(); }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because super.super is not valid Java syntax.",
+        "The code compiles and calls A.m().",
+        "The code compiles and calls B.m().",
+        "Compilation fails because m() is not visible in C."
+      ],
+      a: [0],
+      why: "Java'da <code>super.super</code> diye bir sözdizimi <b>yoktur</b>. Bir sınıf yalnızca <b>doğrudan</b> üst sınıfının sürümüne <code>super.m()</code> ile ulaşabilir; iki seviye yukarı atlamak kapsüllemeyi bozacağı için bilinçli olarak yasaklanmıştır. <b>Kanca:</b> Şıklarda <code>super.super</code> görürsen cevap her zaman \"Compilation fails\"tir."
+    },
+    {
+      topic: "Kalıtım temelleri",
+      q: "Which of the following can a subclass inherit from its superclass? (Choose TWO.)",
+      opts: [
+        "public instance methods",
+        "protected fields",
+        "constructors",
+        "private methods"
+      ],
+      a: [0, 1],
+      why: "<code>public</code> ve <code>protected</code> üyeler alt sınıfa <b>kalıtılır</b> (paket-özel üyeler yalnızca aynı pakette). <br><b>Constructor'lar kalıtılmaz</b> — alt sınıf kendi constructor'ını yazar ve <code>super(...)</code> ile üsttekini çağırır. <code>private</code> üyeler de kalıtılmaz; alt sınıftan görünmezler."
+    },
+    {
+      topic: "Override kuralları",
+      q: "<pre>class A { public void m() throws java.io.IOException {} }\nclass B extends A { public void m() throws Exception {} }</pre>What is the result?",
+      opts: [
+        "Compilation fails because Exception is broader than IOException.",
+        "The code compiles.",
+        "Compilation fails because m cannot declare any exception in B.",
+        "The code compiles but B.m() is an overload."
+      ],
+      a: [0],
+      why: "Override eden metot, üst metodun bildirdiğinden <b>daha geniş</b> bir checked exception bildiremez; <code>Exception</code> <code>IOException</code>'ın üst tipidir. Çağıran kod <code>A</code> tipiyle çalışırken yalnızca <code>IOException</code>'a hazırlanmıştır. <br><code>RuntimeException</code> türevleri (unchecked) ise <b>serbestçe</b> eklenebilir — derleyici onları takip etmez."
+    },
+    {
+      topic: "Polimorfizm",
+      q: "<pre>class A { void m() { System.out.print(\"A\"); } }\nclass B extends A { void m() { super.m(); System.out.print(\"B\"); } }\nclass C extends B { void m() { super.m(); System.out.print(\"C\"); } }\n\nnew C().m();</pre>What is the result?",
+      opts: [
+        "ABC",
+        "CBA",
+        "C",
+        "AC"
+      ],
+      a: [0],
+      why: "<code>C.m()</code> önce <code>super.m()</code> yani <code>B.m()</code>'i çağırır; o da önce <code>A.m()</code>'i çağırır. Yazdırma <b>geri dönüş sırasında</b> gerçekleşir: en derindeki önce → <b>ABC</b>. <br><code>super.m()</code> çağrısı <b>dinamik bağlanmaz</b>; doğrudan o sınıfın üst sürümüne gider, aksi hâlde sonsuz döngü olurdu."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

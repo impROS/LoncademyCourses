@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2a Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-4-2a",
+  code: "Test Analysis and Design · 4.2a",
+  title: "Eşdeğerlik Bölümleme ve Sınır Değer Analizi",
+  back: "4.2a-ep-bva.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe. Bu K3 bir konu — kâğıt kalem kullan.",
+  questions: [
+    {
+      topic: "Eşdeğerlik bölümleme",
+      q: "An input field accepts integers from 10 to 99 inclusive. All other values are rejected. How many equivalence partitions exist, and how many test cases are needed for 100% equivalence partition coverage?",
+      opts: [
+        "3 partitions, 3 test cases",
+        "2 partitions, 2 test cases",
+        "4 partitions, 4 test cases",
+        "3 partitions, 6 test cases"
+      ],
+      a: [0],
+      why: "<b>Bölümler: &lt;10 (invalid), 10–99 (valid), &gt;99 (invalid) = 3 bölüm.</b> %100 EP kapsamı her bölümden <i>bir</i> değer ister, dolayısıyla 3 test case yeterlidir. Son şık BVA ile karıştırıyor — EP bölüm başına tek değer alır."
+    },
+    {
+      topic: "2-value BVA",
+      q: "Using 2-value boundary value analysis on a field that accepts integers from 10 to 99 inclusive, which set of values should be tested?",
+      opts: [
+        "9, 10, 99, 100",
+        "10, 11, 98, 99",
+        "9, 10, 11, 98, 99, 100",
+        "10, 50, 99"
+      ],
+      a: [0],
+      why: "<b>2-value BVA her sınır için sınırın kendisini ve komşu bölümdeki en yakın değeri alır.</b> Sınır 10 → 9 ve 10; sınır 99 → 99 ve 100. Üçüncü şık 3-value BVA'nın cevabıdır; sorunun <code>2-value</code> ifadesini kaçırırsan onu seçersin."
+    },
+    {
+      topic: "3-value BVA",
+      q: "Using 3-value boundary value analysis on the same field (integers from 10 to 99 inclusive), which set of values should be tested?",
+      opts: [
+        "9, 10, 11, 98, 99, 100",
+        "9, 10, 99, 100",
+        "8, 9, 10, 99, 100, 101",
+        "10, 11, 12, 97, 98, 99"
+      ],
+      a: [0],
+      why: "<b>3-value BVA her sınır için sınır−1, sınır ve sınır+1'i alır.</b> Sınır 10 → 9, 10, 11; sınır 99 → 98, 99, 100. İkinci şık 2-value cevabıdır. Üçüncü şık sınırları 9 ve 100 sanmış — sınırlar bölümün <i>kendi</i> uç değerleridir."
+    },
+    {
+      topic: "Sınır belirleme",
+      q: "A password must be LONGER than 8 characters and SHORTER than 20 characters. What are the boundaries of the valid partition?",
+      opts: ["9 and 19", "8 and 20", "8 and 19", "9 and 20"],
+      a: [0],
+      why: "<b>'Longer than 8' 8'i dışlar, dolayısıyla en küçük geçerli değer 9'dur; 'shorter than 20' 20'yi dışlar, en büyük geçerli değer 19'dur.</b> Sınır, geçerli bölümün <i>kendi</i> uç değeridir. Bu soru tipi sınavda kelime okumayla çözülür — <code>longer/shorter</code> ile <code>between</code> arasındaki farkı kaçırma."
+    },
+    {
+      topic: "Sınır belirleme",
+      q: "A field accepts values BETWEEN 1 and 99. Using 2-value BVA, which values test the lower boundary?",
+      opts: ["0 and 1", "1 and 2", "0 and 2", "1 and 99"],
+      a: [0],
+      why: "<b>'Between 1 and 99' ifadesinde sınırlar dahil kabul edilir, dolayısıyla alt sınır 1'dir.</b> 2-value BVA sınırın kendisini (1) ve komşu geçersiz bölümdeki en yakın değeri (0) alır. İkinci şık 1 ve 2 diyerek geçersiz tarafı hiç test etmiyor."
+    },
+    {
+      topic: "Bitişik bölümlerde sınırlar",
+      q: "A shipping fee is 30 for weights 0–5 kg and 50 for weights 6–20 kg. Using 2-value BVA, which values test the boundary BETWEEN these two partitions?",
+      opts: ["5 and 6", "5 and 7", "4 and 6", "6 and 7"],
+      a: [0],
+      why: "<b>Bitişik iki bölümde üst sınır (5) ve alt sınır (6) birbirinin komşusudur; 2-value BVA ikisini birden alır.</b> Bu çakışma yüzünden bitişik bölümler için ayrı ayrı çarpma yapmak sayıyı şişirir — her zaman <i>benzersiz</i> değerleri say."
+    },
+    {
+      topic: "Bitişik bölümlerde sınırlar",
+      q: "Parking fees are: 20 for 1–3 hours, 45 for 4–8 hours, 80 for 9–24 hours. Values below 1 and above 24 are rejected. How many UNIQUE values are tested using 2-value BVA?",
+      opts: ["8", "12", "6", "10"],
+      a: [0],
+      why: "<b>Sınırlar 1, 3, 4, 8, 9, 24. Değerler: 0,1 · 3,4 · 3,4 · 8,9 · 8,9 · 24,25 → benzersiz 0, 1, 3, 4, 8, 9, 24, 25 = 8.</b> 12 cevabı 6 sınır × 2 kör çarpımıdır ve bitişik bölümlerdeki çakışmaları saymamıştır — sınavın tam olarak yakalamak istediği hata budur."
+    },
+    {
+      topic: "BVA ön koşulu",
+      q: "For which of the following can boundary value analysis NOT be applied?",
+      opts: [
+        "An input that accepts one of the values RED, GREEN or BLUE",
+        "An input that accepts integers from 1 to 100",
+        "An input that accepts dates between 01.01.2020 and 31.12.2025",
+        "An input that accepts a time of day between 08:00 and 18:00"
+      ],
+      a: [0],
+      why: "<b>BVA yalnızca sıralanabilir (ordered) bölümlerde uygulanır.</b> Renkler arasında 'bir öncesi' veya 'bir sonrası' yoktur, dolayısıyla sınır kavramı tanımsızdır. Sayı, tarih ve saat sıralanabilir olduğu için BVA uygulanabilir."
+    },
+    {
+      topic: "Fault masking",
+      q: "Why are invalid equivalence partitions usually tested one at a time, rather than combined in a single test case?",
+      opts: [
+        "Because one invalid value may mask the effect of another (fault masking)",
+        "Because invalid partitions cannot be combined mathematically",
+        "Because invalid partitions have no boundaries",
+        "Because combining them would exceed 100% coverage"
+      ],
+      a: [0],
+      why: "<b>İlk geçersiz değer hatayı tetikleyip işlemi durdurabilir; ikinci geçersiz değerin nasıl işlendiğini hiç göremezsin.</b> Buna fault masking denir. Buna karşılık <i>geçerli</i> bölümler tek bir testte birleştirilebilir — maskeleme riski yoktur."
+    },
+    {
+      topic: "EP ve BVA ilişkisi",
+      q: "Which statement about the relationship between equivalence partitioning and boundary value analysis is correct?",
+      opts: [
+        "BVA builds on equivalence partitioning: the boundaries are the edges of the partitions",
+        "BVA replaces equivalence partitioning, which is no longer needed",
+        "Equivalence partitioning can only be applied after BVA has been completed",
+        "The two techniques identify exactly the same test values"
+      ],
+      a: [0],
+      why: "<b>BVA'yı uygulayabilmek için önce bölümleri çıkarmış olman gerekir — sınır, bölümün kenarıdır.</b> İkisi tamamlayıcıdır: EP bölümün <i>içine</i>, BVA <i>kenarına</i> bakar ve farklı kusur sınıflarını yakalar."
+    },
+    {
+      topic: "EP kapsam ölçümü",
+      q: "A field has 2 valid partitions and 3 invalid partitions. Test cases have been executed for both valid partitions and for 1 invalid partition. What is the equivalence partition coverage?",
+      opts: ["60%", "100%", "40%", "66%"],
+      a: [0],
+      why: "<b>Toplam 5 bölüm var, 3'ü test edilmiş: 3/5 × 100 = %60.</b> %100 EP kapsamı hem geçerli <i>hem</i> geçersiz bölümlerin tamamını gerektirir — sadece geçerli bölümleri kapsamak %100 saymaz. Bu, kapsam formülünün doğrudan uygulanmasıdır."
+    },
+    {
+      topic: "EP kombinasyonu",
+      q: "Which statement about combining equivalence partitions in test cases is correct?",
+      opts: [
+        "Values from several valid partitions may be combined in one test case",
+        "Values from several invalid partitions should be combined to save time",
+        "Valid and invalid partitions must always be combined in the same test case",
+        "Each test case may contain at most one value in total"
+      ],
+      a: [0],
+      why: "<b>Farklı girdilerin geçerli değerleri tek bir testte birleştirilebilir</b>, çünkü hiçbiri hata tetiklemeyeceği için biri diğerini maskeleyemez. İkinci şık tam olarak fault masking'e yol açan hatalı pratiktir; üçüncü ve dördüncü şıklar uydurma kurallardır."
+    },
+    {
+      topic: "3-value BVA",
+      q: "A field accepts integers from 1 to 3 inclusive. How many UNIQUE values are tested using 3-value boundary value analysis?",
+      opts: ["5", "6", "4", "3"],
+      a: [0],
+      why: "<b>Sınır 1 → 0, 1, 2; sınır 3 → 2, 3, 4. Benzersiz: 0, 1, 2, 3, 4 = 5.</b> 6 cevabı 2 sınır × 3 kör çarpımıdır; değer 2 iki sınırın da komşusu olduğu için tekrarlanır. Dar aralıklarda çakışmayı kontrol etmek şart."
+    },
+    {
+      topic: "Eşdeğerlik bölümleme",
+      q: "What is the underlying assumption of equivalence partitioning?",
+      opts: [
+        "All values within one partition are processed in the same way, so testing one value represents the whole partition",
+        "All values within one partition will produce a failure",
+        "Boundaries between partitions are never a source of defects",
+        "Every value in a partition must be tested to achieve coverage"
+      ],
+      a: [0],
+      why: "<b>EP'nin temel varsayımı, bir bölümdeki tüm değerlerin aynı şekilde işlendiğidir</b> — bu yüzden bir temsilci yeterli sayılır. Üçüncü şık tam tersini iddia ediyor: kusurlar özellikle sınırlarda yoğunlaşır, BVA'nın var oluş sebebi budur."
+    },
+    {
+      topic: "EP ve BVA uygulaması",
+      q: "A method returns 20 TL for 1–3 hours and 45 TL for 4–8 hours. The code contains <code>if (hours &lt; 8) return 45;</code>. Which technique is MOST likely to reveal this defect?",
+      opts: [
+        "Boundary value analysis, by testing the value 8",
+        "Equivalence partitioning, by testing the value 6",
+        "Error guessing, by testing a negative value",
+        "Equivalence partitioning, by testing the value 2"
+      ],
+      a: [0],
+      why: "<b>Kusur tam olarak sınırda: 8 saat 45 TL olmalıyken 80 TL döner.</b> EP sana 4–8 bölümünden herhangi bir temsilci seçmeni söyler; 6 seçersen kusuru kaçırırsın. BVA ise sınır 8'i test etmeni <i>zorunlu</i> kılar. Bu, iki tekniğin farkının en net örneğidir."
+    },
+    {
+      topic: "Sınır belirleme",
+      q: "Which two statements about boundaries are correct? (Choose TWO.)",
+      opts: [
+        "A boundary is the minimum or maximum value of an ordered partition",
+        "Adjacent partitions can share boundary test values, so unique values should be counted",
+        "Every partition has exactly two boundaries, including unordered partitions",
+        "The boundary of a valid partition always lies inside the invalid partition"
+      ],
+      a: [0, 1],
+      why: "<b>Sınır, sıralanabilir bir bölümün en küçük veya en büyük değeridir; bitişik bölümlerde test değerleri çakışabilir.</b> Üçüncü şık sıralanamayan bölümlere sınır atfediyor. Dördüncü şık sınırın yerini yanlış koyuyor: sınır geçerli bölümün <i>içindedir</i>, komşusu geçersiz bölümdedir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

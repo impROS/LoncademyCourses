@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.1 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-4-1",
+  code: "Test Analysis and Design · 4.1",
+  title: "Test Tekniklerine Genel Bakış",
+  back: "4.1-teknikler-genel.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Teknik aileleri",
+      q: "Which category of test technique is based on an analysis of the internal structure of the test object?",
+      opts: ["White-box test techniques", "Black-box test techniques", "Experience-based test techniques", "Collaboration-based test approaches"],
+      a: [0],
+      why: "<b>Beyaz kutu teknikleri iç yapıya (kod, akış, mimari) dayanır.</b> Kara kutu belirtilmiş davranışa, deneyim tabanlı testerın bilgisine dayanır. Kanca: <b>white = içini görüyorsun.</b>"
+    },
+    {
+      topic: "Beyaz kutunun sınırı",
+      q: "A component achieves 100% branch coverage. Which type of defect can this NOT reveal?",
+      opts: [
+        "A specified feature that was never implemented in the code",
+        "A branch that is never executed by the existing tests",
+        "An unreachable statement in the code",
+        "A loop that terminates incorrectly on a covered path"
+      ],
+      a: [0],
+      why: "<b>Olmayan kodun kapsamı ölçülemez.</b> Spesifikasyonda tanımlı ama hiç yazılmamış bir özellik, %100 branch coverage'a rağmen görünmez — bu, beyaz kutu testinin en önemli kör noktasıdır ve kara kutu tekniklerinin neden vazgeçilmez olduğunu açıklar."
+    },
+    {
+      topic: "Teknik aileleri",
+      q: "Which statement about black-box test techniques is correct?",
+      opts: [
+        "They can be applied before the code exists, because they are based on the specified behavior",
+        "They require knowledge of the source code to be applied",
+        "Their coverage cannot be measured",
+        "They are only applicable at the component test level"
+      ],
+      a: [0],
+      why: "<b>Kara kutu teknikleri spesifikasyona dayandığı için kod yazılmadan uygulanabilir</b> — bu, shift left'i mümkün kılan özelliklerden biridir. Kapsamları ölçülebilir (kaç eşdeğerlik sınıfı kapsandı gibi) ve her seviyede kullanılabilirler."
+    },
+    {
+      topic: "Deneyim tabanlı tekniklerin sınırı",
+      q: "Why should experience-based techniques NOT be used as the only test techniques?",
+      opts: [
+        "Because their coverage cannot be measured and the results are not repeatable",
+        "Because they can only be applied by developers",
+        "Because they cannot find any defects that systematic techniques miss",
+        "Because they require access to the source code"
+      ],
+      a: [0],
+      why: "<b>Deneyim tabanlı tekniklerin kapsamı ölçülemez ve sonuçları testerdan testere değişir.</b> Üçüncü şık tam tersini söylüyor: bu teknikler tam olarak sistematik tekniklerin <i>kaçırdıklarını</i> bulmakta güçlüdür — bu yüzden dışlanmaz, tek başına kullanılmaz."
+    },
+    {
+      topic: "Teknik seçim faktörleri",
+      q: "Which of the following influence the choice of test technique? (Choose TWO.)",
+      opts: [
+        "The applicable regulatory standards",
+        "The knowledge and skills of the testers",
+        "The number of defects found in the previous project",
+        "The alphabetical order of the requirements"
+      ],
+      a: [0, 1],
+      why: "<b>Regülasyon belirli bir kapsam seviyesini zorunlu kılabilir; tester becerisi ise hangi tekniğin uygulanabilir olduğunu belirler</b> — kod bilmeyen bir ekip beyaz kutu tekniği uygulayamaz. Son iki şık teknik seçimini belirlemez."
+    },
+    {
+      topic: "Teknik seçim faktörleri",
+      q: "A regulatory standard requires that 100% branch coverage be demonstrated. Which category of technique MUST be used to satisfy this requirement?",
+      opts: [
+        "White-box test techniques",
+        "Black-box test techniques",
+        "Experience-based test techniques",
+        "Collaboration-based test approaches"
+      ],
+      a: [0],
+      why: "<b>Dal kapsamı yalnızca kodun iç yapısı üzerinden ölçülebilir, dolayısıyla beyaz kutu gerektirir.</b> Ama dikkat: bu, kara kutu tekniklerinin gereksiz olduğu anlamına gelmez — %100 dal kapsamı, hiç yazılmamış bir özelliği göstermez."
+    },
+    {
+      topic: "Kapsam kavramı",
+      q: "A test manager reports \"we achieved 100% coverage\". Why is this statement insufficient?",
+      opts: [
+        "Because the type of coverage item is not specified",
+        "Because coverage can never reach 100% in practice",
+        "Because coverage is only meaningful for experience-based techniques",
+        "Because coverage must always be reported as a fraction, not a percentage"
+      ],
+      a: [0],
+      why: "<b>Kapsam her zaman bir coverage item türüne göre söylenir</b>: statement coverage mı, branch coverage mı, eşdeğerlik sınıfı kapsamı mı? %100 statement coverage ile %100 branch coverage çok farklı güç seviyeleridir (4.3'te göreceksin)."
+    },
+    {
+      topic: "Kapsam kavramı",
+      q: "What is the correct formula for coverage?",
+      opts: [
+        "(number of coverage items exercised / total number of coverage items) × 100",
+        "(number of test cases executed / number of test cases designed) × 100",
+        "(number of defects found / number of defects expected) × 100",
+        "(number of passed tests / number of executed tests) × 100"
+      ],
+      a: [0],
+      why: "<b>Kapsam, uygulanan coverage item sayısının toplam coverage item sayısına oranıdır.</b> Diğer şıklar sırasıyla test yürütme ilerlemesini, kusur bulma oranını ve geçme oranını ölçer — bunlar Bölüm 5'in metrikleridir, kapsam değil."
+    },
+    {
+      topic: "Teknik aileleri",
+      q: "Which two statements about the relationship between black-box and white-box techniques are correct? (Choose TWO.)",
+      opts: [
+        "They are complementary and are typically used together",
+        "White-box techniques cannot detect functionality that was specified but never coded",
+        "Black-box techniques can measure statement and branch coverage",
+        "White-box techniques make black-box techniques unnecessary"
+      ],
+      a: [0, 1],
+      why: "<b>İki aile tamamlayıcıdır ve beyaz kutu, hiç yazılmamış işlevselliği göremez.</b> Üçüncü şık ölçüm yeteneğini yanlış aileye atıyor: statement/branch coverage beyaz kutu ölçüsüdür. Dördüncü şık iki tekniğin ilişkisini yanlış kuruyor."
+    },
+    {
+      topic: "İşbirliği tabanlı yaklaşımlar",
+      q: "A team notices that most of its defects come from misunderstood user stories. Which category of approach addresses this MOST directly?",
+      opts: [
+        "Collaboration-based test approaches",
+        "White-box test techniques",
+        "Experience-based test techniques",
+        "Boundary value analysis"
+      ],
+      a: [0],
+      why: "<b>Sorun kusur bulmakta değil, kusurun oluşmasında.</b> İşbirliği tabanlı yaklaşımların (ortak story yazımı, kabul kriterleri, ATDD) amacı kusuru <i>önlemektir</i>. Diğer üç şık ise var olan kusuru bulmaya yöneliktir — yanlış katmanda çözüm arar."
+    },
+    {
+      topic: "Teknik aileleri",
+      q: "Which category of technique relies on the tester's knowledge, experience and intuition rather than on a systematic derivation of test cases?",
+      opts: ["Experience-based test techniques", "Black-box test techniques", "White-box test techniques", "Decision table testing"],
+      a: [0],
+      why: "<b>Deneyim tabanlı teknikler testerın bilgisine dayanır ve sistematik türetme yapmaz.</b> Bu onların hem gücü (beklenmedik kusurları bulur) hem zayıflığıdır (ölçülemez, tekrarlanamaz). Karar tablosu ise sistematik bir kara kutu tekniğidir."
+    },
+    {
+      topic: "Teknik seçim faktörleri",
+      q: "A third-party module has been purchased. There is no documentation and no source code available. Which category of technique is MOST appropriate?",
+      opts: [
+        "Experience-based test techniques",
+        "White-box test techniques",
+        "Decision table testing based on the specification",
+        "Statement coverage measurement"
+      ],
+      a: [0],
+      why: "<b>Spesifikasyon yoksa kara kutu türetmesi zorlaşır; kaynak kod yoksa beyaz kutu imkânsızdır.</b> Geriye keşif testi ve hata tahmini gibi deneyim tabanlı teknikler kalır — bu, 'mevcut dokümantasyon' faktörünün teknik seçimini nasıl belirlediğinin en net örneğidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-7.1",
+  code: "Modüller · 7.1",
+  title: "Modül Tanımlama: exports, requires ve Servisler",
+  back: "7.1-modul-tanimlama.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "requires ve exports",
+      q: "Module <code>b</code> needs to use a public class from package <code>com.a</code> in module <code>a</code>. Which directives are required?",
+      opts: [
+        "exports com.a; in module a and requires a; in module b",
+        "requires com.a; in module a and exports a; in module b",
+        "exports com.a; in both modules",
+        "opens com.a; in module a and requires a; in module b"
+      ],
+      a: [0],
+      why: "<b><code>exports</code> dışarı bakar</b>: \"bu paketimi başkaları kullanabilir\". <b><code>requires</code> içeri bakar</b>: \"ben bu modüle bağımlıyım\". <br>Dikkat: <code>exports</code> bir <b>paket</b> adı alır, <code>requires</code> bir <b>modül</b> adı alır — sınav bu ikisini de yer değiştirerek sorar. <code>opens</code> ise derleme zamanı erişimi <b>vermez</b>, yalnızca yansıma içindir."
+    },
+    {
+      topic: "opens ve reflection",
+      q: "A framework needs reflective access to private fields of classes in package <code>com.model</code>. Which directive is required?",
+      opts: [
+        "opens com.model;",
+        "exports com.model;",
+        "requires com.model;",
+        "provides com.model;"
+      ],
+      a: [0],
+      why: "<code>exports</code> derleme ve çalışma zamanında <b>public</b> API'ye erişim verir ama <b>deep reflection</b>'a (private üyeler, <code>setAccessible</code>) izin vermez. Bunun için <b><code>opens</code></b> gerekir. <br>Bu yüzden Spring/Jackson/JPA kullanan modüller entity paketlerini <code>opens</code> eder. Tüm modülü açmak için <code>open module m { }</code> yazılır — ama o zaman ayrıca <code>opens</code> yazmak <b>derleme hatasıdır</b>."
+    },
+    {
+      topic: "requires transitive",
+      q: "<pre>module a { exports com.a; }\nmodule b { requires a; exports com.b; }\nmodule c { requires b; }</pre>Module <code>c</code> uses a method in <code>com.b</code> that returns a type from <code>com.a</code>, and fails to compile. What fixes it most appropriately?",
+      opts: [
+        "Change module b to requires transitive a;",
+        "Add exports com.a; to module c.",
+        "Add requires c; to module a.",
+        "Change module a to open module a."
+      ],
+      a: [0],
+      why: "Bir modülün <b>public API'si</b> başka bir modülün tiplerini sızdırıyorsa, o bağımlılık <b>kullananlara da geçmelidir</b> — bunu <code>requires transitive</code> sağlar. <br>Alternatif olarak <code>c</code>'ye <code>requires a;</code> eklenebilir ama bu <b>her tüketiciye</b> aynı yükü bindirir; doğru çözüm bağımlılığı <b>API'yi yayınlayan modülde</b> transitive yapmaktır."
+    },
+    {
+      topic: "Yönergeler",
+      q: "What does <code>requires static m;</code> mean?",
+      opts: [
+        "Module m is required at compile time but optional at runtime.",
+        "Only static members of module m are accessible.",
+        "Module m is loaded once and shared statically.",
+        "Module m is required at runtime but not at compile time."
+      ],
+      a: [0],
+      why: "<code>requires static</code> <b>isteğe bağlı bağımlılık</b> tanımlar: derlemede modül bulunmak zorundadır, çalışma zamanında yoksa uygulama yine başlar. <br>Tipik kullanım: yalnızca annotation sağlayan kütüphaneler (örneğin derleme zamanı doğrulama araçları). <code>static</code> kelimesi burada sınıflardaki anlamıyla <b>ilgisizdir</b>."
+    },
+    {
+      topic: "Yönergeler",
+      q: "Which directives are valid inside module-info.java? (Choose TWO.)",
+      opts: [
+        "exports com.a to com.b;",
+        "uses com.api.Service;",
+        "imports com.a;",
+        "includes com.a;"
+      ],
+      a: [0, 1],
+      why: "<b>Nitelikli export</b> (<code>exports p to m1, m2;</code>) paketi yalnızca belirtilen modüllere açar. <code>uses</code> ise modülün bir servisi <code>ServiceLoader</code> ile tüketeceğini bildirir. <br><code>imports</code> ve <code>includes</code> diye yönergeler <b>yoktur</b> — sınav var olmayan anahtar kelimeleri şık yapmayı sever (1.1, 6.4)."
+    },
+    {
+      topic: "Servisler",
+      q: "<pre>module m {\n    requires api;\n    provides com.api.Service with com.m.Impl;\n}</pre>Does the package <code>com.m</code> need to be exported?",
+      opts: [
+        "No; the service mechanism provides the necessary access.",
+        "Yes; otherwise ServiceLoader cannot instantiate Impl.",
+        "Yes; provides requires a matching exports.",
+        "No, but the class must be public static."
+      ],
+      a: [0],
+      why: "<code>provides ... with ...</code> yönergesi, modül sistemine uygulama sınıfını <b>doğrudan</b> tanıtır; <code>ServiceLoader</code> onu <code>exports</code> olmadan da örnekleyebilir. Bu, uygulama detayını gizli tutmayı sağlar. <br>Gereken tek şey uygulama sınıfının <b>public</b> olması ve <b>parametresiz public constructor</b> (veya <code>public static provider()</code>) barındırmasıdır."
+    },
+    {
+      topic: "Servisler",
+      q: "A consumer module calls <code>ServiceLoader.load(Service.class)</code> but its module-info.java has no <code>uses</code> directive. What happens?",
+      opts: [
+        "The ServiceLoader finds no providers and the iteration is empty.",
+        "A ServiceConfigurationError is thrown.",
+        "Compilation fails.",
+        "All providers on the module path are found anyway."
+      ],
+      a: [0],
+      why: "<code>uses</code> olmadan modül sistemi servis bağlantısını <b>kurmaz</b>; <code>ServiceLoader</code> sorunsuz çalışır ama <b>hiçbir sağlayıcı bulamaz</b> ve döngü boş geçilir. <br>Sessiz başarısızlık olduğu için hata ayıklaması zordur — bu yüzden \"servis çalışmıyor\" durumunda ilk bakılacak yer <code>uses</code> satırıdır. Derleme hatası da <b>alınmaz</b>."
+    },
+    {
+      topic: "Modül adı",
+      q: "<pre>module com.ocp-api { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because a hyphen is not allowed in a module name.",
+        "The code compiles.",
+        "Compilation fails because a module body cannot be empty.",
+        "Compilation fails because the module name must match the folder name."
+      ],
+      a: [0],
+      why: "Modül adı, noktalarla ayrılmış <b>Java tanımlayıcılarından</b> oluşur; tire geçerli bir tanımlayıcı karakteri <b>değildir</b>. <br>Boş gövde (<code>module m { }</code>) tamamen <b>geçerlidir</b>. Modül adının klasör adıyla eşleşmesi de <b>zorunlu değildir</b> — yalnızca yaygın bir gelenektir."
+    },
+    {
+      topic: "Modül türleri",
+      q: "What is an automatic module?",
+      opts: [
+        "A JAR without module-info placed on the module path; it exports all packages and reads all modules.",
+        "A module generated by jlink from the module path.",
+        "Any class placed on the classpath.",
+        "A module that is loaded lazily at runtime."
+      ],
+      a: [0],
+      why: "<code>module-info.class</code> içermeyen bir jar <b>modül yoluna</b> konduğunda otomatik modül olur: adı manifest'teki <code>Automatic-Module-Name</code>'den veya jar dosya adından türetilir, <b>tüm paketlerini exports eder</b> ve <b>tüm modülleri requires eder</b>. <br>Classpath'e konan kod ise <b>unnamed (adsız) modüle</b> girer — named modüller onu <b>göremez</b>. Bu ayrım migrasyon stratejisini belirler (7.2)."
+    },
+    {
+      topic: "Modül türleri",
+      q: "Which statements about the unnamed module are correct? (Choose TWO.)",
+      opts: [
+        "Code on the classpath belongs to the unnamed module.",
+        "A named module cannot read the unnamed module.",
+        "The unnamed module exports nothing.",
+        "The unnamed module requires an explicit module-info.java."
+      ],
+      a: [0, 1],
+      why: "Classpath'e konan her şey <b>adsız modüle</b> girer ve orası tüm paketlerini <b>okur/açar</b>. Ama adlandırılmış bir modül adsız modülü <b>okuyamaz</b> — çünkü adı olmayan bir şeye <code>requires</code> yazılamaz. <br>Bu tek yönlü duvar, migrasyonun neden \"aşağıdan yukarı\" yapıldığını açıklar: önce bağımlılıklar modülleştirilir."
+    },
+    {
+      topic: "Yönergeler",
+      q: "<pre>open module m {\n    opens com.a;\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because an open module cannot declare opens directives.",
+        "The code compiles; the opens is redundant but harmless.",
+        "Compilation fails because open is not a valid modifier for a module.",
+        "The code compiles and only com.a is opened."
+      ],
+      a: [0],
+      why: "<code>open module</code> zaten <b>tüm</b> paketleri yansımaya açar; ayrıca <code>opens</code> yazmak çelişkilidir ve derleyici bunu <b>hata</b> sayar. <br><code>open</code> geçerli bir modül belirtecidir. Seçici olmak istiyorsan <code>open</code>'ı kaldırıp yalnızca ilgili paketleri <code>opens</code> etmelisin."
+    },
+    {
+      topic: "module-info yerleşimi",
+      q: "Where must module-info.java be located?",
+      opts: [
+        "In the module's root directory, above the package folders.",
+        "Inside the package folder of the main class.",
+        "In the META-INF directory.",
+        "Anywhere in the source tree; the compiler finds it by name."
+      ],
+      a: [0],
+      why: "<code>module-info.java</code> modülün <b>kök dizininde</b>, paket klasörlerinin üstünde durur — herhangi bir pakete ait değildir. <br><code>META-INF</code> jar manifest'i içindir (<code>Automatic-Module-Name</code> orada tanımlanır); derleyici dosyayı ada göre <b>rastgele aramaz</b>, konumu kuraldır."
+    },
+    {
+      topic: "java.base",
+      q: "Which statement about <code>java.base</code> is correct?",
+      opts: [
+        "Every module implicitly requires java.base; writing it is unnecessary.",
+        "java.base must be listed explicitly in every module-info.java.",
+        "java.base must be exported by the application module.",
+        "java.base is only available when running on the classpath."
+      ],
+      a: [0],
+      why: "<code>java.base</code> (<code>java.lang</code>, <code>java.util</code>, <code>java.io</code> ...) <b>örtük olarak</b> her modüle eklenir — tıpkı <code>java.lang</code>'ın örtük import edilmesi gibi. Yazmak hata değildir ama gereksizdir. <br>Uygulama modülleri JDK modüllerini <b>exports edemez</b>; yalnızca kendi paketlerini açabilirler."
+    },
+    {
+      topic: "Servisler",
+      q: "What must a service implementation class provide to be usable by ServiceLoader?",
+      opts: [
+        "A public no-argument constructor, or a public static provider() method.",
+        "A public static main method.",
+        "A constructor taking the service interface as parameter.",
+        "An @Service annotation."
+      ],
+      a: [0],
+      why: "<code>ServiceLoader</code> uygulamayı <b>yansımayla örnekler</b>; bunun için <b>public parametresiz constructor</b> gerekir. Alternatif olarak sınıf <code>public static Servis provider()</code> fabrika metodu tanımlayabilir — o zaman constructor şart değildir. <br><code>@Service</code> Java standardında <b>yoktur</b> (Spring'e aittir); <code>main</code> metodunun da servislerle ilgisi yoktur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

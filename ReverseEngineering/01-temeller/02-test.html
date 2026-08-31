@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-01-02",
+  code: "01 Temeller · Bellek Modeli",
+  title: "Stack, Heap, Register, Adres",
+  back: "02-bellek-modeli.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Bellek bölgeleri",
+      q: "Bir binary'de <code>\"license invalid\"</code> string'i <code>.rodata</code> bölümünde. Bu, string hakkında ne söyler?",
+      opts: ["Sabittir, kaynağa gömülmüş; çalışma zamanı girdisi olamaz", "Kullanıcıdan okunan bir girdidir", "Heap'te dinamik üretilmiştir", "Her çalıştırmada değişir"],
+      a: [0],
+      why: "<b>.rodata = read-only data</b>: derleme anında bilinen sabitler ve string literaller. Kullanıcı girdisi tipik olarak stack veya heap'te olur, .rodata'da değil."
+    },
+    {
+      topic: "Bellek bölgeleri",
+      q: "Aşağıdaki bölgelerden hangisi normalde <b>çalıştırılabilir ama yazılamaz</b>dır?",
+      opts: [".text (kod)", ".data", "stack", "heap"],
+      a: [0],
+      why: "<b>.text</b> makine kodudur: CPU çalıştırır, yazma kapalıdır (W^X). .data/stack/heap yazılabilir ama normalde çalıştırılamaz."
+    },
+    {
+      topic: "Register rolleri",
+      q: "<code>rsp</code> register'ı neyi gösterir?",
+      opts: ["Stack'in tepesini (en son itilen veri)", "Mevcut frame'in tabanını", "Sıradaki komutun adresini", "Fonksiyonun dönüş değerini"],
+      a: [0],
+      why: "<b>rsp = stack pointer</b>, stack'in tepesi. rbp = base pointer (taban), rip = sıradaki komut, rax = dönüş değeri. Bunları karıştırmak stack okumayı bozar."
+    },
+    {
+      topic: "Register rolleri",
+      q: "System V ABI'de bir fonksiyonun <b>ilk argümanı</b> hangi register'da gelir?",
+      opts: ["rdi", "rax", "rsp", "rbp"],
+      a: [0],
+      why: "Argüman sırası: <b>rdi, rsi, rdx, rcx, r8, r9</b>. rax dönüş değeridir. Bunu bilmek çağrı argümanlarını okumayı sağlar (2.4'te detay)."
+    },
+    {
+      topic: "Stack yönü",
+      q: "<code>push rax</code> çalıştıktan sonra <code>rsp</code> ne olur?",
+      opts: ["Azalır (daha düşük adrese gider)", "Artar (daha yüksek adrese gider)", "Değişmez", "Sıfırlanır"],
+      a: [0],
+      why: "Stack <b>aşağı büyür</b>: push → <code>rsp -= 8</code> sonra oraya yazar. rsp'nin azalması stack'in büyümesidir. Sezgiye ters ama x86-64 kuralı budur."
+    },
+    {
+      topic: "Stack yönü",
+      q: "Fonksiyon başında <code>sub rsp, 0x30</code> görüyorsun. Ne anlama gelir?",
+      opts: ["48 byte'lık yerel değişken alanı açtı", "48 byte veriyi stack'ten sildi", "48 numaralı fonksiyona atladı", "rsp'yi 0x30 adresine ayarladı"],
+      a: [0],
+      why: "<code>0x30 = 48</code>. rsp'yi azaltmak stack'i büyütür → yerel değişkenler için yer açar. Fonksiyon prologue'unun klasik adımı."
+    },
+    {
+      topic: "Stack frame",
+      q: "Tipik bir stack frame'de <b>yerel değişkenler</b> nerede bulunur?",
+      opts: ["<code>rbp</code>'nin gerisinde, örn. <code>[rbp-0x8]</code>", "<code>rbp</code>'nin ilerisinde, örn. <code>[rbp+0x8]</code>", "Her zaman <code>rax</code> içinde", "Heap'te"],
+      a: [0],
+      why: "Frame'de yerel değişkenler <b>rbp'nin altında</b> (<code>rbp-0x…</code>); dönüş adresi ve çağıranın verisi <code>rbp+</code> tarafındadır. Bu ayrım overflow analizinde kritik (Bölüm 6)."
+    },
+    {
+      topic: "Stack frame",
+      q: "<code>call</code> komutu, atlamadan hemen önce stack'e ne koyar?",
+      opts: ["Dönüş adresini (call'dan sonraki komutun adresi)", "Tüm register'ları", "Fonksiyonun argümanlarını", "rbp'nin değerini"],
+      a: [0],
+      why: "<b>call = dönüş adresini push et + hedefe atla.</b> <code>ret</code> bu adresi pop edip oraya döner. Overflow'da bu dönüş adresini ezmek exploit'in temelidir."
+    },
+    {
+      topic: "Heap vs stack",
+      q: "Bir yerel değişkenin belleğini kim <b>otomatik</b> temizler?",
+      opts: ["Derleyici — fonksiyon dönünce stack frame kalkar", "Programcı, elle <code>free</code> ile", "Garbage collector", "İşletim sistemi program bitince"],
+      a: [0],
+      why: "Stack otomatiktir: fonksiyon dönünce frame gider. <b>Heap</b> elle yönetilir (<code>malloc</code>/<code>free</code>); orada unutmak = memory leak."
+    },
+    {
+      topic: "Heap vs stack",
+      q: "Aşağıdaki hatalardan hangisi tipik olarak <b>heap</b>'e özgüdür?",
+      opts: ["Use-after-free", "Stack overflow (dönüş adresi ezme)", "Register çakışması", "Endianness hatası"],
+      a: [0],
+      why: "<b>Use-after-free / double-free / leak</b> heap'in elle yönetiminden doğar. Dönüş adresi ezme stack'e özgüdür. İkisini karıştırmak zafiyet sınıfını yanlış tanımlatır."
+    },
+    {
+      topic: "Pointer",
+      q: "<code>mov rax, [rdi]</code> ile <code>mov rax, rdi</code> arasındaki fark nedir?",
+      opts: ["İlki rdi'nin gösterdiği bellekteki veriyi, ikincisi rdi'nin (adresin) kendisini alır", "İkisi aynı şeyi yapar", "İlki adresi, ikincisi veriyi alır", "İlki yazma, ikincisi okumadır"],
+      a: [0],
+      why: "Köşeli parantez <b>dereference</b>: <code>[rdi]</code> = rdi'nin gösterdiği adresteki bellek. <code>rdi</code> = adresin/değerin kendisi. Bu ayrım pointer takibinin özüdür."
+    },
+    {
+      topic: "Pointer",
+      q: "<code>rax = 0x7fffffffe4c0</code> değeri büyük olasılıkla neyi gösterir?",
+      opts: ["Bir stack adresi (yüksek adres bölgesinde)", "Bir tam sayı hesap sonucu, adres değil", "Bir ASCII string", "Bir register indeksi"],
+      a: [0],
+      why: "<code>0x7fff…</code> aralığı klasik <b>stack adresi</b>dir (Linux x86-64'te stack üst tarafta). Böyle değerler genelde pointer'dır; heap adresleri farklı aralıkta olur."
+    },
+    {
+      topic: "Register rolleri",
+      q: "<code>rbp</code> ile <code>rsp</code> ilişkisi bir fonksiyon içinde nasıldır (stack aşağı büyüdüğü için)?",
+      opts: ["rbp genelde rsp'den daha yüksek adrestedir (frame tabanı yukarıda)", "rbp her zaman rsp'ye eşittir", "rsp her zaman rbp'den yüksektir", "İkisinin ilişkisi rastgeledir"],
+      a: [0],
+      why: "Stack aşağı büyüdüğü için tepe (rsp) <b>daha düşük</b> adrestedir; taban (rbp) daha yüksekte. Yani <code>rbp > rsp</code> ve yerel değişkenler ikisi arasında yaşar."
+    },
+    {
+      topic: "Bellek bölgeleri",
+      q: "Global (static) bir sayaç değişkeni tipik olarak hangi bölgede tutulur?",
+      opts: [".data / .bss", "stack", ".text", "register"],
+      a: [0],
+      why: "Global/static veriler <b>.data</b> (başlangıç değeri olanlar) veya <b>.bss</b> (sıfırla başlayanlar) bölümünde, program boyu yaşar. Stack'teki değişkenler fonksiyonla gelir gider."
+    },
+    {
+      topic: "Stack yönü",
+      q: "Bir stack frame'de <code>rbp</code>'ye göre konumlar hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["Yerel değişkenler rbp'nin altındadır (rbp-0x…)", "Dönüş adresi rbp'nin üstündedir (rbp+0x8)", "Yerel değişkenler her zaman rax'tedir", "Dönüş adresi heap'te tutulur"],
+      a: [0, 1],
+      why: "Frame düzeni: <b>rbp- tarafında yereller</b>, <b>rbp+ tarafında dönüş adresi/argümanlar</b>. Bu ayrım overflow analizinde (Bölüm 6) kritiktir."
+    },
+    {
+      topic: "Heap vs stack",
+      q: "Heap belleği hakkında doğru olan <b>iki</b> ifade hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Programcı tarafından elle yönetilir (malloc/free)", "free unutulursa memory leak olur", "Fonksiyon dönünce otomatik temizlenir", "Aşağı doğru büyür"],
+      a: [0, 1],
+      why: "Heap <b>elle yönetilir</b>; free unutmak <b>leak</b> yaratır. Otomatik temizlik ve aşağı büyüme <b>stack</b>'in özellikleridir; ikisini karıştırmak zafiyet sınıfını yanlış tanımlatır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

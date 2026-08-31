@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.4 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.4",
+  code: "2. alan · Güvenlik ve Uyumluluk · Görev 2.4",
+  title: "Güvenlik Servisleri",
+  back: "2.4-guvenlik-servisleri.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Tehdit tespiti dörtlüsü",
+      q: "A company wants to automatically discover personally identifiable information (PII) such as credit card numbers stored in its Amazon S3 buckets. Which service should it use?",
+      opts: ["Amazon Macie", "Amazon GuardDuty", "Amazon Inspector", "Amazon Detective"],
+      a: [0],
+      why: "<b>Macie</b> makine öğrenmesiyle <b>S3teki hassas veriyi</b> (PII, kredi kartı, kimlik bilgisi) keşfeder ve sınıflandırır. Hafıza kancası: <i>Macie = veri dedektifi, sadece S3e bakar</i>."
+    },
+    {
+      topic: "Tehdit tespiti dörtlüsü",
+      q: "Which service continuously analyzes CloudTrail events, VPC Flow Logs and DNS logs to detect unusual or malicious activity, such as an EC2 instance communicating with a known malicious IP address?",
+      opts: ["Amazon GuardDuty", "Amazon Inspector", "AWS Config", "AWS Security Hub"],
+      a: [0],
+      why: "<b>GuardDuty</b> bir <b>tehdit tespiti</b> servisidir: logları analiz eder, anormal davranış ve bilinen kötücül altyapıyla iletişim gibi bulgular üretir. Ajan kurulumu gerektirmez. Inspector <b>zafiyet</b> tarar, Config <b>konfigürasyon uyumluluğuna</b> bakar."
+    },
+    {
+      topic: "Tehdit tespiti dörtlüsü",
+      q: "A security team must scan Amazon EC2 instances and container images for software vulnerabilities (CVEs) and unintended network exposure. Which service is designed for this?",
+      opts: ["Amazon Inspector", "Amazon Macie", "Amazon GuardDuty", "AWS Artifact"],
+      a: [0],
+      why: "<b>Inspector</b> EC2, ECR konteyner imajları ve Lambda fonksiyonlarında <b>bilinen zafiyetleri (CVE)</b> ve istenmeyen ağ erişimini tarar. Hafıza kancası: <i>Inspector = müfettiş, yazılım açıklarını arar</i>."
+    },
+    {
+      topic: "Tehdit tespiti dörtlüsü",
+      q: "After a GuardDuty finding is raised, which service helps analyze related logs and visualize relationships to determine the ROOT CAUSE of the security issue?",
+      opts: ["Amazon Detective", "Amazon Macie", "AWS Config", "AWS Trusted Advisor"],
+      a: [0],
+      why: "<b>Detective</b> bulgu sonrası <b>soruşturma</b> aracıdır: logları ilişkilendirir, grafik analiziyle kök nedeni bulmayı kolaylaştırır. Sıralama şöyle işler: GuardDuty <b>tespit eder</b> → Detective <b>araştırır</b> → Security Hub <b>hepsini bir panelde toplar</b>."
+    },
+    {
+      topic: "Security Hub",
+      q: "Which service aggregates security findings from GuardDuty, Inspector and Macie across accounts into a single dashboard and checks them against standards such as CIS and PCI DSS?",
+      opts: ["AWS Security Hub", "Amazon Detective", "AWS Config", "AWS Control Tower"],
+      a: [0],
+      why: "<b>Security Hub</b> güvenlik bulgularının <b>tek panelde (single pane of glass)</b> toplandığı ve standartlara karşı otomatik kontrol edildiği servistir. Soruda <i>aggregate findings</i> veya <i>single dashboard</i> geçiyorsa cevap budur."
+    },
+    {
+      topic: "WAF ve Shield",
+      q: "Which AWS service protects web applications from common exploits such as SQL injection and cross-site scripting at the application layer?",
+      opts: ["AWS WAF", "AWS Shield Standard", "Amazon GuardDuty", "AWS Network Firewall"],
+      a: [0],
+      why: "<b>AWS WAF</b> uygulama katmanında (L7) çalışır: SQL injection, XSS, kötü bot, IP/ülke filtreleme ve rate limiting. CloudFront, ALB ve API Gateway önüne konur. Shield ise <b>DDoS</b> içindir — WAF/Shield ayrımı sınavda sık sorulur."
+    },
+    {
+      topic: "WAF ve Shield",
+      q: "Which statement about AWS Shield is correct?",
+      opts: [
+        "Shield Standard is automatically enabled for all AWS customers at no additional cost",
+        "Shield Standard must be purchased separately for each account",
+        "Shield Advanced is free and Shield Standard is paid",
+        "Shield only protects Amazon S3 buckets"
+      ],
+      a: [0],
+      why: "<b>Shield Standard</b> tüm AWS müşterileri için <b>otomatik ve ücretsizdir</b>, yaygın L3/L4 DDoS saldırılarına karşı korur; ayrıca etkinleştirmene gerek yoktur. <b>Shield Advanced</b> ücretlidir ve gelişmiş koruma, 7/24 DDoS Response Team ile <b>maliyet koruması</b> sağlar."
+    },
+    {
+      topic: "Security Group vs NACL",
+      q: "A company must block traffic from one specific IP address at the subnet level. Which should it use?",
+      opts: [
+        "A network ACL with an explicit deny rule",
+        "A security group with a deny rule",
+        "An IAM policy with an explicit deny",
+        "AWS Shield Standard"
+      ],
+      a: [0],
+      why: "<b>Security grouplarda DENY kuralı yazılamaz</b> — yalnızca ALLOW. Belirli bir IPyi engellemek için <b>subnet seviyesindeki NACL</b> kullanılır; NACL hem allow hem deny destekler ve kurallar <b>numara sırasına</b> göre değerlendirilir."
+    },
+    {
+      topic: "Security Group vs NACL",
+      q: "Which two statements correctly describe security groups? (Choose TWO.)",
+      opts: [
+        "They are stateful — return traffic is automatically allowed",
+        "They operate at the instance (ENI) level",
+        "They are stateless and require separate outbound rules",
+        "They support both allow and deny rules",
+        "Only one security group can be attached to an instance"
+      ],
+      a: [0, 1],
+      why: "SG <b>stateful</b>dır: gelen bağlantıya izin verildiyse dönüş trafiği otomatik geçer; <b>instance/ENI</b> seviyesinde çalışır ve bir kaynağa <b>birden çok</b> SG bağlanabilir. Stateless olan, ayrı outbound kuralı isteyen ve deny destekleyen taraf <b>NACL</b>dir."
+    },
+    {
+      topic: "KMS ve CloudHSM",
+      q: "A regulation requires a company to use dedicated, single-tenant hardware security modules where only the company can access the key material. Which service meets this requirement?",
+      opts: ["AWS CloudHSM", "AWS KMS", "AWS Secrets Manager", "AWS Certificate Manager"],
+      a: [0],
+      why: "<b>CloudHSM</b> müşteriye <b>adanmış, tek kiracılı</b> fiziksel HSM verir; anahtarları müşteri yönetir ve AWS erişemez. <b>KMS</b> çok kiracılıdır ve çoğu senaryonun varsayılan doğru cevabıdır — soruda <i>dedicated</i>, <i>single-tenant</i> veya <i>exclusive control</i> geçmedikçe KMS seç."
+    },
+    {
+      topic: "KMS ve CloudHSM",
+      q: "Which service makes it easy to create and control encryption keys that integrate with services such as Amazon S3, Amazon EBS and Amazon RDS, and logs every key use in AWS CloudTrail?",
+      opts: ["AWS KMS", "AWS CloudHSM", "Amazon Macie", "AWS Artifact"],
+      a: [0],
+      why: "<b>AWS KMS</b> anahtar oluşturma/yönetme servisidir, AWS servislerinin çoğuyla doğrudan entegredir ve <b>her anahtar kullanımı CloudTraile</b> yazılır. Otomatik anahtar rotasyonu destekler. AWS yönetimli anahtarlar ücretsizdir; müşteri yönetimli anahtarlar aylık ücretlidir."
+    },
+    {
+      topic: "Sertifika yönetimi",
+      q: "Which service provisions, manages and automatically renews SSL/TLS certificates for use with Elastic Load Balancing and Amazon CloudFront?",
+      opts: [
+        "AWS Certificate Manager (ACM)",
+        "AWS Secrets Manager",
+        "AWS KMS",
+        "Amazon Route 53"
+      ],
+      a: [0],
+      why: "<b>ACM</b> SSL/TLS sertifikalarını sağlar, yönetir ve <b>otomatik yeniler</b>; AWS servisleriyle kullanılan genel sertifikalar ücretsizdir. Sertifikanın süresi dolduğu için yaşanan kesintileri önlemenin standart yolu budur."
+    },
+    {
+      topic: "Sır yönetimi",
+      q: "A company must store database credentials securely and rotate them automatically every 30 days. Which service should it use?",
+      opts: [
+        "AWS Secrets Manager",
+        "AWS Systems Manager Parameter Store (Standard tier)",
+        "Amazon S3 with encryption",
+        "AWS Config"
+      ],
+      a: [0],
+      why: "<b>Otomatik rotasyon</b> ifadesi <b>Secrets Manager</b>ı işaret eder; RDS ile yerleşik entegrasyonu vardır (ücretlidir, sır başına aylık). <b>Parameter Store Standard</b> ücretsizdir ve şifreli değer saklayabilir ama <b>yerleşik otomatik rotasyon sunmaz</b>."
+    },
+    {
+      topic: "Trusted Advisor",
+      q: "Which service inspects an AWS account and provides recommendations across cost optimization, performance, security, fault tolerance and service limits?",
+      opts: [
+        "AWS Trusted Advisor",
+        "AWS Well-Architected Tool",
+        "Amazon Inspector",
+        "AWS Compute Optimizer"
+      ],
+      a: [0],
+      why: "<b>Trusted Advisor</b> hesabı <b>otomatik tarar</b> ve beş kategoride öneri verir. Well-Architected Tool ise <b>soru-cevap</b> temellidir, tarama yapmaz. Not: kontrollerin tamamı <b>Business planı ve üzerinde</b> açılır; Basic/Developer planda sınırlı kontrol görürsün."
+    },
+    {
+      topic: "Şifreleme kavramları",
+      q: "Which two examples describe encryption IN TRANSIT? (Choose TWO.)",
+      opts: [
+        "Using HTTPS/TLS between a browser and an Application Load Balancer",
+        "Using a Site-to-Site VPN tunnel between a data center and a VPC",
+        "Enabling default encryption on an Amazon S3 bucket",
+        "Enabling encryption on an Amazon EBS volume",
+        "Encrypting an RDS snapshot"
+      ],
+      a: [0, 1],
+      why: "<b>In transit</b> = veri <b>ağda hareket ederken</b> korunur: TLS/HTTPS, VPN tüneli. <b>At rest</b> = veri <b>diskte dururken</b> korunur: S3 varsayılan şifrelemesi, EBS şifrelemesi, RDS snapshot şifrelemesi. Sınav bu iki kavramı düzenli olarak ayırt ettirir."
+    },
+    {
+      topic: "Merkezî yönetim",
+      q: "A company with dozens of AWS accounts wants to centrally configure and enforce AWS WAF rules and Shield Advanced protections across all of them. Which service should it use?",
+      opts: [
+        "AWS Firewall Manager",
+        "AWS WAF alone in each account",
+        "Amazon Detective",
+        "AWS Config"
+      ],
+      a: [0],
+      why: "<b>Firewall Manager</b>, AWS Organizations ile birlikte çalışır ve WAF kurallarını, Shield Advanced korumalarını, güvenlik gruplarını ve Network Firewall politikalarını <b>tüm hesaplarda merkezî olarak</b> uygular. Tek tek hesapta WAF kurmak ölçeklenmez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

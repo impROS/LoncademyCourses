@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.1 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-4.1",
+  code: "İstisnalar · 4.1",
+  title: "Exception Temelleri: try/catch/finally ve Multi-catch",
+  back: "4.1-exception-temelleri.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "finally akışı",
+      q: "<pre>static int f() {\n    try { return 1; }\n    finally { return 2; }\n}\nSystem.out.println(f());</pre>What is the result?",
+      opts: [
+        "2",
+        "1",
+        "Compilation fails because finally cannot contain return.",
+        "12"
+      ],
+      a: [0],
+      why: "<code>finally</code> bloğu <b>her zaman</b> çalışır ve içindeki <code>return</code>, <code>try</code>'daki dönüşü <b>ezer</b> → <b>2</b>. <br>Bu yazım derlenir ama tehlikelidir: <code>finally</code>'deki <code>return</code> bekleyen bir <b>exception'ı bile sessizce yutar</b>. Gerçek kodda asla yapılmaz, sınavda ise sürekli sorulur."
+    },
+    {
+      topic: "finally akışı",
+      q: "<pre>static int g() {\n    int x = 1;\n    try { return x; }\n    finally { x = 99; }\n}\nSystem.out.println(g());</pre>What is the result?",
+      opts: [
+        "1",
+        "99",
+        "Compilation fails.",
+        "0"
+      ],
+      a: [0],
+      why: "<code>return x;</code> çalıştığı anda dönüş değeri <b>hesaplanıp saklanır</b> (1). <code>finally</code> daha sonra <code>x</code>'i değiştirse de saklanan değere dokunamaz. <br><b>Ayrım:</b> <code>finally</code> içinde <b>yeni bir <code>return</code></b> olsaydı değer <b>değişirdi</b>; sadece değişkeni değiştirmek yetmez."
+    },
+    {
+      topic: "finally akışı",
+      q: "<pre>try {\n    throw new IllegalStateException();\n} finally {\n    return;\n}</pre>Which exception propagates out of this method?",
+      opts: [
+        "None; the exception is discarded.",
+        "IllegalStateException",
+        "A RuntimeException wrapping the original.",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>finally</code> içindeki <code>return</code> (veya <code>break</code>/<code>continue</code>) bekleyen exception'ı <b>iptal eder</b> — metot normal biçimde döner ve exception <b>tamamen kaybolur</b>. <br>Bu, hata ayıklamayı imkânsız hâle getirdiği için gerçek kodda yasak sayılır; sınav ise \"hangi exception fırlatılır?\" diye sorup <b>hiçbiri</b> cevabını bekler."
+    },
+    {
+      topic: "finally akışı",
+      q: "In which situation does a <code>finally</code> block NOT execute?",
+      opts: [
+        "When System.exit() is called inside the try block.",
+        "When the try block throws a checked exception.",
+        "When the try block executes a return statement.",
+        "When a catch block throws a new exception."
+      ],
+      a: [0],
+      why: "<code>System.exit()</code> JVM'i <b>anında sonlandırır</b>; yığın çözülmez, bu yüzden <code>finally</code> hiç çalışmaz. (Aynı şey JVM çökmesi veya thread'in öldürülmesi için de geçerlidir.) <br>Diğer üç durumda <code>finally</code> <b>çalışır</b> — <code>return</code> öncesinde, exception yayılmadan önce, hatta <code>catch</code> yeni bir exception atsa bile."
+    },
+    {
+      topic: "Checked vs unchecked",
+      q: "Which exceptions are unchecked? (Choose TWO.)",
+      opts: [
+        "NumberFormatException",
+        "ArrayIndexOutOfBoundsException",
+        "IOException",
+        "SQLException"
+      ],
+      a: [0, 1],
+      why: "<code>NumberFormatException</code> <code>IllegalArgumentException</code>'ın, o da <code>RuntimeException</code>'ın altındadır → <b>unchecked</b>. <code>ArrayIndexOutOfBoundsException</code> da <code>IndexOutOfBoundsException</code> üzerinden <code>RuntimeException</code>'a bağlıdır. <br><code>IOException</code> ve <code>SQLException</code> doğrudan <code>Exception</code>'ın altındadır → <b>checked</b>, yakala ya da bildir. <b>Kanca:</b> <code>Integer.parseInt</code> için <code>try/catch</code> zorunlu değildir."
+    },
+    {
+      topic: "Handle-or-declare",
+      q: "<pre>static void m() {\n    try { System.out.println(\"x\"); }\n    catch (java.io.IOException e) { }\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because IOException is never thrown in the try body.",
+        "The code compiles and prints x.",
+        "Compilation fails because m() must declare throws IOException.",
+        "An IOException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Bir <b>checked</b> exception'ı, <code>try</code> gövdesinde atılması <b>mümkün değilse</b> yakalamak derleme hatasıdır: <i>exception IOException is never thrown in body of corresponding try statement</i>. <br><b>İstisna:</b> <code>Exception</code>, <code>RuntimeException</code> ve <code>Throwable</code> yakalamak <b>her zaman</b> geçerlidir — bunlar her yerde atılabilir sayılır."
+    },
+    {
+      topic: "Handle-or-declare",
+      q: "<pre>static void m() {\n    throw new java.io.IOException();\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the checked exception is neither caught nor declared.",
+        "The code compiles and throws at runtime.",
+        "Compilation fails because IOException has no no-arg constructor.",
+        "The code compiles because throw does not require a declaration."
+      ],
+      a: [0],
+      why: "Checked exception'lar için <b>handle-or-declare</b> kuralı geçerlidir: ya <code>try/catch</code> ile yakalanacak ya da metot imzasında <code>throws IOException</code> ile bildirilecek. <br><code>IOException</code>'ın parametresiz constructor'ı <b>vardır</b>; sorun tamamen bildirim eksikliğidir."
+    },
+    {
+      topic: "Yakalama sırası",
+      q: "<pre>try { new java.io.FileReader(\"a.txt\"); }\ncatch (Exception e) { }\ncatch (java.io.IOException e) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because IOException has already been caught.",
+        "The code compiles; the more specific catch runs first.",
+        "The code compiles; both catch blocks may run.",
+        "Compilation fails because FileReader requires try-with-resources."
+      ],
+      a: [0],
+      why: "<code>catch</code> blokları <b>yukarıdan aşağıya</b> denenir; <code>Exception</code> her şeyi yakaladığı için altındaki <code>IOException</code> bloğu <b>ulaşılamaz</b> olur ve derleme hatası verir. <br>Kural: <b>alt sınıf önce, üst sınıf sonra</b>. Ayrıca bir exception için <b>yalnızca bir</b> catch bloğu çalışır."
+    },
+    {
+      topic: "Multi-catch",
+      q: "<pre>catch (java.io.FileNotFoundException | java.io.IOException e) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because the alternatives are related by subclassing.",
+        "The code compiles.",
+        "Compilation fails because multi-catch supports at most one type.",
+        "The code compiles but only IOException is caught."
+      ],
+      a: [0],
+      why: "Multi-catch alternatifleri <b>kalıtım ilişkisi içinde olamaz</b>: <code>FileNotFoundException</code> zaten bir <code>IOException</code> olduğu için biri gereksizdir → <i>alternatives in a multi-catch statement cannot be related by subclassing</i>. <br>Doğrusu tek başına <code>catch (IOException e)</code>'dir. Multi-catch <b>ikiden fazla</b> ilişkisiz tip de alabilir."
+    },
+    {
+      topic: "Multi-catch",
+      q: "<pre>try { atar(); }\ncatch (java.io.IOException | java.sql.SQLException e) {\n    e = new java.io.IOException();\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the multi-catch parameter is implicitly final.",
+        "The code compiles.",
+        "Compilation fails because the two types are related.",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Multi-catch değişkeni <b>örtük olarak <code>final</code></b>'dır — birden çok tipi temsil ettiği için yeniden atanması tip güvenliğini bozardı. <br>Tek tipli normal bir <code>catch</code> parametresine ise atama yapılabilir (kötü stil olsa da). <code>IOException</code> ve <code>SQLException</code> <b>akraba değildir</b>, o yüzden liste geçerlidir."
+    },
+    {
+      topic: "throw ve throws",
+      q: "<pre>try { throw null; }\ncatch (Exception e) { System.out.println(e.getClass().getSimpleName()); }</pre>What is the result?",
+      opts: [
+        "NullPointerException",
+        "Compilation fails because null cannot be thrown.",
+        "Nothing is printed.",
+        "NoClassDefFoundError"
+      ],
+      a: [0],
+      why: "<code>throw null;</code> <b>derlenir</b> — derleyici için <code>null</code> geçerli bir <code>Throwable</code> ifadesidir. Çalışma zamanında JVM fırlatılacak nesneyi çözmeye çalışır, null bulur ve <b>NullPointerException</b> atar. <br><b>Kanca:</b> Şıklarda \"Compilation fails\" çekici görünür ama burada yanlıştır."
+    },
+    {
+      topic: "Exception zinciri",
+      q: "<pre>try {\n    try { throw new java.sql.SQLException(\"db\"); }\n    catch (java.sql.SQLException e) { throw new RuntimeException(\"kayit\", e); }\n} catch (RuntimeException e) {\n    System.out.println(e.getMessage() + \" \" + e.getCause().getMessage());\n}</pre>What is the result?",
+      opts: [
+        "kayit db",
+        "db kayit",
+        "kayit null",
+        "A NullPointerException is thrown."
+      ],
+      a: [0],
+      why: "<code>new RuntimeException(mesaj, sebep)</code> constructor'ı orijinal exception'ı <b>cause</b> olarak saklar. <code>getMessage()</code> dıştaki mesajı (<code>kayit</code>), <code>getCause().getMessage()</code> içteki mesajı (<code>db</code>) verir. <br>Sebep verilmeseydi <code>getCause()</code> <b>null</b> dönerdi ve o zaman NPE alırdın — zincirin kurulması bilinçli bir tercihtir."
+    },
+    {
+      topic: "try yapısı",
+      q: "<pre>try {\n    System.out.println(\"x\");\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because try must be followed by catch or finally.",
+        "The code compiles and prints x.",
+        "Compilation fails because try requires a resource.",
+        "The code compiles but the block never runs."
+      ],
+      a: [0],
+      why: "Klasik <code>try</code> bloğu tek başına duramaz; en az bir <code>catch</code> <b>veya</b> bir <code>finally</code> gerekir. <br><b>Tek istisna:</b> <code>try-with-resources</code> (4.2) — orada kaynak bildirimi varsa <code>catch</code> ve <code>finally</code>'nin ikisi de <b>isteğe bağlıdır</b>, çünkü kapatma işini derleyici üstlenir."
+    },
+    {
+      topic: "Checked vs unchecked",
+      q: "Which statements are correct? (Choose TWO.)",
+      opts: [
+        "catch (Throwable t) compiles and catches both Error and Exception.",
+        "A method may declare throws for an unchecked exception even though it is not required.",
+        "Error is a subclass of Exception.",
+        "Catching Error is a compilation error."
+      ],
+      a: [0, 1],
+      why: "<code>Throwable</code> hiyerarşinin kökü olduğu için hem <code>Error</code> hem <code>Exception</code> dallarını yakalar — <b>derlenir</b>, ama pratikte yapılmaz. <code>throws</code> ile unchecked exception bildirmek de <b>serbesttir</b>; belgeleme amacıyla kullanılır. <br><code>Error</code> ve <code>Exception</code> <b>kardeştir</b> (ikisi de <code>Throwable</code> altı) ve <code>Error</code> yakalamak yasak değil, sadece <b>önerilmez</b>."
+    },
+    {
+      topic: "finally akışı",
+      q: "<pre>static String f() {\n    StringBuilder sb = new StringBuilder(\"a\");\n    try { return sb.toString(); }\n    finally { sb.append(\"b\"); }\n}\nSystem.out.println(f());</pre>What is the result?",
+      opts: [
+        "a",
+        "ab",
+        "b",
+        "Compilation fails."
+      ],
+      a: [0],
+      why: "<code>sb.toString()</code> <code>return</code> anında çalışır ve <b>yeni bir String</b> (\"a\") üretip saklar. <code>finally</code> daha sonra <code>StringBuilder</code>'ı değiştirse de <b>zaten kopyalanmış</b> olan dönüş değeri etkilenmez. <br>Bu, 1.2'deki String/StringBuilder ayrımının exception akışına taşınmış hâlidir: dönen şey nesne değil, o anki <b>anlık görüntüdür</b>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

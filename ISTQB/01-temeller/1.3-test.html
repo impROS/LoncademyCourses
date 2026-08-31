@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-1-3",
+  code: "Fundamentals of Testing · 1.3",
+  title: "Yedi Test Prensibi",
+  back: "1.3-test-prensipleri.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Prensip 1 — presence not absence",
+      q: "A manager states: \"The test team executed 900 tests and found no defects, so the software is defect-free.\" Which principle does this statement violate?",
+      opts: [
+        "Testing shows the presence of defects, not their absence",
+        "Tests wear out",
+        "Testing is context dependent",
+        "Defects cluster together"
+      ],
+      a: [0],
+      why: "<b>Kusur bulunamaması, kusur olmadığının kanıtı değildir.</b> Sadece o testlerin bulamadığını gösterir. Bu prensip, sınavdaki tüm <code>prove</code> / <code>defect-free</code> / <code>guarantee</code> çeldiricilerinin kaynağıdır."
+    },
+    {
+      topic: "Prensip 7 — absence-of-defects fallacy",
+      q: "All reported defects have been fixed and no new defects are found, yet the users reject the system because it does not support their actual workflow. Which principle does this illustrate?",
+      opts: [
+        "Absence-of-defects fallacy",
+        "Testing shows the presence of defects, not their absence",
+        "Exhaustive testing is impossible",
+        "Early testing saves time and money"
+      ],
+      a: [0],
+      why: "<b>Kusursuz olmak, doğru ürün olduğun anlamına gelmez.</b> En yakın çeldirici prensip 1'dir; farkı şu: prensip 1 bir <i>kanıt</i> hatasıdır ('bulamadık = yok'), bu ise bir <i>değer</i> hatasıdır ('kusursuz = başarılı'). Burada kusur gerçekten yok, ürün yine de başarısız."
+    },
+    {
+      topic: "Prensip 2 — exhaustive testing",
+      q: "A team proposes to test every possible combination of input values for a date field and calculates that this would require over a trillion test cases. What should the team do instead?",
+      opts: [
+        "Use risk analysis and test techniques to prioritize and focus the test effort",
+        "Automate all of the combinations so they can be executed overnight",
+        "Reduce the scope by testing only the last release's failing cases",
+        "Declare the field untestable and exclude it from the test plan"
+      ],
+      a: [0],
+      why: "<b>Tüketici test imkânsız olduğu için risk ve teknik kullanarak odaklanırsın.</b> Otomasyon kombinasyon patlamasını çözmez, sadece hızlandırır. Üçüncü şık kapsamı keyfî daraltır; dördüncü şık sorumluluktan kaçar."
+    },
+    {
+      topic: "Prensip 5 — tests wear out",
+      q: "A team has run the same 400 automated regression tests every sprint for a year. The suite has not detected a new defect in the last four months. Which principle explains this?",
+      opts: [
+        "Tests wear out (the pesticide paradox)",
+        "Defects cluster together",
+        "Exhaustive testing is impossible",
+        "Testing is context dependent"
+      ],
+      a: [0],
+      why: "<b>Aynı testler tekrar tekrar koşulunca yeni kusur bulmaz olur.</b> Çözüm testleri gözden geçirip yenilemektir. Prensip 2 kapsamın imkânsızlığıyla ilgilidir, tekrarın körelmesiyle değil — bu ikisi en sık karıştırılan çifttir."
+    },
+    {
+      topic: "Prensip 5 — tests wear out",
+      q: "Does the pesticide paradox mean that regression testing is not worthwhile?",
+      opts: [
+        "No, because the purpose of regression testing is to detect side effects of changes, not to find new defects",
+        "Yes, because a suite that finds no new defects has no value",
+        "Yes, because regression tests should be deleted once they stop failing",
+        "No, because regression tests never wear out if they are automated"
+      ],
+      a: [0],
+      why: "<b>Regresyon testinin amacı zaten yeni kusur bulmak değil</b>, değişikliğin bir şeyi bozmadığını göstermektir. Yıpranma 'yeni kusur bulma' beklentisi için geçerlidir. Son şıkta <code>never</code> var: otomasyon yıpranmayı engellemez, sadece maliyeti düşürür."
+    },
+    {
+      topic: "Prensip 4 — defects cluster",
+      q: "Analysis of the defect database shows that 3 of the 15 modules account for 78% of all reported failures. How should the test manager MOST appropriately use this information?",
+      opts: [
+        "Concentrate additional test effort on those modules, as defects tend to cluster",
+        "Stop testing those modules because they have already been thoroughly tested",
+        "Distribute test effort equally across all 15 modules for fairness",
+        "Conclude that the other 12 modules contain no defects"
+      ],
+      a: [0],
+      why: "<b>Kusurlar kümelenir</b> — geçmişte kusur çıkan yer, gelecekte de çıkma eğilimindedir ve risk analizinin girdisidir. Dördüncü şık prensip 1'i de ihlal ediyor: kusur raporlanmaması yokluk kanıtı değil."
+    },
+    {
+      topic: "Prensip 6 — context dependent",
+      q: "A test strategy designed for an implantable medical device is proposed for use on the company's marketing blog. Which principle justifies rejecting this proposal?",
+      opts: [
+        "Testing is context dependent",
+        "Defects cluster together",
+        "Early testing saves time and money",
+        "Testing shows the presence of defects, not their absence"
+      ],
+      a: [0],
+      why: "<b>Risk seviyesi, alan, regülasyon ve teknoloji farklıysa test yaklaşımı da farklı olmalıdır.</b> Güvenlik-kritik bir cihaza uygulanan ağırlık bir bloga uygulanırsa efor israf olur — tersi durumda ise felaket olur."
+    },
+    {
+      topic: "Prensip 3 — early testing",
+      q: "Which principle provides the main justification for involving testers in requirements reviews before any code is written?",
+      opts: [
+        "Early testing saves time and money",
+        "Absence-of-defects fallacy",
+        "Tests wear out",
+        "Exhaustive testing is impossible"
+      ],
+      a: [0],
+      why: "<b>Erken test (shift left) hem statik hem dinamik aktiviteleri en erken noktaya çeker.</b> Gereksinim aşamasında yakalanan kusur en ucuz kusurdur — koda hiç dönüşmediği için sadece dokümanı düzeltirsin."
+    },
+    {
+      topic: "Prensipler genel",
+      q: "Which of the following is NOT one of the seven testing principles?",
+      opts: [
+        "Testing can prove that software is free of defects if enough tests are executed",
+        "Exhaustive testing is impossible",
+        "Defects cluster together",
+        "Testing is context dependent"
+      ],
+      a: [0],
+      why: "<b>Birinci şık, prensip 1'in tam tersidir.</b> Kaç test koşarsan koş kusur yokluğunu kanıtlayamazsın. Soruda <code>NOT</code> büyük harfle yazılmış — bu tip sorularda önce soruyu, sonra şıkları oku."
+    },
+    {
+      topic: "Prensipler genel",
+      q: "Which two statements correctly reflect testing principles? (Choose TWO.)",
+      opts: [
+        "A small number of modules usually contains most of the defects",
+        "The same set of tests will eventually stop finding new defects",
+        "A single test approach can be applied effectively to any project",
+        "Finding and fixing all defects guarantees a successful product"
+      ],
+      a: [0, 1],
+      why: "<b>İlk ikisi prensip 4 ve prensip 5'tir.</b> Üçüncü şık prensip 6'yı (context dependent) ihlal ediyor, dördüncü şık prensip 7'yi (absence-of-defects fallacy) ihlal ediyor ve ayrıca <code>guarantees</code> içeriyor."
+    },
+    {
+      topic: "Prensip 2 — exhaustive testing",
+      q: "Which statement about exhaustive testing is correct?",
+      opts: [
+        "Except for trivial cases, exhaustive testing is not feasible, so effort must be focused",
+        "Exhaustive testing is always possible with sufficient automation",
+        "Exhaustive testing is required for safety-critical systems",
+        "Exhaustive testing is the only way to satisfy the first testing principle"
+      ],
+      a: [0],
+      why: "<b>Çok basit durumlar dışında tüketici test uygulanabilir değildir.</b> İkinci ve üçüncü şıklar <code>always</code> / <code>required</code> ile mutlaklaştırıyor; güvenlik-kritik sistemlerde bile tüketici test yapılmaz, risk tabanlı yaklaşım ve daha yüksek kapsam hedefleri kullanılır."
+    },
+    {
+      topic: "Prensip 5 — tests wear out",
+      q: "A test manager requires that the regression suite be reviewed each sprint and that new tests be added. Which principle is being addressed?",
+      opts: [
+        "Tests wear out",
+        "Testing is context dependent",
+        "Testing shows the presence of defects, not their absence",
+        "Defects cluster together"
+      ],
+      a: [0],
+      why: "<b>Testleri gözden geçirip yenilemek, yıpranmaya karşı öngörülen çözümdür.</b> Bu senaryo prensibin kendisini değil, <i>uygulamasını</i> soruyor — sınav bunu sık yapar."
+    },
+    {
+      topic: "Prensip 1 vs 7",
+      q: "Which statement BEST captures the difference between 'testing shows the presence of defects, not their absence' and the 'absence-of-defects fallacy'?",
+      opts: [
+        "The first concerns what testing can prove; the second concerns whether a defect-free product is necessarily useful",
+        "The first applies to static testing and the second to dynamic testing",
+        "The first applies to unit testing and the second to acceptance testing",
+        "They are two names for the same principle"
+      ],
+      a: [0],
+      why: "<b>Birincisi bir kanıt sınırıdır, ikincisi bir değer uyarısıdır.</b> Prensip 1'de kusur olabilir ama bulunamamıştır; prensip 7'de kusur gerçekten yoktur, ürün yine de kullanıcının işine yaramaz. İkisini birbirine bağlayan seviye veya test türü ayrımı yoktur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

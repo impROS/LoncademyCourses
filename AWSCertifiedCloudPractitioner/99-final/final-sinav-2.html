@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deneme Sınavı 2 — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "final-2",
+  code: "CLF-C02 · Deneme Sınavı 2 · 65 soru / 90 dakika",
+  title: "Deneme Sınavı 2",
+  back: "son-tekrar.md",
+  backLabel: "Son tekrara dön",
+  mode: "exam",
+  time: 5400,
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "1.1 Bulut faydaları",
+      q: "Which benefit of the AWS Cloud allows a company to lower its per-unit costs because AWS aggregates usage from hundreds of thousands of customers?",
+      opts: ["Economies of scale", "Elasticity", "Agility", "Fault tolerance"],
+      a: [0],
+      why: "<b>Ölçek ekonomisi</b>: AWS toplu alım gücüyle birim maliyeti düşürür ve bu tasarrufu fiyat indirimi olarak yansıtır. Senin çok kullanmanla değil, AWSin ölçeğiyle ilgilidir."
+    },
+    {
+      topic: "1.1 Bulut faydaları",
+      q: "A company adds more EC2 instances behind a load balancer to handle growth instead of moving to a larger instance. What is this called?",
+      opts: ["Horizontal scaling (scale out)", "Vertical scaling (scale up)", "Elasticity", "Loose coupling"],
+      a: [0],
+      why: "Makine <b>sayısını</b> artırmak = <b>yatay ölçekleme (scale out)</b>; AWSin tercih ettiği yaklaşımdır çünkü teorik sınırı yoktur. Aynı makineyi büyütmek dikey ölçeklemedir."
+    },
+    {
+      topic: "1.1 Bulut faydaları",
+      q: "Amazon S3 Standard offers 99.99% of which characteristic, describing whether you can reach your data at a given moment?",
+      opts: ["Availability", "Durability", "Elasticity", "Scalability"],
+      a: [0],
+      why: "<b>Availability</b> = veriye o an ulaşabilme. <b>Durability</b> = verinin kaybolmaması ve S3 Standard için %99,999999999 (11 dokuz)dur."
+    },
+    {
+      topic: "1.1 Bulut faydaları",
+      q: "Which two characteristics describe a highly available architecture on AWS? (Choose TWO.)",
+      opts: [
+        "Resources are deployed in more than one Availability Zone",
+        "Traffic is distributed by Elastic Load Balancing with health checks",
+        "All resources run on a single large EC2 instance",
+        "Session data is stored on each web server local disk",
+        "One Elastic IP is attached to one instance"
+      ],
+      a: [0, 1],
+      why: "Yüksek erişilebilirlik <b>yedeklilik</b> ile sağlanır: birden çok AZ ve sağlık kontrollü yük dengeleyici. Diğer şıklar tek arıza noktası (SPOF) yaratır."
+    },
+    {
+      topic: "1.2 Well-Architected",
+      q: "A team implements automated deployments, runbooks and post-incident reviews. Which Well-Architected pillar does this strengthen?",
+      opts: ["Operational Excellence", "Reliability", "Performance Efficiency", "Security"],
+      a: [0],
+      why: "İşletim süreçleri, otomasyon, runbook ve olay sonrası öğrenme <b>Operational Excellence</b> sütununa girer. Reliability sistemin kendisinin dayanıklılığıyla ilgilenir."
+    },
+    {
+      topic: "1.2 Well-Architected",
+      q: "Which Well-Architected pillar covers applying least privilege, encrypting data and enabling traceability?",
+      opts: ["Security", "Reliability", "Cost Optimization", "Sustainability"],
+      a: [0],
+      why: "En az ayrıcalık, şifreleme, izlenebilirlik (CloudTrail) ve olay müdahalesi <b>Security</b> sütununun konularıdır."
+    },
+    {
+      topic: "1.2 Well-Architected",
+      q: "Which practice reflects the principle of treating servers as disposable resources?",
+      opts: [
+        "Replacing a failed instance with a new one launched from an AMI",
+        "Logging in to repair a failing instance manually",
+        "Increasing the instance size when errors occur",
+        "Storing application state on the instance local disk"
+      ],
+      a: [0],
+      why: "Sunucular <b>tamir edilmez, değiştirilir</b> (immutable infrastructure). Bunun ön koşulu uygulamanın <b>stateless</b> olmasıdır — durum S3/DynamoDB/ElastiCachete tutulur."
+    },
+    {
+      topic: "1.2 Well-Architected",
+      q: "Which service automatically inspects an AWS account and provides recommendations across cost, performance, security, fault tolerance and service limits?",
+      opts: ["AWS Trusted Advisor", "AWS Well-Architected Tool", "AWS Config", "AWS Compute Optimizer"],
+      a: [0],
+      why: "<b>Trusted Advisor</b> hesabı otomatik tarar ve beş kategoride öneri verir. Well-Architected Tool ise <b>soru-cevap</b> temellidir ve tarama yapmaz."
+    },
+    {
+      topic: "1.3 Göç stratejileri",
+      q: "A company replaces its self-hosted email system with a third-party SaaS product. Which migration strategy is this?",
+      opts: ["Repurchase", "Replatform", "Rehost", "Relocate"],
+      a: [0],
+      why: "<b>Repurchase</b> (drop and shop): mevcut uygulamayı bırakıp yerine hazır bir SaaS ürünü satın almak."
+    },
+    {
+      topic: "1.3 Göç stratejileri",
+      q: "A company rewrites its monolithic application into microservices running on AWS Lambda and Amazon DynamoDB. Which strategy is this, and what is its characteristic?",
+      opts: [
+        "Refactor — the highest effort but the greatest cloud-native benefit",
+        "Rehost — the lowest effort with no code changes",
+        "Retain — leaving the workload in place",
+        "Relocate — moving at the hypervisor level"
+      ],
+      a: [0],
+      why: "<b>Refactor / re-architect</b> uygulamayı yeniden yazmaktır: en pahalı ve en uzun süren strateji, ama ölçeklenebilirlik ve maliyet açısından en yüksek kazanç."
+    },
+    {
+      topic: "1.3 Göç stratejileri",
+      q: "Which AWS service tracks the progress of application migrations from multiple tools in a single location?",
+      opts: [
+        "AWS Migration Hub",
+        "AWS Application Discovery Service",
+        "AWS Database Migration Service",
+        "Migration Evaluator"
+      ],
+      a: [0],
+      why: "<b>Migration Hub</b> göç projelerini tek panelden izler. Discovery Service envanter çıkarır, DMS veritabanı taşır, Migration Evaluator iş gerekçesi üretir."
+    },
+    {
+      topic: "1.3 Göç stratejileri",
+      q: "Which two AWS Cloud Adoption Framework perspectives are considered technical capabilities? (Choose TWO.)",
+      opts: ["Platform", "Operations", "Business", "People", "Governance"],
+      a: [0, 1],
+      why: "CAFta <b>Business, People, Governance</b> iş tarafı; <b>Platform, Security, Operations</b> teknik taraftır."
+    },
+    {
+      topic: "1.4 Bulut ekonomisi",
+      q: "A company wants to use its existing Microsoft Windows Server licenses on AWS. What is this model called?",
+      opts: ["Bring Your Own License (BYOL)", "License Included", "Consolidated licensing", "Savings Plan"],
+      a: [0],
+      why: "<b>BYOL</b> mevcut lisansı AWSe taşımaktır; bazı senaryolar <b>Dedicated Host</b> gerektirir. Alternatif <b>License Included</b>ta lisans bedeli saatlik fiyata gömülüdür."
+    },
+    {
+      topic: "1.4 Bulut ekonomisi",
+      q: "Which service helps a company track software license usage and remain compliant with licensing agreements?",
+      opts: ["AWS License Manager", "AWS Artifact", "AWS Config", "AWS Budgets"],
+      a: [0],
+      why: "<b>License Manager</b> lisans kullanımını izler, kuralları uygular ve aşımı engeller."
+    },
+    {
+      topic: "1.4 Bulut ekonomisi",
+      q: "A development environment is used only during working hours. Which action reduces its cost the MOST directly?",
+      opts: [
+        "Stop the instances outside working hours",
+        "Enable versioning on related S3 buckets",
+        "Attach additional Elastic IP addresses",
+        "Move the environment to a Region with more Availability Zones"
+      ],
+      a: [0],
+      why: "Kullanılmayan kaynağı <b>kapatmak</b> bulutun en doğrudan tasarrufudur. Boşta duran Elastic IP ise tam tersine <b>ek ücret</b> üretir."
+    },
+    {
+      topic: "1.4 Bulut ekonomisi",
+      q: "Which statement describes a benefit of using managed services such as Amazon RDS instead of self-managed databases on EC2?",
+      opts: [
+        "Reduced operational overhead because AWS handles patching, backups and failover",
+        "AWS takes responsibility for the customer data classification",
+        "All database usage becomes free of charge",
+        "The customer gains operating system level access"
+      ],
+      a: [0],
+      why: "Yönetilen servisler <b>işletim yükünü</b> azaltır. Ancak veri sınıflandırması her zaman müşteride kalır, servis ücretsiz olmaz ve RDSte OS erişimi <b>verilmez</b>."
+    },
+    {
+      topic: "2.1 Paylaşılan sorumluluk",
+      q: "Who is responsible for patching the operating system and database engine of an Amazon RDS instance?",
+      opts: ["AWS", "The customer", "The customer for the OS and AWS for the engine", "AWS Support only on request"],
+      a: [0],
+      why: "RDS yönetilen bir servistir: OS ve <b>veritabanı motoru yaması AWSindir</b>. Aynı veritabanı EC2 üzerinde kendisi kurulsaydı bunların hepsi müşteride olurdu."
+    },
+    {
+      topic: "2.1 Paylaşılan sorumluluk",
+      q: "Which two tasks are customer responsibilities when running an application on Amazon EC2? (Choose TWO.)",
+      opts: [
+        "Configuring security group rules",
+        "Applying guest operating system patches",
+        "Securing the hypervisor",
+        "Replacing failed physical hardware",
+        "Maintaining the AWS global network"
+      ],
+      a: [0, 1],
+      why: "Konsolda <b>senin ayarladığın</b> her şey senin sorumluluğundadır: SG kuralları, OS yaması, uygulama, veri. Hipervizör, donanım ve omurga ağı AWSindir."
+    },
+    {
+      topic: "2.1 Paylaşılan sorumluluk",
+      q: "Under the shared responsibility model, which statement about encryption is correct?",
+      opts: [
+        "AWS provides encryption capabilities; the customer decides whether to enable them and manages key policies",
+        "AWS encrypts all customer data automatically with customer-managed keys",
+        "Encryption is entirely the customer's responsibility with no AWS tooling",
+        "Only AWS Support can enable encryption"
+      ],
+      a: [0],
+      why: "AWS <b>araçları</b> sağlar (KMS, S3/EBS/RDS şifrelemesi, ACM); <b>açma kararı</b> ve anahtar politikaları müşterinindir."
+    },
+    {
+      topic: "2.1 Paylaşılan sorumluluk",
+      q: "Which control is described as a SHARED control in the AWS shared responsibility model?",
+      opts: [
+        "Patch management",
+        "Physical data center security",
+        "Customer data classification",
+        "Hypervisor maintenance"
+      ],
+      a: [0],
+      why: "<b>Shared controls</b>: patch management, configuration management ve farkındalık eğitimi. AWS altyapıyı, müşteri konuk OSunu ve uygulamasını yamalar."
+    },
+    {
+      topic: "2.2 Yönetişim ve uyumluluk",
+      q: "Which service records the configuration history of AWS resources so a team can see what a security group looked like last week?",
+      opts: ["AWS Config", "AWS CloudTrail", "Amazon CloudWatch", "AWS Systems Manager"],
+      a: [0],
+      why: "<b>Config</b> kaynak konfigürasyonlarının <b>anlık görüntülerini ve değişim geçmişini</b> tutar. CloudTrail ise değişikliği <b>kimin yaptığını</b> kaydeder — ikisi birbirini tamamlar."
+    },
+    {
+      topic: "2.2 Yönetişim ve uyumluluk",
+      q: "Which statement about service control policies (SCPs) is TRUE?",
+      opts: [
+        "They define the maximum permissions available; IAM permissions are still required",
+        "They grant permissions directly to IAM users",
+        "They apply to the organization management account in the same way as member accounts",
+        "They can be attached only to individual IAM roles"
+      ],
+      a: [0],
+      why: "SCP <b>izin tavanı</b> koyar: gerçek yetki = SCP ∩ IAM. Yönetim hesabını etkilemez ve root/OU/hesaba bağlanır, IAM kimliğine değil."
+    },
+    {
+      topic: "2.2 Yönetişim ve uyumluluk",
+      q: "Which service should a customer use to continuously collect evidence to support ITS OWN compliance audits?",
+      opts: ["AWS Audit Manager", "AWS Artifact", "AWS Trusted Advisor", "Amazon Detective"],
+      a: [0],
+      why: "<b>Audit Manager</b> müşterinin kendi denetimleri için kanıt toplamayı otomatikleştirir. <b>Artifact</b> ise AWSin hazır uyumluluk raporlarını indirdiğin yerdir."
+    },
+    {
+      topic: "2.2 Yönetişim ve uyumluluk",
+      q: "Which statement about penetration testing on AWS is correct?",
+      opts: [
+        "Customers may test their own resources on permitted services without prior approval, but DoS/DDoS simulation requires AWS authorization",
+        "All penetration testing is prohibited",
+        "Customers may test any AWS account without approval",
+        "Testing requires an Enterprise Support plan"
+      ],
+      a: [0],
+      why: "Kendi kaynaklarında, izin verilen servis listesi için ön izin gerekmez; <b>DoS/DDoS ve flooding</b> testleri ile başka müşterilerin kaynaklarını hedef almak yasaktır veya özel izin gerektirir."
+    },
+    {
+      topic: "2.2 Yönetişim ve uyumluluk",
+      q: "A company wants to know whether an ongoing AWS service disruption affects its own resources. Which should it check?",
+      opts: ["AWS Health Dashboard", "Amazon CloudWatch", "AWS Config", "AWS Trusted Advisor"],
+      a: [0],
+      why: "<b>Health Dashboard</b>ın <i>Your account health</i> görünümü hesabını etkileyen olayları gösterir. CloudWatch <b>senin</b> kaynaklarının metriklerini izler, AWSin servis sağlığını değil."
+    },
+    {
+      topic: "2.3 IAM",
+      q: "How should an administrator grant identical permissions to 30 new developers with the LEAST effort?",
+      opts: [
+        "Create an IAM group, attach the policy to the group, and add the users",
+        "Attach the policy to each user individually",
+        "Share one IAM user among all developers",
+        "Give each developer the root user password"
+      ],
+      a: [0],
+      why: "<b>Grup</b> tam olarak bunun içindir. Kimlik paylaşmak ve root kullanmak güvenlik ihlalidir; kullanıcı başına politika bağlamak ise ölçeklenmez."
+    },
+    {
+      topic: "2.3 IAM",
+      q: "Which statement about IAM roles is correct?",
+      opts: [
+        "A role provides temporary credentials via AWS STS and is assumed by a trusted entity",
+        "A role has a permanent password and access key",
+        "A role can be used only by IAM users in the same account",
+        "A role must be added to an IAM group to work"
+      ],
+      a: [0],
+      why: "Rolün kalıcı kimlik bilgisi yoktur; üstlenildiğinde <b>STS</b> geçici kimlik verir. Roller hesaplar arası erişimde, federasyonda ve EC2/Lambda erişiminde kullanılır."
+    },
+    {
+      topic: "2.3 IAM",
+      q: "A user attempts an action that no attached policy mentions — there is no Allow and no Deny. What happens?",
+      opts: [
+        "The action is denied by the implicit deny",
+        "The action is allowed",
+        "The action requires MFA to proceed",
+        "AWS Support decides"
+      ],
+      a: [0],
+      why: "IAMde varsayılan <b>implicit deny</b>dir: açıkça izin verilmemiş her şey yasaktır. Bu yüzden least privilege doğal bir başlangıç noktasıdır."
+    },
+    {
+      topic: "2.3 IAM",
+      q: "Which service provides sign-up, sign-in and user directory functionality for a public mobile application's END USERS?",
+      opts: ["Amazon Cognito", "AWS IAM Identity Center", "AWS Directory Service", "AWS IAM users"],
+      a: [0],
+      why: "<b>Cognito</b> uygulamanın <b>müşterileri</b> içindir. Çalışanlar ve çoklu AWS hesabı erişimi için <b>IAM Identity Center</b> kullanılır."
+    },
+    {
+      topic: "2.3 IAM",
+      q: "Which two are AWS security best practices for the root user? (Choose TWO.)",
+      opts: [
+        "Enable multi-factor authentication on the root user",
+        "Avoid using the root user for everyday tasks",
+        "Create root access keys for automation scripts",
+        "Share root credentials with the operations team",
+        "Use the root user to launch all EC2 instances"
+      ],
+      a: [0, 1],
+      why: "Root yetkisi kısıtlanamaz: <b>MFA takılır</b>, <b>günlük iş için kullanılmaz</b>, <b>access key oluşturulmaz</b> ve kimseyle paylaşılmaz."
+    },
+    {
+      topic: "2.4 Güvenlik servisleri",
+      q: "Which service scans Amazon EC2 instances, container images and Lambda functions for known software vulnerabilities?",
+      opts: ["Amazon Inspector", "Amazon GuardDuty", "Amazon Macie", "AWS Security Hub"],
+      a: [0],
+      why: "<b>Inspector</b> zafiyet (CVE) taraması ve istenmeyen ağ erişimi tespiti yapar. GuardDuty <b>davranış</b> analiz eder, Macie <b>S3teki hassas veriye</b> bakar."
+    },
+    {
+      topic: "2.4 Güvenlik servisleri",
+      q: "Which service aggregates security findings from multiple AWS security services into a single dashboard and checks them against standards such as CIS?",
+      opts: ["AWS Security Hub", "Amazon Detective", "AWS Config", "AWS Firewall Manager"],
+      a: [0],
+      why: "<b>Security Hub</b> tek panelde (single pane of glass) bulguları toplar ve standartlara karşı otomatik kontrol yapar."
+    },
+    {
+      topic: "2.4 Güvenlik servisleri",
+      q: "Which two statements about network ACLs are correct? (Choose TWO.)",
+      opts: [
+        "They are stateless and require explicit outbound rules",
+        "They can contain both allow and deny rules",
+        "They operate at the instance level",
+        "They automatically allow return traffic",
+        "Multiple network ACLs can be attached to one subnet at the same time"
+      ],
+      a: [0, 1],
+      why: "NACL <b>stateless</b>tır (dönüş için ayrı kural gerekir), <b>allow ve deny</b> destekler, <b>subnet</b> seviyesindedir ve bir subnete <b>tek</b> NACL uygulanır."
+    },
+    {
+      topic: "2.4 Güvenlik servisleri",
+      q: "Which service provisions and automatically renews SSL/TLS certificates for use with Elastic Load Balancing and CloudFront at no additional cost?",
+      opts: ["AWS Certificate Manager", "AWS KMS", "AWS Secrets Manager", "Amazon Route 53"],
+      a: [0],
+      why: "<b>ACM</b> sertifikaları sağlar ve <b>otomatik yeniler</b>; AWS servisleriyle kullanılan genel sertifikalar ücretsizdir. Sertifika süresi dolması kaynaklı kesintileri önler."
+    },
+    {
+      topic: "2.4 Güvenlik servisleri",
+      q: "A company with 40 AWS accounts wants to centrally enforce AWS WAF rules across all of them. Which service should it use?",
+      opts: ["AWS Firewall Manager", "AWS WAF configured per account", "Amazon GuardDuty", "AWS Shield Standard"],
+      a: [0],
+      why: "<b>Firewall Manager</b> Organizations ile birlikte WAF kurallarını, Shield Advanced korumalarını ve güvenlik gruplarını <b>tüm hesaplarda merkezî</b> olarak uygular."
+    },
+    {
+      topic: "3.1 Dağıtım ve işletim",
+      q: "A developer needs to call AWS services from application code written in Python. Which option is designed for this?",
+      opts: ["An AWS SDK", "The AWS Management Console", "AWS CloudShell", "AWS CloudFormation"],
+      a: [0],
+      why: "Uygulama kodundan AWS çağırmak için <b>SDK</b> kullanılır (Pythonda boto3). CLI betikler, konsol keşif, CloudShell ise hazır bir tarayıcı terminalidir."
+    },
+    {
+      topic: "3.1 Dağıtım ve işletim",
+      q: "Which deployment model describes running part of a workload in AWS and part in the company's own data center, connected together?",
+      opts: ["Hybrid", "All-in cloud", "Multi-tenant", "Serverless"],
+      a: [0],
+      why: "<b>Hibrit</b> model; tipik destekleyicileri <b>Outposts</b>, <b>Storage Gateway</b>, <b>Direct Connect</b> ve <b>VPN</b>dir."
+    },
+    {
+      topic: "3.1 Dağıtım ve işletim",
+      q: "A company must connect its on-premises network to AWS quickly, with encryption, and at low cost. Which option fits BEST?",
+      opts: ["AWS Site-to-Site VPN", "AWS Direct Connect", "AWS Transit Gateway", "AWS PrivateLink"],
+      a: [0],
+      why: "<b>VPN</b> saatler içinde kurulur ve internet üzerinden şifreli tünel sağlar. Direct Connect özel hat gerektirdiği için kurulumu <b>haftalar</b> sürer."
+    },
+    {
+      topic: "3.2 Global altyapı",
+      q: "What is an AWS edge location primarily used for?",
+      opts: [
+        "Caching content closer to end users to reduce latency",
+        "Running highly available EC2 clusters",
+        "Storing long-term database backups",
+        "Hosting the AWS Management Console"
+      ],
+      a: [0],
+      why: "Edge locationlar CloudFront önbelleği ve Route 53 DNS yanıtı için kullanılır; sayıları Regionlardan kat kat fazladır ve amaçları <b>gecikmeyi düşürmektir</b>."
+    },
+    {
+      topic: "3.2 Global altyapı",
+      q: "A company needs static IP addresses and fast failover between Regions for a TCP-based application that cannot be cached. Which service should it use?",
+      opts: ["AWS Global Accelerator", "Amazon CloudFront", "AWS Direct Connect", "Amazon Route 53 weighted routing"],
+      a: [0],
+      why: "<b>Global Accelerator</b> statik anycast IP verir, trafiği AWS omurgasına en yakın noktadan alır ve Region arası hızlı failover sağlar. CloudFront ise <b>önbelleklenebilir HTTP içerik</b> içindir."
+    },
+    {
+      topic: "3.2 Global altyapı",
+      q: "Which statement about Amazon S3 and Regions is correct?",
+      opts: [
+        "Bucket names are globally unique, but each bucket lives in a specific Region",
+        "S3 buckets are replicated to every Region by default",
+        "S3 buckets exist in a single Availability Zone by default",
+        "Bucket names only need to be unique within the account"
+      ],
+      a: [0],
+      why: "Bucket <b>isimleri</b> dünya genelinde benzersizdir; bucketın kendisi <b>bir Regionda</b> yaşar ve verisi o Region içinde birden çok AZye kopyalanır (One Zone sınıfları hariç)."
+    },
+    {
+      topic: "3.3 Compute",
+      q: "Which service should a small business use for a simple WordPress site with a predictable fixed monthly price?",
+      opts: ["Amazon Lightsail", "Amazon EC2 with Auto Scaling", "AWS Batch", "Amazon EKS"],
+      a: [0],
+      why: "<b>Lightsail</b> basitleştirilmiş, <b>sabit aylık fiyatlı</b> paketler ve hazır uygulama şablonları sunar."
+    },
+    {
+      topic: "3.3 Compute",
+      q: "What happens when an EC2 Auto Scaling group detects an unhealthy instance?",
+      opts: [
+        "It terminates the instance and launches a replacement",
+        "It reboots the instance and keeps it indefinitely",
+        "It converts the instance to a Spot Instance",
+        "It notifies AWS Support to repair it"
+      ],
+      a: [0],
+      why: "Auto Scaling sağlıksız instanceı sonlandırıp launch templatee göre yenisini açar — buna <b>self-healing</b> denir."
+    },
+    {
+      topic: "3.3 Compute",
+      q: "Which two AWS services are serverless? (Choose TWO.)",
+      opts: [
+        "AWS Fargate",
+        "Amazon S3",
+        "Amazon EC2",
+        "Amazon EMR with EC2 clusters",
+        "AWS Outposts"
+      ],
+      a: [0, 1],
+      why: "Serverless = sunucu sağlamaz, yamalamaz, ölçeklemezsin: Lambda, <b>Fargate</b>, <b>S3</b>, DynamoDB, SQS, SNS, API Gateway, Athena. EC2 ve EC2 tabanlı EMR sunucu yönetimi gerektirir."
+    },
+    {
+      topic: "3.4 Veritabanları",
+      q: "Which feature should be used to offload heavy reporting queries from a primary Amazon RDS database?",
+      opts: ["A read replica", "A Multi-AZ deployment", "Automated backups", "AWS Backup"],
+      a: [0],
+      why: "<b>Read replica</b> asenkron kopyadır ve okuma trafiği alır. <b>Multi-AZ</b> standbysine okuma yapılmaz — o yalnızca failover içindir."
+    },
+    {
+      topic: "3.4 Veritabanları",
+      q: "A team migrating from Oracle to Amazon Aurora PostgreSQL needs to convert schemas and stored procedures. Which service does this?",
+      opts: [
+        "AWS Schema Conversion Tool (SCT)",
+        "AWS Database Migration Service (DMS)",
+        "AWS DataSync",
+        "AWS Glue"
+      ],
+      a: [0],
+      why: "Motor değiştiği için önce <b>SCT</b> şemayı dönüştürür, sonra <b>DMS</b> veriyi taşır. Aynı motora göçte tek başına DMS yeter."
+    },
+    {
+      topic: "3.4 Veritabanları",
+      q: "Which database service is purpose-built for storing and querying highly connected data such as relationships in a social network?",
+      opts: ["Amazon Neptune", "Amazon DynamoDB", "Amazon Redshift", "Amazon DocumentDB"],
+      a: [0],
+      why: "<b>Neptune</b> bir graf veritabanıdır; düğüm ve ilişkiler üzerinde sorgular yapar (öneri motorları, dolandırıcılık analizi)."
+    },
+    {
+      topic: "3.5 Networking",
+      q: "What determines whether a subnet in a VPC is public or private?",
+      opts: [
+        "Whether its route table has a route to an internet gateway",
+        "Whether its name includes public or private",
+        "Whether it has an attached NAT gateway",
+        "Whether it spans multiple Availability Zones"
+      ],
+      a: [0],
+      why: "Subneti public yapan tek şey route tableındaki <code>0.0.0.0/0 → igw-...</code> satırıdır. İsim yalnızca bir etikettir ve bir subnet <b>tek</b> AZ içindedir."
+    },
+    {
+      topic: "3.5 Networking",
+      q: "A company has 50 VPCs plus an on-premises network and wants to connect them all through a central hub. Which service should it use?",
+      opts: ["AWS Transit Gateway", "VPC peering", "AWS Client VPN", "Amazon Route 53"],
+      a: [0],
+      why: "<b>Transit Gateway</b> merkezî hub olarak çalışır. VPC peering <b>bire birdir</b> ve 50 VPC için yüzlerce bağlantı gerektirir."
+    },
+    {
+      topic: "3.5 Networking",
+      q: "Which statement about Elastic IP addresses is correct?",
+      opts: [
+        "An Elastic IP that is not associated with a running resource incurs charges",
+        "Elastic IP addresses are always free of charge",
+        "Elastic IP addresses change when the instance is restarted",
+        "Elastic IP addresses work only with Amazon S3"
+      ],
+      a: [0],
+      why: "<b>Boşta duran Elastic IP ücretlenir</b> (IPv4 kıt bir kaynaktır). Elastic IPnin amacı zaten sabit kalmasıdır — yeniden başlatmada değişmez."
+    },
+    {
+      topic: "3.6 Storage",
+      q: "Which S3 storage class is designed for data with unknown or changing access patterns and moves objects automatically between tiers?",
+      opts: [
+        "S3 Intelligent-Tiering",
+        "S3 Standard-IA",
+        "S3 One Zone-IA",
+        "S3 Glacier Deep Archive"
+      ],
+      a: [0],
+      why: "<b>Intelligent-Tiering</b> gerçek erişim davranışına göre otomatik katmanlama yapar; erişim deseni bilinmiyorsa doğru cevap budur."
+    },
+    {
+      topic: "3.6 Storage",
+      q: "Which Amazon EBS volume type is the LOWEST cost option for infrequently accessed data?",
+      opts: ["Cold HDD (sc1)", "Provisioned IOPS SSD (io2)", "General Purpose SSD (gp3)", "Throughput Optimized HDD (st1)"],
+      a: [0],
+      why: "<b>sc1 (Cold HDD)</b> en ucuz EBS türüdür ve nadiren erişilen veri içindir. io2 en yüksek IOPS, gp3 varsayılan, st1 ise büyük sıralı okuma içindir."
+    },
+    {
+      topic: "3.6 Storage",
+      q: "What happens to data stored on an EC2 instance store volume when the instance is terminated?",
+      opts: [
+        "The data is lost because instance store is ephemeral",
+        "The data is copied to Amazon S3 automatically",
+        "The data remains and can be attached to another instance",
+        "The data is archived in Amazon S3 Glacier"
+      ],
+      a: [0],
+      why: "<b>Instance store geçicidir</b>: host makineye bağlıdır ve instance durunca/silinince veri kaybolur. Kalıcı depolama için <b>EBS</b> kullanılır."
+    },
+    {
+      topic: "3.7 AI/ML ve analitik",
+      q: "Which service extracts text, tables and form data from scanned documents such as invoices?",
+      opts: ["Amazon Textract", "Amazon Rekognition", "Amazon Comprehend", "Amazon Transcribe"],
+      a: [0],
+      why: "<b>Textract</b> taranmış <b>belgelerden</b> yapılandırılmış veri çıkarır. Rekognition ise görüntü/videoda nesne ve yüz tanır."
+    },
+    {
+      topic: "3.7 AI/ML ve analitik",
+      q: "Which service provides serverless extract, transform and load (ETL) plus a central data catalog?",
+      opts: ["AWS Glue", "Amazon Athena", "Amazon EMR", "Amazon QuickSight"],
+      a: [0],
+      why: "<b>Glue</b> sunucusuz ETL ve <b>Data Catalog</b> sağlar; crawlerları S3teki verinin şemasını çıkarır. Athena veriyi <b>sorgular</b>, Glue <b>hazırlar</b>."
+    },
+    {
+      topic: "3.8 Diğer servisler",
+      q: "Which service delivers one published message to many subscribers such as email, SMS, HTTP endpoints and AWS Lambda?",
+      opts: ["Amazon SNS", "Amazon SQS", "Amazon MQ", "AWS Step Functions"],
+      a: [0],
+      why: "<b>SNS</b> pub/sub modelidir ve mesajı <b>tüm abonelere</b> gönderir (push). SQS ise mesajı saklar ve tek tüketici çeker."
+    },
+    {
+      topic: "3.8 Diğer servisler",
+      q: "A developer must identify which microservice introduces latency in a distributed request path. Which service should be used?",
+      opts: ["AWS X-Ray", "Amazon CloudWatch Logs", "AWS CloudTrail", "AWS Config"],
+      a: [0],
+      why: "<b>X-Ray</b> dağıtık izleme (tracing) yapar ve isteğin servisler arasındaki yolunu uçtan uca göstererek darboğazı işaret eder."
+    },
+    {
+      topic: "4.1 Fiyatlandırma",
+      q: "Which EC2 purchasing option provides a discount in exchange for a commitment to a specific instance family in a specific Region for one or three years?",
+      opts: ["Reserved Instances", "Spot Instances", "On-Demand Instances", "Dedicated Instances"],
+      a: [0],
+      why: "<b>Reserved Instances</b> belirli bir tip/Region taahhüdüne dayanır. Daha esnek olan <b>Savings Plans</b> ise saatlik dolar taahhüdüdür ve tip/Region değişimine izin verir."
+    },
+    {
+      topic: "4.1 Fiyatlandırma",
+      q: "Which two compute services can be covered by Compute Savings Plans? (Choose TWO.)",
+      opts: ["AWS Fargate", "AWS Lambda", "Amazon RDS", "Amazon S3", "Amazon Route 53"],
+      a: [0, 1],
+      why: "Compute Savings Plans EC2ye ek olarak <b>Fargate ve Lambda</b>yı da kapsar; bu, onu Reserved Instancesa göre daha esnek kılar."
+    },
+    {
+      topic: "4.1 Fiyatlandırma",
+      q: "Which workload is LEAST suitable for Spot Instances?",
+      opts: [
+        "A production database that must maintain persistent connections",
+        "A stateless batch processing fleet",
+        "A CI/CD build farm",
+        "A video transcoding job that can be retried"
+      ],
+      a: [0],
+      why: "Spot instancelar 2 dakika ihbarla geri alınabilir; <b>durum tutan</b> ve kesintiyi kaldıramayan iş yükleri için uygun değildir."
+    },
+    {
+      topic: "4.2 Maliyet yönetimi",
+      q: "Which artifact provides the MOST granular, hourly, resource-level cost data that can be queried with Amazon Athena?",
+      opts: [
+        "AWS Cost and Usage Report",
+        "AWS Cost Explorer",
+        "The monthly invoice PDF",
+        "AWS Budgets report"
+      ],
+      a: [0],
+      why: "<b>CUR</b> en ayrıntılı faturalama verisidir: saatlik ve kaynak seviyesinde, S3ye yazılır, Athena/QuickSight ile analiz edilir."
+    },
+    {
+      topic: "4.2 Maliyet yönetimi",
+      q: "A company needs to break down its AWS costs by department and project. What should it implement?",
+      opts: [
+        "Cost allocation tags activated in the Billing console",
+        "One VPC per department",
+        "Separate Availability Zones per project",
+        "An IAM role per project"
+      ],
+      a: [0],
+      why: "<b>Cost allocation tags</b> maliyeti projeye/departmana bağlar. Kritik detay: etiketin raporlarda görünmesi için <b>Billingde etkinleştirilmesi</b> gerekir ve bu <b>geriye dönük çalışmaz</b>."
+    },
+    {
+      topic: "4.2 Maliyet yönetimi",
+      q: "Which service uses machine learning to detect unusual spikes in AWS spending and notify the customer?",
+      opts: [
+        "AWS Cost Anomaly Detection",
+        "AWS Budgets",
+        "AWS Compute Optimizer",
+        "Amazon GuardDuty"
+      ],
+      a: [0],
+      why: "<b>Cost Anomaly Detection</b> harcama desenlerini öğrenir ve olağandışı sıçramaları eşik tanımlamana gerek kalmadan yakalar. GuardDuty <b>güvenlik</b> tehditleri içindir."
+    },
+    {
+      topic: "4.3 Destek planları",
+      q: "What is the target response time for a production system down case with AWS Business Support?",
+      opts: ["Less than 1 hour", "Less than 15 minutes", "Less than 4 hours", "Less than 24 hours"],
+      a: [0],
+      why: "Ezberlenecek üç sayı: <b>Business = 1 saat</b> (production down), <b>Enterprise On-Ramp = 30 dakika</b>, <b>Enterprise = 15 dakika</b> (business-critical down)."
+    },
+    {
+      topic: "4.3 Destek planları",
+      q: "Which two are included in the free AWS Basic Support plan? (Choose TWO.)",
+      opts: [
+        "Billing and account support",
+        "A limited set of AWS Trusted Advisor checks",
+        "24/7 technical support by phone",
+        "A designated Technical Account Manager",
+        "Third-party software support"
+      ],
+      a: [0, 1],
+      why: "<b>Basic ücretsizdir</b>: hesap/fatura desteği, temel Trusted Advisor kontrolleri, Health Dashboard, dokümantasyon ve re:Post. <b>Teknik destek vakası açamazsın.</b>"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

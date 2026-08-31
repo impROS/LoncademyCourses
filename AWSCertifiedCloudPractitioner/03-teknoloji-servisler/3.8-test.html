@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.8 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.8",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.8",
+  title: "Diğer Kapsam İçi Servisler",
+  back: "3.8-diger-servisler.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "SQS vs SNS",
+      q: "Which service provides a fully managed message QUEUE that stores messages until a consumer processes them, helping decouple application components?",
+      opts: ["Amazon SQS", "Amazon SNS", "Amazon EventBridge", "AWS Step Functions"],
+      a: [0],
+      why: "<b>SQS</b> bir kuyruktur: mesajları <b>saklar</b> (varsayılan 4 gün, en fazla 14 gün) ve tüketici hazır olduğunda <b>çeker (pull)</b>. Gönderen ile alan birbirini beklemez — klasik <b>loose coupling</b> aracıdır. Ezber: <i>SQS bekletir, SNS dağıtır.</i>"
+    },
+    {
+      topic: "SQS vs SNS",
+      q: "A company needs to send the same notification to an email address, an SMS number and an AWS Lambda function at the same time. Which service should it use?",
+      opts: ["Amazon SNS", "Amazon SQS", "Amazon SES", "AWS Step Functions"],
+      a: [0],
+      why: "<b>SNS</b> yayın (pub/sub) modelidir: tek bir mesajı <b>tüm abonelere aynı anda gönderir (push)</b> — e-posta, SMS, HTTP, Lambda, SQS. SQS bir mesajı <b>tek</b> tüketiciye verir; SES ise pazarlama/işlemsel <b>e-posta</b> servisidir."
+    },
+    {
+      topic: "SQS vs SNS",
+      q: "Which two statements about Amazon SQS and Amazon SNS are correct? (Choose TWO.)",
+      opts: [
+        "SQS retains messages until they are processed or the retention period expires",
+        "SNS delivers messages to all subscribers of a topic",
+        "SNS stores messages for up to 14 days",
+        "SQS pushes messages to multiple subscribers simultaneously",
+        "SQS requires a publish/subscribe topic to operate"
+      ],
+      a: [0, 1],
+      why: "SQS mesajı <b>saklar</b>; SNS ise anlık iletir ve <b>saklamaz</b>. SNS bir konuya (topic) abone olan <b>herkese</b> gönderir. Fan-out kalıbı bu ikisini birleştirir: <b>SNS → birden çok SQS kuyruğu</b> — hem dağıtım hem güvenli saklama."
+    },
+    {
+      topic: "Orkestrasyon",
+      q: "A company needs to coordinate a multi-step order-processing workflow with branching, retries and error handling, defined as a visual state machine. Which service fits?",
+      opts: ["AWS Step Functions", "Amazon SQS", "Amazon EventBridge", "AWS Batch"],
+      a: [0],
+      why: "<b>Step Functions</b> adımları <b>durum makinesi</b> olarak sıraya koyar: dallanma, yeniden deneme, hata yakalama ve görsel izleme sağlar. SQS yalnızca mesaj taşır, iş akışını yönetmez."
+    },
+    {
+      topic: "Olay yönlendirme",
+      q: "Which service routes events from AWS services, custom applications and SaaS providers to targets based on rules, and can also trigger targets on a schedule?",
+      opts: ["Amazon EventBridge", "Amazon SQS", "AWS CloudTrail", "AWS Config"],
+      a: [0],
+      why: "<b>EventBridge</b> bir <b>olay veri yoludur</b>: olayları kurallara göre hedeflere (Lambda, Step Functions, SQS) yönlendirir ve <b>zamanlanmış (cron)</b> tetikleme yapabilir. CloudTrail olayları <b>kaydeder</b>, yönlendirmez."
+    },
+    {
+      topic: "Systems Manager",
+      q: "A company must apply operating system patches to hundreds of EC2 instances from a central place. Which service should it use?",
+      opts: [
+        "AWS Systems Manager Patch Manager",
+        "AWS Config",
+        "Amazon Inspector",
+        "AWS CloudFormation"
+      ],
+      a: [0],
+      why: "<b>Systems Manager Patch Manager</b> sunucu filosunu merkezî olarak yamalar. Hatırla: EC2de <b>OS yaması müşterinin sorumluluğudur</b>; AWS bunu yapacak <b>aracı</b> verir. Inspector zafiyetleri <b>tespit eder</b> ama yamayı uygulamaz."
+    },
+    {
+      topic: "Systems Manager",
+      q: "Which capability allows administrators to connect to an EC2 instance shell without opening inbound port 22 and without managing SSH keys?",
+      opts: [
+        "AWS Systems Manager Session Manager",
+        "Amazon EC2 key pairs",
+        "AWS Direct Connect",
+        "Amazon WorkSpaces"
+      ],
+      a: [0],
+      why: "<b>Session Manager</b> tarayıcı veya CLI üzerinden kabuk erişimi verir; <b>22 portunu açmaya ve SSH anahtarı yönetmeye gerek yoktur</b>, tüm oturumlar loglanabilir. Bu, güvenlik sorularında tercih edilen cevaptır."
+    },
+    {
+      topic: "İzleme üçlüsü",
+      q: "Which service collects metrics and logs, and can trigger an alarm when a threshold is breached?",
+      opts: ["Amazon CloudWatch", "AWS CloudTrail", "AWS Config", "AWS Health Dashboard"],
+      a: [0],
+      why: "<b>CloudWatch</b> = metrik, log, alarm, pano — <b>sistem nasıl çalışıyor</b>. CloudTrail <b>kim ne yaptı</b>, Config <b>kurala uygun mu</b>, Health Dashboard ise <b>AWS tarafında bir sorun var mı</b> sorusunu cevaplar."
+    },
+    {
+      topic: "İzleme üçlüsü",
+      q: "A company wants to monitor the memory utilization of its EC2 instances in Amazon CloudWatch. What is required?",
+      opts: [
+        "Install the CloudWatch agent on the instances",
+        "Nothing — memory is a default EC2 metric",
+        "Enable AWS Config recording",
+        "Create an AWS CloudTrail trail"
+      ],
+      a: [0],
+      why: "EC2nin varsayılan CloudWatch metrikleri hipervizör seviyesinden gelir: CPU, disk, ağ. <b>Bellek (memory) ve disk doluluk oranı varsayılan metrik değildir</b>; instance içine <b>CloudWatch agent</b> kurmak gerekir — bu da paylaşılan sorumluluk modelinin bir yansımasıdır."
+    },
+    {
+      topic: "Servis limitleri",
+      q: "A company has reached the maximum number of VPCs allowed in a Region and needs the limit raised. Which service should it use?",
+      opts: ["AWS Service Quotas", "AWS Service Catalog", "AWS Trusted Advisor", "AWS Config"],
+      a: [0],
+      why: "<b>Service Quotas</b> servis limitlerini görüntülemeyi ve <b>artırma talebi</b> açmayı sağlar. <b>Trusted Advisor</b> limite yaklaştığında <b>uyarır</b> ama artırma işlemi Service Quotas üzerinden yapılır. <b>Service Catalog</b> tamamen farklı bir iştir: onaylı ürün kataloğu."
+    },
+    {
+      topic: "Yönetişim araçları",
+      q: "Which service lets an organization publish an approved catalog of products (such as preconfigured CloudFormation templates) that teams are allowed to launch?",
+      opts: ["AWS Service Catalog", "AWS Service Quotas", "AWS Marketplace", "AWS Control Tower"],
+      a: [0],
+      why: "<b>Service Catalog</b> kurumun <b>onayladığı</b> ürünleri (genelde CloudFormation şablonları) bir katalog olarak sunar; kullanıcılar yalnızca izin verilen, standartlara uygun kaynakları açabilir. <b>Marketplace</b> ise üçüncü parti yazılımların satın alındığı yerdir."
+    },
+    {
+      topic: "Geliştirici araçları",
+      q: "A developer needs to trace a single request as it travels through several microservices to find where latency is introduced. Which service should be used?",
+      opts: ["AWS X-Ray", "Amazon CloudWatch Logs", "AWS CloudTrail", "AWS CodeBuild"],
+      a: [0],
+      why: "<b>X-Ray</b> dağıtık izleme (tracing) yapar: bir isteğin servisler arasındaki yolunu uçtan uca gösterir ve darboğazı işaret eder. CloudWatch Logs ham logları tutar; CloudTrail ise API çağrılarını denetler."
+    },
+    {
+      topic: "Son kullanıcı uygulamaları",
+      q: "A company wants to provide managed virtual desktops to remote employees so they can work from any device. Which service should it use?",
+      opts: ["Amazon WorkSpaces", "Amazon AppStream 2.0", "Amazon Connect", "Amazon Lightsail"],
+      a: [0],
+      why: "<b>WorkSpaces</b> yönetilen <b>sanal masaüstü (DaaS)</b> sunar. <b>AppStream 2.0</b> ise masaüstünün tamamını değil, <b>tek bir uygulamayı</b> tarayıcıya akıtır — sınav bu ikisini sıkça karşılaştırır."
+    },
+    {
+      topic: "Son kullanıcı uygulamaları",
+      q: "Which service provides a cloud-based contact center that supports inbound and outbound customer calls?",
+      opts: ["Amazon Connect", "Amazon SES", "Amazon Pinpoint", "Amazon Chime"],
+      a: [0],
+      why: "<b>Amazon Connect</b> bulut tabanlı <b>çağrı merkezi</b> servisidir. <b>SES</b> e-posta gönderimi, <b>Pinpoint</b> çok kanallı kampanya yönetimi, <b>Chime</b> ise toplantı/iletişim servisidir."
+    },
+    {
+      topic: "E-posta servisleri",
+      q: "An application must send transactional emails such as order confirmations to customers. Which service is designed for this?",
+      opts: ["Amazon SES", "Amazon SNS", "Amazon SQS", "Amazon EventBridge"],
+      a: [0],
+      why: "<b>SES</b> yüksek hacimli <b>işlemsel ve pazarlama e-postaları</b> için tasarlanmıştır (teslim edilebilirlik, itibar yönetimi, şablonlar). <b>SNS</b> ise sistem <b>bildirimi/alarmı</b> içindir ve e-posta yalnızca kanallarından biridir — müşteriye giden gerçek e-posta için SES seçilir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

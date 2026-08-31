@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.5 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.5",
+  code: "3. alan · Teknoloji ve Servisler · Görev 3.5",
+  title: "Ağ ve İçerik Dağıtımı",
+  back: "3.5-networking.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "VPC temelleri",
+      q: "Which service provides a logically isolated section of the AWS Cloud where a customer can launch resources in a virtual network that they define?",
+      opts: ["Amazon VPC", "AWS Direct Connect", "Amazon Route 53", "AWS Transit Gateway"],
+      a: [0],
+      why: "<b>Amazon VPC</b> senin tanımladığın IP aralığı, subnetler, route tableları ve güvenlik kurallarıyla <b>mantıksal olarak izole</b> bir sanal ağdır. Bir Regiona aittir ve o Regionın AZlerine yayılabilir."
+    },
+    {
+      topic: "Public / private subnet",
+      q: "What makes a subnet a PUBLIC subnet in a VPC?",
+      opts: [
+        "Its route table has a route to an internet gateway",
+        "Its name contains the word public",
+        "It has a NAT gateway attached",
+        "It spans multiple Availability Zones"
+      ],
+      a: [0],
+      why: "Bir subneti public yapan tek şey <b>route tableındaki <code>0.0.0.0/0 → igw-...</code> satırıdır</b>. İsim tamamen etiketten ibarettir. Ayrıca bir subnet <b>tek bir AZ</b> içindedir, birden çok AZye yayılamaz."
+    },
+    {
+      topic: "NAT / Internet Gateway",
+      q: "EC2 instances in a private subnet must download operating system patches from the internet, but they must not be reachable FROM the internet. Which component enables this?",
+      opts: ["NAT gateway", "Internet gateway", "VPC peering connection", "Elastic IP address on each instance"],
+      a: [0],
+      why: "<b>NAT Gateway</b> yalnızca <b>giden</b> bağlantılara izin verir: içeriden dışarı çıkılır, dışarıdan içeri bağlantı kurulamaz. <b>Internet Gateway</b> ise çift yönlüdür ve instanceı internete açardı. Not: NAT Gateway <b>saatlik + veri işleme ücretlidir</b> (~32 USD/ay)."
+    },
+    {
+      topic: "Route 53",
+      q: "A company operates its application in three Regions and wants each user to be directed to the Region that provides the lowest latency. Which Route 53 routing policy should it use?",
+      opts: ["Latency-based routing", "Geolocation routing", "Weighted routing", "Simple routing"],
+      a: [0],
+      why: "<b>Latency-based routing</b> kullanıcıyı ölçülen <b>en düşük gecikmeli</b> Regiona yönlendirir. <b>Geolocation</b> kullanıcının <b>coğrafi konumuna</b> göre yönlendirir (içerik yerelleştirme/mevzuat için), en hızlı olana göre değil — ikisi sıkça karıştırılır."
+    },
+    {
+      topic: "Route 53",
+      q: "Which two capabilities does Amazon Route 53 provide? (Choose TWO.)",
+      opts: [
+        "Domain name registration",
+        "DNS health checks with failover routing",
+        "Content caching at edge locations",
+        "Distributed denial of service scrubbing for EC2 only",
+        "Virtual private network tunnels"
+      ],
+      a: [0, 1],
+      why: "Route 53ün üç işi: <b>alan adı kaydı</b>, <b>DNS yönlendirme</b> ve <b>sağlık kontrolü + failover</b>. Edge önbellekleme <b>CloudFront</b>un, VPN tünelleri <b>Site-to-Site VPN</b>in işidir."
+    },
+    {
+      topic: "CloudFront",
+      q: "A media company wants to reduce load times of images and videos for a global audience and lower the load on its origin servers. Which service should it use?",
+      opts: ["Amazon CloudFront", "AWS Global Accelerator", "Amazon Route 53", "AWS Direct Connect"],
+      a: [0],
+      why: "<b>CloudFront</b> içeriği <b>edge location</b>larda önbellekler: gecikme düşer, kaynak sunucu yükü azalır ve <b>veri çıkış maliyeti</b> düşer. Global Accelerator ise önbellekleme yapmaz — TCP/UDP trafiğini AWS omurgası üzerinden hızlandırır ve statik IP verir."
+    },
+    {
+      topic: "API Gateway",
+      q: "Which service allows a company to create, publish and manage REST APIs that invoke AWS Lambda functions, without managing servers?",
+      opts: ["Amazon API Gateway", "Elastic Load Balancing", "Amazon Route 53", "AWS AppSync only"],
+      a: [0],
+      why: "<b>API Gateway</b> sunucusuz API katmanıdır: yetkilendirme, <b>throttling</b>, önbellekleme, sürümleme ve izleme sağlar. Klasik serverless mimari zinciri: <b>API Gateway → Lambda → DynamoDB</b>."
+    },
+    {
+      topic: "PrivateLink / endpoint",
+      q: "An application in a private subnet must access Amazon S3, and the security team requires that the traffic never traverses the public internet. What should be used?",
+      opts: [
+        "A VPC endpoint (AWS PrivateLink)",
+        "A NAT gateway",
+        "An internet gateway",
+        "A Site-to-Site VPN"
+      ],
+      a: [0],
+      why: "<b>VPC endpoint / PrivateLink</b> trafiği AWS omurgası üzerinden taşır ve public internete hiç çıkmaz. NAT Gateway de çıkışı sağlar ama trafiği <b>internet üzerinden</b> gönderir — bu, sorudaki güvenlik şartını karşılamaz."
+    },
+    {
+      topic: "VPC bağlantıları",
+      q: "A company needs to connect two VPCs so that resources in each can communicate using private IP addresses. Which is the simplest option for just two VPCs?",
+      opts: ["VPC peering", "AWS Transit Gateway", "AWS Direct Connect", "Internet gateway"],
+      a: [0],
+      why: "İki VPC için <b>VPC peering</b> en basit çözümdür (bire bir, <b>geçişli değildir</b>). VPC sayısı arttığında eşleştirme sayısı katlanır; onlarca VPC söz konusuysa <b>Transit Gateway</b> merkezî hub olarak kullanılır."
+    },
+    {
+      topic: "VPN vs Direct Connect",
+      q: "A company needs to connect its data center to AWS as QUICKLY as possible with an encrypted connection and minimal upfront cost. Which option should it choose?",
+      opts: ["AWS Site-to-Site VPN", "AWS Direct Connect", "AWS Transit Gateway", "AWS PrivateLink"],
+      a: [0],
+      why: "<b>VPN</b> saatler içinde kurulur, internet üzerinden <b>şifreli</b> tünel sağlar ve ucuzdur. <b>Direct Connect</b> özel fiziksel hat gerektirdiği için kurulumu <b>haftalar</b> sürer ve pahalıdır. Soruda <i>quickly</i> veya <i>encrypted over the internet</i> geçiyorsa cevap VPNdir."
+    },
+    {
+      topic: "Güvenlik katmanları",
+      q: "Which two statements comparing security groups and network ACLs are correct? (Choose TWO.)",
+      opts: [
+        "Security groups are stateful; network ACLs are stateless",
+        "Network ACLs can explicitly deny traffic; security groups cannot",
+        "Security groups operate at the subnet level",
+        "Network ACLs are evaluated in no particular order",
+        "A subnet can have multiple network ACLs applied at once"
+      ],
+      a: [0, 1],
+      why: "SG <b>stateful</b> ve <b>instance seviyesindedir</b>, yalnızca ALLOW yazılır. NACL <b>stateless</b> ve <b>subnet seviyesindedir</b>, hem ALLOW hem <b>DENY</b> destekler ve kurallar <b>numara sırasına</b> göre değerlendirilir. Bir subnete aynı anda <b>tek</b> NACL uygulanır."
+    },
+    {
+      topic: "İzleme",
+      q: "Which VPC feature captures metadata about the IP traffic going to and from network interfaces in a VPC?",
+      opts: ["VPC Flow Logs", "AWS CloudTrail", "Amazon CloudFront logs", "AWS Config"],
+      a: [0],
+      why: "<b>VPC Flow Logs</b> ağ trafiğinin <b>meta verisini</b> (kaynak/hedef IP, port, kabul/ret) kaydeder ve CloudWatch Logs veya S3ye yazar. CloudTrail <b>API çağrılarını</b> kaydeder — ağ paketlerini değil; ikisi farklı katmanlardır."
+    },
+    {
+      topic: "Elastic IP",
+      q: "Which statement about Elastic IP addresses is correct?",
+      opts: [
+        "An Elastic IP that is not associated with a running instance incurs charges",
+        "Elastic IP addresses are always free",
+        "Elastic IP addresses change every time the instance restarts",
+        "Elastic IP addresses can only be used with Amazon S3"
+      ],
+      a: [0],
+      why: "<b>Boşta duran (bir kaynağa bağlı olmayan) Elastic IP ücretlendirilir</b> — kıt bir kaynak olan IPv4in israfını önlemek için. Elastic IPnin amacı zaten <b>sabit kalmasıdır</b>; instance yeniden başlasa da değişmez. Bu, sürpriz fatura üreten klasik kalemlerden biridir."
+    },
+    {
+      topic: "Merkezî ağ",
+      q: "A company has 40 VPCs across two Regions plus an on-premises data center, and wants to connect them all through a single central hub. Which service should it use?",
+      opts: ["AWS Transit Gateway", "VPC peering", "Amazon CloudFront", "AWS Client VPN"],
+      a: [0],
+      why: "<b>Transit Gateway</b> merkezî bir yönlendirme hubı gibi çalışır ve çok sayıda VPC ile şirket içi ağı tek noktadan bağlar; yönetimi ve yönlendirmeyi büyük ölçüde basitleştirir. 40 VPC için peering kullanmak yüzlerce bağlantı gerektirir ve pratikte yönetilemez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

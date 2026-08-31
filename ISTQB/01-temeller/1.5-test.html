@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.5 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-1-5",
+  code: "Fundamentals of Testing · 1.5",
+  title: "Beceriler, Whole Team ve Bağımsızlık",
+  back: "1.5-beceriler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Bağımsızlık dereceleri",
+      q: "An external certification body tests a medical device application before it may be released. Which level of test independence does this represent?",
+      opts: [
+        "The highest level: testers from outside the organization",
+        "An independent test team within the organization",
+        "Testing by a peer in the same team",
+        "Testing by the author of the work product"
+      ],
+      a: [0],
+      why: "<b>Organizasyon dışı test en yüksek bağımsızlık derecesidir.</b> Şirket içindeki ayrı bir test birimi üçüncü derecedir — dışarısı ile içerisi arasındaki sınır, sınavın en sevdiği ayrımdır. Kanca: <b>kendim → ekip arkadaşım → başka ekip → başka şirket.</b>"
+    },
+    {
+      topic: "Bağımsızlık dereceleri",
+      q: "A developer writes JUnit tests for the class they have just implemented. Which statement is correct?",
+      opts: [
+        "This is the lowest level of independence, and it is a normal practice at the unit test level",
+        "This is not testing at all, because the author cannot test their own work",
+        "This represents a medium level of independence",
+        "This should never be allowed in any organization"
+      ],
+      a: [0],
+      why: "<b>Yazarın kendi ürününü test etmesi geçerli bir testtir, sadece bağımsızlık derecesi en düşüktür.</b> Kör nokta riski vardır, bu yüzden üst seviyelerde daha bağımsız test eklenir. İkinci ve dördüncü şıklar mutlak ifadeler (<code>cannot</code>, <code>never</code>) içeriyor."
+    },
+    {
+      topic: "Bağımsızlık dereceleri",
+      q: "Order the following from LOWEST to HIGHEST level of test independence.",
+      opts: [
+        "Author → peer in the same team → independent team in the organization → external testers",
+        "Peer in the same team → author → external testers → independent team in the organization",
+        "Independent team in the organization → external testers → author → peer in the same team",
+        "External testers → independent team in the organization → peer in the same team → author"
+      ],
+      a: [0],
+      why: "<b>Sıra: yazar → ekip arkadaşı → organizasyon içi bağımsız ekip → organizasyon dışı.</b> Son şık doğru sırayı tersten veriyor — sorunun <code>LOWEST to HIGHEST</code> ifadesini kaçırırsan onu seçersin. Büyük harfli yön kelimelerinin altını çiz."
+    },
+    {
+      topic: "Bağımsızlığın dezavantajları",
+      q: "Which of the following are potential DRAWBACKS of a high degree of test independence? (Choose TWO.)",
+      opts: [
+        "Testers may become isolated from the development team",
+        "Developers may lose a sense of responsibility for quality",
+        "Testers are less likely to recognize the author's blind spots",
+        "Testers carry the same assumptions as the author"
+      ],
+      a: [0, 1],
+      why: "<b>İzolasyon ve geliştiricide sorumluluk kaybı bağımsızlığın klasik dezavantajlarıdır.</b> Son iki şık bağımsızlığın <i>avantajlarının</i> tersine çevrilmiş halidir: bağımsız tester kör noktaları <b>daha iyi</b> görür ve yazarın varsayımlarını <b>taşımaz</b>."
+    },
+    {
+      topic: "Bağımsızlığın avantajları",
+      q: "What is the MAIN benefit of having testing performed by someone other than the author of the work product?",
+      opts: [
+        "An independent tester is more likely to recognize different kinds of failures because of different assumptions and biases",
+        "An independent tester can fix the defects faster",
+        "An independent tester eliminates the need for unit testing",
+        "An independent tester guarantees that all defects will be found"
+      ],
+      a: [0],
+      why: "<b>Farklı varsayım ve önyargı, farklı kusurları görünür kılar.</b> Tester kusur düzeltmez (o debugging). Bağımsız test birim testinin yerine geçmez. Son şıkta <code>guarantees</code> + <code>all</code> var — prensip 1'in ihlali."
+    },
+    {
+      topic: "Whole team yaklaşımı",
+      q: "Which statement BEST describes the whole team approach?",
+      opts: [
+        "Any team member with the necessary knowledge and skills can perform any task, and everyone is responsible for quality",
+        "Only the testers in the team are responsible for the quality of the product",
+        "Every team member must perform every task in every sprint",
+        "The team must not include any dedicated testers"
+      ],
+      a: [0],
+      why: "<b>Kalite herkesin sorumluluğudur ve görevler beceriye göre paylaşılır.</b> Üçüncü şık yaklaşımı abartıp herkesin her işi <i>yapmak zorunda</i> olduğunu söylüyor — bu yanlış. Dördüncü şık da yanlış: whole team ekipte tester olmasını engellemez, aksine testerı ekibin içine alır."
+    },
+    {
+      topic: "Whole team yaklaşımı",
+      q: "In which situation is the whole team approach LEAST likely to be appropriate?",
+      opts: [
+        "In a safety-critical context where a high degree of test independence is required",
+        "In a small Agile team building an internal reporting tool",
+        "In a team where testers and developers sit together",
+        "In a project using continuous integration"
+      ],
+      a: [0],
+      why: "<b>Güvenlik-kritik bağlamlarda bağımsızlık ihtiyacı whole team yaklaşımının ortak-körlük riskini kabul edilemez kılar.</b> Bu, prensip 6'nın (testing is context dependent) doğrudan uygulamasıdır — 'iyi bir pratik her yerde iyidir' varsayımı ISTQB'de geçerli değildir."
+    },
+    {
+      topic: "Whole team yaklaşımı",
+      q: "Which of the following are benefits of the whole team approach? (Choose TWO.)",
+      opts: [
+        "Improved communication and collaboration within the team",
+        "Faster test activities because of fewer handoffs",
+        "Complete elimination of the need for any test planning",
+        "Guaranteed removal of all blind spots from the team"
+      ],
+      a: [0, 1],
+      why: "<b>İletişimin artması ve aktarma (handoff) maliyetinin düşmesi asıl faydalardır.</b> Test planlama hâlâ gereklidir. Dördüncü şık ise yaklaşımın <i>zayıflığını</i> tersine çevirmiş: whole team ortak varsayımlar yüzünden kör noktaları aslında artırabilir."
+    },
+    {
+      topic: "Tester becerileri",
+      q: "Which statement about the skills required for testing is correct?",
+      opts: [
+        "Domain knowledge and communication skills are as important as technical skills",
+        "Testers only need technical skills and tool knowledge",
+        "Domain knowledge is only needed by business analysts",
+        "Communication skills are irrelevant because defect reports are written documents"
+      ],
+      a: [0],
+      why: "<b>Müfredat alan bilgisini ve iletişimi teknik bilgiyle birlikte sayar.</b> Alan bilgisi olmadan validation yapamazsın; iletişim olmadan bulduğun kusur kabul edilmez. Dördüncü şık özellikle yanlış: yazılı rapor da bir iletişim biçimidir ve tonu sonucu belirler."
+    },
+    {
+      topic: "İletişim",
+      q: "A tester writes a defect report titled \"Payment screen broken again, obviously nobody on that team ever tests anything\". Which good practice is being violated?",
+      opts: [
+        "Communicate findings about the product neutrally and factually, without criticizing people",
+        "Report defects only at the end of the sprint",
+        "Use the highest level of independence when reporting",
+        "Avoid writing defect reports for issues found in production"
+      ],
+      a: [0],
+      why: "<b>Kusur raporu ürünü eleştirir, kişiyi değil.</b> Suçlayıcı ton geliştiriciyi savunmaya iter ve kusurun 'yeniden üretilemedi' diye kapanma ihtimalini artırır. Diğer şıklar var olmayan 'iyi pratikler' uyduruyor."
+    },
+    {
+      topic: "Bağımsızlık dereceleri",
+      q: "A company has a separate system test department that tests all products developed by its various development teams. Which level of independence is this?",
+      opts: [
+        "An independent test team within the organization",
+        "Testers from outside the organization",
+        "Testing by a peer within the same development team",
+        "Testing by the author of the work product"
+      ],
+      a: [0],
+      why: "<b>Şirket içindeki ayrı test departmanı üçüncü derecedir.</b> En yakın çeldirici 'organizasyon dışı' şıkkıdır — ayrım şurada: departman aynı şirkete bağlıdır, dolayısıyla aynı organizasyonel baskılara tabidir. Dış test ekibi bu baskılardan da bağımsızdır."
+    },
+    {
+      topic: "Bağımsızlık dereceleri",
+      q: "Which statement about test independence is correct?",
+      opts: [
+        "A higher level of independence is not always better; the drawbacks may outweigh the benefits depending on the context",
+        "The highest level of independence always produces the best test results",
+        "Independence is a binary property: testing is either independent or it is not",
+        "Independence is only relevant for acceptance testing"
+      ],
+      a: [0],
+      why: "<b>Bağımsızlık bir derece meselesidir ve doğru derece bağlama göre değişir.</b> İkinci şık <code>always</code> içeriyor; üçüncü şık bağımsızlığı ikili bir özellik sanıyor — oysa dört derece tanımlanmıştır. Dördüncü şık yanlış: bağımsızlık her seviyede geçerli bir kavramdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

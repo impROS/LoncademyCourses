@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.5 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-4-5",
+  code: "Test Analysis and Design · 4.5",
+  title: "İşbirliği Tabanlı Test Yaklaşımları",
+  back: "4.5-isbirligi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "3C",
+      q: "Which three elements make up a user story according to the '3C' concept?",
+      opts: [
+        "Card, Conversation, Confirmation",
+        "Card, Criteria, Completion",
+        "Condition, Conversation, Coverage",
+        "Context, Content, Confirmation"
+      ],
+      a: [0],
+      why: "<b>Card story'yi taşıyan ortam, Conversation nasıl kullanılacağının açıklanması, Confirmation ise kabul kriterleridir.</b> Kanca: <b>kart yazar, konuşma anlaşır, teyit ölçer.</b> Diğer şıklar gerçek terimlere benzeyen uydurmalardır."
+    },
+    {
+      topic: "3C",
+      q: "In the 3C concept, which element contains the acceptance criteria?",
+      opts: ["Confirmation", "Conversation", "Card", "None of them; acceptance criteria are separate from the 3C"],
+      a: [0],
+      why: "<b>Confirmation, story'nin tamamlandığını gösteren kabul kriterleridir.</b> Conversation ile en sık karıştırılan bileşendir: konuşma <i>ortak anlayış</i> kurar, teyit ise <i>ölçülebilir koşulları</i> tanımlar."
+    },
+    {
+      topic: "INVEST",
+      q: "A user story states that \"reports must look good\", and the team cannot determine how to verify it. Which INVEST characteristic is violated?",
+      opts: ["Testable", "Negotiable", "Independent", "Valuable"],
+      a: [0],
+      why: "<b>Nasıl doğrulanacağı belirlenemiyorsa story test edilebilir değildir.</b> Testerın story yazımına katılmasının başlıca sebebi budur: 'bunu nasıl test ederim?' sorusu belirsizliği anında ortaya çıkarır."
+    },
+    {
+      topic: "INVEST",
+      q: "A user story cannot start until another story is finished. Which INVEST characteristic is violated?",
+      opts: ["Independent", "Small", "Estimable", "Negotiable"],
+      a: [0],
+      why: "<b>Bağımlılık, Independent özelliğini ihlal eder</b> ve planlamayı kilitler. Small story'nin boyutuyla, Estimable efor tahmininin yapılabilirliğiyle ilgilidir — bağımlılık bunları da dolaylı etkiler ama doğrudan ihlal edilen madde Independent'tır."
+    },
+    {
+      topic: "INVEST",
+      q: "Which two INVEST characteristics does a tester MOST directly help to assess? (Choose TWO.)",
+      opts: ["Testable", "Estimable", "Valuable", "Negotiable"],
+      a: [0, 1],
+      why: "<b>Tester 'bunu nasıl doğrularım' (Testable) ve 'kapsam net mi, tahmin edilebilir mi' (Estimable) sorularını sorar.</b> Valuable'ı esas olarak iş temsilcisi değerlendirir; Negotiable ise ekip-iş tarafı ilişkisinin bir özelliğidir."
+    },
+    {
+      topic: "Üç bakış açısı",
+      q: "In collaborative user story writing, what does the TESTER's perspective contribute?",
+      opts: [
+        "Questioning what could go wrong",
+        "Defining the business problem to be solved",
+        "Deciding how the problem will be solved technically",
+        "Estimating the story points for the sprint"
+      ],
+      a: [0],
+      why: "<b>Tester 'ne ters gidebilir?' sorusunu getirir.</b> İş temsilcisi problemi tanımlar, geliştirici çözümü tasarlar. Üç bakış açısı birleşince story hem doğru, hem uygulanabilir, hem test edilebilir olur — buna 'three amigos' denir."
+    },
+    {
+      topic: "Kabul kriterleri",
+      q: "An acceptance criterion is written as \"Given the cart total is 500, When the customer checks out, Then no shipping fee is charged\". Which format is this?",
+      opts: ["Scenario-oriented (BDD style)", "Rule-oriented", "Decision table format", "State transition format"],
+      a: [0],
+      why: "<b>Given/When/Then senaryo odaklı kabul kriteri biçimidir ve BDD dilinden gelir.</b> Kural odaklı biçim ise madde listesi veya girdi-çıktı tablosu şeklinde yazılır. İkisi de geçerlidir; seçim ekibin tercihine bağlıdır."
+    },
+    {
+      topic: "Kabul kriterleri",
+      q: "Which of the following are purposes of acceptance criteria? (Choose TWO.)",
+      opts: [
+        "To define the scope of the user story",
+        "To serve as the basis for acceptance test cases",
+        "To measure the statement coverage of the implementation",
+        "To assign the story to a specific developer"
+      ],
+      a: [0, 1],
+      why: "<b>Kabul kriterleri kapsamı tanımlar ve kabul testlerinin temelini oluşturur</b>; ayrıca ortak anlayış kurar ve doğru kestirimi mümkün kılar. Son iki şık kabul kriterlerinin işlevi değildir."
+    },
+    {
+      topic: "ATDD",
+      q: "In ATDD, when are the test cases created?",
+      opts: [
+        "Before the user story is implemented, collaboratively by the team",
+        "After the code has been written, by the testers alone",
+        "During system testing, by an independent test team",
+        "After acceptance testing, as part of the completion report"
+      ],
+      a: [0],
+      why: "<b>ATDD test-öncelikli bir yaklaşımdır: test case'ler implementasyondan önce ve ekipçe oluşturulur.</b> Bu, testleri bir tür yaşayan spesifikasyon haline getirir ve geliştiricinin belirsizliği tahmin etmek zorunda kalmasını önler."
+    },
+    {
+      topic: "ATDD",
+      q: "In ATDD, which test cases are typically created FIRST?",
+      opts: [
+        "Positive test cases that confirm correct behavior without exceptions",
+        "Negative test cases covering error handling",
+        "Non-functional test cases for performance and security",
+        "Regression test cases from the previous release"
+      ],
+      a: [0],
+      why: "<b>Önce mutlu yol (happy path) yazılır: doğru olay sırası, hata veya istisna olmadan.</b> Negatif ve fonksiyonel olmayan test case'ler bunun üzerine eklenir. Bu sıra, ekibin önce 'doğru davranış nedir' konusunda anlaşmasını sağlar."
+    },
+    {
+      topic: "ATDD",
+      q: "What is the MAIN benefit of the specification workshop in ATDD?",
+      opts: [
+        "Defects in the user story and its acceptance criteria are found and prevented before any code is written",
+        "It measures the branch coverage of the planned implementation",
+        "It guarantees that no defects will be found during system testing",
+        "It removes the need for acceptance testing later"
+      ],
+      a: [0],
+      why: "<b>ATDD'nin asıl değeri test case üretmek değil, kusuru önlemektir.</b> Workshop'ta çözülen bir belirsizlik hiç koda dönüşmez — bu, shift left'in en uç uygulamasıdır. Üçüncü şıkta <code>guarantees</code> var."
+    },
+    {
+      topic: "Kusur önleme",
+      q: "Which category of approach focuses on PREVENTING defects rather than finding them?",
+      opts: [
+        "Collaboration-based test approaches",
+        "White-box test techniques",
+        "Experience-based test techniques",
+        "Black-box test techniques"
+      ],
+      a: [0],
+      why: "<b>İşbirliği tabanlı yaklaşımların hedefi kusurun oluşmasını engellemektir.</b> Diğer üç aile, var olan bir üründe kusur arar. Bu ayrım Bölüm 4'ün yapısını anlamanın anahtarıdır: üçü bulur, biri önler."
+    },
+    {
+      topic: "ATDD ve TDD",
+      q: "Which statement correctly distinguishes ATDD from TDD?",
+      opts: [
+        "ATDD creates acceptance-level test cases collaboratively, while TDD creates unit tests written by the developer",
+        "ATDD writes tests after the code, while TDD writes them before",
+        "ATDD applies only to non-functional testing, while TDD applies to functional testing",
+        "ATDD and TDD are two names for the same practice"
+      ],
+      a: [0],
+      why: "<b>Seviye ve katılımcılar farklıdır: ATDD kabul seviyesinde ve ekipçe, TDD birim seviyesinde ve geliştirici tarafından.</b> İkisi de test-öncelikli olduğu için ikinci şık yanlıştır — bu ortak özellikleridir, farkları değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

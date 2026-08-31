@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1b Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-5-1b",
+  code: "Managing the Test Activities · 5.1b",
+  title: "Kestirim, Önceliklendirme, Piramit ve Quadrant",
+  back: "5.1b-kestirim-piramit.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe. Hesap için kâğıt kalem kullan.",
+  questions: [
+    {
+      topic: "Three-point kestirim",
+      q: "The optimistic estimate is 6 days, the most likely estimate is 9 days, and the pessimistic estimate is 18 days. What is the three-point estimate?",
+      opts: ["10 days", "11 days", "9 days", "12 days"],
+      a: [0],
+      why: "<b>E = (a + 4m + b) / 6 = (6 + 36 + 18) / 6 = 60 / 6 = 10.</b> 11 cevabı düz ortalamadır ((6+9+18)/3) ve <code>m</code>'yi 4 ile çarpmayı unutanın bulduğu sonuçtur — sınavın çeldirici olarak koyduğu değer tam olarak budur. Kanca: <b>a, dört m, b — böl altıya.</b>"
+    },
+    {
+      topic: "Three-point kestirim",
+      q: "For the same estimates (a=6, m=9, b=18), what is the standard deviation?",
+      opts: ["2 days", "3 days", "1 day", "6 days"],
+      a: [0],
+      why: "<b>SD = (b − a) / 6 = (18 − 6) / 6 = 2.</b> Sonuç 10 ± 2 gün olarak ifade edilir. Standart sapma büyükse en iyi ile en kötü durum arasındaki mesafe geniştir, yani tahmin daha belirsiz ve riskli demektir."
+    },
+    {
+      topic: "Kestirim teknikleri",
+      q: "Experts provide their estimates independently, the outliers explain their reasoning, and the estimation is repeated until the estimates converge. Which technique is this?",
+      opts: ["Wideband Delphi", "Three-point estimation", "Extrapolation", "Ratio-based estimation"],
+      a: [0],
+      why: "<b>Bağımsız tahmin + tartışma + tekrar döngüsü Wideband Delphi'dir; planning poker onun bir çeşididir.</b> Tahminlerin bağımsız yapılmasının sebebi anchoring (çıpalama) etkisini önlemek — ilk söylenen sayı diğerlerini etkilemesin."
+    },
+    {
+      topic: "Kestirim teknikleri",
+      q: "A team uses measurements from the first three iterations of the CURRENT project to estimate the effort for the remaining iterations. Which technique is this?",
+      opts: ["Extrapolation", "Ratio-based estimation", "Wideband Delphi", "Three-point estimation"],
+      a: [0],
+      why: "<b>Extrapolation mevcut projenin erken ölçümlerinden ileriye doğru tahmin yapar.</b> Ratio-based ise <i>geçmiş başka projelerden</i> oran çıkarır (örneğin 'test eforu geliştirmenin %35'iydi'). İkisini ayıran şey verinin hangi projeden geldiğidir."
+    },
+    {
+      topic: "Kestirim teknikleri",
+      q: "An organization knows from previous projects that test effort has historically been about 35% of development effort, and applies this to a new project. Which technique is this?",
+      opts: ["Ratio-based (metrics-based) estimation", "Extrapolation", "Wideband Delphi", "Three-point estimation"],
+      a: [0],
+      why: "<b>Geçmiş projelerin verisinden çıkarılan oranı yeni projeye uygulamak ratio-based (metrics-based) kestirimdir.</b> Bu teknik yalnızca benzer nitelikte geçmiş proje verisi varsa güvenilirdir — yeni bir teknoloji veya alan söz konusuysa yanıltır."
+    },
+    {
+      topic: "Önceliklendirme",
+      q: "Tests that cover the requirements considered most important by stakeholders are executed first. Which prioritization strategy is this?",
+      opts: [
+        "Requirements-based prioritization",
+        "Risk-based prioritization",
+        "Coverage-based prioritization",
+        "Dependency-based prioritization"
+      ],
+      a: [0],
+      why: "<b>Paydaşların önceliklendirdiği gereksinimleri kapsayan testleri öne almak requirements-based önceliklendirmedir.</b> Risk-based riskin seviyesine, coverage-based ise sağlanan kapsama bakar. Dördüncü şık müfredatta bir strateji olarak sayılmaz."
+    },
+    {
+      topic: "Önceliklendirme",
+      q: "Why might a test with LOWER priority be executed BEFORE a test with higher priority?",
+      opts: [
+        "Because of dependencies between tests",
+        "Because higher priority tests are always automated",
+        "Because coverage-based prioritization forbids risk-based ordering",
+        "Because exit criteria require the lowest priority tests first"
+      ],
+      a: [0],
+      why: "<b>Test bağımlılıkları ideal öncelik sırasını bozabilir</b>: yüksek öncelikli bir test, düşük öncelikli bir testin oluşturduğu veriye ihtiyaç duyuyorsa önce o koşulmalıdır. 'En riskli test her zaman ilk koşulur' ifadesi bu yüzden yanlıştır."
+    },
+    {
+      topic: "Önceliklendirme",
+      q: "Which of the following are test case prioritization strategies described in the syllabus? (Choose TWO.)",
+      opts: [
+        "Risk-based prioritization",
+        "Coverage-based prioritization",
+        "Alphabetical prioritization",
+        "Author-based prioritization"
+      ],
+      a: [0, 1],
+      why: "<b>Müfredat üç strateji sayar: risk-based, coverage-based ve requirements-based.</b> Risk tabanlı olan en yaygın ve genellikle en savunulabilir olanıdır, çünkü test eforunu en yüksek zarar potansiyeline yönlendirir. Son iki şık uydurmadır."
+    },
+    {
+      topic: "Test piramidi",
+      q: "According to the test pyramid, which statement is correct?",
+      opts: [
+        "The lower the layer, the greater the number of tests and the faster they run",
+        "The lower the layer, the fewer the tests and the slower they run",
+        "All layers should contain approximately the same number of tests",
+        "The top layer should contain the majority of the tests"
+      ],
+      a: [0],
+      why: "<b>Aşağı indikçe test sayısı artar, testler hızlanır, ucuzlar ve granülerlik incelir.</b> Dördüncü şık 'ice cream cone' anti-pattern'ini tarif ediyor: çok sayıda yavaş ve kırılgan UI testi, az sayıda birim testi — bakımı pahalı, geri bildirimi yavaş bir yapı."
+    },
+    {
+      topic: "Test piramidi",
+      q: "A team has 400 UI end-to-end tests and 30 unit tests. Which statement BEST describes this situation?",
+      opts: [
+        "It is an inverted pyramid, which typically leads to slow, brittle and expensive test suites",
+        "It follows the test pyramid correctly, since UI tests cover the most functionality",
+        "It is ideal because end-to-end tests find more defects than unit tests",
+        "The distribution has no effect on feedback speed or maintenance cost"
+      ],
+      a: [0],
+      why: "<b>Ters piramit (ice cream cone) bir anti-pattern'dir</b>: UI testleri yavaş koşar, ufak arayüz değişikliklerinde kırılır ve bakımı pahalıdır. Aynı kusurların çoğu birim seviyesinde saniyeler içinde ve çok daha ucuza yakalanabilirdi."
+    },
+    {
+      topic: "Testing quadrants",
+      q: "Exploratory testing, usability testing and user acceptance testing belong to which testing quadrant?",
+      opts: ["Q3", "Q1", "Q2", "Q4"],
+      a: [0],
+      why: "<b>Q3 iş tarafına dönüktür, ürünü eleştirir ve tipik olarak manuel yapılır.</b> Q2 de iş tarafına dönüktür ama <i>ekibi destekler</i> (fonksiyonel ve user story testleri). İki quadrant'ı ayıran eksen 'destekler mi, eleştirir mi' sorusudur."
+    },
+    {
+      topic: "Testing quadrants",
+      q: "Performance, load, stress and security testing belong to which testing quadrant?",
+      opts: ["Q4", "Q1", "Q2", "Q3"],
+      a: [0],
+      why: "<b>Q4 teknolojiye dönüktür, ürünü eleştirir ve araç gerektirir.</b> Q1 de teknolojiye dönüktür ama ekibi destekler ve birim testlerini içerir. Kanca: <b>Q1 birim, Q4 fonksiyonel olmayan — ikisi de teknik, biri destekler biri eleştirir.</b>"
+    },
+    {
+      topic: "Testing quadrants",
+      q: "Which quadrant contains component and unit tests, and how are they typically executed?",
+      opts: [
+        "Q1, automated",
+        "Q2, manual",
+        "Q3, manual",
+        "Q4, using tools"
+      ],
+      a: [0],
+      why: "<b>Q1 teknolojiye dönük, ekibi destekleyen ve otomatik koşulan birim/bileşen testlerini içerir.</b> Bunlar test piramidinin de alt katmanıdır — iki model birbirini tamamlar: piramit sayıyı, quadrant amacı gruplar."
+    },
+    {
+      topic: "Testing quadrants",
+      q: "Which quadrant contains functional tests, examples, user story tests and prototypes?",
+      opts: ["Q2", "Q1", "Q3", "Q4"],
+      a: [0],
+      why: "<b>Q2 iş tarafına dönüktür ve ekibi destekler</b>: fonksiyonel testler, örnekler, user story testleri, prototipler ve simülasyonlar. Otomatik veya manuel olabilir. 4.5'teki ATDD kabul testleri tipik olarak bu quadrant'a düşer."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

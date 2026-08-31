@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.2",
+  code: "1. alan · Bulut Kavramları · Görev 1.2",
+  title: "Well-Architected Framework",
+  back: "1.2-well-architected.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Altı sütunun adları",
+      q: "Which of the following are pillars of the AWS Well-Architected Framework? (Choose TWO.)",
+      opts: ["Sustainability", "Operational Excellence", "Elasticity", "Availability", "Agility"],
+      a: [0, 1],
+      why: "Altı sütun: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, <b>Sustainability</b>. Elasticity, Availability ve Agility bulut <i>kavramlarıdır</i> ama <b>sütun değildir</b> — bunlar sınavın en sık kullandığı tuzak şıklardır."
+    },
+    {
+      topic: "Sütun eşleştirme",
+      q: "A company wants its workload to automatically recover when an Availability Zone becomes unavailable. Which Well-Architected pillar does this requirement map to?",
+      opts: ["Reliability", "Performance Efficiency", "Operational Excellence", "Security"],
+      a: [0],
+      why: "<b>Recover from failure</b> ifadesi <b>Reliability</b> sütununun imzasıdır: yedeklilik, Multi-AZ, otomatik kurtarma, yedekleme. Performance Efficiency kaynağı <i>verimli</i> kullanmakla, Operational Excellence ise işletim/izleme/otomasyon süreçleriyle ilgilidir."
+    },
+    {
+      topic: "Sütun eşleştirme",
+      q: "An organization wants to reduce the carbon footprint and environmental impact of its cloud workloads. Which pillar addresses this?",
+      opts: ["Sustainability", "Cost Optimization", "Reliability", "Performance Efficiency"],
+      a: [0],
+      why: "<b>Carbon footprint / environmental impact</b> = <b>Sustainability</b>. Cost Optimization da az kaynak kullanmayı söyler ama niyeti <b>para</b>dır. Sınavda niyet cümlesine bak: çevre mi, bütçe mi."
+    },
+    {
+      topic: "Sütun eşleştirme",
+      q: "A team implements automated deployments, defines runbooks for incidents, and runs regular game days. Which pillar are they strengthening?",
+      opts: ["Operational Excellence", "Reliability", "Security", "Cost Optimization"],
+      a: [0],
+      why: "Otomasyon, runbook, olay müdahalesi ve <b>game day</b> (arıza tatbikatı) <b>Operational Excellence</b> sütununa girer: sistemi <i>çalıştırma ve izleme</i> disiplini. Reliability sistemin kendisinin dayanıklılığıyla, Operational Excellence ise onu işleten süreçle ilgilenir."
+    },
+    {
+      topic: "Sütun eşleştirme",
+      q: "A company reviews its bill, terminates unused EC2 instances, and moves to Savings Plans for steady workloads. Which pillar is this?",
+      opts: ["Cost Optimization", "Sustainability", "Performance Efficiency", "Operational Excellence"],
+      a: [0],
+      why: "Kullanılmayan kaynağı kapatmak, harcamayı analiz etmek ve doğru fiyat modeline geçmek <b>Cost Optimization</b> sütunudur. İlgili servisler: Cost Explorer, Budgets, Compute Optimizer, Trusted Advisor."
+    },
+    {
+      topic: "Loose coupling",
+      q: "An application currently has its web tier calling the processing tier directly by IP address. When the processing tier is down, the whole application fails. Which AWS service would MOST directly help decouple these components?",
+      opts: ["Amazon SQS", "Amazon EC2 Auto Scaling", "AWS CloudTrail", "Amazon Route 53"],
+      a: [0],
+      why: "Bileşenler arasına <b>tampon</b> koymak = <b>loose coupling</b>. <b>Amazon SQS</b> bir kuyruk olarak mesajları tutar; alıcı çökse bile gönderen çalışmaya devam eder. Diğer decoupling araçları: SNS, EventBridge, ELB, API Gateway. Auto Scaling kapasiteyle, CloudTrail denetimle, Route 53 DNS ile ilgilidir."
+    },
+    {
+      topic: "Tasarım prensipleri",
+      q: "Which design principle is described by the statement: assume that every component will eventually fail and build the system so that failure does not cause an outage?",
+      opts: ["Design for failure", "Scale up", "Tight coupling", "Vertical partitioning"],
+      a: [0],
+      why: "<b>Design for failure</b> — AWSin temel mimari felsefesi (<i>everything fails, all the time</i>). Uygulaması: tek arıza noktası (SPOF) bırakmamak, birden çok AZ kullanmak, otomatik kurtarma kurmak."
+    },
+    {
+      topic: "Tasarım prensipleri",
+      q: "A team replaces failing EC2 instances with fresh ones launched from an AMI instead of logging in to repair them. Which cloud design principle does this follow?",
+      opts: [
+        "Treat servers as disposable resources",
+        "Vertical scaling",
+        "Consolidated billing",
+        "Data sovereignty"
+      ],
+      a: [0],
+      why: "Sunucuyu tamir etmek yerine <b>silip yenisini kurmak</b> = harcanabilir kaynak (disposable resources) prensibi; mimari adı <b>immutable infrastructure</b>. Bunun ön koşulu uygulamanın <b>stateless</b> olmasıdır — durum S3, DynamoDB veya ElastiCachete tutulur ki sunucu her an atılabilsin."
+    },
+    {
+      topic: "Well-Architected Tool",
+      q: "Which AWS service provides a questionnaire-based review of a workload against best practices and produces a list of high risk issues (HRIs)?",
+      opts: [
+        "AWS Well-Architected Tool",
+        "AWS Trusted Advisor",
+        "Amazon Inspector",
+        "AWS Config"
+      ],
+      a: [0],
+      why: "<b>Well-Architected Tool</b> soru-cevap temelli bir <b>öz-değerlendirme</b> aracıdır ve HRI/MRI raporu üretir; kaynaklarını taramaz. Otomatik hesap taraması ve öneri = <b>Trusted Advisor</b>. Konfigürasyon uyumluluğu izleme = <b>AWS Config</b>. EC2/konteyner zafiyet taraması = <b>Inspector</b>."
+    },
+    {
+      topic: "Well-Architected Tool",
+      q: "Which statement about the AWS Well-Architected Tool is TRUE?",
+      opts: [
+        "It is free to use and based on the answers the customer provides",
+        "It automatically scans all resources in the account and fixes misconfigurations",
+        "It is available only with Enterprise Support",
+        "It replaces the need for AWS Trusted Advisor and AWS Config"
+      ],
+      a: [0],
+      why: "Well-Architected Tool <b>ücretsizdir</b> ve tamamen <b>senin verdiğin cevaplara</b> dayanır. Otomatik tarama yapmaz, otomatik düzeltmez, destek planına bağlı değildir ve diğer araçların yerini almaz. Dikkat: <i>automatically</i>, <i>only</i>, <i>replaces</i> gibi mutlak ifadeler burada da yanlış şıkların işaretidir."
+    },
+    {
+      topic: "Sütun ayrımı",
+      q: "A company selects AWS Graviton-based instances and uses Amazon CloudFront to serve content, aiming to use the most efficient resources for the workload. Which pillar is MOST closely associated with this goal?",
+      opts: ["Performance Efficiency", "Reliability", "Security", "Operational Excellence"],
+      a: [0],
+      why: "<b>Doğru/verimli kaynak tipi seçmek</b> ve içeriği kullanıcıya yaklaştırmak <b>Performance Efficiency</b> sütunudur. (Aynı seçimin sürdürülebilirlik faydası da vardır, ama sorudaki niyet cümlesi <i>most efficient resources for the workload</i> — yani performans verimliliği.) Reliability kurtarma, Security koruma odaklıdır."
+    },
+    {
+      topic: "Tasarım prensipleri",
+      q: "Which two practices help eliminate single points of failure in an AWS architecture? (Choose TWO.)",
+      opts: [
+        "Deploy instances across multiple Availability Zones",
+        "Place an Elastic Load Balancer in front of multiple instances",
+        "Run a single large EC2 instance with more CPU and memory",
+        "Store all session data on the local disk of each web server",
+        "Use one Elastic IP address attached to one instance"
+      ],
+      a: [0, 1],
+      why: "SPOFu yok etmenin yolu <b>yedeklilik</b>tir: birden çok <b>AZ</b> ve önünde <b>load balancer</b>. Tek büyük instance (scale up) hâlâ tek arıza noktasıdır. Session verisini yerel diske yazmak sunucuyu <i>stateful</i> yapar, atılabilir olmaktan çıkarır. Tek instancea bağlı tek Elastic IP de klasik bir SPOFtur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

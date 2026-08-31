@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>05-02 Testi — RE-LX64</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "re-05-02",
+  code: "05 Crackme · Keygen",
+  title: "Keygen Yazmak: Algoritmayı Tersine Çevirmek",
+  back: "02-keygen.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Keygen kavramı",
+      q: "Keygen ile 'tek bir parola bulmak' arasındaki temel fark nedir?",
+      opts: ["Keygen, doğrulama algoritmasını tersine çevirip istenen kadar geçerli anahtar üretir", "Keygen sadece bir kez çalışır", "Keygen binary'yi değiştirir", "İkisi aynı şeydir"],
+      a: [0],
+      why: "Keygen doğrulamanın <b>tersidir</b>: <code>uret() → dogru(girdi)</code>. Bir parola tek seferliktir; keygen algoritmayı gerçekten anladığının kanıtı olan bir üreteçtir."
+    },
+    {
+      topic: "Ters işlemler",
+      q: "Doğrulama <code>x ^ 0x2a</code> uyguluyorsa keygen'de bunu tersine çevirmek için ne yaparsın?",
+      opts: ["Yine x ^ 0x2a — XOR kendi tersidir", "x - 0x2a", "x + 0x2a", "x / 0x2a"],
+      a: [0],
+      why: "<code>(x ^ k) ^ k = x</code> → <b>XOR kendi tersidir.</b> Bu yüzden XOR tabanlı doğrulamalar keygen için en kolaylarıdır."
+    },
+    {
+      topic: "Ters işlemler",
+      q: "Doğrulama <code>key[i] = input[i] + i</code> yapıp sonucu sabitle karşılaştırıyorsa keygen ne yapar?",
+      opts: ["input[i] = sabit[i] - i ile her karakteri geri hesaplar", "input[i] = sabit[i] + i", "input[i] = sabit[i] ^ i", "input'u rastgele üretir"],
+      a: [0],
+      why: "Toplamanın tersi <b>çıkarmadır.</b> İleri işlem <code>+i</code> ise, geri işlem <code>-i</code>. Keygen her adımın tersini uygular."
+    },
+    {
+      topic: "Ters işlemler",
+      q: "Doğrulamada <code>x &amp; 0xF0</code> (bit maskeleme) var. Keygen açısından sorun nedir?",
+      opts: ["Alt 4 bit yok edilir; tersine çevrilemez — o biti brute-force etmek veya serbest bırakmak gerekir", "Hiç sorun yok, tersi &amp; 0x0F", "Sadece 2 kat yavaşlatır", "Program çöker"],
+      a: [0],
+      why: "<b>Maskeleme kayıplıdır:</b> silinen bitler geri gelmez. Bölme, mod, tek yönlü hash de kayıplıdır. Kayıplı adım belirleyici değilse atlanır, değilse o kısım brute-force edilir."
+    },
+    {
+      topic: "Toplam çözümü",
+      q: "Bir doğrulama 8 karakterin toplamının 700 olmasını istiyor. Geçerli bir girdiyi nasıl üretirsin?",
+      opts: ["7 karakteri sabitle, 8.'yi toplamı 700'e tamamlayacak şekilde hesapla", "Tüm 8 karakteri brute-force et", "Her karakteri 700/8 yap", "Mümkün değil"],
+      a: [0],
+      why: "Toplam <b>doğrusal ve tek denklemlidir</b>; sonsuz çözümü var. 'Hepsini sabitle, birini serbest bırak' tekniğiyle bir çözüm hızlıca üretilir. Brute-force gereksizdir."
+    },
+    {
+      topic: "Toplam çözümü",
+      q: "'Birini serbest bırak' tekniğinde hesapladığın son karakter <code>0x20–0x7e</code> aralığının dışına düştü. Ne yaparsın?",
+      opts: ["Sabit karakterlerden bazılarını değiştirip toplamı yeniden dengeler, son karakteri aralığa çekerim", "Vazgeçerim", "Aralık dışı karakteri yine de kullanırım", "Programı patch'lerim"],
+      a: [0],
+      why: "Son karakter yazdırılabilir olmalı. Ara karakterleri (örn. bir <code>'A'</code>→<code>'a'</code>) ayarlayarak toplamı kaydırır, son karakteri geçerli aralığa getirirsin. Bu 'kısıt dengeleme'dir."
+    },
+    {
+      topic: "Çoklu kısıt",
+      q: "Bir keygen toplam kısıtını doğru sağlıyor ama program hâlâ 'Wrong'. En olası sebep?",
+      opts: ["Başka bir kısıt (uzunluk veya konum bazlı) sağlanmıyor; algoritmayı yeniden okumak gerek", "Toplam yanlış hesaplanmış", "Python hatası", "Binary bozuk"],
+      a: [0],
+      why: "Gerçek crackme'ler <b>çoklu kısıt</b> içerir (uzunluk + b[0] + toplam...). Bir kısıdı kaçırmak keygen'i sessizce bozar. Ghidra'da tüm karar zincirini listele, her birine keygen satırı."
+    },
+    {
+      topic: "Çoklu kısıt",
+      q: "Çok kısıtlı bir keygen yazarken önerilen strateji nedir?",
+      opts: ["En katı kısıtları önce sabitle (uzunluk, sabit konumlar), serbest karakterlerle toplam/checksum'ı tuttur", "Önce toplamı çöz, kısıtları sonra düşün", "Tüm karakterleri rastgele dene", "Sadece ilk kısıdı sağla"],
+      a: [0],
+      why: "Katı kısıtlar (sabit konum, uzunluk) hareket alanını daraltır; onları önce sabitleyip <b>kalan serbest karakterlerle</b> doğrusal kısıtı (toplam) çözersin. Sıra önemlidir."
+    },
+    {
+      topic: "Doğrulama",
+      q: "Keygen'ini nasıl kesin olarak doğrularsın?",
+      opts: ["python3 keygen.py | ./crackme ile üretileni doğrudan programa besleyip 'Correct!' görmek", "Sadece çıktının uzunluğuna bakmak", "Ghidra'da tekrar okumak", "Doğrulamaya gerek yok"],
+      a: [0],
+      why: "RE'de ölçüt nettir: <b>program 'Correct!' diyor mu.</b> Keygen çıktısını doğrudan crackme'ye besleyerek kanıtlarsın. Görmüyorsan bir kısıt kaçmıştır."
+    },
+    {
+      topic: "Brute-force",
+      q: "Keygen matematiği çıkmıyor ama girdi sadece 4 harften oluşuyor. Alternatif yöntem?",
+      opts: ["Doğrulama mantığını Python'da yeniden yazıp küçük arama uzayını brute-force etmek", "Binary'yi silmek", "8 milyar kombinasyon denemek şart", "Hiçbir şey yapılamaz"],
+      a: [0],
+      why: "Arama uzayı <b>küçükse</b> (birkaç karakter) brute-force pratiktir: doğrulamayı Python'da taklit edip tüm kombinasyonları dene. Büyük uzayda ise keygen matematiği şarttır."
+    },
+    {
+      topic: "Ters işlemler",
+      q: "Hangi işlem çifti birbirinin tersidir (keygen'de doğru eşleşme)?",
+      opts: ["Sola kaydırma (<<) ↔ sağa kaydırma (>>), dikkatle (bit kaybı olabilir)", "XOR ↔ toplama", "Çarpma ↔ toplama", "AND ↔ OR her zaman"],
+      a: [0],
+      why: "<code>&lt;&lt;</code> ve <code>&gt;&gt;</code> terstir ama taşan bitler kaybolabilir (dikkat). XOR'un tersi XOR, +'nın tersi −'dir. AND/OR genelde kayıplıdır, basit ters değildir."
+    },
+    {
+      topic: "Keygen adımları",
+      q: "Keygen yazmanın doğru üç adımı hangisidir?",
+      opts: ["Algoritmayı tam çıkar → her dönüşümü tersine çevir → üreteci kodla", "Rastgele dene → çalışırsa kaydet → tekrar dene", "Binary'yi patch'le → çalıştır → kaydet", "strings oku → kopyala → yapıştır"],
+      a: [0],
+      why: "Keygen sistematiktir: önce doğrulama algoritmasını (statik+dinamik) <b>kesin çıkar</b>, sonra <b>tersini</b> kur, sonra <b>üreteci</b> (Python) yaz. Deneme-yanılma değil, tersine mühendislik."
+    },
+    {
+      topic: "Toplam çözümü",
+      q: "Toplam/XOR gibi kısıtların 'doğrusal' olması keygen açısından ne sağlar?",
+      opts: ["Sonsuz çözüm olur; birini serbest bırakıp diğerlerini sabitleyerek kolayca bir çözüm üretilir", "Hiç çözüm olmaz", "Sadece tek bir çözüm olur", "Brute-force zorunlu olur"],
+      a: [0],
+      why: "Doğrusal kısıt (tek denklem, çok bilinmeyen) <b>sonsuz çözüme</b> sahiptir. Bu bir dezavantaj değil avantajdır: sen sadece <i>bir</i> geçerli çözüm üretmek zorundasın."
+    },
+    {
+      topic: "Ters işlemler",
+      q: "Doğrulama bir S-box (tablo araması) kullanıyorsa keygen'de karşılığı nedir?",
+      opts: ["Ters tabloyu (inverse S-box) oluşturup çıktı değerinden girdi değerini bulmak", "Tabloyu yok saymak", "Toplam kullanmak", "Tablo tersine çevrilemez, imkânsız"],
+      a: [0],
+      why: "S-box bir permütasyonsa <b>ters tablosu</b> vardır: çıktı→girdi eşlemesi. Ters tabloyu kurup değerleri geri çevirirsin. (Permütasyon olmayan, çakışan tablolar kayıplı olabilir.)"
+    },
+    {
+      topic: "Ters işlemler",
+      q: "Aşağıdaki doğrulama işlemlerinin keygen'deki tersleri hakkında doğru olan <b>iki</b> ifade? <b>(Choose TWO.)</b>",
+      opts: ["<code>+ k</code>'nın tersi <code>- k</code>'dır", "<code>^ k</code>'nın tersi yine <code>^ k</code>'dır", "<code>+ k</code>'nın tersi yine <code>+ k</code>'dır", "<code>^ k</code>'nın tersi <code>- k</code>'dır"],
+      a: [0, 1],
+      why: "<b>Toplamanın tersi çıkarma</b> (+↔−), <b>XOR'un tersi yine XOR</b>. Keygen her adımın tersini uygular; bu iki eşlemeyi bilmek dönüşümlü crackme'lerin anahtarıdır."
+    },
+    {
+      topic: "Çoklu kısıt",
+      q: "Çok kısıtlı bir keygen yazarken doğru olan <b>iki</b> yaklaşım hangisidir? <b>(Choose TWO.)</b>",
+      opts: ["Tüm kısıtları (uzunluk, konum, toplam) aynı anda sağlamak", "En katı kısıtları önce sabitleyip serbest karakterlerle toplamı tutturmak", "Sadece toplam kısıtını sağlayıp diğerlerini yok saymak", "Kısıtları rastgele sırayla brute-force etmek"],
+      a: [0, 1],
+      why: "Keygen <b>tüm kısıtları aynı anda</b> sağlamalı; strateji <b>katı kısıtları önce sabitleyip</b> kalan serbest karakterlerle doğrusal kısıtı çözmektir. Bir kısıdı atlamak keygen'i sessizce bozar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

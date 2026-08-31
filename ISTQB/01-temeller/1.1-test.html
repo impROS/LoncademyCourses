@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-1-1",
+  code: "Fundamentals of Testing · 1.1",
+  title: "Test Nedir? Hedefler ve Debugging",
+  back: "1.1-test-nedir.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav 26/40 = %65; burada eşik daha yüksek, çünkü konu testi",
+  questions: [
+    {
+      topic: "Test nedir",
+      q: "Which of the following statements about testing is correct?",
+      opts: [
+        "Testing includes both static and dynamic activities.",
+        "Testing consists only of executing the software.",
+        "Testing is performed only after the code is complete.",
+        "Testing is the same as quality assurance."
+      ],
+      a: [0],
+      why: "<b>Test hem statik hem dinamik olabilir.</b> Statik testte kod çalıştırılmaz (review, statik analiz); dinamik testte çalıştırılır. <i>Sadece yürütme</i> şıkkı klasik çeldirici — yürütme testin bir aktivitesidir, tamamı değil. QA ile test aynı şey değildir (1.2'de göreceksin). Kanca: <b>test = süreç, yürütme = adım.</b>"
+    },
+    {
+      topic: "Test nedir",
+      q: "Which of the following are test activities? (Choose TWO.)",
+      opts: [
+        "Test planning",
+        "Test analysis",
+        "Debugging",
+        "Fixing a defect in the source code"
+      ],
+      a: [0, 1],
+      why: "<b>Planning ve analysis test aktiviteleridir.</b> Debugging ve kod düzeltme <i>test aktivitesi değildir</i> — bunlar geliştirmenin işidir. Sınav bu iki çeldiriciyi sürekli kullanır. Kanca: <b>test bulur, debugging düzeltir.</b>"
+    },
+    {
+      topic: "Test hedefleri",
+      q: "Which of the following is NOT a valid objective of testing?",
+      opts: [
+        "To prove that the software contains no defects",
+        "To reduce the level of risk of inadequate software quality",
+        "To build confidence in the level of quality of the test object",
+        "To provide information to stakeholders for decision making"
+      ],
+      a: [0],
+      why: "<b>Test kusur yokluğunu kanıtlayamaz.</b> Bu yedi prensipten birincisinin doğrudan ihlalidir. Diğer üçü müfredatın saydığı geçerli hedeflerdir. Kanca: şıkta <code>prove</code>, <code>guarantee</code>, <code>defect-free</code>, <code>100%</code> gördüğün an şüphelen."
+    },
+    {
+      topic: "Test hedefleri",
+      q: "A test manager writes a report stating that 12 of the 40 high-risk test cases failed, so the release decision can be made with that information in mind. Which test objective does this MOST directly serve?",
+      opts: [
+        "Providing information to stakeholders for decision making",
+        "Finding defects and failures",
+        "Verifying compliance with contractual requirements",
+        "Preventing defects from being introduced"
+      ],
+      a: [0],
+      why: "<b>Rapor yazmanın amacı karar vericiyi bilgilendirmektir.</b> Kusurlar zaten bulunmuş durumda; buradaki eylem <i>bilgi sağlama</i>. Soruda <code>MOST directly</code> var — birden fazla şık kısmen doğru olduğu için en uygun olanı seçiyorsun."
+    },
+    {
+      topic: "Test hedefleri",
+      q: "Why do test objectives differ between unit testing and acceptance testing?",
+      opts: [
+        "Because test objectives depend on the context, such as the test level and the stakeholders involved",
+        "Because unit testing has no objectives, only acceptance testing does",
+        "Because acceptance testing is static and unit testing is dynamic",
+        "Because only acceptance testing is allowed to find defects"
+      ],
+      a: [0],
+      why: "<b>Hedefler bağlama göre değişir.</b> Birim testinde kusuru erken ve ucuza bulmak öne çıkar; kabul testinde güven vermek ve validation öne çıkar. Diğer şıklar olgusal olarak yanlış — her iki seviye de dinamiktir ve her ikisi de kusur bulabilir."
+    },
+    {
+      topic: "Verification ve validation",
+      q: "During acceptance testing, business users confirm that the new claims system supports the process they actually follow every day. This is an example of:",
+      opts: [
+        "Validation",
+        "Verification",
+        "Debugging",
+        "Static testing"
+      ],
+      a: [0],
+      why: "<b>Validation = doğru ürünü mü yapıyoruz?</b> Referans, kullanıcının gerçek ihtiyacıdır. Verification şartnameye uygunluğa bakar — burada şartnameden değil, günlük işleyişten söz ediliyor. Kanca: vali<b>da</b>tion → kullanıcı 'evet, <b>da</b> budur' der."
+    },
+    {
+      topic: "Verification ve validation",
+      q: "A system passes all checks against its written specification but the users say it does not solve their problem. Which statement BEST describes this situation?",
+      opts: [
+        "Verification succeeded but validation failed",
+        "Validation succeeded but verification failed",
+        "Both verification and validation succeeded",
+        "This situation is impossible if the specification was reviewed"
+      ],
+      a: [0],
+      why: "<b>Şartnameye uymak (verification) doğru şartname olduğu anlamına gelmez.</b> Şartnamenin kendisi yanlışsa validation başarısız olur. Son şık mutlak bir iddia içeriyor (<code>impossible</code>) — review riski azaltır ama sıfırlamaz."
+    },
+    {
+      topic: "Test ve debugging",
+      q: "A tester reports that the application crashes when an empty password is submitted. A developer reproduces the crash, identifies that a null check is missing, and adds it. Which activity did the DEVELOPER perform?",
+      opts: [
+        "Debugging",
+        "Confirmation testing",
+        "Regression testing",
+        "Dynamic testing"
+      ],
+      a: [0],
+      why: "<b>Yeniden üretme + teşhis + düzeltme = debugging.</b> Confirmation testing düzeltmeden <i>sonra</i> testerın yaptığı iştir. Kanca: debugging'in üç adımı <b>reproduction → diagnosis → fixing</b>."
+    },
+    {
+      topic: "Test ve debugging",
+      q: "What are the three activities of debugging, in the correct order?",
+      opts: [
+        "Reproduction, diagnosis, fixing",
+        "Diagnosis, reproduction, fixing",
+        "Fixing, reproduction, confirmation",
+        "Detection, correction, regression"
+      ],
+      a: [0],
+      why: "<b>Önce arızayı yeniden üretirsin, sonra sebebini teşhis edersin, sonra düzeltirsin.</b> Teşhisi yeniden üretmeden yapmak mümkün değildir — bu yüzden ikinci şık mantıken de yanlış. Confirmation ve regression debugging'in parçası değil, sonrasında gelen <i>test</i> aktiviteleridir."
+    },
+    {
+      topic: "Test ve debugging",
+      q: "A code review identifies an incorrect boundary condition directly in the source code. Why is debugging generally NOT required after this finding?",
+      opts: [
+        "Because static testing finds the defect directly, so no diagnosis of a failure is needed",
+        "Because defects found in reviews do not need to be fixed",
+        "Because static testing can only find failures, not defects",
+        "Because reviews are performed by developers, who fix the code immediately"
+      ],
+      a: [0],
+      why: "<b>Statik test kusuru doğrudan gösterir</b> — ortada bir belirti (failure) yok ki sebebini araştırasın. Debugging'in <i>diagnosis</i> adımı bu yüzden gereksizdir. Üçüncü şık tam tersini söylüyor: statik test failure bulamaz, çünkü kod çalışmıyor."
+    },
+    {
+      topic: "Test ve debugging",
+      q: "After a defect has been fixed, the same test that originally failed is executed again. What is this called?",
+      opts: [
+        "Confirmation testing",
+        "Regression testing",
+        "Debugging",
+        "Retrospective testing"
+      ],
+      a: [0],
+      why: "<b>Confirmation testing = düzeltme işe yaradı mı?</b> Aynı test tekrar koşulur. Regression testing farklıdır: <i>başka</i> testler koşularak düzeltmenin yan etkisi aranır. Kanca: <b>confirm = aynı test · regress = diğer testler.</b>"
+    },
+    {
+      topic: "Statik ve dinamik test",
+      q: "Which statement correctly contrasts static and dynamic testing?",
+      opts: [
+        "Static testing can find defects without executing the code, while dynamic testing observes failures during execution",
+        "Static testing observes failures, while dynamic testing finds defects directly",
+        "Static testing can only be applied to source code, dynamic testing only to requirements",
+        "Static testing always finds more defects than dynamic testing"
+      ],
+      a: [0],
+      why: "<b>Statik = çalıştırmadan, kusuru doğrudan; dinamik = çalıştırarak, arızayı gözleyerek.</b> İkinci şık ikisini yer değiştirmiş. Üçüncü şık yanlış — statik test gereksinimlere, tasarıma, teste, koda uygulanabilir. Dördüncü şıkta <code>always</code> var: mutlak ifade, ele."
+    },
+    {
+      topic: "Test hedefleri",
+      q: "Which two of the following are objectives of testing according to the syllabus? (Choose TWO.)",
+      opts: [
+        "Evaluating work products such as requirements and user stories",
+        "Complying with contractual, legal or regulatory requirements",
+        "Correcting the defects that have been found",
+        "Guaranteeing that the system will never fail in production"
+      ],
+      a: [0, 1],
+      why: "<b>İş ürünlerini değerlendirmek ve uyumluluğu karşılamak</b> müfredatta sayılan hedeflerdir. Kusuru düzeltmek testin değil geliştirmenin işidir (debugging). Son şık hem <code>guarantee</code> hem <code>never</code> içeriyor — çift mutlak ifade, kesin çeldirici."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

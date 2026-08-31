@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4.2",
+  code: "4. alan · Faturalama ve Destek · Görev 4.2",
+  title: "Bütçe ve Maliyet Yönetimi",
+  back: "4.2-maliyet-yonetimi.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Üçlü ayrım",
+      q: "A company is designing a new architecture and wants to estimate its monthly cost BEFORE deploying any resources. Which tool should it use?",
+      opts: ["AWS Pricing Calculator", "AWS Cost Explorer", "AWS Budgets", "AWS Cost and Usage Report"],
+      a: [0],
+      why: "Henüz hiçbir kaynak çalışmıyorsa geçmiş veri yoktur; ileriye dönük tahmin aracı <b>Pricing Calculator</b>dır. Ezber: <b>Calculator = önce, Cost Explorer = sonra, Budgets = uyarı.</b>"
+    },
+    {
+      topic: "Üçlü ayrım",
+      q: "A finance team wants to visualize which AWS services drove last month's spending and see a forecast for next month. Which service should it use?",
+      opts: ["AWS Cost Explorer", "AWS Pricing Calculator", "AWS Budgets", "AWS Artifact"],
+      a: [0],
+      why: "<b>Cost Explorer</b> gerçekleşmiş harcamayı servis, hesap, Region, etiket ve kullanım tipine göre görselleştirir ve <b>ileriye dönük tahmin</b> üretir. Ayrıca right-sizing ve Savings Plans önerileri sunar."
+    },
+    {
+      topic: "Üçlü ayrım",
+      q: "A company wants to receive an email alert as soon as its monthly AWS spend exceeds 1,000 USD. Which service provides this?",
+      opts: ["AWS Budgets", "AWS Cost Explorer", "Amazon CloudWatch Logs", "AWS Trusted Advisor"],
+      a: [0],
+      why: "<b>AWS Budgets</b> eşik tabanlı uyarı servisidir: gerçekleşen <b>veya tahmin edilen</b> tutar eşiği aştığında e-posta/SNS ile uyarır. <b>Budgets Actions</b> ile otomatik aksiyon da tanımlanabilir (instance durdurma, IAM politikası uygulama)."
+    },
+    {
+      topic: "Budgets türleri",
+      q: "Which two budget types can be created in AWS Budgets? (Choose TWO.)",
+      opts: [
+        "Cost budget",
+        "Usage budget",
+        "Latency budget",
+        "Availability budget",
+        "Compliance budget"
+      ],
+      a: [0, 1],
+      why: "AWS Budgets dört tür bütçe destekler: <b>cost</b> (harcanan para), <b>usage</b> (kullanım miktarı, örn. EC2 saati), <b>RI utilization/coverage</b> ve <b>Savings Plans utilization/coverage</b>. Gecikme veya erişilebilirlik bütçesi diye bir şey yoktur — bunlar CloudWatch alanına girer."
+    },
+    {
+      topic: "CUR",
+      q: "Which AWS billing artifact provides the MOST granular, hourly, resource-level cost and usage data that can be delivered to Amazon S3 and queried with Amazon Athena?",
+      opts: [
+        "AWS Cost and Usage Report (CUR)",
+        "AWS Cost Explorer",
+        "AWS Budgets",
+        "The monthly PDF invoice"
+      ],
+      a: [0],
+      why: "<b>Cost and Usage Report</b> en ayrıntılı faturalama verisidir: saatlik ve kaynak seviyesinde, <b>S3ye</b> yazılır ve <b>Athena/QuickSight</b> ile analiz edilir. Cost Explorer görsel bir analiz aracıdır ama CUR kadar ayrıntılı ham veri sunmaz."
+    },
+    {
+      topic: "Cost allocation tags",
+      q: "A company needs to attribute AWS costs to individual departments and projects. What should it implement?",
+      opts: [
+        "Cost allocation tags, activated in the Billing console",
+        "One IAM group per department",
+        "Separate security groups per department",
+        "A CloudWatch alarm per department"
+      ],
+      a: [0],
+      why: "<b>Cost allocation tags</b> kaynaklara <code>Anahtar=Değer</code> etiketleri yapıştırıp maliyeti projeye/departmana bağlamayı sağlar. Kritik detay: etiketin faturalama raporlarında görünmesi için <b>Billing konsolunda etkinleştirilmesi</b> gerekir ve etkinleştirme <b>geriye dönük çalışmaz</b>."
+    },
+    {
+      topic: "Consolidated billing",
+      q: "A company with 12 AWS accounts wants a single monthly bill and wants usage across accounts to count toward volume-tier discounts. Which capability provides this?",
+      opts: [
+        "Consolidated billing in AWS Organizations",
+        "AWS Budgets",
+        "AWS Marketplace subscriptions",
+        "AWS Control Tower guardrails"
+      ],
+      a: [0],
+      why: "<b>Consolidated billing</b> tüm üye hesapların faturasını yönetim hesabında birleştirir; kullanım toplandığı için <b>hacim indirimlerine</b> daha hızlı ulaşılır ve <b>Savings Plans / Reserved Instances hesaplar arasında paylaşılır</b>. Kendisi ücretsizdir ve hesap bazlı harcama yine ayrı görülebilir."
+    },
+    {
+      topic: "Marketplace",
+      q: "A company wants to purchase third-party security software and have the charges appear on its AWS invoice. Where should it obtain the software?",
+      opts: ["AWS Marketplace", "AWS Artifact", "AWS Service Catalog", "AWS Config"],
+      a: [0],
+      why: "<b>AWS Marketplace</b> üçüncü parti yazılım, SaaS ve veri setlerinin dijital kataloğudur; satın alınan ürün <b>AWS faturasına dahil edilir</b>. <b>Service Catalog</b> ise kurumun <b>kendi</b> onaylı şablonlarını sunar — ikisi karıştırılır."
+    },
+    {
+      topic: "Anomali tespiti",
+      q: "Which service uses machine learning to detect unusual spikes in AWS spending and alert the customer?",
+      opts: [
+        "AWS Cost Anomaly Detection",
+        "AWS Budgets usage budget",
+        "Amazon GuardDuty",
+        "AWS Compute Optimizer"
+      ],
+      a: [0],
+      why: "<b>Cost Anomaly Detection</b> harcama desenlerini öğrenir ve <b>olağandışı sıçramaları</b> tespit edip uyarır — sabit bir eşik tanımlamana gerek kalmaz. GuardDuty <b>güvenlik</b> tehditlerini tespit eder, maliyet değil."
+    },
+    {
+      topic: "Öneri araçları",
+      q: "Which service inspects the account and provides recommendations across five categories including cost optimization and service limits?",
+      opts: [
+        "AWS Trusted Advisor",
+        "AWS Cost Explorer",
+        "AWS Well-Architected Tool",
+        "AWS Budgets"
+      ],
+      a: [0],
+      why: "<b>Trusted Advisor</b> hesabı otomatik tarar ve beş kategoride öneri verir: <b>maliyet optimizasyonu, performans, güvenlik, hata toleransı ve servis limitleri</b>. Kontrollerin tamamı Business planı ve üzerinde açılır (4.3)."
+    },
+    {
+      topic: "Öneri araçları",
+      q: "Which service specifically recommends optimal EC2 instance types and sizes based on actual utilization metrics?",
+      opts: [
+        "AWS Compute Optimizer",
+        "AWS Budgets",
+        "AWS Pricing Calculator",
+        "AWS Cost and Usage Report"
+      ],
+      a: [0],
+      why: "<b>Compute Optimizer</b> CloudWatch metriklerini makine öğrenmesiyle analiz ederek <b>daha uygun instance tipi/boyutu</b> önerir — right-sizing kararlarının veri kaynağıdır. Trusted Advisor da düşük kullanımlı instanceları listeler ama Compute Optimizer daha ayrıntılı öneri üretir."
+    },
+    {
+      topic: "Faturalama erişimi",
+      q: "By default, which user can access the Billing and Cost Management console until access is explicitly granted?",
+      opts: [
+        "Only the account root user",
+        "All IAM users automatically",
+        "Only users with AdministratorAccess",
+        "Only AWS Support engineers"
+      ],
+      a: [0],
+      why: "Varsayılan olarak faturalama verisine yalnızca <b>root kullanıcı</b> erişir. IAM kullanıcılarının erişebilmesi için root ile <b>Account → IAM user and role access to Billing Information</b> ayarının <b>etkinleştirilmesi</b> ve ilgili IAM izinlerinin verilmesi gerekir."
+    },
+    {
+      topic: "Cost Explorer kapsamı",
+      q: "Which two capabilities does AWS Cost Explorer provide? (Choose TWO.)",
+      opts: [
+        "Visualizing historical costs grouped by service, account or tag",
+        "Forecasting future costs based on past usage",
+        "Blocking resource creation when a budget is exceeded",
+        "Providing AWS compliance reports such as SOC 2",
+        "Automatically resizing EC2 instances"
+      ],
+      a: [0, 1],
+      why: "Cost Explorer geçmiş harcamayı <b>gruplayıp görselleştirir</b> ve <b>ileriye dönük tahmin</b> üretir. Bütçe aşımında aksiyon almak <b>Budgets Actions</b>ın, uyumluluk raporları <b>Artifact</b>ın, otomatik boyutlandırma önerisi ise <b>Compute Optimizer</b>ın işidir."
+    },
+    {
+      topic: "Bütçe uyarıları",
+      q: "AWS Budgets can send an alert based on which two conditions? (Choose TWO.)",
+      opts: [
+        "Actual spend crossing a defined threshold",
+        "Forecasted spend expected to cross a threshold",
+        "An EC2 instance failing a health check",
+        "An IAM user logging in without MFA",
+        "An S3 bucket becoming publicly accessible"
+      ],
+      a: [0, 1],
+      why: "Budgets hem <b>gerçekleşen</b> hem de <b>tahmin edilen (forecasted)</b> tutara göre uyarı verebilir — tahmine dayalı uyarı, ay bitmeden müdahale etmeni sağlar. Sağlık kontrolü CloudWatch/ELBnin, MFAsız giriş ve açık bucket ise Trusted Advisor/Config/Security Hubın alanıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

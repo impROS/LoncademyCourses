@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2 Testi — OCP 21</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ocp21-4.2",
+  code: "İstisnalar · 4.2",
+  title: "try-with-resources ve Özel Exception'lar",
+  back: "4.2-try-with-resources.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  passNote: "gerçek sınav %68; burada eşik bilerek daha yüksek tutuldu",
+  questions: [
+    {
+      topic: "Kapanma sırası",
+      q: "<pre>class K implements AutoCloseable {\n    String ad;\n    K(String ad) { this.ad = ad; }\n    public void close() { System.out.print(\"kapandi\" + ad + \" \"); }\n}\n\ntry (K a = new K(\"A\"); K b = new K(\"B\")) {\n    System.out.print(\"govde \");\n}</pre>What is the result?",
+      opts: [
+        "govde kapandiB kapandiA",
+        "govde kapandiA kapandiB",
+        "kapandiB kapandiA govde",
+        "govde kapandiA"
+      ],
+      a: [0],
+      why: "Kaynaklar bildirim sırasına göre <b>açılır</b>, fakat <b>ters sırayla kapatılır</b> — son açılan önce kapanır. Sebep mantıklıdır: sonraki kaynak, öncekine bağımlı olabilir. <br><b>Kanca:</b> Yığın (stack) gibi düşün — son giren ilk çıkar."
+    },
+    {
+      topic: "Kapanma zamanı",
+      q: "<pre>try (K a = new K(\"A\")) {\n    throw new RuntimeException(\"x\");\n} catch (RuntimeException e) {\n    System.out.print(\"catch \");\n} finally {\n    System.out.print(\"finally\");\n}</pre>Assuming close() prints \"kapandi \", what is the result?",
+      opts: [
+        "kapandi catch finally",
+        "catch kapandi finally",
+        "catch finally kapandi",
+        "kapandi finally catch"
+      ],
+      a: [0],
+      why: "Kaynaklar <b>her şeyden önce</b> kapatılır: gövde bittiğinde (normal ya da exception ile) önce <code>close()</code> çağrılır, <b>sonra</b> <code>catch</code>, <b>en son</b> <code>finally</code> çalışır. <br><b>Kanca:</b> try-with-resources senin yazmadığın, <code>catch</code>'ten <b>önce</b> yerleştirilmiş gizli bir <code>finally</code>'dir."
+    },
+    {
+      topic: "Kaynak kapsamı",
+      q: "<pre>try (K a = new K(\"A\")) {\n} catch (Exception e) {\n    System.out.println(a);\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because a is out of scope in the catch block.",
+        "The code compiles and prints the resource.",
+        "The code compiles and prints null.",
+        "A NullPointerException is thrown at runtime."
+      ],
+      a: [0],
+      why: "Kaynak değişkeninin kapsamı <b>yalnızca <code>try</code> gövdesidir</b>; <code>catch</code> ve <code>finally</code> bloklarında görünmez. Zaten o noktada <b>kapatılmış</b> olduğu için kullanılması da anlamsız olurdu. <br>Kaynağa sonradan erişmen gerekiyorsa onu <code>try</code>'ın <b>dışında</b> bildirip Java 9+ biçimini kullanmalısın."
+    },
+    {
+      topic: "Kaynak kısıtları",
+      q: "<pre>try (K a = new K(\"A\")) {\n    a = new K(\"B\");\n}</pre>What is the result?",
+      opts: [
+        "Compilation fails because the resource variable is implicitly final.",
+        "The code compiles and closes both resources.",
+        "The code compiles and closes only B.",
+        "The code compiles and closes only A."
+      ],
+      a: [0],
+      why: "try-with-resources kaynak değişkenleri <b>örtük olarak <code>final</code></b>'dır. Aksi hâlde derleyici hangi nesneyi kapatacağını bilemezdi — kapatma referansa değil, <b>bildirilen kaynağa</b> bağlıdır. <br>Aynı gerekçeyle Java 9+ biçiminde (<code>try (a)</code>) kullanılan değişkenin <b>effectively final</b> olması gerekir."
+    },
+    {
+      topic: "Bastırılmış exception",
+      q: "<pre>try (K k = new K()) {          // close() throws new RuntimeException(\"kapatma\")\n    throw new RuntimeException(\"govde\");\n} catch (Exception e) {\n    System.out.print(e.getMessage() + \" \" + e.getSuppressed()[0].getMessage());\n}</pre>What is the result?",
+      opts: [
+        "govde kapatma",
+        "kapatma govde",
+        "An ArrayIndexOutOfBoundsException is thrown.",
+        "govde null"
+      ],
+      a: [0],
+      why: "İki exception aynı anda oluştuğunda <b>gövdedeki kazanır</b> ve dışarı o yayılır; <code>close()</code>'un exception'ı <b>bastırılır</b> (suppressed) ve <code>getSuppressed()</code> dizisine eklenir. <br>Bu, try-with-resources'ın klasik <code>finally</code>'ye üstünlüğüdür: orada gövdenin exception'ı <b>tamamen kaybolurdu</b>."
+    },
+    {
+      topic: "Bastırılmış exception",
+      q: "<pre>try (K k = new K()) {          // close() throws RuntimeException\n    System.out.print(\"govde \");\n} catch (Exception e) {\n    System.out.print(e.getMessage() + \" \" + e.getSuppressed().length);\n}</pre>Assuming close() throws with message \"kapatma\", what is the result?",
+      opts: [
+        "govde kapatma 0",
+        "govde kapatma 1",
+        "govde 0",
+        "kapatma 1"
+      ],
+      a: [0],
+      why: "Gövde sorunsuz tamamlandığı için ortada <b>bastırılacak</b> bir şey yoktur: <code>close()</code>'un exception'ı doğrudan yayılır ve <code>getSuppressed()</code> <b>boş dizi</b> döner (uzunluk 0). <br><code>getSuppressed()</code> hiçbir zaman <code>null</code> dönmez — bu yüzden döngüye almadan önce null kontrolü gerekmez."
+    },
+    {
+      topic: "AutoCloseable",
+      q: "Which statements about AutoCloseable and Closeable are correct? (Choose TWO.)",
+      opts: [
+        "Closeable is a subinterface of AutoCloseable.",
+        "AutoCloseable.close() is declared to throw Exception.",
+        "Closeable.close() is declared to throw Exception.",
+        "A resource in try-with-resources must implement Closeable."
+      ],
+      a: [0, 1],
+      why: "<code>Closeable</code> Java 5'ten beri vardır ve Java 7'de <code>AutoCloseable</code> eklenince onun <b>alt arayüzü</b> yapıldı. <code>AutoCloseable.close()</code> en genel hâliyle <code>throws Exception</code> bildirir. <br><code>Closeable.close()</code> daha <b>dar</b> bir imza kullanır: <code>throws IOException</code>. try-with-resources için gereken tek şey <b><code>AutoCloseable</code></b>'dır."
+    },
+    {
+      topic: "Kaynak kısıtları",
+      q: "<pre>class Sayi { }\n\ntry (Sayi s = new Sayi()) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because Sayi does not implement AutoCloseable.",
+        "The code compiles; close() is optional.",
+        "The code compiles but nothing is closed.",
+        "A ClassCastException is thrown at runtime."
+      ],
+      a: [0],
+      why: "try-with-resources yalnızca <b><code>AutoCloseable</code></b> uygulayan tipleri kabul eder — derleyici <code>close()</code> çağrısını üretebilmek için bu garantiye ihtiyaç duyar. <br>Hata mesajı: <i>the resource type Sayi does not implement java.lang.AutoCloseable</i>. Kendi sınıfını kaynak yapmak için tek gereken bu arayüzü uygulamaktır."
+    },
+    {
+      topic: "Java 9 biçimi",
+      q: "<pre>K a = new K(\"A\");\na = new K(\"B\");\ntry (a) { }</pre>What is the result?",
+      opts: [
+        "Compilation fails because a is not effectively final.",
+        "The code compiles and closes B.",
+        "The code compiles and closes A.",
+        "Compilation fails because try-with-resources requires a declaration."
+      ],
+      a: [0],
+      why: "Java 9'dan itibaren <b>var olan bir değişken</b> doğrudan kaynak olarak yazılabilir, ama değişkenin <b>effectively final</b> olması şarttır — yeniden atandığı için bu koşul bozulmuştur. <br>İkinci atama silinirse kod derlenir. Bu kısıt, kaynağın <code>try</code> boyunca <b>değişmeyeceğini</b> garanti eder."
+    },
+    {
+      topic: "try yapısı",
+      q: "<pre>try (K a = new K(\"A\")) {\n    System.out.println(\"x\");\n}</pre>What is the result?",
+      opts: [
+        "The code compiles; catch and finally are optional with a resource.",
+        "Compilation fails because a catch or finally block is required.",
+        "Compilation fails because close() may throw a checked exception.",
+        "The code compiles but the resource is not closed."
+      ],
+      a: [0],
+      why: "Kaynak bildirimi olan bir <code>try</code>, <code>catch</code> ve <code>finally</code> olmadan da <b>tek başına geçerlidir</b> — kapatma sorumluluğunu derleyici üstlenir. Klasik <code>try</code>'da ise en az biri zorunludur (4.1). <br>Not: <code>close()</code> <b>checked</b> exception atıyorsa o zaman yakalamak veya bildirmek gerekir; burada <code>close()</code> exception bildirmiyor."
+    },
+    {
+      topic: "Özel exception",
+      q: "<pre>class E extends RuntimeException {\n    E(String m) { }\n}\n\nSystem.out.println(new E(\"merhaba\").getMessage());</pre>What is the result?",
+      opts: [
+        "null",
+        "merhaba",
+        "Compilation fails.",
+        "An empty string."
+      ],
+      a: [0],
+      why: "Mesaj <code>Throwable</code> içinde saklanır ve oraya yalnızca <code>super(mesaj)</code> ile ulaşır. Constructor parametreyi alıp <b>hiçbir yere iletmediği</b> için <code>getMessage()</code> <b>null</b> döner. <br>Derleyici uyarmaz: <code>super()</code> parametresiz olarak örtük biçimde çağrılır (3.1). <b>Kanca:</b> Özel exception yazarken ilk satır neredeyse her zaman <code>super(...)</code> olmalıdır."
+    },
+    {
+      topic: "Özel exception",
+      q: "Which is the appropriate superclass for an exception that callers are expected to recover from?",
+      opts: [
+        "Exception",
+        "RuntimeException",
+        "Error",
+        "Throwable"
+      ],
+      a: [0],
+      why: "<code>Exception</code>'dan türeyen (ve <code>RuntimeException</code> altında olmayan) exception'lar <b>checked</b>'tir: derleyici çağıranı yakalamaya veya bildirmeye <b>zorlar</b>, yani kurtarma yolunu düşünmesini sağlar. <br><code>RuntimeException</code> programlama hataları içindir, <code>Error</code> asla genişletilmez, <code>Throwable</code>'dan doğrudan türetmek ise pratikte kullanılmaz."
+    },
+    {
+      topic: "Bastırılmış exception",
+      q: "What is the advantage of try-with-resources over closing a resource in a classic finally block?",
+      opts: [
+        "The exception from the body survives; the one from close() is only suppressed.",
+        "It closes resources faster because it uses a background thread.",
+        "It makes close() optional for the resource class.",
+        "It converts all checked exceptions into unchecked ones."
+      ],
+      a: [0],
+      why: "Klasik <code>finally</code> içinde <code>close()</code> exception atarsa, <b>gövdenin exception'ı tamamen kaybolur</b> — asıl hatayı bir daha göremezsin. try-with-resources gövdedeki hatayı korur ve kapatma hatasını <code>getSuppressed()</code> altında saklar. <br>Diğer şıklar uydurmadır: ne ayrı thread vardır, ne <code>close()</code> isteğe bağlıdır, ne de checked/unchecked dönüşümü olur."
+    },
+    {
+      topic: "Kapanma sırası",
+      q: "<pre>try (K a = new K(\"A\");\n     K b = new K(\"B\");\n     K c = new K(\"C\")) {\n}</pre>In which order are close() methods invoked?",
+      opts: [
+        "C, B, A",
+        "A, B, C",
+        "A, C, B",
+        "The order is unspecified."
+      ],
+      a: [0],
+      why: "Kapanma <b>her zaman</b> bildirimin tam tersi sırasındadır: <code>C</code>, <code>B</code>, <code>A</code>. Bu davranış dil belirtiminde <b>garanti edilmiştir</b>, uygulamaya bağlı değildir. <br>Bir kaynak kapanırken exception atsa bile <b>kalan kaynaklar yine kapatılır</b> — atılan exception'lar bastırılmış olarak toplanır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

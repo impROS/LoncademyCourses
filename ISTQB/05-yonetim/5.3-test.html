@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.3 Testi — ISTQB CTFL v4.0</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "ctfl-5-3",
+  code: "Managing the Test Activities · 5.3",
+  title: "İzleme, Kontrol, Tamamlama ve Raporlama",
+  back: "5.3-izleme-kontrol.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "Monitoring ve control",
+      q: "The test manager sees from the metrics that coverage is far below target and decides to reallocate two testers to the payment module. Which activity does the DECISION belong to?",
+      opts: ["Test control", "Test monitoring", "Test completion", "Test analysis"],
+      a: [0],
+      why: "<b>Metriği görmek monitoring, ona dayanarak düzeltici eylem almak control'dür.</b> Kaynak kaydırmak, öncelik değiştirmek, kapsamı daraltmak ve kriterleri gözden geçirmek klasik test control eylemleridir. İki aktivite arasındaki sınır <i>eylem</i>dir."
+    },
+    {
+      topic: "Monitoring ve control",
+      q: "Which of the following is a test MONITORING activity?",
+      opts: [
+        "Collecting metrics on the number of test cases executed and passed",
+        "Reprioritizing tests because a new risk has emerged",
+        "Requesting additional resources to recover the schedule",
+        "Archiving the testware at the end of the project"
+      ],
+      a: [0],
+      why: "<b>Metrik toplamak izlemenin tanımıdır.</b> İkinci ve üçüncü şıklar control eylemleridir, dördüncüsü ise test completion aktivitesidir. Ölçmeden yönetemezsin, ama ölçüp müdahale etmezsen ölçmenin de anlamı kalmaz."
+    },
+    {
+      topic: "İki rapor",
+      q: "Which report contains lessons learned and an evaluation of the residual risk?",
+      opts: [
+        "The test completion report",
+        "The test progress report",
+        "The defect report",
+        "The test plan"
+      ],
+      a: [0],
+      why: "<b>Öğrenilen dersler ve kalan risk değerlendirmesi yalnızca test completion report'ta bulunur.</b> Progress report devam eden dönemi anlatır ve ders çıkarmaz. Kanca: <b>progress = devam ediyor, completion = bitti ve ders çıkardık.</b>"
+    },
+    {
+      topic: "İki rapor",
+      q: "Which of the following belongs in a TEST PROGRESS REPORT?",
+      opts: [
+        "The status of test activities in the reporting period, deviations from the plan, and the plan for the next period",
+        "Lessons learned for future projects",
+        "The archived testware for reuse",
+        "The Definition of Ready for the next sprint"
+      ],
+      a: [0],
+      why: "<b>Progress report dönem durumunu, plandan sapmaları, engelleyicileri ve sonraki dönem planını içerir</b> ve düzenli aralıklarla yayınlanır. Lessons learned completion report'a aittir; arşivleme bir aktivitedir, rapor içeriği değil."
+    },
+    {
+      topic: "Test completion",
+      q: "When are test completion activities performed? (Choose TWO.)",
+      opts: [
+        "When a test level or iteration is completed",
+        "When a project is cancelled",
+        "Every day during the daily stand-up",
+        "Whenever a single defect is fixed"
+      ],
+      a: [0, 1],
+      why: "<b>Tamamlama bir kilometre taşında yapılır — ve proje iptal edildiğinde de yapılır.</b> İptal senaryosu sık atlanır: testware yine arşivlenir, dersler yine toplanır, çünkü bu bilgi gelecekte kullanılacaktır. Günlük toplantı ve tek kusur düzeltmesi tamamlama tetikleyicisi değildir."
+    },
+    {
+      topic: "Test completion",
+      q: "Which of the following is a test completion activity?",
+      opts: [
+        "Ensuring all defect reports are closed, and raising change requests for those that remain open",
+        "Designing test cases from the test conditions",
+        "Executing the regression suite for the current build",
+        "Identifying the entry criteria for the next test level"
+      ],
+      a: [0],
+      why: "<b>Açık kusurların kapatılmasını sağlamak ve kalanlar için değişiklik talebi açmak tamamlama aktivitesidir.</b> Böylece hiçbir bulgu kaybolmaz. Diğer şıklar sırasıyla test design, test execution ve test planning aktiviteleridir."
+    },
+    {
+      topic: "Metrikler",
+      q: "Mean time between failures (MTBF) and response time are examples of which type of metric?",
+      opts: [
+        "Product quality metrics",
+        "Test progress metrics",
+        "Defect metrics",
+        "Cost metrics"
+      ],
+      a: [0],
+      why: "<b>MTBF, yanıt süresi ve kullanılabilirlik ürünün kalitesini ölçen metriklerdir.</b> Test ilerleme metrikleri koşulan/geçen test sayısını, kusur metrikleri bulunan/düzeltilen kusur sayısını ölçer. Metriğin neyi ölçtüğüne bak, adına değil."
+    },
+    {
+      topic: "Metrikler",
+      q: "Which of the following are coverage metrics? (Choose TWO.)",
+      opts: [
+        "Requirements coverage",
+        "Code coverage such as branch coverage",
+        "Number of defects found per week",
+        "The effort spent on test environment setup"
+      ],
+      a: [0, 1],
+      why: "<b>Gereksinim kapsamı ve kod kapsamı (statement/branch) kapsam metrikleridir.</b> Haftalık kusur sayısı bir kusur metriği, ortam kurulum eforu ise proje ilerleme metriğidir. Kapsam her zaman 'toplamın ne kadarı' sorusuna cevap verir."
+    },
+    {
+      topic: "Raporlama ve kitle",
+      q: "Why should the content and format of a test report be adapted to its audience?",
+      opts: [
+        "Because different stakeholders need different levels of detail; executives need risk and business impact rather than technical defect details",
+        "Because reports must be shorter for larger organizations",
+        "Because only technical audiences are allowed to see coverage metrics",
+        "Because regulations forbid sharing defect data with management"
+      ],
+      a: [0],
+      why: "<b>Rapor bilgi vermek içindir; kitleye uymayan rapor bilgi değil gürültü üretir.</b> Üst yönetim 'sürüm hazır mı, hangi risk kalıyor' sorusunun cevabını ister; 400 satırlık kusur listesi bu soruyu cevaplamaz. Diğer şıklar uydurma kurallar öne sürüyor."
+    },
+    {
+      topic: "Test control eylemleri",
+      q: "Which of the following are typical test CONTROL actions? (Choose TWO.)",
+      opts: [
+        "Reprioritizing tests when a new risk is identified",
+        "Revising an entry or exit criterion",
+        "Counting the number of test cases that have passed",
+        "Writing the test conditions from the test basis"
+      ],
+      a: [0, 1],
+      why: "<b>Yeniden önceliklendirme ve kriter gözden geçirme kontrol eylemleridir</b>; ayrıca programı/kapsamı değiştirmek ve kaynak eklemek de öyledir. Test sayısı saymak izlemedir, test condition yazmak ise test analizidir."
+    },
+    {
+      topic: "Test durumunun iletişimi",
+      q: "Which of the following are ways of communicating test status? (Choose TWO.)",
+      opts: [
+        "Verbal reports in a daily stand-up meeting",
+        "A dashboard showing burndown charts and defect trends",
+        "The source code repository commit history",
+        "The Definition of Done"
+      ],
+      a: [0, 1],
+      why: "<b>Sözlü raporlar, dashboard'lar, elektronik kanallar, çevrimiçi dokümantasyon ve resmî raporlar test durumu iletişiminin biçimleridir.</b> Commit geçmişi geliştirme kaydıdır; DoD bir çıkış kriteri tanımıdır, durum raporu değil."
+    },
+    {
+      topic: "Test completion",
+      q: "Why is testware archived during test completion?",
+      opts: [
+        "So that it can be reused in future releases and maintenance testing",
+        "So that the defect reports can be deleted",
+        "Because regulations require all test data to be destroyed",
+        "To reduce the storage cost of the test environment"
+      ],
+      a: [0],
+      why: "<b>Arşivlenen testware, sonraki sürümlerde ve bakım testinde yeniden kullanılır</b> — bakım testinin regresyon suite'i tam olarak buradan gelir (2.3). İkinci ve üçüncü şıklar arşivlemenin amacını tersine çeviriyor."
+    },
+    {
+      topic: "Metrikler",
+      q: "A team reports that 95% of planned test cases have been executed, but all of them cover low-risk functionality while high-risk areas remain untested. What does this illustrate?",
+      opts: [
+        "A single metric can be misleading; metrics must be interpreted together",
+        "The team has achieved its exit criteria",
+        "Test progress metrics are not useful in any context",
+        "Coverage metrics always replace risk metrics"
+      ],
+      a: [0],
+      why: "<b>Yüksek yürütme yüzdesi, doğru şeylerin test edildiği anlamına gelmez.</b> Test ilerleme metriği risk metriğiyle birlikte okunmalıdır. Bu, tek metriğe bakarak yönetmenin klasik tuzağıdır — ve çıkış kriterlerinin neden kalan riski de içerdiğini açıklar."
+    },
+    {
+      topic: "Monitoring ve control",
+      q: "What is the PURPOSE of test monitoring?",
+      opts: [
+        "To gather information about test activities so that progress can be compared with the plan",
+        "To take corrective action when the project deviates from the plan",
+        "To archive the testware at the end of the project",
+        "To design test cases from test conditions"
+      ],
+      a: [0],
+      why: "<b>İzlemenin amacı bilgi toplayıp gerçekleşen ilerlemeyi planla karşılaştırmaktır.</b> Düzeltici eylem almak control'ün, arşivleme completion'ın, test case tasarlamak ise test design'ın işidir. Üç yönetim aktivitesini ayırmak bu bölümün anahtarıdır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

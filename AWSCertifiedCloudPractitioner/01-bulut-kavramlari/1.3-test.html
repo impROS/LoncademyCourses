@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — CLF-C02</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.3",
+  code: "1. alan · Bulut Kavramları · Görev 1.3",
+  title: "Buluta Göç Stratejileri",
+  back: "1.3-migration.md",
+  backLabel: "Konu dosyasına dön",
+  mode: "practice",
+  pass: 80,
+  passNote: "gerçek sınav 700/1000 ≈ %70",
+  langNote: "Sorular İngilizce (sınav dili), açıklamalar Türkçe.",
+  questions: [
+    {
+      topic: "7R stratejileri",
+      q: "A company moves its on-premises application to Amazon EC2 without making any changes to the application code or architecture. Which migration strategy is this?",
+      opts: ["Rehost", "Replatform", "Refactor", "Repurchase"],
+      a: [0],
+      why: "<b>Hiçbir değişiklik yok</b> → <b>Rehost</b> (lift and shift). Küçük bir optimizasyon olsaydı (örneğin veritabanını RDSe almak) Replatform olurdu. Rehost en hızlı ve en düşük efordur ama bulut faydası da en sınırlı olanıdır."
+    },
+    {
+      topic: "7R stratejileri",
+      q: "A company migrates its self-managed MySQL database to Amazon RDS for MySQL. The application code remains unchanged. Which strategy does this represent?",
+      opts: ["Replatform", "Rehost", "Refactor", "Retain"],
+      a: [0],
+      why: "<b>Replatform</b> (lift, tinker and shift): mimari ve kod aynı kalır ama bir bileşen <b>yönetilen servise</b> taşınır. Rehost olsaydı MySQLi EC2 üzerinde kendisi kurup işletmeye devam ederdi."
+    },
+    {
+      topic: "7R stratejileri",
+      q: "A company decommissions its in-house CRM software and subscribes to a SaaS CRM product instead. Which migration strategy is this?",
+      opts: ["Repurchase", "Refactor", "Relocate", "Retire"],
+      a: [0],
+      why: "<b>Repurchase</b> (drop and shop): mevcut uygulamayı bırakıp yerine hazır bir <b>SaaS ürünü satın almak</b>. Retire olsaydı uygulamayı kapatır, yerine bir şey koymazdı."
+    },
+    {
+      topic: "7R stratejileri",
+      q: "Which migration strategy typically requires the HIGHEST effort and cost but delivers the greatest cloud-native benefits?",
+      opts: ["Refactor / re-architect", "Rehost", "Retain", "Relocate"],
+      a: [0],
+      why: "<b>Refactor / re-architect</b>: uygulama yeniden yazılır (monolitten mikroservise, serverlessa geçiş). En pahalı ve en uzun süren strateji, ama ölçeklenebilirlik ve maliyet açısından en yüksek kazancı verir. Sınavda <i>rewrite</i>, <i>microservices</i>, <i>serverless</i> kelimeleri bu şıkkı işaret eder."
+    },
+    {
+      topic: "7R stratejileri",
+      q: "A regulated workload must stay in the company data center for now, so the team decides not to migrate it during this phase. Which strategy is this?",
+      opts: ["Retain", "Retire", "Relocate", "Rehost"],
+      a: [0],
+      why: "<b>Retain</b> (revisit): uygulama şimdilik yerinde bırakılır — mevzuat, yeni yapılmış yatırım veya bağımlılık nedeniyle. <b>Retire</b> ise uygulamanın tamamen <b>kapatılması</b>dır; ikisi karıştırılır."
+    },
+    {
+      topic: "CAF perspektifleri",
+      q: "Which AWS Cloud Adoption Framework (CAF) perspective focuses on training staff, evolving culture, and change management?",
+      opts: ["People", "Business", "Operations", "Governance"],
+      a: [0],
+      why: "<b>People</b> perspektifi kültür, yetkinlik, eğitim ve rol dönüşümüne odaklanır. <b>Business</b> yatırımın iş sonuçlarıyla hizalanması, <b>Governance</b> risk/uyum/portföy yönetimi, <b>Operations</b> ise servislerin işletilmesidir."
+    },
+    {
+      topic: "CAF perspektifleri",
+      q: "Which two of the following are perspectives of the AWS Cloud Adoption Framework? (Choose TWO.)",
+      opts: ["Governance", "Platform", "Reliability", "Elasticity", "Sustainability"],
+      a: [0, 1],
+      why: "CAFın altı perspektifi: <b>Business, People, Governance, Platform, Security, Operations</b>. Reliability ve Sustainability <b>Well-Architected sütunlarıdır</b>, CAF perspektifi değil — sınav bu iki listeyi kasten karıştırır. Elasticity ise hiçbirinde yok."
+    },
+    {
+      topic: "Göç araçları",
+      q: "A company needs to inventory its on-premises servers and map application dependencies before planning a migration. Which service should it use?",
+      opts: [
+        "AWS Application Discovery Service",
+        "AWS Migration Hub",
+        "AWS Database Migration Service",
+        "AWS Application Migration Service"
+      ],
+      a: [0],
+      why: "Göçten <b>önce</b> envanter ve bağımlılık haritası = <b>Application Discovery Service</b>. <b>Migration Hub</b> göç projelerini tek panelden <b>izler</b>; <b>Application Migration Service (MGN)</b> sunucuları taşır; <b>DMS</b> veritabanı taşır. Sıra: keşfet → değerlendir → taşı → takip et."
+    },
+    {
+      topic: "Göç araçları",
+      q: "A company is migrating from an on-premises Oracle database to Amazon Aurora PostgreSQL. Which two services are needed? (Choose TWO.)",
+      opts: [
+        "AWS Schema Conversion Tool (SCT)",
+        "AWS Database Migration Service (DMS)",
+        "AWS DataSync",
+        "AWS Snowcone",
+        "AWS Transfer Family"
+      ],
+      a: [0, 1],
+      why: "Motor <b>değişiyor</b> (Oracle → PostgreSQL) = heterojen göç. Önce <b>SCT</b> şemayı ve saklı yordamları dönüştürür, sonra <b>DMS</b> veriyi kaynak çalışırken taşır. Aynı motora göçte (MySQL → RDS MySQL) tek başına DMS yeter. DataSync dosya, Transfer Family SFTP içindir."
+    },
+    {
+      topic: "Snow ailesi",
+      q: "A company must transfer 300 TB of data to AWS. Its internet connection would take several months to complete the transfer. Which service is MOST appropriate?",
+      opts: [
+        "AWS Snowball Edge",
+        "AWS DataSync",
+        "AWS Transfer Family",
+        "Amazon S3 Transfer Acceleration"
+      ],
+      a: [0],
+      why: "<b>Büyük veri + yetersiz bant genişliği</b> = fiziksel taşıma = <b>Snow ailesi</b>. Snowball Edge Storage Optimized cihazı yaklaşık 80 TB taşır; birden fazla cihazla 300 TB yapılır. DataSync ve Transfer Family <b>internet üzerinden</b> çalışır, aynı darboğaza takılır."
+    },
+    {
+      topic: "Göç araçları",
+      q: "A company wants a cost estimate and business case showing potential savings BEFORE migrating to AWS. Which service provides this?",
+      opts: [
+        "Migration Evaluator",
+        "AWS Pricing Calculator",
+        "AWS Cost Explorer",
+        "AWS Budgets"
+      ],
+      a: [0],
+      why: "<b>Migration Evaluator</b> mevcut şirket içi ortamı analiz edip göçün <b>iş gerekçesini (business case)</b> ve tasarruf tahminini çıkarır. Pricing Calculator elle senaryo kurup fiyat tahmini yapar (göç analizi yapmaz); Cost Explorer <b>zaten AWSte olan</b> harcamayı analiz eder; Budgets eşik aşımında uyarır."
+    },
+    {
+      topic: "Hibrit ve bağlantı",
+      q: "A company keeps some workloads on premises for latency reasons and wants to run AWS services on its own hardware in its data center. Which service meets this need?",
+      opts: ["AWS Outposts", "AWS Direct Connect", "AWS Snowcone", "Amazon VPC"],
+      a: [0],
+      why: "<b>AWS Outposts</b>, AWSin fiziksel donanımını <b>müşterinin veri merkezine</b> koyar; aynı AWS API ve servislerini yerinde çalıştırırsın — gerçek hibrit senaryosu. Direct Connect sadece <b>özel bir hat</b> sağlar, kaynakları yerine taşımaz. Snowcone veri taşımak/uçta işlemek içindir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
