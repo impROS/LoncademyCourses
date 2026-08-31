@@ -206,6 +206,8 @@ kullanacağın "yeniden ifade etme" refleksini de çalıştırır (bkz. `00-basl
 4. *"the people who are queuing outside"* ifadesini kısalt.
 5. `whose` ile `who's` arasındaki fark nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#g8-relative-clauses-sıfat-cümlecikleri`](cevaplar.md#g8-relative-clauses-sıfat-cümlecikleri) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

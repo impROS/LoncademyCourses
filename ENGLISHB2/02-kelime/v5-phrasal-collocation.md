@@ -286,6 +286,8 @@ run out of, put off, sort out, turn up, wind down*). Sesli, duraksamadan, 90 san
 4. `impossible` için neden `very` kullanılmaz? Ne kullanılır?
 5. `il-`, `ir-`, `im-` önekleri hangi harflerden önce gelir? Birer örnek ver.
 
+➡️ **Cevaplar:** [`cevaplar.md#v5-phrasal-verbs-collocation-ve-word-formation`](cevaplar.md#v5-phrasal-verbs-collocation-ve-word-formation) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

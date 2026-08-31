@@ -210,6 +210,8 @@ the new system, and further improvements **are expected** in the coming months.*
 4. *People think he is abroad* cümlesini iki farklı edilgen kalıba çevir.
 5. `have someone do` ile `get someone to do` arasındaki fark nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#g6-edilgen-çatı-ve-causative`](cevaplar.md#g6-edilgen-çatı-ve-causative) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

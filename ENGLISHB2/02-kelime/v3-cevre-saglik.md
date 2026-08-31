@@ -226,6 +226,8 @@ Kural: `cut down on`, `take up`, `cope with`, `tackle` fiillerini kullan.
 4. İklim değişikliğine dair üç problem, üç çözüm kelimesi yaz.
 5. Bir essay'de problem kurmak için kullanabileceğin iki kalıp yaz.
 
+➡️ **Cevaplar:** [`cevaplar.md#v3-çevre-sağlık-ve-yaşam-tarzı`](cevaplar.md#v3-çevre-sağlık-ve-yaşam-tarzı) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

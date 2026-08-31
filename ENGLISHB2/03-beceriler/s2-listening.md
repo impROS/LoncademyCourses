@@ -204,6 +204,8 @@ aynı duraklar. Kelimeleri anlamasan bile ritmi taklit et. Üç kez tekrarla.
 4. Bir kelimeyi kaçırdığında ne yaparsın, ne yapmazsın?
 5. Shadowing nedir ve hangi iki beceriyi birden geliştirir?
 
+➡️ **Cevaplar:** [`cevaplar.md#s2-listening-strateji-ve-kulak-eğitimi`](cevaplar.md#s2-listening-strateji-ve-kulak-eğitimi) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

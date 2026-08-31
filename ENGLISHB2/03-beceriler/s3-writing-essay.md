@@ -225,6 +225,8 @@ On the one hand… on the other hand… Personally, I…"* Bu, aynı iskeleti ko
 4. *"To what extent do you agree?"* sorusuna nasıl cevap yapısı kurarsın?
 5. Yazdıktan sonraki 7 dakikada neleri kontrol edersin? Beş madde yaz.
 
+➡️ **Cevaplar:** [`cevaplar.md#s3-writing-1-essay-görüş-ve-tartışma-yazısı`](cevaplar.md#s3-writing-1-essay-görüş-ve-tartışma-yazısı) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

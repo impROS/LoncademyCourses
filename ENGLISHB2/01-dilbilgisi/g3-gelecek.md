@@ -210,6 +210,8 @@ Cevabında sırayla kullan: present continuous (plan) → going to (niyet) → f
 4. Zaman bağlaçlarından sonra neden `will` kullanılmaz? İki örnek yaz.
 5. `be about to` ile `be due to` farkını bir cümleyle açıkla.
 
+➡️ **Cevaplar:** [`cevaplar.md#g3-gelecek-biçimleri`](cevaplar.md#g3-gelecek-biçimleri) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

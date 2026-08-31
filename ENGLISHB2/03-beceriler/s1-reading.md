@@ -214,6 +214,8 @@ Metni kapat ve **60 saniyede** kendi kelimelerinle özetle. Sonra şu soruyu cev
 4. Bilinmeyen bir kelimeyle karşılaşınca uygulayacağın dört adım nedir?
 5. Gapped text sorusunda ilk bakacağın iki ipucu türü nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#s1-reading-strateji-ve-soru-tipleri`](cevaplar.md#s1-reading-strateji-ve-soru-tipleri) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

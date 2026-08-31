@@ -160,6 +160,8 @@ Her testin sonunda **her sorunun açıklaması** (`why`) çıkar. Doğru yaptı�
 4. Testten %65 aldın. Sıradaki üç adımın ne?
 5. Yorgun olduğun günün "minimum versiyonu" nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#01-çalışma-yöntemi-ortam-ve-kaynaklar`](cevaplar.md#01-çalışma-yöntemi-ortam-ve-kaynaklar) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## Sırada ne var

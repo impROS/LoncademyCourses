@@ -233,6 +233,8 @@ kullanabilirsin; gerisi `explained, admitted, complained, suggested, promised, w
 4. `deny`, `apologise`, `advise` fiillerinin aldığı kalıpları yaz.
 5. *"Let's leave early."* cümlesini `suggest` ile iki farklı doğru biçimde aktar.
 
+➡️ **Cevaplar:** [`cevaplar.md#g7-dolaylı-anlatım-reported-speech`](cevaplar.md#g7-dolaylı-anlatım-reported-speech) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

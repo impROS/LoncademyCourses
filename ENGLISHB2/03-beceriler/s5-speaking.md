@@ -209,6 +209,8 @@ kaydet ve önceki haftayla karşılaştır. Ölçmediğin şey gelişmez.
 4. Nazikçe katılmadığını gösteren iki kalıp yaz.
 5. İşbirlikçi görevde etkileşim puanını düşüren iki davranış nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#s5-speaking-akıcılık-kalıplar-ve-strateji`](cevaplar.md#s5-speaking-akıcılık-kalıplar-ve-strateji) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

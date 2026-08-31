@@ -232,6 +232,8 @@ Bir konu seç (uzaktan çalışma, sosyal medya, elektrikli araçlar) ve 60 sani
 4. `few` ile `a few` arasındaki ton farkını bir bağlamla göster.
 5. *"I have rarely seen such a thing"* cümlesini inversion ile yaz.
 
+➡️ **Cevaplar:** [`cevaplar.md#g10-bağlaçlar-zıtlık-artikeller-ve-inversion`](cevaplar.md#g10-bağlaçlar-zıtlık-artikeller-ve-inversion) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

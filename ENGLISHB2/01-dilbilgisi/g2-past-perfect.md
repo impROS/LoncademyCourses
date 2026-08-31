@@ -207,6 +207,8 @@ Cevabında şu üç kalıbı kullan: *By the time I…* · *I had already…* ·
 4. `by` ile `by the time` arasındaki dilbilgisel fark nedir?
 5. `after` ve `before` bağlaçlarında past perfect hangi tarafa gelir?
 
+➡️ **Cevaplar:** [`cevaplar.md#g2-past-perfect-ve-anlatı-zamanları`](cevaplar.md#g2-past-perfect-ve-anlatı-zamanları) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

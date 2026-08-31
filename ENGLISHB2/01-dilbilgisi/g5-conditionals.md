@@ -214,6 +214,8 @@ iki farklı zamanı bağlıyor mu? (3) `unless` ikinci bir olumsuzla birleşmiş
 4. *"I wish I would stop worrying"* neden hatalı? Nasıl düzeltirsin?
 5. Karma koşulda sonuç tarafının biçimini ne belirler?
 
+➡️ **Cevaplar:** [`cevaplar.md#g5-koşul-cümleleri-ve-wish`](cevaplar.md#g5-koşul-cümleleri-ve-wish) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

@@ -221,6 +221,8 @@ Karşılaştır:
 4. *"I used to work here"* ile *"I'm used to working here"* farkını Türkçe açıkla.
 5. `yet` ve `already` cümlenin neresinde ve hangi cümle türünde durur?
 
+➡️ **Cevaplar:** [`cevaplar.md#g1-zaman-sistemi-present-ve-past`](cevaplar.md#g1-zaman-sistemi-present-ve-past) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

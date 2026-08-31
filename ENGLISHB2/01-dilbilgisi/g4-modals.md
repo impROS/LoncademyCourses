@@ -205,6 +205,8 @@ Bir fotoğraf düşün (ya da telefonundan bir tanesini aç) ve **spekülasyon y
 4. `must` ile `have to` arasındaki kaynak farkını bir cümleyle açıkla.
 5. *"Would you mind waiting?"* sorusuna "olur, beklerim" nasıl cevap verilir?
 
+➡️ **Cevaplar:** [`cevaplar.md#g4-modal-fiiller-ve-çıkarım`](cevaplar.md#g4-modal-fiiller-ve-çıkarım) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

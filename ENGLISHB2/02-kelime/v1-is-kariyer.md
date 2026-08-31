@@ -225,6 +225,8 @@ Kural: `demanding`, `rewarding`, `deal with`, `be responsible for` ifadelerini m
 4. `sensible` ve `sensitive` için birer cümle kur.
 5. Resmî e-postada isim biliniyorsa hangi kapanış kullanılır?
 
+➡️ **Cevaplar:** [`cevaplar.md#v1-iş-hayatı-ve-kariyer`](cevaplar.md#v1-iş-hayatı-ve-kariyer) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

@@ -65,6 +65,7 @@ Bitirdiğin kutucuğu işaretle. Test sütununa **en yüksek skorunu** yaz.
 | [ ] | [Çalışma yöntemi ve kaynaklar](00-baslangic/01-calisma-yontemi.md) | — | — |
 | 📖 | [Kavram sözlüğü](00-baslangic/02-kavram-sozlugu.md) | başvuru | — |
 | ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
+| 💡 | [Kendini kontrol cevapları](00-baslangic/cevaplar.md) | cevap | ___ |
 
 ### 01 — Dilbilgisi *(10 konu)*
 | ✔ | Konu | Test | Skor |
@@ -79,6 +80,7 @@ Bitirdiğin kutucuğu işaretle. Test sütununa **en yüksek skorunu** yaz.
 | [ ] | [g8 — Relative clauses](01-dilbilgisi/g8-relative-clauses.md) | [test](01-dilbilgisi/g8-test.html) | ___ |
 | [ ] | [g9 — Gerund & infinitive](01-dilbilgisi/g9-gerund-infinitive.md) | [test](01-dilbilgisi/g9-test.html) | ___ |
 | [ ] | [g10 — Bağlaçlar, zıtlık ve inversion](01-dilbilgisi/g10-baglaclar.md) | [test](01-dilbilgisi/g10-test.html) | ___ |
+| 💡 | [Kendini kontrol cevapları](01-dilbilgisi/cevaplar.md) | cevap | ___ |
 
 ### 02 — Kelime *(5 konu)*
 | ✔ | Konu | Test | Skor |
@@ -88,6 +90,7 @@ Bitirdiğin kutucuğu işaretle. Test sütununa **en yüksek skorunu** yaz.
 | [ ] | [v3 — Çevre, sağlık ve yaşam tarzı](02-kelime/v3-cevre-saglik.md) | [test](02-kelime/v3-test.html) | ___ |
 | [ ] | [v4 — Seyahat, kültür ve toplum](02-kelime/v4-seyahat-toplum.md) | [test](02-kelime/v4-test.html) | ___ |
 | [ ] | [v5 — Phrasal verbs, collocation, word formation ⭐](02-kelime/v5-phrasal-collocation.md) | [test](02-kelime/v5-test.html) | ___ |
+| 💡 | [Kendini kontrol cevapları](02-kelime/cevaplar.md) | cevap | ___ |
 
 ### 03 — Beceriler *(5 konu)*
 | ✔ | Konu | Test | Skor |
@@ -97,6 +100,7 @@ Bitirdiğin kutucuğu işaretle. Test sütununa **en yüksek skorunu** yaz.
 | [ ] | [s3 — Writing 1: essay](03-beceriler/s3-writing-essay.md) | [test](03-beceriler/s3-test.html) | ___ |
 | [ ] | [s4 — Writing 2: e-mail, report, review](03-beceriler/s4-writing-diger.md) | [test](03-beceriler/s4-test.html) | ___ |
 | [ ] | [s5 — Speaking: akıcılık ve kalıplar](03-beceriler/s5-speaking.md) | [test](03-beceriler/s5-test.html) | ___ |
+| 💡 | [Kendini kontrol cevapları](03-beceriler/cevaplar.md) | cevap | ___ |
 
 ### 99 — Final
 | ✔ | Konu | Test | Skor |

@@ -226,6 +226,8 @@ Kural: en az üç "etki" ifadesi (*lead to, result in, contribute to*) ve bir he
 4. Bir eğilimin arttığını anlatan üç farklı fiil yaz.
 5. `outdated` ile `obsolete` arasındaki derece farkı nedir?
 
+➡️ **Cevaplar:** [`cevaplar.md#v2-eğitim-teknoloji-ve-medya`](cevaplar.md#v2-eğitim-teknoloji-ve-medya) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

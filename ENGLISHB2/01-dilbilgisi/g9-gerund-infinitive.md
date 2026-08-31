@@ -211,6 +211,8 @@ dark, but I'm **looking forward to seeing** some results by summer.*
 4. *"The car needs washing"* cümlesini `to be` kullanarak yaz.
 5. `remember`, `forget` ve `stop` için birer çift örnek üret.
 
+➡️ **Cevaplar:** [`cevaplar.md#g9-gerund-ve-infinitive-v-ing--to-v1`](cevaplar.md#g9-gerund-ve-infinitive-v-ing--to-v1) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

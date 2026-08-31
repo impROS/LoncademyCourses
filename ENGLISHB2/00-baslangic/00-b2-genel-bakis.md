@@ -157,6 +157,8 @@ diye sor.
 4. "It's cheap" cümlesini B2 seviyesine nasıl yükseltirsin? İki farklı yol yaz.
 5. Dört refleksten hangisi kelime bilmediğinde işine yarar?
 
+➡️ **Cevaplar:** [`cevaplar.md#00-b2ye-genel-bakış-ve-trickler`](cevaplar.md#00-b2ye-genel-bakış-ve-trickler) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## Sırada ne var

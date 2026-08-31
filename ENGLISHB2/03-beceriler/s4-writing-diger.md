@@ -255,6 +255,8 @@ Fark et: aynı içerik, **çok daha samimi** bir kayıtta. Bu, kayıt duygusunu 
 4. Review'da özet ile değerlendirmenin oranı nasıl olmalı?
 5. *"Get back to me ASAP"* ifadesini resmî hâle getir.
 
+➡️ **Cevaplar:** [`cevaplar.md#s4-writing-2-e-postamektup-rapor-inceleme`](cevaplar.md#s4-writing-2-e-postamektup-rapor-inceleme) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test

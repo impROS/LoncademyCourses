@@ -218,6 +218,8 @@ Kural: `cost of living`, `overcrowding`, `rural`, `compared with` ifadelerini ku
 4. `immigrant`, `emigrant` ve `refugee` arasındaki farkı açıkla.
 5. `charge` ve `accuse` fiillerinin edatları neler?
 
+➡️ **Cevaplar:** [`cevaplar.md#v4-seyahat-kültür-ve-toplum`](cevaplar.md#v4-seyahat-kültür-ve-toplum) — önce kâğıda kendi cevabını yaz, sonra aç.
+
 ---
 
 ## ✅ Test
