@@ -26,3 +26,6 @@ build/
 # duruyor; hiçbiri kurs içeriği değil ve depoya girerse senkronun indirdiği
 # tarball'ı gereksiz yere şişirir.
 ReverseEnginering/
+
+# Çalışma sırasında indirilen kişisel materyal — kurs içeriği değil.
+OCP21_pdf_*.pdf
