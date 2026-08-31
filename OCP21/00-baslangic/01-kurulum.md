@@ -59,7 +59,7 @@ Bunu kalıcı yapmak için `~/.zshrc` dosyasının sonuna ekle.
 Kursun kökünde bir deneme dosyası oluştur ve çalıştır:
 
 ```bash
-cd ~/IdeaProjects/impROS/OCP21
+cd <kursun kök klasörü>
 mkdir -p 00-baslangic/ornekler
 cat > 00-baslangic/ornekler/Kontrol.java <<'JAVA'
 public class Kontrol {

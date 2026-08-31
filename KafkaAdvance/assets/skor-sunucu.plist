@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Skor sunucusunu macOS'ta arka planda sürekli çalıştırır (isteğe bağlı).
      Kurulum:
-       sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/tr.improsy.kafkaadv.skor.plist
-       launchctl load  ~/Library/LaunchAgents/tr.improsy.kafkaadv.skor.plist
+       sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/local.kafkaadv.skor.plist
+       launchctl load  ~/Library/LaunchAgents/local.kafkaadv.skor.plist
      Kaldırma:
-       launchctl unload ~/Library/LaunchAgents/tr.improsy.kafkaadv.skor.plist
-       rm ~/Library/LaunchAgents/tr.improsy.kafkaadv.skor.plist  -->
+       launchctl unload ~/Library/LaunchAgents/local.kafkaadv.skor.plist
+       rm ~/Library/LaunchAgents/local.kafkaadv.skor.plist  -->
 <plist version="1.0">
 <dict>
-  <key>Label</key>              <string>tr.improsy.kafkaadv.skor</string>
+  <key>Label</key>              <string>local.kafkaadv.skor</string>
   <key>ProgramArguments</key>
   <array>
     <string>/usr/bin/env</string>

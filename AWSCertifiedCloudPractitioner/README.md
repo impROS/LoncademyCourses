@@ -171,8 +171,8 @@ Sonra testleri ister çift tıklayarak aç, ister tarayıcıda `http://localhost
 **Hep açık olsun istersen (macOS, isteğe bağlı):**
 
 ```bash
-sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/tr.improsy.clfc02.skor.plist
-launchctl load ~/Library/LaunchAgents/tr.improsy.clfc02.skor.plist
+sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/local.clfc02.skor.plist
+launchctl load ~/Library/LaunchAgents/local.clfc02.skor.plist
 ```
 
 Portu kalıcı yapmak istersen `plist` içindeki `EnvironmentVariables` bölümüne `SKOR_PORT` ekle.

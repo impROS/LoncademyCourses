@@ -197,8 +197,8 @@ Sonra testleri ister çift tıklayarak aç, ister tarayıcıda `http://localhost
 **Hep açık olsun istersen (macOS, isteğe bağlı):**
 
 ```bash
-sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/tr.improsy.kafkaadv.skor.plist
-launchctl load ~/Library/LaunchAgents/tr.improsy.kafkaadv.skor.plist
+sed "s|KURS_KOKU|$PWD|g" assets/skor-sunucu.plist > ~/Library/LaunchAgents/local.kafkaadv.skor.plist
+launchctl load ~/Library/LaunchAgents/local.kafkaadv.skor.plist
 ```
 
 Böylece bilgisayar açıldığında sunucu da açılır ve bir daha hiç düşünmezsin.

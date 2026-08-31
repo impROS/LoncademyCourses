@@ -46,7 +46,7 @@ java -version && mvn -version
 2. Lab projesini oluştur:
 
 ```bash
-mkdir -p ~/IdeaProjects/impROS/ISTQB-lab/src/{main,test}/java/istqb && cd ~/IdeaProjects/impROS/ISTQB-lab
+mkdir -p ~/istqb-lab/src/{main,test}/java/istqb && cd ~/istqb-lab
 ```
 
 3. `pom.xml` dosyasını oluştur:
@@ -137,10 +137,10 @@ mvn -q test && open target/site/jacoco/index.html
 Bu lab **tamamen yerel**, hiçbir ücret doğurmaz. Bitince silmek istersen:
 
 ```bash
-rm -rf ~/IdeaProjects/impROS/ISTQB-lab
+rm -rf ~/istqb-lab
 ```
 
-- [ ] **Kontrol:** `ls ~/IdeaProjects/impROS/` çıktısında `ISTQB-lab` görünmüyor.
+- [ ] **Kontrol:** `ls ~/` çıktısında `ISTQB-lab` görünmüyor.
 
 ---
 

@@ -180,5 +180,5 @@ ENB2/
 Testleri toplu doğrulamak için (isteğe bağlı, Node.js gerekir):
 
 ```bash
-node /Users/ridvanakar/IdeaProjects/impROS/ENB2/assets/validate.js
+node assets/validate.js
 ```
