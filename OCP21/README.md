@@ -28,6 +28,11 @@ Sınav zaten bunları soruyor.
 
 ---
 
+> **Terim tanımadıysan** [kavram sözlüğüne](00-baslangic/03-kavram-sozlugu.md) bak —
+> 43 terim, her biri sınavda göreceğin İngilizce karşılığıyla.
+
+---
+
 ## Nasıl çalışılır
 
 1. **Önce `00-baslangic/` klasörünü bitir.** Sınavın nasıl düşündüğünü öğrenmeden konuya girme —
@@ -55,6 +60,7 @@ Bitirdikçe kutucuğu doldur. (`- [ ]` → `- [x]`)
 | [ ] | [Sınav künyesi, formatı ve trickler](00-baslangic/00-sinav-kunyesi.md) | — | — |
 | [ ] | [Ortam kurulumu ve çalışma projesi](00-baslangic/01-kurulum.md) | — | — |
 | [ ] | [Kayıt, satın alma ve sınav günü](00-baslangic/02-kayit-ve-satin-alma.md) | — | — |
+| 📖 | [Kavram sözlüğü](00-baslangic/03-kavram-sozlugu.md) | başvuru | — |
 | ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Temel Tipler, Metin ve Tarih/Saat

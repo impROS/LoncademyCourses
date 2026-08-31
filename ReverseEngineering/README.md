@@ -24,6 +24,11 @@ internet/sunucu gerekmez). Pratikler gerçek, ücretsiz ve yasal sitelerde yapı
 
 ---
 
+> **Terim tanımadıysan** [kavram sözlüğüne](00-baslangic/04-kavram-sozlugu.md) bak —
+> 42 terim, her biri araç çıktısında göreceğin İngilizce karşılığıyla.
+
+---
+
 ## Künye
 
 | | |
@@ -53,6 +58,7 @@ Kutucukları çözdükçe işaretle (dosyayı düzenle, `[ ]` → `[x]`).
 | [ ] | [Yasal & etik çerçeve — nerede pratik yapılır, nerede yapılmaz](00-baslangic/01-yasal-etik.md) | — | — |
 | [ ] | [Ortam kurulumu — Linux, Ghidra, GDB+pwndbg, pwntools](00-baslangic/02-ortam-kurulumu.md) | — | — |
 | [ ] | [Lab siteleri rehberi — hangi site ne için, nasıl başlanır](00-baslangic/03-lab-siteleri.md) | — | — |
+| 📖 | [Kavram sözlüğü](00-baslangic/04-kavram-sozlugu.md) | başvuru | — |
 | ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Makine seviyesi temeller *(%16)*

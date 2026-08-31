@@ -30,6 +30,11 @@ karşına İngilizce çıkacak, ama kuralı Türkçe kavraman daha hızlı.
 
 ---
 
+> **Dilbilgisi terimi tanımadıysan** [kavram sözlüğüne](00-baslangic/02-kavram-sozlugu.md)
+> bak — 28 terim, her biri kaynaklarda göreceğin İngilizce adıyla.
+
+---
+
 ## Künye
 
 | | |
@@ -58,6 +63,7 @@ Bitirdiğin kutucuğu işaretle. Test sütununa **en yüksek skorunu** yaz.
 |---|---|---|---|
 | [ ] | [B2'ye genel bakış ve trickler](00-baslangic/00-b2-genel-bakis.md) | — | — |
 | [ ] | [Çalışma yöntemi ve kaynaklar](00-baslangic/01-calisma-yontemi.md) | — | — |
+| 📖 | [Kavram sözlüğü](00-baslangic/02-kavram-sozlugu.md) | başvuru | — |
 | ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Dilbilgisi *(10 konu)*
