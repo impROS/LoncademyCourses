@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-3",
+  code: "Üretim ve ekip · 6.3",
+  title: "Lisans ve telif",
+  back: "6.3-lisans-ve-telif.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Sorumluluk asimetrisi",
+      q: "Ajanla üretilen kodda \"sorumluluk asimetrisi\" ne demektir?",
+      opts: [
+        "Kodun ne yaptığından tam sorumlusun, ama nasıl yaptığı üzerindeki mülkiyetin sınırlı olabilir",
+        "Sorumluluk sağlayıcıyla paylaşılır",
+        "Kodun sahibi ajan, sorumlusu sensin",
+        "Ne sorumluluk ne mülkiyet sende olur"
+      ],
+      a: [0],
+      why: "<b>Risk tam, koruma kısmi.</b> Bu, ajan kullanımının en az konuşulan gerçeklerinden biri. Pratik sonucu \"ajan kullanma\" değil: incelemeyi ciddiye almak ve üretilen kodu kendi kodun gibi sahiplenmek — çünkü sorumluluk açısından öyle."
+    },
+    {
+      topic: "Sorumluluk asimetrisi",
+      q: "\"Ajan yazdı, hata ondan\" savunmasının hatası nedir?",
+      opts: [
+        "Ajan hukuki bir taraf değildir; sorumluluk sende ya da kurumundadır",
+        "Ajanlar hata yapmaz",
+        "Sorumluluk sağlayıcıya geçer",
+        "Bu savunma yalnızca açık kaynak projelerde geçersizdir"
+      ],
+      a: [0],
+      why: "<b>Bir aracı kullanmak, o aracın çıktısının sorumluluğunu ortadan kaldırmaz.</b> Derleyicinin ürettiği makine kodu için de aynısı geçerli. Bu yüzden inceleme, ajan çağında daha az değil <i>daha çok</i> önem kazanır."
+    },
+    {
+      topic: "İnsan yazarlığı",
+      q: "\"İnsan yazarlığı\" ilkesine göre telif koruması nasıl belirlenir?",
+      opts: [
+        "Bir insanın ifadesel unsurlar üzerinde yaratıcı denetim kurduğu ölçüde",
+        "Kodu kimin çalıştırdığına göre",
+        "Kodun ne kadar özgün olduğuna göre",
+        "Kodun kaç satır olduğuna göre"
+      ],
+      a: [0],
+      why: "<b>Belirleyici olan yaratıcı denetim.</b> Bu yüzden yalnızca istem yazmak genelde yeterli sayılmaz — ifadesel seçimler modele bırakılmıştır. Uzunluk ve özgünlük tek başına bu ölçütü karşılamaz."
+    },
+    {
+      topic: "İnsan yazarlığı",
+      q: "Bu setin `03` bölümündeki çalışma biçimi telif açısından ne sağlar?",
+      opts: [
+        "Plan, inceleme, düzeltme ve test yoluyla insan denetimini zaten kurar",
+        "Telif korumasını garanti eder",
+        "Tescil zorunluluğunu ortadan kaldırır",
+        "Lisans bulaşmasını imkânsız kılar"
+      ],
+      a: [0],
+      why: "<b>Kaliteli çalışma biçimi ile telif tarafı burada örtüşüyor.</b> Kodu okumak, planlamak, düzeltmek ve sınamak, ifadesel unsurlar üzerinde gerçek bir denetim kurar. Garanti değildir ve bulaşma riskini de kaldırmaz — o ayrı bir konu."
+    },
+    {
+      topic: "İnsan yazarlığı",
+      q: "Tescil sürecinde tamamen makine üretimi kısımlar için ne beklenir?",
+      opts: [
+        "Beyan edilmesi ve kapsam dışı bırakılması",
+        "Yeniden yazılması",
+        "Ayrı bir başvuru yapılması",
+        "Hiçbir işlem gerekmez"
+      ],
+      a: [0],
+      why: "<b>Beyan yükümlülüğü, korunan kapsamın doğru çizilmesi içindir.</b> Bu, üretilen kodun kullanılamayacağı anlamına gelmez — yalnızca hangi kısmın koruma kapsamında olduğunun dürüstçe belirtilmesi gerekir. ⚠️ Ülkeye göre değişir."
+    },
+    {
+      topic: "Lisans bulaşması",
+      q: "Lisans bulaşması riski nasıl ortaya çıkar?",
+      opts: [
+        "Model, kısıtlayıcı lisanslı bir kaynaktan gelen bir parçayı yeniden üretebilir ve bunu söylemez",
+        "Ajan bağımlılık dosyasına kütüphane ekler",
+        "Ajan lisans dosyasını değiştirir",
+        "Ajan açık kaynak depolara bağlanır"
+      ],
+      a: [0],
+      why: "<b>Sessizlik riskin özü:</b> çıktıda \"bu parça şu projeden geliyor\" diye bir işaret yoktur. Copyleft ailesi özellikle kritiktir, çünkü türetilmiş çalışmanın da aynı lisansla dağıtılmasını isteyebilir — yani ürününü dağıtma koşullarını değiştirebilir."
+    },
+    {
+      topic: "Lisans bulaşması",
+      q: "Aşağıdakilerden hangi ikisi lisans bulaşması sinyalidir? (İki tanesini seç.)",
+      opts: [
+        "Kodda kalmış telif satırı ya da yabancı yorum",
+        "Projeye yabancı biçimde alışılmadık derecede eksiksiz bir blok",
+        "Kodun Türkçe değişken adları içermesi",
+        "Kodun testlerinin yazılmış olması"
+      ],
+      a: [0, 1],
+      why: "<b>Kalmış izler ve \"fazla hazır\" görünen kod, iki klasik sinyal.</b> Diğer iki sinyal: tanınmış bir algoritmanın birebir üretilmesi ve belirli bir kütüphanenin iç yapısının taklit edilmesi. Değişken dili ve test varlığı bu konuyla ilgisizdir."
+    },
+    {
+      topic: "Lisans bulaşması",
+      q: "Ajanın ürettiği kodda bir telif satırı buldun. Ne **yapılmaz**?",
+      opts: [
+        "Satırı silip devam etmek",
+        "Kaynağını araştırmak",
+        "İncelemede işaretlemek",
+        "Kodun kullanılıp kullanılamayacağını değerlendirmek"
+      ],
+      a: [0],
+      why: "<b>İzi silmek riski kaldırmaz, yalnızca gizler</b> — ve sonradan bulunması hâlinde durumu daha kötü hâle getirir. Doğru davranış: araştırmak, işaretlemek ve kararı bilerek vermek."
+    },
+    {
+      topic: "Önlemler",
+      q: "Lisans bulaşmasına karşı istem tarafındaki en doğrudan önlem nedir?",
+      opts: [
+        "Bilinen bir projenin kodunu \"aynen yaz\" diye istememek",
+        "Daha küçük model kullanmak",
+        "Daha kısa istem yazmak",
+        "Kural dosyasına lisans metnini eklemek"
+      ],
+      a: [0],
+      why: "<b>Birebir üretim isteği, riski doğrudan davet eder.</b> Model boyutu ve istem uzunluğu bu riski belirlemez. Kural dosyasına lisans metni eklemek ise bağlam harcar ve bulaşmayı engellemez — engelleyen şey, ne istediğindir."
+    },
+    {
+      topic: "Önlemler",
+      q: "Ajana \"bu kodda açık kaynak bir projeden gelmiş bölüm var mı?\" diye sormanın değeri nedir?",
+      opts: [
+        "Bir sinyal verir ama kanıt değildir; model kendi çıktısının kaynağını güvenilir biçimde bilemez",
+        "Kesin bir cevap verir ve karar için yeterlidir",
+        "Hiçbir değeri yoktur",
+        "Yalnızca kurumsal planlarda çalışır"
+      ],
+      a: [0],
+      why: "<b>Sinyal olarak kullan, karar olarak değil.</b> Model, ürettiği metnin kaynağını izleyemez; cevabı bir tahmindir. Kurumsal ortamda gerçek denetim, lisans tarama araçlarıyla ve birebir eşleşme aramasıyla yapılır."
+    },
+    {
+      topic: "Kurumsal politika",
+      q: "Kurumsal ortamda işine yarayan üç yazılı belgeden biri **değildir**?",
+      opts: [
+        "Modelin eğitim veri seti listesi",
+        "Kullanım politikası",
+        "Sağlayıcı sözleşmesi",
+        "İnceleme politikası"
+      ],
+      a: [0],
+      why: "<b>Eğitim veri seti listesi genelde yayımlanmaz ve pratik bir denetim aracı değildir.</b> İşe yarayan üçlü: hangi aracın hangi kod tabanında nasıl kullanılacağı, sağlayıcının taahhütleri, ve ajan üretimi kodun nasıl inceleneceği."
+    },
+    {
+      topic: "Kurumsal politika",
+      q: "Sağlayıcıların sunduğu telif taahhütleri hakkında doğru tutum nedir?",
+      opts: [
+        "Kapsam ve koşulları sözleşmeye göre değişir; varsayma, oku",
+        "Tüm kullanım biçimlerini kapsar",
+        "Yalnızca ücretsiz planlarda geçerlidir",
+        "Hiçbir sağlayıcı böyle bir taahhüt sunmaz"
+      ],
+      a: [0],
+      why: "<b>Bazı sağlayıcılar kurumsal koşullarda taahhütler sunuyor</b> — ama kapsam, koşullar ve istisnalar sözleşmeden sözleşmeye değişir. \"Bizi koruyorlar\" varsayımı, doğrulanmadan yapıldığında yanlış bir güvence üretir."
+    },
+    {
+      topic: "İz bırakma",
+      q: "Ajan üretimi kodun kaynağının belli olmasının bu konuda eklenen **üçüncü** faydası nedir?",
+      opts: [
+        "Sonradan denetlenebilirlik: bir lisans sorusu çıktığında hangi kodun nasıl üretildiğini bilmek",
+        "Bağlam tasarrufu",
+        "Daha hızlı inceleme",
+        "Otomatik lisans taraması"
+      ],
+      a: [0],
+      why: "<b>`3.6`'daki iki gerekçe inceleme dikkati ve dürüstlüktü; buraya denetlenebilirlik ekleniyor.</b> Bir sorun çıktığında hangi değişikliklerin ajanla üretildiğini bilmek, araştırmanın kapsamını daraltır. Her satıra etiket gerekmez; ekip düzeyinde bir iz yeterlidir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Kodun ne yaptığından tam sorumlusun; nasıl yaptığı üzerindeki mülkiyetin sınırlı olabilir",
+        "Ajanla üretilen kod hiçbir koşulda telifle korunamaz",
+        "Lisans riski yalnızca açık kaynak projelerde vardır",
+        "Sağlayıcı taahhütleri tüm hukuki riski ortadan kaldırır"
+      ],
+      a: [0],
+      why: "<b>Asimetriyi görmek, doğru refleksleri kurmanın anahtarı.</b> Koruma imkânsız değil, sınırlı ve koşullu; lisans riski her yerde geçerli, çünkü mesele senin dağıttığın kod; ve taahhütler sözleşmeye bağlı, sınırsız değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

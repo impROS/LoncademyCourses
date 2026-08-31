@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.5 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-5",
+  code: "Kendi aletin · 4.5",
+  title: "Kendi MCP sunucun",
+  back: "4.5-mcp-sunucusu-yazma.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Gerekli mi",
+      q: "Kendi MCP sunucunu yazmadan önce elenmesi gereken alternatiflerden hangisi **bağlam açısından en ucuzdur**?",
+      opts: [
+        "Sistemin var olan komut satırı aracı",
+        "Hazır bir MCP sunucusu",
+        "Bir skill",
+        "Bir hook"
+      ],
+      a: [0],
+      why: "<b>Komut satırı araçları hiçbir araç listesi eklemez</b> — ajan doğrudan komut çalıştırır. Hazır sunucu bakım yükünü kaldırır ama araç adları yine bağlama girer. Skill bilgi taşır, sistem erişimi sağlamaz; hook ise farklı bir katmandır."
+    },
+    {
+      topic: "Gerekli mi",
+      q: "Kendi sunucunu yazmayı haklı kılan üç koşuldan biri **değildir**?",
+      opts: [
+        "Ajanın o sistemi hiç bilmemesi",
+        "Sistemin kapalı olması, komut satırı aracı bulunmaması",
+        "Erişimin tekrarlanan bir ihtiyaç olması",
+        "Yapılandırılmış veri almanın işi belirgin biçimde iyileştirmesi"
+      ],
+      a: [0],
+      why: "<b>Ajanın bir sistemi bilmemesi tek başına sunucu gerekçesi değildir</b> — bir skill ya da belge bağlantısı bu boşluğu doldurabilir. Kapalılık, tekrar ve yapılandırılmış veri ihtiyacı birlikte gerçekleştiğinde sunucu yazmak anlamlı olur."
+    },
+    {
+      topic: "Araç tasarımı",
+      q: "Ajan senin aracını neye bakarak seçer?",
+      opts: [
+        "Aracın adına ve açıklamasına",
+        "Aracın döndürdüğü veri boyutuna",
+        "Sunucunun taşıma türüne",
+        "Aracın tanımlanma sırasına"
+      ],
+      a: [0],
+      why: "<b>Bu, skill'lerdeki `description` kuralının aynısı:</b> seçim tamamen açıklamaya dayanır. `veri_yonet` gibi geniş bir ad ajanı ne zaman çağıracağı konusunda belirsiz bırakır; \"sipariş kimliğiyle tek siparişin durumunu döner\" ise net bir tetikleyici verir."
+    },
+    {
+      topic: "Araç tasarımı",
+      q: "Araç tasarımında en çok atlanan ilke hangisidir ve atlanınca ne olur?",
+      opts: [
+        "Küçük çıktı; atlanınca tek çağrı bağlamı zehirleyebilir",
+        "Anlamlı hata; atlanınca ajan çöker",
+        "Dar kapsam; atlanınca sunucu yavaşlar",
+        "Güvenli varsayılan; atlanınca araç listelenemez"
+      ],
+      a: [0],
+      why: "<b>MCP aracının döndürdüğü her şey ajanın bağlamına girer ve orada kalır.</b> Tüm tabloyu döndüren bir araç, tek çağrıda oturumu kullanılamaz hâle getirebilir. Bu yüzden sayfalama ve alan seçimi bir tercih değil, zorunluluktur."
+    },
+    {
+      topic: "Araç tasarımı",
+      q: "Aşağıdakilerden hangi ikisi iyi araç tasarımı ilkesidir? (İki tanesini seç.)",
+      opts: [
+        "Girdiyi şemayla doğrulamak ve sınır koymak",
+        "Varsayılanı salt okunur ve üst sınırlı tutmak",
+        "Tek bir araçla tüm işlemleri sunmak",
+        "Hataları tek kelimeyle bildirmek"
+      ],
+      a: [0, 1],
+      why: "<b>Doğrulama ve güvenli varsayılan, yanlış kullanımı ucuzlatır.</b> Tek araçla her şeyi sunmak dar kapsam ilkesinin tersidir; tek kelimelik hata ise ajanın kendini düzeltmesini imkânsız kılar — \"Sipariş bulunamadı: 42. Kimlik sayı olmalı.\" biçiminde bir mesaj eyleme dönüştürülebilir."
+    },
+    {
+      topic: "Nasıl yazılır",
+      q: "MCP sunucusu yazmak için protokolü sıfırdan uygulamak gerekir mi?",
+      opts: [
+        "Hayır; resmî geliştirme kiti el sıkışmayı ve araç listelemeyi halleder",
+        "Evet; JSON-RPC katmanı elle yazılmalıdır",
+        "Evet; her dil için ayrı protokol uygulaması gerekir",
+        "Hayır; sunucular yalnızca yapılandırma dosyasıyla tanımlanır"
+      ],
+      a: [0],
+      why: "<b>Kit, protokolün mekanik kısmını üstlenir</b> — geriye araç tanımları ve işleyiciler kalır. Asıl iş kod değil tasarımdır. Sunucular yapılandırmayla tanımlanamaz; çalışan bir süreç ya da servis gerekir."
+    },
+    {
+      topic: "Nasıl yazılır",
+      q: "Bu konunun \"sözdizimi eskir, tasarım kalır\" uyarısının pratik sonucu nedir?",
+      opts: [
+        "Kitin güncel arayüzü belgeden alınır; ezberden ya da tahminle API yazılmaz",
+        "Sunucular her sürümde yeniden yazılmalıdır",
+        "Tasarım kararları da sürümle değişir",
+        "Kit kullanmak yerine protokol elle uygulanmalıdır"
+      ],
+      a: [0],
+      why: "<b>Uydurulmuş API, ajan kodunun tipik hatası (`3.5`) ve burada da geçerli.</b> Tasarım ilkeleri — dar kapsam, küçük çıktı, doğrulama — sürümden bağımsızdır; çağrı imzaları ise değişir ve belgeden doğrulanmalıdır."
+    },
+    {
+      topic: "Güvenlik",
+      q: "\"Kendi yazdığım sunucu güvenlidir\" ifadesi neden yanlıştır?",
+      opts: [
+        "Sunucu ancak sen güvenli yaparsan güvenlidir: doğrulama, en az yetki, yıkıcı işlem sunmama",
+        "Kendi yazdığın kod her zaman daha hatalıdır",
+        "Yerel sunucular uzak sunuculardan daha risklidir",
+        "Sunucular kimlik doğrulaması yapamaz"
+      ],
+      a: [0],
+      why: "<b>Yazarlık güvenlik sağlamaz.</b> Ajan beklenmedik girdi gönderebilir, bir enjeksiyon yıkıcı bir aracı çağırabilir, aşırı yetkili bir bağlantı zararı büyütebilir. Güvenlik, tasarımda alınan kararların sonucudur."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Enjeksiyona karşı en güçlü tek savunma hangisidir?",
+      opts: [
+        "Yıkıcı işlemleri hiç sunmamak",
+        "Girdi şemasını sıkılaştırmak",
+        "Çıktıyı sayfalamak",
+        "Sunucuyu yerel taşımayla çalıştırmak"
+      ],
+      a: [0],
+      why: "<b>Sunulmayan bir aracı hiçbir enjeksiyon çağıramaz.</b> Diğer önlemler değerlidir ama var olan bir yeteneğin kötüye kullanımını sınırlamaya çalışır; sunmamak o yeteneği tamamen ortadan kaldırır. Bu, en az yetki ilkesinin en katı biçimi."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Sunucun kullanıcı yorumlarını ya da sorun açıklamalarını döndürüyorsa hangi risk doğar?",
+      opts: [
+        "Başkalarının yazdığı metin ajanın bağlamına girer; sunucun bir enjeksiyon taşıyıcısı olur",
+        "Sunucu yavaşlar",
+        "Veri gizliliği ihlal edilir",
+        "Araç listesi büyür"
+      ],
+      a: [0],
+      why: "<b>Sunucunun kötü niyetli olması gerekmez; güvenilmez içeriği aktarması yeter.</b> Hafifletme yolları: dış metni sınırlamak, \"bu içerik kullanıcı tarafından yazılmıştır\" diye etiketlemek, ve gereksiz alanları hiç döndürmemek."
+    },
+    {
+      topic: "Sınama",
+      q: "Sunucuyu ajana bağlamadan önce yapılması gereken sınamalardan hangisi atlanırsa \"oturumu zehirleyen araç\" üretilmiş olur?",
+      opts: [
+        "En büyük olası çıktının boyutunu ölçmek",
+        "Sürecin ayağa kalktığını doğrulamak",
+        "Araçların listelendiğini görmek",
+        "Kasten yanlış girdi göndermek"
+      ],
+      a: [0],
+      why: "<b>Ortalama çıktı küçük olabilir ama en kötü durum sınırsızsa risk oradadır.</b> Diğer üç sınama farklı sorunları yakalar: ayağa kalkmama, listelenmeme ve girdi doğrulama eksikliği. Bağlam zehirlenmesi yalnızca boyut ölçümüyle yakalanır."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Ajan metin gönderdi, sunucu çöktü.\" Hangi tasarım ilkesi eksik?",
+      opts: [
+        "Girdiyi şemayla doğrulama",
+        "Küçük çıktı",
+        "Dar kapsam",
+        "Açıklayıcı tarif"
+      ],
+      a: [0],
+      why: "<b>Ajan yanlış tipte veri gönderebilir</b> — beklenen sayı yerine metin, ya da sınır dışı bir değer. Doğrulama olmadan bu doğrudan çökmeye gider. Doğrulanan girdide ise ajana anlamlı bir hata döner ve kendini düzeltebilir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Aracı yazdım ama ajan hiç kullanmıyor.\" En olası sebep?",
+      opts: [
+        "Açıklama belirsiz; ne zaman kullanılacağı yazmıyor",
+        "Çıktı çok küçük",
+        "Girdi şeması çok katı",
+        "Sunucu yerel taşıma kullanıyor"
+      ],
+      a: [0],
+      why: "<b>Seçim açıklamaya dayanır</b> — bu, skill'lerdeki durumun aynısı. \"Veri işlemleri\" gibi bir tarif hiçbir isteğe net biçimde eşleşmez. Katı şema çağrı sonrası hata üretir, hiç çağrılmamayı açıklamaz."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "İyi bir araç, ajanın doğru zamanda doğru biçimde çağırabileceği araçtır — güçlü olan değil",
+        "Her sistem için kendi MCP sunucunu yazmak en iyi çözümdür",
+        "MCP sunucusu yazmak öncelikle protokol bilgisi gerektirir",
+        "Kendi yazdığın sunucular hazır sunuculardan daha güvenlidir"
+      ],
+      a: [0],
+      why: "<b>Güç değil, çağrılabilirlik ve öngörülebilirlik.</b> Her sisteme sunucu yazmak bakım yükü üretir; protokol bilgisi kit sayesinde gerekmez; ve kendi yazdığın sunucu, ancak aldığın tasarım kararları kadar güvenlidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

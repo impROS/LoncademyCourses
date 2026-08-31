@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-1",
+  code: "Araç haritası · 5.1",
+  title: "Alan haritası",
+  back: "5.1-arac-haritasi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Kategoriler",
+      q: "\"Ajan\" kategorisini tanımlayan özellik nedir?",
+      opts: [
+        "Dosya okuyan, komut çalıştıran ve kendi adımlarını planlayan bir döngü olması",
+        "Terminalde çalışması",
+        "Açık kaynak olması",
+        "Birden çok model desteklemesi"
+      ],
+      a: [0],
+      why: "<b>Kategoriyi belirleyen şey döngünün kendisi, arayüzü değil.</b> Terminalde çalışan ajanlar da, arayüzü olan ajanlar da vardır. Açık kaynaklılık ve model çeşitliliği kategori değil, özelliklerdir."
+    },
+    {
+      topic: "Kategoriler",
+      q: "Kategori sınırlarının bulanıklaşması ne anlama gelir?",
+      opts: [
+        "Düzenleyiciler ajan kipi ekliyor, ajanlar arayüz kazanıyor; kategori bir etiket değil eğilimdir",
+        "Kategoriler artık kullanılmıyor",
+        "Tüm araçlar aynı hâle geldi",
+        "Yeni bir kategori tanımı yapılması gerekiyor"
+      ],
+      a: [0],
+      why: "<b>Kategori hâlâ yararlı bir düşünme aracı ama katı bir sınıflandırma değil.</b> Bir düzenleyicinin ajan kipi, bu setin öğrettiklerinin büyük kısmını kullanabilir. Bu yüzden karar verirken etikete değil eksenlere bakılır."
+    },
+    {
+      topic: "Eksenler",
+      q: "Değerlendirme eksenleri arasında model gücünün **yer almamasının** sebebi nedir?",
+      opts: [
+        "Modeller birbirine yakınsıyor ve çoğu araç birden çok model sunuyor; farkı harness yapıyor",
+        "Model gücü ölçülemez",
+        "Model gücü yalnızca kurumsal kullanımda önemlidir",
+        "Modeller araç seçiminden bağımsız olarak seçilemez"
+      ],
+      a: [0],
+      why: "<b>Aynı modeli kullanan iki araç çok farklı sonuç verebilir</b> — çünkü fark bağlam yönetiminde, yönlendirme katmanlarında, doğrulama desteğinde. Bu yüzden en çok konuşulan eksen, aslında en az ayırt edici olanıdır."
+    },
+    {
+      topic: "Eksenler",
+      q: "Aşağıdakilerden hangi ikisi değerlendirme ekseni olarak sayılmıştır? (İki tanesini seç.)",
+      opts: [
+        "Yönlendirme katmanları: garanti veren bir mekanizma var mı",
+        "Veri işleme: ne gönderiliyor, saklanıyor mu",
+        "Arayüz güzelliği",
+        "Şirketin büyüklüğü"
+      ],
+      a: [0, 1],
+      why: "<b>Sekiz eksen, bu setin ilk dört bölümünde öğrenilen ihtiyaçlardan türetildi.</b> Garanti veren bir mekanizmanın (hook) varlığı, kesin kuralları uygulayabilmeni belirler; veri işleme ise kurumsal kullanımda belirleyici olabilir. Arayüz ve şirket büyüklüğü ölçülebilir bir yetenek farkı üretmez."
+    },
+    {
+      topic: "Manzara",
+      q: "2026'nın kalıcı eğilimlerinden biri **değildir**?",
+      opts: [
+        "Tamamlama araçlarının ajanların yerini alması",
+        "Terminalin ana savaş alanı hâline gelmesi",
+        "Çoklu ajan mimarilerinin yaygınlaşması",
+        "Talimat dosyası ve araç bağlamada ortak standartların oluşması"
+      ],
+      a: [0],
+      why: "<b>Eğilim tersi yönde:</b> tamamlama araçları ajan kipleri ekliyor. Terminalin öne çıkması derin sistem erişimi ve otomasyon kolaylığından; çoklu ajan bir lider ajanın işi bölmesinden; standartlar ise araçlar arası taşınabilirlik ihtiyacından doğdu."
+    },
+    {
+      topic: "Manzara",
+      q: "Terminalin ajan araçları için öne çıkmasının sebebi nedir?",
+      opts: [
+        "Derin sistem erişimi ve otomasyona kolay bağlanabilmesi",
+        "Daha az kaynak tüketmesi",
+        "Grafik arayüzlerin ajanları desteklememesi",
+        "Terminal araçlarının daha ucuz olması"
+      ],
+      a: [0],
+      why: "<b>Ajanın işi komut çalıştırmak, dosya okumak ve süreçleri sürmek</b> — terminal bunların doğal yeri. Ayrıca etkileşimsiz çalıştırma ve sürekli tümleştirme hattına bağlanma doğrudan mümkün olur. Kaynak ve fiyat belirleyici etkenler değil."
+    },
+    {
+      topic: "Kıyaslamalar",
+      q: "SWE-bench gibi kıyaslamaların **ölçmediği** şeylerden biri hangisidir?",
+      opts: [
+        "Senin kendi kod tabanındaki başarı",
+        "Depo sorunlarını çözme oranı",
+        "Genel havuzdaki görevlerde başarı",
+        "Farklı araçların aynı görevdeki karşılaştırması"
+      ],
+      a: [0],
+      why: "<b>Kıyaslama havuzları genel; senin projen değil.</b> Kendi kod tabanının kalıpları, boyutu, dili ve tuhaflıkları puanı belirlemez. Bu yüzden kıyaslama bir başlangıç sinyalidir, karar değil."
+    },
+    {
+      topic: "Kıyaslamalar",
+      q: "Kıyaslamaların ölçmediği alanlardan hangi ikisi bu sette özellikle vurgulandı? (İki tanesini seç.)",
+      opts: [
+        "Uzun oturumda bağlam yönetimi",
+        "Kural, hook ve alt ajan kurulumunun etkisi",
+        "Modelin parametre sayısı",
+        "Aracın kurulum süresi"
+      ],
+      a: [0, 1],
+      why: "<b>Tek görevlik testler uzun oturum davranışını yakalamaz</b> — oysa sessiz bozulma tam orada başlar. Ve kıyaslamalar kurulumsuz çalışır; oysa bu setin ilk dört bölümü tam olarak kurulumun farkını öğretiyor. Parametre sayısı ve kurulum süresi bu setin ölçütleri değil."
+    },
+    {
+      topic: "Kıyaslamalar",
+      q: "\"Ölçüt hedef hâline gelince ölçüt olmaktan çıkar\" ilkesi araç seçiminde ne anlama gelir?",
+      opts: [
+        "Bir kıyaslamada yüksek puan, o kıyaslamaya benzer işlerde iyi olmak demektir",
+        "Kıyaslamalar tamamen değersizdir",
+        "Kıyaslama puanları manipüle edilmiştir",
+        "Ölçüm yapmak her zaman yanıltıcıdır"
+      ],
+      a: [0],
+      why: "<b>Bir ölçüte göre optimize edilen sistem, o ölçütü iyi karşılar — genel yeteneği aynı oranda artmasa bile.</b> Bu, kıyaslamaların değersiz olduğu anlamına gelmez; kapsamlarının dışına genellenmemesi gerektiği anlamına gelir. Bu setin ölçüsü kendi işinde, kendi kurulumunla ölçmektir."
+    },
+    {
+      topic: "Doğru soru",
+      q: "\"En iyi araç hangisi?\" sorusu neden eksiktir?",
+      opts: [
+        "Tek boyutlu bir sıralama, işin hangi ekseninin önemli olduğunu tarif etmiyor",
+        "Araçlar sürekli değiştiği için cevap verilemez",
+        "Ölçüm yapmak mümkün değildir",
+        "Bütün araçlar aynı yetenektedir"
+      ],
+      a: [0],
+      why: "<b>Doğru soru: \"hangi eksende farklılar ve o eksen benim işimde önemli mi?\"</b> Otomasyon ağırlıklı çalışan biri için etkileşimsiz kip belirleyicidir; kurumsal bir ekip için veri işleme belirleyici olabilir. Tek bir sıralama bu farkları gizler."
+    },
+    {
+      topic: "Doğru soru",
+      q: "Aynı modeli kullanan iki araç neden farklı sonuç verir?",
+      opts: [
+        "Bağlam yönetimi, yönlendirme katmanları ve doğrulama desteği farklıdır",
+        "Modeller aslında farklı sürümlerdir",
+        "Ağ gecikmesi farklıdır",
+        "Aynı model her zaman aynı sonucu verir"
+      ],
+      a: [0],
+      why: "<b>Harness, modelin etrafındaki her şey demektir:</b> bağlamı nasıl doldurduğu, ne zaman sıkıştırdığı, hangi kuralları yüklediği, testi çalıştırıp sonucu okuyup okumadığı. Bu setin ilk dört bölümü tam olarak bu farkın nasıl yönetileceğini öğretiyor."
+    },
+    {
+      topic: "Uygulama",
+      q: "Yeni bir aracı değerlendirirken önce hangi soruyu sormalısın?",
+      opts: [
+        "Benim işimde en önemli iki eksen hangisi ve bu araç orada ne yapıyor",
+        "Kıyaslama sıralamasında kaçıncı",
+        "Kaç kullanıcısı var",
+        "Hangi modeli kullanıyor"
+      ],
+      a: [0],
+      why: "<b>Değerlendirme, kendi ihtiyacını tanımlamakla başlar.</b> Sekiz eksenin hepsi herkes için eşit önemde değildir. Kendi işinde belirleyici iki ekseni bilmeden yapılan karşılaştırma, popülerlik yarışına dönüşür."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Kıyaslamada birinci olan araç bizde iyi çalışmadı.\" En olası açıklama?",
+      opts: [
+        "Kıyaslama havuzu ile sizin kod tabanınız ve kurulumunuz farklı",
+        "Araç yanlış kurulmuş",
+        "Kıyaslama sonuçları uydurma",
+        "Sizin ekibiniz aracı kullanmayı bilmiyor"
+      ],
+      a: [0],
+      why: "<b>Kıyaslama, genel bir havuzda kurulumsuz bir performansı ölçer.</b> Senin projendeki kalıplar, dil, boyut ve kurduğun yönlendirme katmanları sonucu belirgin biçimde değiştirir. Bu bir arıza değil, kıyaslamanın kapsam sınırı."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Araçlar değişir, eksenler kalır; bir aracı adına değil eksenlerde durduğu yere göre değerlendir",
+        "En güçlü modeli kullanan araç seçilmelidir",
+        "Terminal ajanları her zaman düzenleyicilerden üstündür",
+        "Araç seçimi, kurulum ve alışkanlıklardan daha belirleyicidir"
+      ],
+      a: [0],
+      why: "<b>Liste ezberlemek altı ayda eskir; eksenlerle düşünmek eskimez.</b> Model gücü ayırt edici değil; terminal bir eğilim ama üstünlük değil; ve kurulum ile alışkanlıklar çoğu zaman araç seçiminden daha belirleyicidir — bu setin ilk dört bölümü zaten taşınabilir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

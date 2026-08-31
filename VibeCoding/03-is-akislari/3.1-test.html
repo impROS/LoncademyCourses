@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-1",
+  code: "İş akışları · 3.1",
+  title: "Sıfırdan özellik",
+  back: "3.1-sifirdan-ozellik.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Dört aşama",
+      q: "\"Aşamaları atlama, ölçekle\" ilkesinin ölçütü nedir?",
+      opts: [
+        "Değişikliği tek cümleyle tarif edebiliyorsan aşamaları birleştir",
+        "Değişiklik üç dosyadan azsa aşamaları atla",
+        "Ekip iki kişiden azsa plan yapma",
+        "Ajan güçlü bir modelse keşif gereksizdir"
+      ],
+      a: [0],
+      why: "<b>Ölçüt belirsizliktir, büyüklük değil.</b> Tek cümlelik bir değişiklikte keşif ve plan sadece tur harcar. Ama küçük bir değişiklik bile tanımadığın bir kodda belirsizse aşamalar korunur. Dosya sayısı, ekip büyüklüğü ve model gücü bu kararı belirlemez."
+    },
+    {
+      topic: "Dört aşama",
+      q: "Dört aşama hangi sırayla gelir?",
+      opts: [
+        "Keşif → plan → uygulama → kapanış",
+        "Plan → keşif → uygulama → kapanış",
+        "Uygulama → keşif → plan → kapanış",
+        "Keşif → uygulama → plan → kapanış"
+      ],
+      a: [0],
+      why: "<b>Keşif planın girdisidir:</b> mevcut durumu doğrulamadan yapılan plan, yanlış temele kurulur. Uygulama plana karşı yürütülür, kapanış ise inceleme ve commit adımıdır."
+    },
+    {
+      topic: "Keşif aşaması",
+      q: "Keşif isteminde \"kendi cümlelerinle anlat\" demenin amacı nedir?",
+      opts: [
+        "Ajanın anladığı ile gerçekliğin uyuşup uyuşmadığını görebilmek",
+        "Cevabın daha kısa olmasını sağlamak",
+        "Bağlam maliyetini düşürmek",
+        "Ajanı kod yazmaktan alıkoymak"
+      ],
+      a: [0],
+      why: "<b>Anlatı, ajanın zihin modelini görünür kılar.</b> Orada bir hata varsa plana, plandan da koda taşınır — ve orada bulmak çok daha pahalıdır. Kod yazmayı engelleyen şey \"hiçbir şey değiştirme\" ifadesidir, ayrı bir talimat."
+    },
+    {
+      topic: "Keşif aşaması",
+      q: "Keşif aşamasında ajanın anlatısında bir hata görürsen ne yaparsın?",
+      opts: [
+        "Hemen düzeltirsin; aksi hâlde hata plana ve koda taşınır",
+        "Not alıp uygulama aşamasında düzeltirsin",
+        "Yok sayarsın; kod yazarken kendisi fark eder",
+        "Keşfi baştan başlatırsın"
+      ],
+      a: [0],
+      why: "<b>Hata ne kadar geç yakalanırsa o kadar pahalıdır.</b> Anlatı aşamasında bir cümlelik düzeltme yeterken, kod aşamasında aynı hata bir yeniden yazıma mal olur. Kendiliğinden fark etmesini beklemek, tam olarak doğrulama halkasını ajana bırakmamak demektir."
+    },
+    {
+      topic: "Plan aşaması",
+      q: "Bir planda en çok atlanan ve atlanınca en çok soruna yol açan parça hangisidir?",
+      opts: [
+        "Kapsam dışı listesi",
+        "Dokunulacak dosya adları",
+        "Uçtan uca doğrulama adımı",
+        "Yeni dosyaların gerekçesi"
+      ],
+      a: [0],
+      why: "<b>Kapsam dışı yazılmazsa kapsam kaçar</b> — \"bir uç nokta istedim, altı dosya değişti\" belirtisi tam olarak budur. Diğer üç parça da gereklidir ama kapsam dışı, hem en çok atlanan hem yazması en kolay olandır."
+    },
+    {
+      topic: "Plan aşaması",
+      q: "Büyük bir planı sohbette bırakmak yerine dosyaya yazdırmanın iki gerekçesi hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Sohbette kalan sıkıştırmadan sağ çıkmaz, dosyadaki çıkar",
+        "Uygulama temiz bir oturumda başlatılabilir",
+        "Dosyaya yazılan plan ajanı zorlayıcı biçimde bağlar",
+        "Dosyaya yazılan plan bağlam tüketmez"
+      ],
+      a: [0, 1],
+      why: "<b>Dayanıklılık ve temiz başlangıç.</b> Plan diskteyse sıkıştırmadan sonra yeniden yüklenir ve uygulamayı yeni bir pencerede başlatabilirsin. Ama plan hâlâ bağlamdır: zorlayıcı değildir ve okunduğunda bağlam tüketir."
+    },
+    {
+      topic: "Uygulama aşaması",
+      q: "Uygulama isteminde bulunması gereken üç şey hangileridir?",
+      opts: [
+        "Plana referans, doğrulama, kapsam kilidi",
+        "Rol tanımı, ton, biçim",
+        "Model seçimi, çaba düzeyi, izin kipi",
+        "Dosya listesi, satır sayısı, süre sınırı"
+      ],
+      a: [0],
+      why: "<b>Plana referans</b> ne yapılacağını, <b>doğrulama</b> bitişin nasıl ölçüleceğini, <b>kapsam kilidi</b> (\"plandaki dosyaların dışına çıkma\") ise kapsam kaçmasını engeller. Diğer şıklar model ayarları ya da alakasız kalıplar."
+    },
+    {
+      topic: "Uygulama aşaması",
+      q: "Büyük bir özelliği tek istemde bitirmeye çalışmanın ana sakıncası nedir?",
+      opts: [
+        "Büyük bir değişiklik yığınında hatayı bulmak ve geri almak pahalıdır",
+        "Ajan uzun istemleri işleyemez",
+        "Tek istem her zaman daha çok token harcar",
+        "Tek istemde test yazılamaz"
+      ],
+      a: [0],
+      why: "<b>Parçalama, hatayı erken ve ucuz yakalamak içindir.</b> 800 satırlık bir diff'te sorunun nerede olduğunu bulmak, her adımda doğrulanan küçük değişikliklerden çok daha zordur. Token açısından parçalı akış bazen daha pahalıdır — kazanç doğrulanabilirlikte."
+    },
+    {
+      topic: "Durma işaretleri",
+      q: "Aşağıdakilerden hangisi \"devam etme, yeniden başla\" işareti **değildir**?",
+      opts: [
+        "Ajan bir uç durum için ek bir test yazdı",
+        "Aynı konuda ikiden fazla düzeltme yazdın",
+        "Değişiklik plandan belirgin biçimde saptı",
+        "Değişiklik anlamadığın dosyalara yayıldı"
+      ],
+      a: [0],
+      why: "<b>Ek test yazmak beklenen ve istenen bir davranıştır</b>, sorun işareti değil. Diğer üçü bağlamın kirlendiğine, planın yanlış olduğuna ya da kapsamın kaçtığına işaret eder — üçünde de yeniden başlamak devam etmekten ucuzdur."
+    },
+    {
+      topic: "Geri alma",
+      q: "Kontrol noktalarının kritik sınırı nedir?",
+      opts: [
+        "Yalnızca ajanın dosya düzenleme araçlarıyla yaptığı değişiklikleri kapsar",
+        "Yalnızca son beş değişikliği saklar",
+        "Oturum kapandığında silinir",
+        "Yalnızca git deposu içinde çalışır"
+      ],
+      a: [0],
+      why: "<b>Kabuk komutlarıyla ya da dış süreçlerle yapılan değişiklikler kapsanmaz.</b> Bu yüzden kontrol noktaları git'in yerine geçmez; ikisi birlikte kullanılır. Kontrol noktaları konuşmayla birlikte saklanır, oturum kapanınca kaybolmaz."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Bir uç nokta eklemesini istedim, altı dosya değişti.\" En olası teşhis ve düzeltme?",
+      opts: [
+        "Planda kapsam dışı yazılmamış; plana kapsam dışı ekleyip kapsam kilidi koymak",
+        "Model çok büyük seçilmiş; küçültmek",
+        "Bağlam dolmuş; temizlemek",
+        "İzin kipi çok gevşek; Manual kipe geçmek"
+      ],
+      a: [0],
+      why: "<b>Kapsam kaçması, kapsam dışının yazılmamasının doğrudan sonucudur.</b> Model boyutu bu davranışı belirlemez. Bağlam doluluğu farklı belirtiler üretir. İzin kipi dosya yazımını <i>sorar</i> ama kapsamı tanımlamaz — kaç dosyaya dokunulacağını plan belirler."
+    },
+    {
+      topic: "Uygulama",
+      q: "Geniş bir kod tabanında keşif aşamasını ayrı bir bağlama devretmenin sebebi nedir?",
+      opts: [
+        "Okunan onlarca dosya ana oturumun bağlamını doldurur; devredilirse yalnızca özet döner",
+        "Devredilen keşif daha doğru sonuç verir",
+        "Ana oturumda okuma araçları kullanılamaz",
+        "Devretme, izin sorularını ortadan kaldırır"
+      ],
+      a: [0],
+      why: "<b>Keşif bağlam yiyicidir</b> ve okunan her şey ana pencerede kalır. Devretmenin kazancı doğruluk değil, <b>bağlam yalıtımı</b>. Ana oturumda okuma araçları elbette çalışır; izin soruları da devretmeyle ortadan kalkmaz."
+    },
+    {
+      topic: "Uygulama",
+      q: "Uygulama istemine \"kök sebebi düzelt; test geçsin diye testi değiştirme\" eklemenin amacı nedir?",
+      opts: [
+        "Ajanın denetimi geçmek için belirtiyi bastırmasını engellemek",
+        "Test dosyalarını salt okunur yapmak",
+        "Testlerin daha hızlı çalışmasını sağlamak",
+        "Ajanın yeni test yazmasını engellemek"
+      ],
+      a: [0],
+      why: "<b>\"Testler geçsin\" hedefinin en kısa çözümü çoğu zaman testi değiştirmektir.</b> Bu cümle o kolay çıkışı kapatır. Yeni test yazmayı engellemez — tam tersine, doğru davranış için test yazılması istenir; engellenen şey var olanı bozmaktır."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ne yazılacağına karar vermek yazmaktan pahalıdır; ona ayrılmış bir aşama olmalı",
+        "Ajan yeterince iyiyse plan aşamasına gerek kalmaz",
+        "En verimli yol, tüm özelliği tek bir istemde tarif etmektir",
+        "Keşif aşaması yalnızca yeni katılan geliştiriciler içindir"
+      ],
+      a: [0],
+      why: "<b>Karar maliyeti, yazma maliyetinden yüksek — özellikle yazma ucuzladığında.</b> Bu yüzden aşamalar var. Tek istemde tarif etmek büyük ve incelenemez değişiklikler üretir; keşif ise kodu tanıyanlar için de gereklidir, çünkü doğrulanan şey ajanın anlayışıdır, seninki değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

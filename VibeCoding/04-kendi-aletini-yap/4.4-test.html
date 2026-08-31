@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.4 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-4",
+  code: "Kendi aletin · 4.4",
+  title: "MCP ile bağlanmak",
+  back: "4.4-mcp-baglama.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Taşıma türleri",
+      q: "Uzak bir servise bağlanırken önerilen taşıma türü hangisidir?",
+      opts: [
+        "http",
+        "sse",
+        "stdio",
+        "Uzak bağlantı desteklenmez"
+      ],
+      a: [0],
+      why: "<b>`http` uzak bağlantılar için önerilen biçim; `sse` artık önerilmiyor.</b> `stdio` ise senin makinende yerel bir süreç çalıştırmak için kullanılır — uzak bir adrese bağlanamaz. Eski belgelerde `sse` görürsen güncel biçime taşınmış mı diye bak."
+    },
+    {
+      topic: "Taşıma türleri",
+      q: "Yerel bir MCP sunucusu eklerken `--` ayırıcısını unutmanın sonucu nedir?",
+      opts: [
+        "Sunucunun kendi bayrakları ajanın bayrakları sanılır ve komut hata verir",
+        "Sunucu uzak taşımayla eklenir",
+        "Sunucu eklenir ama hiç başlatılamaz",
+        "Sunucu kullanıcı kapsamına eklenir"
+      ],
+      a: [0],
+      why: "<b>`--` işareti, o noktadan sonrasının sunucunun komutu olduğunu söyler.</b> Onsuz, sunucuya ait bir bayrak ajanın kendi seçeneği olarak ayrıştırılmaya çalışılır ve anlaşılmaz bir hata çıkar — kurulumda en sık takılınan yer burasıdır."
+    },
+    {
+      topic: "Kapsam",
+      q: "Bir MCP sunucusunu ekiple paylaşmak istiyorsun. Hangi kapsam kullanılır ve oraya ne yazılmaz?",
+      opts: [
+        "Proje kapsamı; gizli değerler yazılmaz, ortam değişkeni genişletmesi kullanılır",
+        "Kullanıcı kapsamı; belirteçler doğrudan yazılabilir",
+        "Yerel kapsam; hiçbir kısıt yoktur",
+        "Yönetilen kapsam; yalnızca yöneticiler ekleyebilir"
+      ],
+      a: [0],
+      why: "<b>Proje kapsamı depoya işlenir, yani ekibin tamamına ulaşır — ve depoya yazılan her şey depoyu okuyabilen herkese açıktır.</b> Bu yüzden bağlantı bilgileri ortam değişkeni üzerinden geçirilir. Yerel ve kullanıcı kapsamları paylaşılmaz."
+    },
+    {
+      topic: "Kapsam",
+      q: "Öntanımlı kapsam hangisidir?",
+      opts: [
+        "Yerel — yalnızca sen, yalnızca bu projede",
+        "Proje — ekiple paylaşılır",
+        "Kullanıcı — tüm projelerinde",
+        "Yönetilen — kurum geneli"
+      ],
+      a: [0],
+      why: "<b>Öntanımlı olarak eklenen sunucu yalnızca sana ve o projeye özeldir.</b> Bu güvenli bir varsayılandır: bir deneme sunucusu istemeden ekibe ya da tüm projelerine yayılmaz. Paylaşım istiyorsan kapsamı açıkça belirtmen gerekir."
+    },
+    {
+      topic: "Bağlam maliyeti",
+      q: "Oturum başında MCP sunucularından bağlama ne yüklenir?",
+      opts: [
+        "Yalnızca araç adları ve sunucu talimatları; tam tanımlar gerektiğinde çekilir",
+        "Tüm araçların tam JSON tanımları",
+        "Hiçbir şey; her şey ilk araç çağrısında yüklenir",
+        "Yalnızca sunucu adları"
+      ],
+      a: [0],
+      why: "<b>Araç arama davranışı sayesinde ağır tanımlar ertelenir.</b> Ajan bir aracın adını görür, gerekince tam tanımını çeker. Bu, çok sayıda sunucu bağlıyken bağlamı kurtaran mekanizmadır — ama adlar yine de birikir."
+    },
+    {
+      topic: "Bağlam maliyeti",
+      q: "Araç aramaya rağmen çok sayıda sunucu bağlamanın iki maliyeti nedir? (İki tanesini seç.)",
+      opts: [
+        "Araç adları birikir ve bağlamda yer tutar",
+        "Benzer araçlar arasında yanlış seçim olasılığı artar",
+        "Her sunucu ayrı bir bağlam penceresi açar",
+        "Sunucular birbirinin isteklerini engeller"
+      ],
+      a: [0, 1],
+      why: "<b>Maliyet iki yönlü: token ve karar kalitesi.</b> Otuz benzer araç adı arasından doğru olanı seçmek, üç araç arasından seçmekten zordur. Sunucular ayrı bağlam penceresi açmaz (o subagent'ların özelliği) ve birbirini engellemez."
+    },
+    {
+      topic: "MCP mi komut satırı mı",
+      q: "Komut satırı aracı ile MCP sunucusu arasında seçim yaparken hangi ölçüt kullanılır?",
+      opts: [
+        "Komut satırı aracı varsa o tercih edilir; bağlam açısından daha ucuzdur",
+        "MCP her zaman tercih edilir; daha yapılandırılmıştır",
+        "Sunucu sayısına göre karar verilir",
+        "Uzak servislerde komut satırı, yerelde MCP kullanılır"
+      ],
+      a: [0],
+      why: "<b>Komut satırı araçları hiçbir araç listesi eklemez</b> — ajan doğrudan komut çalıştırır ve çıktısını okur. MCP'yi, komut satırı aracı olmayan ya da yetersiz kaldığı yerlerde kullanmak hem bağlamı hem karar kalitesini korur."
+    },
+    {
+      topic: "Kimlik doğrulama",
+      q: "Kısa ömürlü belirteçler ya da kurumsal oturum gerektiren bir sunucu için hangi yöntem uygundur?",
+      opts: [
+        "Her istekte başlıkları üreten bir yardımcı betik",
+        "Belirteci yapılandırma dosyasına yazmak",
+        "Belirteci kural dosyasına yazmak",
+        "Her oturumda elle girmek"
+      ],
+      a: [0],
+      why: "<b>Kısa ömürlü belirteçler sabit bir dosyada tutulamaz — süreleri dolar.</b> Başlık üreten bir yardımcı betik, her istekte güncel belirteci üretir. Yapılandırma ya da kural dosyasına yazmak hem eskir hem sızıntı riski taşır."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Bir MCP sunucusuna bağlanmanın daha az anlaşılan riski hangisidir?",
+      opts: [
+        "Sunucunun döndürdüğü metin ajanın bağlamına girer; içine talimat gizlenebilir",
+        "Sunucu ajanın modelini değiştirebilir",
+        "Sunucu izin kurallarını devre dışı bırakabilir",
+        "Sunucu bağlam penceresini büyütebilir"
+      ],
+      a: [0],
+      why: "<b>Sunucu yalnızca yetki almaz, ajanın gözüne veri de sokar.</b> Dönen içerik bir hata kaydı, bir web sayfası ya da bir sorun kaydı olabilir — hepsi başkaları tarafından yazılmış metin. Sunucunun kötü niyetli olması gerekmez; yalnızca güvenilmez içeriği aktarması yeter."
+    },
+    {
+      topic: "Güvenlik",
+      q: "MCP kullanımında güvenlik önlemlerinden hangisi hem saldırı yüzeyini hem bağlam maliyetini birlikte düşürür?",
+      opts: [
+        "Kullanmadığın sunucuları kapatmak",
+        "Belirteçleri düzenli değiştirmek",
+        "Sunucuyu proje kapsamına almak",
+        "Uzak yerine yerel taşıma kullanmak"
+      ],
+      a: [0],
+      why: "<b>Kapalı bir sunucu ne araç adı ekler ne veri döndürür.</b> Diğer önlemler değerlidir ama tek boyutta çalışır: belirteç yönetimi güvenliği, kapsam paylaşımı, taşıma türü ise bağlantı biçimini ilgilendirir."
+    },
+    {
+      topic: "Güvenlik",
+      q: "Projeye tanımlı sunucuların onay davranışı otomasyonda nasıl değişir?",
+      opts: [
+        "Etkileşimsiz kipte onay sorulmaz; hangi sunucuların yükleneceğini açıkça denetlemek gerekir",
+        "Otomasyonda hiçbir sunucu yüklenmez",
+        "Otomasyonda tüm sunucular reddedilir",
+        "Onay otomatik olarak reddedilir ve iş durur"
+      ],
+      a: [0],
+      why: "<b>Soracak kimse olmadığı için onay adımı atlanır</b> — ve depodaki `.mcp.json` sessizce devreye girer. Bu, hook'lardaki riskin aynısı: klonlanan bir depodaki yapılandırma senin makinende çalışır. Çıplak başlatma ya da açık yapılandırma bunu denetler."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Sekiz sunucu bağladım, oturum ağır başlıyor ve ajan bazen yanlış aracı çağırıyor.\" Doğru hamle?",
+      opts: [
+        "Kullanmadıklarını kapatıp kapsamı daraltmak",
+        "Daha büyük bağlam penceresi olan modele geçmek",
+        "Tüm sunucuları proje kapsamına taşımak",
+        "Araç aramayı devre dışı bırakmak"
+      ],
+      a: [0],
+      why: "<b>Her iki belirti de aynı sebebe bağlı: bağlı araç sayısı.</b> Model büyütmek adların birikmesini önlemez ve yanlış seçim riskini azaltmaz. Araç aramayı kapatmak durumu daha da kötüleştirir — o zaman tam tanımlar da yüklenir."
+    },
+    {
+      topic: "Uygulama",
+      q: "Ekibe bir veritabanı sunucusu tanımlarken en güvenli yaklaşım hangisidir?",
+      opts: [
+        "Salt okunur bir kullanıcıyla, tek veritabanına kapsanmış bağlantı ve ortam değişkeniyle geçirilen kimlik",
+        "Tam yetkili bir kullanıcı, ama izin kuralıyla sınırlanmış",
+        "Bağlantı dizesini `.mcp.json` içine doğrudan yazmak",
+        "Sunucuyu kullanıcı kapsamında tanımlamak"
+      ],
+      a: [0],
+      why: "<b>En az yetki, en etkili tek önlem.</b> Salt okunur ve dar kapsamlı bir bağlantı, hem yanlışlıkla hem enjeksiyon yoluyla verilebilecek zararı yapısal olarak sınırlar. İzin kuralı yardımcıdır ama sunucunun kendi yetkisini daraltmanın yerini tutmaz."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "MCP ajana yeni gözler ve eller verir; bir sunucuya bağlanmak ona güvenmek demektir",
+        "MCP, komut satırı araçlarının yerini alması gereken modern bir standarttır",
+        "MCP bağlantıları bağlam maliyeti oluşturmaz",
+        "MCP yalnızca kurumsal kullanım için tasarlanmıştır"
+      ],
+      a: [0],
+      why: "<b>Yetenek ve güven aynı kararın iki yüzü.</b> MCP komut satırı araçlarının yerini almaz — çoğu durumda onlar daha ucuzdur. Bağlam maliyeti araç aramayla azalır ama sıfır değildir; ve kullanım kurumsalla sınırlı değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

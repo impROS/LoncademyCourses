@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-3",
+  code: "Proje kuralları · 2.3",
+  title: "AGENTS.md ve taşınabilirlik",
+  back: "2.3-agents-md.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "AGENTS.md nedir",
+      q: "Bir depoda özenle yazılmış bir `AGENTS.md` var ama Claude Code kurallara uymuyor. En olası sebep?",
+      opts: [
+        "Claude Code `AGENTS.md` okumaz; `CLAUDE.md` okur",
+        "AGENTS.md dosyası yanlış biçimde yazılmış",
+        "AGENTS.md yalnızca bulut oturumlarında geçerlidir",
+        "Dosyanın git'e işlenmiş olması gerekir"
+      ],
+      a: [0],
+      why: "<b>Standart yaygın ama evrensel değil.</b> Claude Code kendi dosyasını okur; bağlantıyı sen kurmalısın: `CLAUDE.md` içine `@AGENTS.md` yazmak ya da sembolik bağ. Bu bilinmediğinde \"kurallar var ama işlemiyor\" durumu sebebi bulunamayan bir sorun hâline gelir."
+    },
+    {
+      topic: "AGENTS.md nedir",
+      q: "AGENTS.md'nin zorunlu bir bölüm şeması var mıdır?",
+      opts: [
+        "Hayır; düz markdown'dır, başlıklar serbesttir",
+        "Evet; altı zorunlu bölüm tanımlanmıştır",
+        "Evet; YAML ön bilgisi zorunludur",
+        "Yalnızca tek depolarda şema zorunludur"
+      ],
+      a: [0],
+      why: "<b>Belirtim, dosyanın düz markdown olduğunu ve istenen başlıkların kullanılabileceğini söyler.</b> Yaygın başlıklar (derleme komutları, kod biçimi, test yönergeleri) bir alışkanlıktır, kural değil. Ön bilgi zorunluluğu yoktur."
+    },
+    {
+      topic: "Bağlama",
+      q: "`CLAUDE.md` içine `@AGENTS.md` yazmanın, sembolik bağ kurmaya göre avantajı nedir?",
+      opts: [
+        "Ortak kurallar tek yerde kalırken altına araca özgü ek yazılabilir",
+        "Daha az bağlam tüketir",
+        "Windows'ta sembolik bağ hiç çalışmaz",
+        "İçe aktarma, kuralları zorlayıcı hâle getirir"
+      ],
+      a: [0],
+      why: "<b>İçe aktarma, ortak metnin üstüne araca özgü satırlar eklemene izin verir</b> — sembolik bağda dosya birebir aynıdır. Bağlam maliyeti aynıdır (ikisinde de içerik yüklenir). Windows'ta sembolik bağ çalışır ama yönetici yetkisi ya da geliştirici kipi ister."
+    },
+    {
+      topic: "Bağlama",
+      q: "Windows'ta hangi bağlama yöntemi ek yetki gerektirir?",
+      opts: [
+        "Sembolik bağ",
+        "`@AGENTS.md` içe aktarması",
+        "İkisi de",
+        "Hiçbiri"
+      ],
+      a: [0],
+      why: "<b>Windows'ta sembolik bağ oluşturmak yönetici yetkisi ya da geliştirici kipi ister.</b> İçe aktarma düz metin bir satırdır, hiçbir özel yetki gerektirmez — bu yüzden karışık işletim sistemi kullanan ekiplerde daha güvenli seçimdir."
+    },
+    {
+      topic: "İç içe dosyalar",
+      q: "Tek depoda birden çok `AGENTS.md` varsa hangisi geçerlidir?",
+      opts: [
+        "Düzenlenen dosyaya en yakın olan; ama kullanıcının anlık isteği hepsini geçer",
+        "Depo kökündeki, çünkü en kapsayıcıdır",
+        "En son değiştirilmiş olan",
+        "Hepsi eşit ağırlıkla birleştirilir"
+      ],
+      a: [0],
+      why: "<b>Belirtim açıkça \"en yakın kazanır, kullanıcının istemi her şeyi geçer\" der.</b> Bu, alt projelerin kendi kurallarını koyabilmesini sağlar. Kök dosyanın kazanması, alt proje ayrımını anlamsız kılardı."
+    },
+    {
+      topic: "Diğer araçlar",
+      q: "Cursor tarafında güncel kural biçimi hangisidir?",
+      opts: [
+        "`.cursor/rules/` altındaki `.mdc` dosyaları",
+        "Kök dizindeki `.cursorrules`",
+        "`.github/copilot-instructions.md`",
+        "`AGENTS.md` dışında bir biçim desteklenmez"
+      ],
+      a: [0],
+      why: "<b>`.cursorrules` artık önerilmiyor ve ajan kipinde yok sayılıyor.</b> Güncel biçim `.cursor/rules/` altındaki `.mdc` dosyalarıdır. `.github/copilot-instructions.md` Copilot'un dosyasıdır; Cursor ayrıca AGENTS.md'yi de okuyan araçlar arasındadır."
+    },
+    {
+      topic: "Diğer araçlar",
+      q: "Cursor'ın `.mdc` ön bilgisindeki `globs` alanı bu setin hangi kavramının karşılığıdır?",
+      opts: [
+        "Yola göre kapsamlanmış kural dosyaları",
+        "Hook'lar",
+        "Alt ajanlar",
+        "Otomatik bellek"
+      ],
+      a: [0],
+      why: "<b>Aynı fikir, farklı ad:</b> kuralı yalnızca eşleşen dosyalarla çalışılırken yüklemek. Cursor'da `alwaysApply` her zaman yükleme, `description` ise ajanın gerekli görürse çağırması anlamına gelir — üçü birlikte bu setteki kural/skill ayrımının karşılığını verir."
+    },
+    {
+      topic: "Diğer araçlar",
+      q: "Cursor belgelerinde \"her zaman uygulanan kuralları kısa tut\" önerisinin gerekçesi nedir?",
+      opts: [
+        "Her istekte yüklendikleri için sabit bir bağlam maliyeti oluştururlar",
+        "Uzun dosyalar Cursor tarafından kırpılır",
+        "Uzun kurallar sözdizimi hatasına yol açar",
+        "Kısa kurallar daha hızlı ayrıştırılır"
+      ],
+      a: [0],
+      why: "<b>Şişme paradoksu araca özgü bir gözlem değil.</b> Her zaman yüklenen her talimat, her isteğe binen bir vergidir; bu hem maliyet hem uyum kaybettirir. Gerekçe kırpılma ya da ayrıştırma hızı değil, bağlam ekonomisidir."
+    },
+    {
+      topic: "Taşıma",
+      q: "Bir aracın yapılandırmasını Claude Code'a **içe aktarmak** ile `@AGENTS.md` bağlantısı kurmak arasındaki temel fark nedir?",
+      opts: [
+        "İçe aktarma tek seferlik bir kopyadır ve zamanla eskir; bağlantı her oturumda kaynağı okur",
+        "İçe aktarma daha az bağlam tüketir",
+        "Bağlantı yalnızca aynı dizindeki dosyalarda çalışır",
+        "İkisi aynı şeydir, yalnızca adları farklıdır"
+      ],
+      a: [0],
+      why: "<b>Kopya ile canlı bağlantı arasındaki klasik fark.</b> İçe aktarma bir kerelik taşıma için uygundur; kaynak dosya sonradan değişirse kopya sessizce eskir. Sürekli senkron isteniyorsa içe aktarma bağlantısı kullanılır."
+    },
+    {
+      topic: "Taşıma",
+      q: "`/init` çalıştırıldığında var olan hangi araç kuralları okunup değerlendirilir? (İki tanesini seç.)",
+      opts: [
+        "Cursor kuralları",
+        "Copilot yönergeleri",
+        "Hook yapılandırmaları",
+        "Kum havuzu ayarları"
+      ],
+      a: [0, 1],
+      why: "<b>`/init` var olan talimat dosyalarını okuyup ilgili kısımları üretilen dosyaya katar</b> — böylece sıfırdan yazmak gerekmez. Hook yapılandırmaları ve kum havuzu ayarları talimat değil, araca özgü otomasyon ve güvenlik yapılandırmasıdır; taşınmazlar."
+    },
+    {
+      topic: "Taşınabilirlik sınırları",
+      q: "Aşağıdakilerden hangisi araçlar arasında **taşınmaz**?",
+      opts: [
+        "Hook'lar, skill'ler ve alt ajan tanımları",
+        "Derleme ve test komutları",
+        "Kod biçimi kuralları",
+        "Mimari kararlar"
+      ],
+      a: [0],
+      why: "<b>Gerçekçi beklenti: talimat taşınır, otomasyon taşınmaz.</b> Komutlar, biçim kuralları ve mimari kararlar düz metindir ve her araç okuyabilir. Hook, skill ve alt ajan ise her aracın kendi mekanizmasıdır; ortak bir biçimleri yoktur."
+    },
+    {
+      topic: "Taşınabilirlik sınırları",
+      q: "Üç farklı araç kullanan bir ekip için en sağlam yapı hangisidir?",
+      opts: [
+        "Ortak kurallar `AGENTS.md`'de, her araç için tek satırlık bir bağlama dosyası, araca özgü ekler onun altında",
+        "Her araç için ayrı ve bağımsız tam kural dosyaları",
+        "Tek bir araca standartlaşmak dışında çözüm yoktur",
+        "Kuralları hiç yazmayıp her oturumda istemde tekrarlamak"
+      ],
+      a: [0],
+      why: "<b>Tek kaynak + ince bağlama katmanı</b>, kuralların ayrışmasını önlerken araca özgü ihtiyaçlara da yer bırakır. Bağımsız dosyalar zamanla birbirinden ayrışır. Tek araca standartlaşmak bir seçenektir ama bu sorunun tek çözümü değildir; istemde tekrarlamak ise sıkıştırmadan sağ çıkmaz."
+    },
+    {
+      topic: "Uygulama",
+      q: "Depoda üç talimat dosyası var ve üçü farklı şeyler söylüyor. İlk yapılması gereken nedir?",
+      opts: [
+        "Tek bir kaynak dosya seçip diğerlerini ona bağlamak",
+        "En uzun olanı silmek",
+        "Üçünü tek dosyada birleştirip hepsini kökte tutmak",
+        "Her araç kullanıcısının kendi dosyasını korumasını sağlamak"
+      ],
+      a: [0],
+      why: "<b>Sorun dosya sayısı değil, gerçek sayısı.</b> Tek kaynak + bağlantı, üçünü de tek bir gerçeğe indirir. Uzunluğa göre silmek keyfîdir; herkesin kendi dosyasını koruması ise mevcut ayrışmayı kalıcı hâle getirir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Kuralın kaynağı tek olmalı; araca özgü olan yalnızca ona bağlanma biçimidir",
+        "Her araç için ayrı ve özenli kural dosyaları yazılmalıdır",
+        "AGENTS.md tüm araç farklılıklarını ortadan kaldırır",
+        "Talimat dosyaları yerine hook kullanmak her zaman daha iyidir"
+      ],
+      a: [0],
+      why: "<b>Tek kaynak ilkesi, ayrışmayı önleyen şey.</b> Ayrı dosyalar zamanla çelişir; AGENTS.md farklılıkları kaldırmaz, yalnızca <i>ortak metni</i> paylaştırır; hook ise farklı bir problemi (kesinlik) çözer, talimatın yerini tutmaz."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

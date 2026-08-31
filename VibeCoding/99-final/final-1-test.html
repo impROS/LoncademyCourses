@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genel Deneme 1 — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "final-1",
+  code: "Genel Deneme 1",
+  title: "VibeCoding — 57 soru, 70 dakika",
+  back: "son-tekrar.md",
+  backLabel: "Son tekrara dön",
+  mode: "exam",
+  pass: 80,
+  time: 4200,
+  passNote: "bu setin eşiği %80",
+  notes: [
+    "Sorular konu testlerinin kopyası değildir: aynı bilgi, farklı senaryo.",
+    "Takıldığın soruyu geç; soru başına ortalama 73 saniyen var.",
+    "Zayıf alan raporundaki konu kodlarına dönerek çalış."
+  ],
+  questions: [
+    {
+      topic: "00.1 Genel bakış",
+      q: "Bir ekip, ajanla üretilen kodu kimse okumadan üretime alıyor ve buna \"vibe coding\" diyor. Terimin tarihçesi açısından en doğru değerlendirme hangisidir?",
+      opts: [
+        "Terim atılacak projeler için tarif edilmişti; yaşayacak yazılım için önerilen şey yüksek denetimli ajan mühendisliğidir",
+        "Terim tam olarak bu kullanımı tarif ediyordu, ekip doğru uyguluyor",
+        "Terim yalnızca belirli dillerde geçerlidir",
+        "Terim hiçbir zaman gerçek bir çalışma biçimini tarif etmedi"
+      ],
+      a: [0],
+      why: "<b>Terimi ortaya atan kişi bunu hafta sonu projeleri için tarif etti ve sonradan yerine \"ajan mühendisliği\"ni önerdi.</b> Ayrımı özetleyen kelime <i>denetim</i>: aynı araçlar, farklı beklenti."
+    },
+    {
+      topic: "00.3 Maliyet temeli",
+      q: "Bir geliştirici sabah açtığı oturumu öğlene kadar açık bırakıp tek satırlık bir soru soruyor ve kotasından beklenmedik bir düşüş görüyor. İki sebep hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Soru, o güne kadarki tüm konuşma geçmişini taşıdı",
+        "Uzun aradan sonraki ilk istek istem önbelleğini ıskaladı",
+        "Kısa istemler daha pahalı işlenir",
+        "Boştaki oturumlar sabit bir ücret üretir"
+      ],
+      a: [0, 1],
+      why: "<b>Her istek konuşmanın tamamını taşır</b> ve <b>önbelleğin bir ömrü vardır</b>: ara verildiğinde ilk istek tüm geçmişi yeniden işletir. İstem uzunluğu ile işleme maliyeti arasında ters bir ilişki yoktur; sabit bir bekleme ücreti de yoktur."
+    },
+    {
+      topic: "1.1 Ajan döngüsü",
+      q: "Bir oturumda `npm test` çalıştırıldı ve 3000 satırlık çıktı geldi. Bu çıktının sonraki turlara etkisi nedir?",
+      opts: [
+        "Bağlamda kalır ve sonraki her turda yeniden gönderilir",
+        "Yalnızca o turda kullanılır",
+        "Otomatik olarak özetlenir",
+        "Diske yazılır, bağlama girmez"
+      ],
+      a: [0],
+      why: "<b>Bağlam birikir, akmaz.</b> Bir kez giren büyük çıktı, oturumun geri kalanında sabit bir yük olur — maliyeti, hızı ve sessiz bozulmayı birlikte etkiler. Otomatik özetleme yalnızca pencere dolmaya yaklaştığında devreye girer."
+    },
+    {
+      topic: "1.1 Ajan döngüsü",
+      q: "Bir ekip \"göç dosyaları asla değiştirilmesin\" kuralını her yere yazdı ama ajan bir kez değiştirdi. Kesin çözüm hangi katmandadır?",
+      opts: [
+        "Hook — deterministik katman",
+        "Kural dosyası — daha vurgulu yazmak",
+        "Skill — yordamı ayrıntılandırmak",
+        "Alt ajan — ayrı bağlamda denetletmek"
+      ],
+      a: [0],
+      why: "<b>Kural dosyası, skill ve alt ajan talimatları bağlamdır: genelde çalışır, garanti vermez.</b> Deterministik katman hook, izin kuralları ve kum havuzudur. \"Tutması şartsa\" bir kural bunlardan birine yazılır."
+    },
+    {
+      topic: "1.2 İstem yazma",
+      q: "\"auth modülünde bir hata var, düzelt\" isteminde hangi iki parça eksiktir? (İki tanesini seç.)",
+      opts: [
+        "Kısıt — neyin yapılmaması gerektiği",
+        "Kabul ölçütü — bitişin nasıl ölçüleceği",
+        "Hedef — ne olmasının istendiği",
+        "Kaynak — nereye bakılacağı"
+      ],
+      a: [0, 1],
+      why: "<b>Hedef (hata düzeltme) ve kaynak (auth modülü) verilmiş, ama zayıf.</b> Asıl eksikler kısıt ve kabul ölçütü: ajan testi değiştirerek \"düzeltebilir\" ve çalıştırmadan bitmiş sayabilir. Bu iki eksik, en pahalı sonuçları üretir."
+    },
+    {
+      topic: "1.2 İstem yazma",
+      q: "Büyük bir özelliğe başlarken ajanın sana sorular sorup bir belirtim yazmasını istedin. Uygulamaya neden temiz bir oturumda başlanır?",
+      opts: [
+        "Belirtim diskte; tartışma turları bağlamı doldurmuş durumda",
+        "Aynı oturumda belirtim okunamaz",
+        "Yeni oturum daha güçlü model kullanır",
+        "Belirtim yalnızca yeni oturumda geçerli olur"
+      ],
+      a: [0],
+      why: "<b>Bir bağlam kararı.</b> Belirtime ulaşmak için konuşma geçmişine gerek yok — dosyada. Soru-cevap turları ise bağlamın büyük kısmını doldurmuş durumda; temiz pencere + yazılı belirtim daha iyi bir başlangıçtır."
+    },
+    {
+      topic: "1.3 Bağlam",
+      q: "Bir geliştirici \"model bugün kötü, sabah çok daha iyiydi\" diyor. Bu belirtinin en olası açıklaması ve çözümü nedir?",
+      opts: [
+        "Bağlam doldu ve sessiz bozulma başladı; bağlamı temizlemek gerekir",
+        "Sunucu tarafında model değiştirildi; beklemek gerekir",
+        "Kota doldu; plan yükseltmek gerekir",
+        "Kural dosyası bozuldu; yeniden yazmak gerekir"
+      ],
+      a: [0],
+      why: "<b>Bozulma sessizdir: hata mesajı vermez, yalnızca kalite düşer.</b> Model gün ortasında değişmez; kota dolduğunda açık bir uyarı gelir. Belirtiler dolaylıdır — talimat kaçırma, az önce düzeltilen hatanın tekrarı."
+    },
+    {
+      topic: "1.3 Bağlam",
+      q: "Uzun bir oturumda sıkıştırma gerçekleşti. Aşağıdakilerden hangisi **kalıcı olarak** kaybolur?",
+      opts: [
+        "Yalnızca sohbette söylenmiş, hiçbir dosyaya yazılmamış talimatlar",
+        "Ana kural dosyasının içeriği",
+        "Otomatik bellek notları",
+        "Plan modunda yazılan plan"
+      ],
+      a: [0],
+      why: "<b>Diskte olan geri gelir, yalnızca konuşmada olan özete karışır.</b> Kural dosyası, otomatik bellek ve plan diskten yeniden yüklenir. Buradan çıkan kural: kalıcı olması gereken talimatı sohbette bırakma."
+    },
+    {
+      topic: "1.4 İzinler",
+      q: "Bir ekip en yüksek izin kipinde çalışıyor ama ayarlarında bir engelleme kuralı var. Bu kural işler mi ve neden?",
+      opts: [
+        "Evet; engelleme kuralları her kipte geçerlidir",
+        "Hayır; en üst kip tüm kuralları devre dışı bırakır",
+        "Yalnızca hedef dosya varsa işler",
+        "Yalnızca yönetilen ayarlardan geliyorsa işler"
+      ],
+      a: [0],
+      why: "<b>En üst kipte anlamını yitiren şey izin <i>verme</i> kurallarıdır</b> — zaten her şey serbesttir. Engelleme bağımsız bir katmandır ve kip yükseldikçe daha da değerli hâle gelir: serbestliğin içindeki tek sabit sınırdır."
+    },
+    {
+      topic: "1.4 Plan modu",
+      q: "\"Plan modundayız, güvendeyiz\" diyen bir ekibe verilecek en doğru düzeltme nedir?",
+      opts: [
+        "Plan modu belirsizliği azaltır; güvenlik izin kipi ve kum havuzundan gelir",
+        "Plan modu yeterlidir, ek önlem gerekmez",
+        "Plan modu yalnızca büyük değişikliklerde güvenlidir",
+        "Plan modu izin kurallarını da devreye alır"
+      ],
+      a: [0],
+      why: "<b>İki farklı soru: ne yapılacak, ne yapılabilir.</b> Plan modu birincisiyle ilgilenir ve değişiklikleri erteler — gerçek bir kısıt ama yetki modeli değil. Plan modundayken de okuma yapılır ve dış içerik görülebilir."
+    },
+    {
+      topic: "1.5 Doğrulama",
+      q: "Bir ekip, ajan tur bitirmeden testlerin geçmesini **garanti** altına almak istiyor. Hangi çözüm bunu sağlar?",
+      opts: [
+        "Durdurma olayında çalışan bir hook",
+        "Kural dosyasına \"her zaman test çalıştır\" yazmak",
+        "İsteme \"testleri unutma\" eklemek",
+        "Bir skill oluşturup çağırmak"
+      ],
+      a: [0],
+      why: "<b>Yalnızca hook deterministiktir: olayında çalışır ve turu engelleyebilir.</b> Diğer üçü bağlamdır. ⚠️ Kurarken dikkat: geçmesi imkânsız bir betik ajanı kilitler — önce elle çalıştırıp geçtiğini doğrula."
+    },
+    {
+      topic: "1.5 Doğrulama",
+      q: "Bir inceleyici alt ajan 18 bulgu bildirdi, üçü gerçek sorun. En doğru çıkarım nedir?",
+      opts: [
+        "Bulgu ölçütü fazla geniş verilmiş; ölçütü daraltıp yeniden incelet",
+        "Kod kötü yazılmış",
+        "İnceleyici modeli yetersiz",
+        "Bulguların hepsi uygulanmalı"
+      ],
+      a: [0],
+      why: "<b>Bulgu sayısı kalite değil, ölçüt genişliği göstergesidir.</b> \"Bulabildiğin her sorunu listele\" isteğinin karşılığıdır bu liste. \"Yalnızca doğruluğu etkileyen eksikleri raporla\" dendiğinde aynı kod için gelen liste çok daha kısa olur."
+    },
+    {
+      topic: "2.1 Kural dosyası",
+      q: "Bir kural dosyasında \"Değişkenlere anlamlı isimler ver\" satırı var ve ajan bu kural olmadan da doğru davranıyor. Bu satır için doğru karar nedir?",
+      opts: [
+        "Silinmeli; \"silsem hata yapar mı\" testini geçemiyor",
+        "Korunmalı; doğru bir kural",
+        "Vurgulanmalı; daha etkili olur",
+        "Bir skill'e taşınmalı"
+      ],
+      a: [0],
+      why: "<b>Ölçüt doğruluk değil, davranış değişikliği.</b> Ajan o satır olmadan da doğru davranıyorsa satır yalnızca bağlam harcar — ve dosyayı uzatarak diğer kuralların kaybolmasına katkıda bulunur."
+    },
+    {
+      topic: "2.1 Kural dosyası",
+      q: "Ekip, uzun kural dosyasını beş parçaya bölüp `.claude/rules/` altına taşıdı ama hiçbirine yol kapsamı yazmadı. Bağlam maliyeti ne olur?",
+      opts: [
+        "Aynı kalır; yalnızca bakım düzeni kazanılır",
+        "Beşte birine iner",
+        "İkiye katlanır",
+        "Kurallar artık yüklenmez"
+      ],
+      a: [0],
+      why: "<b>Tasarrufu bölme değil kapsamlama sağlar.</b> Yol kapsamı olmayan kural dosyası her oturumda tamamıyla yüklenir. Bölmek yine değerlidir: konular ayrılır, çakışmalar görünür hâle gelir, ekip ayrı ayrı bakım yapar."
+    },
+    {
+      topic: "2.2 Kapsanmış kurallar",
+      q: "Uzun bir oturumda sıkıştırmadan sonra, yola kapsanmış bir kuralın uygulanmayı bıraktığı fark edildi. Kritikse doğru çözüm nedir?",
+      opts: [
+        "Yol kapsamını kaldırmak ya da kuralı ana kural dosyasına taşımak",
+        "Daha fazla desen eklemek",
+        "Kuralı bir skill'e dönüştürmek",
+        "Sıkıştırmayı devre dışı bırakmak"
+      ],
+      a: [0],
+      why: "<b>Kapsanmış kurallar mesaj geçmişine girer ve sıkıştırmada özetlenir; geri gelmeleri için tetikleyici dosyanın tekrar okunması gerekir.</b> Kapsamsız kurallar ve ana kural dosyası ise diskten koşulsuz yeniden yüklenir. Bedeli: her oturumda bağlam."
+    },
+    {
+      topic: "2.3 AGENTS.md",
+      q: "Bir depoda özenli bir `AGENTS.md` var ama Claude Code kullanan geliştiriciler kurallara uyulmadığından şikâyetçi. Windows kullanan bir ekip için önerilecek çözüm hangisidir?",
+      opts: [
+        "`CLAUDE.md` içine `@AGENTS.md` içe aktarması eklemek",
+        "`AGENTS.md`'yi `CLAUDE.md`'ye sembolik bağla bağlamak",
+        "`AGENTS.md`'yi yeniden adlandırmak",
+        "Kuralları her isteme kopyalamak"
+      ],
+      a: [0],
+      why: "<b>Claude Code `AGENTS.md` okumaz; bağlanması gerekir.</b> İki yöntemden sembolik bağ Windows'ta yönetici yetkisi ya da geliştirici kipi ister — bu yüzden karışık işletim sistemi kullanan ekiplerde içe aktarma daha güvenlidir ve altına araca özgü ek yazmaya da izin verir."
+    },
+    {
+      topic: "2.3 Taşınabilirlik",
+      q: "Üç farklı ajan aracı kullanan bir ekip, kurulumunu taşınabilir yapmak istiyor. Hangi katman **hiç taşınmaz**?",
+      opts: [
+        "Hook'lar, alt ajan tanımları ve skill çağırma biçimleri",
+        "Derleme ve test komutları",
+        "Kod biçimi kuralları",
+        "Mimari kararlar"
+      ],
+      a: [0],
+      why: "<b>Gerçekçi beklenti: talimat taşınır, otomasyon taşınmaz.</b> Komutlar ve kurallar düz metindir; her araç okuyabilir. Hook, alt ajan ve çağırma biçimleri ise her aracın kendi mekanizmasıdır ve ortak bir biçimleri yoktur."
+    },
+    {
+      topic: "2.4 Bellek",
+      q: "Bir geliştiricide ajan sürekli testleri atlıyor, takım arkadaşında atlamıyor. İkisinin de deposu ve ayarları aynı. En olası sebep nedir?",
+      opts: [
+        "Otomatik bellekte, tek seferlik bir isteğin kalıcı tercihe dönüşmesi",
+        "Farklı model sürümleri",
+        "Farklı işletim sistemleri",
+        "Ağ gecikmesi farkı"
+      ],
+      a: [0],
+      why: "<b>Bellek makineye özgüdür ve depoya işlenmez.</b> \"Bu sefer testleri atla\" gibi bir istek genel tercih olarak kaydedilmiş olabilir. Kontrol sırası: depo kuralları → yerel ayar → bellek; üçüncüsü neredeyse her zaman farklıdır."
+    },
+    {
+      topic: "3.1 Özellik akışı",
+      q: "\"Bir uç nokta eklemesini istedim, sekiz dosya değişti.\" Planda eksik olan neydi?",
+      opts: [
+        "Kapsam dışı listesi",
+        "Doğrulama adımı",
+        "Uç durum listesi",
+        "Dosya adlarının yazılması"
+      ],
+      a: [0],
+      why: "<b>Kapsam kaçması, kapsam dışının yazılmamasının doğrudan sonucudur.</b> Planın en çok atlanan ve yazması en kolay parçası budur. Ayrıca uygulama isteminde bir kapsam kilidi bulunmalıdır: \"plandaki dosyaların dışına çıkma\"."
+    },
+    {
+      topic: "3.1 Özellik akışı",
+      q: "Keşif aşamasında ajanın anlattığı mevcut durumda bir hata fark ettin. Ne yaparsın ve neden?",
+      opts: [
+        "Hemen düzeltirsin; aksi hâlde hata plana ve oradan koda taşınır",
+        "Not alıp uygulama aşamasında düzeltirsin",
+        "Yok sayarsın; kod yazarken kendisi fark eder",
+        "Keşfi baştan başlatırsın"
+      ],
+      a: [0],
+      why: "<b>Hatanın yakalandığı aşama, düzeltme maliyetini belirler:</b> anlatıda bir cümle, planda bir madde, kodda bir yeniden yazım, üretimde bir olay müdahalesi. Keşif aşamasının çıktısının metin olmasının sebebi de bu — metin okumak ucuzdur."
+    },
+    {
+      topic: "3.2 Var olan kod",
+      q: "Ajan bir kod bloğundaki tuhaf görünen bir koşulu \"gereksiz\" diye kaldırdı ve eski bir hata geri geldi. Bunu önleyecek istem eklentisi hangisidir?",
+      opts: [
+        "\"Önce her satırın git geçmişine bakıp neden eklendiğini anla; bir hata düzeltmesiyse dokunma\"",
+        "\"Daha dikkatli ol\"",
+        "\"Daha az satır değiştir\"",
+        "\"Kod kalitesini artır\""
+      ],
+      a: [0],
+      why: "<b>Gariplik çoğu zaman bir düzeltmenin izidir ve gerekçesi kodda değil geçmişte yazılıdır.</b> \"Dikkatli ol\" ölçülemez; \"az satır değiştir\" bazen bastırmayı teşvik eder; \"kalite artır\" ise tam tersine temizlik davranışını davet eder."
+    },
+    {
+      topic: "3.2 Var olan kod",
+      q: "Ajanın yazdığı kod projenin geri kalanına hiç benzemiyor. En etkili düzeltme nedir?",
+      opts: [
+        "Kalıbı uygulayan somut bir dosyayı örnek göstermek",
+        "Kural dosyasında kalıbı ayrıntılı tarif etmek",
+        "Daha yüksek çaba düzeyi seçmek",
+        "Biçimlendirici çalıştırmak"
+      ],
+      a: [0],
+      why: "<b>Model, gördüğü örneğe benzetmekte soyut kurala uymaktan çok daha iyidir.</b> Bir örnek dosya adı yirmi satırlık tarifin yerini tutar — ve kural dosyanı da şişirmez. Biçimlendirici yalnızca yüzeysel biçimi düzeltir, yapı ve adlandırma kalıbını değil."
+    },
+    {
+      topic: "3.3 Hata ayıklama",
+      q: "Bir hata düzeltmesinden sonra ekip \"artık hiç hata mesajı almıyoruz\" diyor. Bu neyin işaretidir?",
+      opts: [
+        "Geniş bir yakalama bloğu eklenmiş; gerçek hatalar da yutuluyor",
+        "Düzeltme başarılı olmuş",
+        "Günlük düzeyi yanlış ayarlanmış",
+        "Testler devre dışı bırakılmış"
+      ],
+      a: [0],
+      why: "<b>\"Artık hiç hata yok\" neredeyse her zaman bir bastırma işaretidir.</b> Geniş yakalama, hedeflenen hatayla birlikte ilgisiz ve gerçekten önemli hataları da yutar. Sistem sağlıklı göründüğü için sorun aylarca fark edilmeyebilir."
+    },
+    {
+      topic: "3.3 Hata ayıklama",
+      q: "Ajan bir hata için testi ve düzeltmeyi birlikte yazdı; test ilk çalıştırmada geçti. Hangi bilgi eksik kaldı?",
+      opts: [
+        "Testin gerçekten o hatayı yakalayıp yakalamadığı",
+        "Testin çalışma süresi",
+        "Kod kapsamı oranı",
+        "Değişikliğin satır sayısı"
+      ],
+      a: [0],
+      why: "<b>Bir testin bir şey ölçtüğünü ancak başarısız olabildiğini görerek bilirsin.</b> Düzeltilmiş kodda yazılan test elbette geçer; bozuk kodda kırılıp kırılmayacağı sınanmamıştır. Sırayı dayatan ifade: \"önce başarısız testi yaz ve kırmızı olduğunu göster\"."
+    },
+    {
+      topic: "3.3 Hata ayıklama",
+      q: "Bir hatada iki farklı teori denendi, ikisi de tutmadı. Üçüncü teoriye geçmeden önce doğru hamle nedir?",
+      opts: [
+        "Bağlamı temizleyip iki denemeyi birer satırda özetleyerek yeniden başlamak",
+        "Aynı oturumda üçüncü teoriyi denemek",
+        "Daha büyük modele geçip aynı oturumda devam etmek",
+        "Sorunu tamamen bırakmak"
+      ],
+      a: [0],
+      why: "<b>İki başarısız teoriden sonra oturum, işe yaramadığı kanıtlanmış yollarla doludur</b> ve bunlar her turda tekrar gönderilir. Değerli olan bilgi, o bilgiyi üreten konuşma değil: \"gövde boş değil, geliyor\" gibi tek satırlık elemeler sayfalarca turun yerini tutar."
+    },
+    {
+      topic: "3.4 Test",
+      q: "Ajana \"test kapsamını %85'e çıkar\" hedefi vermenin riski nedir?",
+      opts: [
+        "Hedefe en kısa yol çok sayıda zayıf iddialı test yazmaktır",
+        "Kapsam araçları ajan tarafından çalıştırılamaz",
+        "Kapsam ölçümü çok yavaştır",
+        "Kapsam hedefi izin sistemini tetikler"
+      ],
+      a: [0],
+      why: "<b>Ölçülen şey hedef hâline gelince, ölçüyü en ucuza yükselten yol seçilir.</b> Kapsam yalnızca hangi satırların çalıştırıldığını ölçer, doğru çalıştığını değil. Daha iyi hedef: \"şu davranış listesindeki her madde için bir test\"."
+    },
+    {
+      topic: "3.4 Test",
+      q: "Testsiz bir modülde değişiklik yapılacak. Dondurma aşamasında ajanın hangi davranışına izin verilmemelidir?",
+      opts: [
+        "Yanlış bulduğu mevcut davranışı düzeltmesine",
+        "Birden çok test dosyası oluşturmasına",
+        "Test adlarını Türkçe yazmasına",
+        "Var olan testleri okumasına"
+      ],
+      a: [0],
+      why: "<b>Bugünkü davranış hatalı bile olsa önce yazılı hâle gelmeli.</b> Dondurma sırasında \"düzeltme\" yapılırsa ortaya çıkan testler kodun bugün yaptığını değil, ajanın doğru sandığını yansıtır — ve güvenlik ağı sahte olur."
+    },
+    {
+      topic: "3.5 İnceleme",
+      q: "Ajan diff'inde \"sessizce değişen davranış\" kontrolünde neye bakılır?",
+      opts: [
+        "İstenmeyen bir varsayılan, sıralama ya da dönüş tipi değişikliğine",
+        "Yeni eklenen yorum satırlarına",
+        "Değişen dosya sayısına",
+        "Kod satırlarının uzunluğuna"
+      ],
+      a: [0],
+      why: "<b>En zor yakalanan değişiklikler hata üretmeyen ama davranışı kaydıranlardır.</b> Bir varsayılanın değişmesi, listenin sıralamasının farklılaşması ya da bir fonksiyonun artık boş nesne döndürmesi — hepsi derlenir, testler bile geçebilir, ama sistem farklı davranır."
+    },
+    {
+      topic: "3.5 İnceleme",
+      q: "Bir ekip, kodu yazan oturuma \"bir de sen incele\" diyor. Bu yaklaşımın sorunu nedir?",
+      opts: [
+        "Yazan bağlam kendi gerekçesini bilir; taze bir bağlam gerekir",
+        "Aynı oturumda inceleme aracı kullanılamaz",
+        "İnceleme farklı bir model gerektirir",
+        "Aynı oturumda bağlam dolu olduğu için diff okunamaz"
+      ],
+      a: [0],
+      why: "<b>Fark teknik değil bilgiseldir.</b> Yazan bağlam \"bu satırı şu yüzden böyle yazdım\"ı biliyor ve o gerekçe kusuru gizleyen şeyin ta kendisi olabilir. Belirleyici olan farklı model değil, farklı <b>bağlam</b>."
+    },
+    {
+      topic: "3.6 Git",
+      q: "Ajanın attığı commit'lerde sürekli tümleştirme iş akışları çalışmıyor. Bu durumun en doğru açıklaması nedir?",
+      opts: [
+        "İş akışlarının kendi kendini sonsuz tetiklemesini önleyen bilinçli bir davranıştır",
+        "Commit imzaları geçersizdir",
+        "Ajan commit'leri ayrı bir dala gider",
+        "Test altyapısı ajan commit'lerini desteklemez"
+      ],
+      a: [0],
+      why: "<b>Otomasyonun kendi ürettiği olayla yeniden tetiklenmesi klasik bir döngü riskidir</b> ve öntanımlı davranış bunu keser. Bunu bilmek pratik bir tanı sağlar: bu belirtiyle karşılaşınca iş akışı dosyasında saatlerce hata aramaya gerek yoktur."
+    },
+    {
+      topic: "3.6 Pull request",
+      q: "Pull request açıklamasında diff'ten **okunamayan** parça hangisidir?",
+      opts: [
+        "Değişikliğin neden yapıldığı",
+        "Hangi dosyalara dokunulduğu",
+        "Kaç satır eklendiği",
+        "Hangi fonksiyonların değiştiği"
+      ],
+      a: [0],
+      why: "<b>Diff \"ne\" sorusunu zaten cevaplar; cevaplayamadığı soru \"neden\".</b> Gerekçe yalnızca değişikliği yapanın bilgisindedir ve yazılmazsa kalıcı olarak kaybolur. Bu yüzden açıklamanın işi, diff'te olmayanı söylemektir."
+    },
+    {
+      topic: "3.7 Toplu dönüşüm",
+      q: "300 dosyada bir fonksiyon adını değiştirmek gerekiyor. Doğru araç seçimi ve gerekçesi nedir?",
+      opts: [
+        "Deterministik bir kod dönüştürücü; ajan daha pahalı ve sessiz sapma riski taşır",
+        "Ajanla kabuk döngüsü; en esnek yöntem",
+        "Ajanla tek oturum; en hızlı yöntem",
+        "Ajanla paralel yayma; en ölçeklenebilir yöntem"
+      ],
+      a: [0],
+      why: "<b>Ayırt edici soru: bu değişikliği düzenli ifadeyle güvenle yapabilir miyim?</b> Evetse ajan yanlış araçtır. Risk, ortalama başarıda değil dağılımın kuyruğunda: 300 dosyanın 297'sini doğru yapıp 3'ünde \"iyileştirme\" yapabilir ve bunu fark etmezsin."
+    },
+    {
+      topic: "3.7 Toplu dönüşüm",
+      q: "Toplu bir dönüşümde testler geçti ve derleme başarılı. Yine de yapılması gereken doğrulama hangisidir?",
+      opts: [
+        "Rastgele seçilen birkaç dosyayı elle okumak",
+        "Testleri ikinci kez çalıştırmak",
+        "Kapsam raporu üretmek",
+        "Diff'i tek commit'te toplamak"
+      ],
+      a: [0],
+      why: "<b>Otomatik denetimler \"bozulmadı\" der, \"doğru yapıldı\" demez.</b> Dönüşümün istenen biçimde uygulanıp uygulanmadığını yalnızca örneklem incelemesi gösterir — ve bu katman en çok atlanandır."
+    },
+    {
+      topic: "4.1 Skill",
+      q: "Bir ekip dağıtım yapan bir skill yazdı. Hangi ön bilgi alanı kullanılmalı ve ek faydası nedir?",
+      opts: [
+        "Kendiliğinden çağrılmayı kapatan alan; ayrıca açıklaması bağlama girmez",
+        "Ayrı bağlamda çalıştıran alan; ayrıca daha hızlı olur",
+        "Araç izni veren alan; ayrıca izin sorusu çıkmaz",
+        "Model belirleyen alan; ayrıca maliyet düşer"
+      ],
+      a: [0],
+      why: "<b>Yan etkili işlerde tetikleyici insan olmalıdır.</b> Bu alan hem kendiliğinden çağrılmayı engeller hem bir bonus verir: skill'in açıklaması artık her oturumda yüklenmez, yani bağlam açısından bedava olur."
+    },
+    {
+      topic: "4.1 Skill",
+      q: "Uzun bir skill'in sonundaki kritik bir kural, uzun oturumlarda uygulanmıyor. Sebep ve çözüm nedir?",
+      opts: [
+        "Sıkıştırmada gövde kırpılıyor ve başı korunuyor; kritik kuralları üste taşı",
+        "Skill dosyası çok uzun ve hiç yüklenmiyor; böl",
+        "Ajan dosyanın ilk yarısını okuyor; kısalt",
+        "Markdown ayrıştırıcısı sondan başlıyor; sırayı değiştir"
+      ],
+      a: [0],
+      why: "<b>İlk çağrıda sorun yoktur — dosya bütün olarak okunur.</b> Sorun sıkıştırma sonrasında ortaya çıkar: yeniden eklenen gövdeler bir üst sınıra göre sondan kesilir. Bu yüzden skill'ler tersten yazılır: önce kurallar, sonra ayrıntı."
+    },
+    {
+      topic: "4.2 Subagent",
+      q: "Bir geliştirici, ajanla birlikte adım adım düşünerek ilerlediği bir işi alt ajana devretti ve sonuçtan memnun kalmadı. Neden?",
+      opts: [
+        "Ara sonuçlar tam olarak ihtiyacı olan şeydi; devretmek onları görünmez kıldı",
+        "Alt ajanlar bu tür işlerde daha yavaştır",
+        "Alt ajanlar kural dosyalarını yüklemez",
+        "Alt ajanlar yalnızca okuma yapabilir"
+      ],
+      a: [0],
+      why: "<b>Ayırt edici soru: ara sonuçları bir daha kullanacak mıyım?</b> Cevap evetse devretme — yardımcının gördükleri sana gelmez, yalnızca özet gelir. Devretmenin bedeli tam olarak budur."
+    },
+    {
+      topic: "4.2 Subagent",
+      q: "Bir inceleme yardımcısının tanımında araç listesini daraltmanın somut faydası nedir?",
+      opts: [
+        "Yazma aracı olmayınca yanlışlıkla dosya değiştiremez — talimatla değil yapısal olarak",
+        "Daha hızlı çalışır",
+        "Daha az token harcar",
+        "Daha iyi özet üretir"
+      ],
+      a: [0],
+      why: "<b>En az yetki ilkesinin en kolay uygulandığı yer.</b> \"İncelerken düzeltmeye kalkma\" bir ricadır; yazma aracının olmaması bir imkânsızlıktır. Aynı mantık kendi MCP sunucunda da geçerli: sunulmayan yetenek kötüye kullanılamaz."
+    },
+    {
+      topic: "4.3 Hook",
+      q: "Bir hook yazıldı, hata mesajı standart hataya yazılıyor ama eylem engellenmiyor. En olası sebep nedir?",
+      opts: [
+        "Betik sıfırdan farklı ama 2 olmayan bir kodla çıkıyor",
+        "Hook yanlış olaya bağlanmış",
+        "Hook dosyası çalıştırılabilir değil",
+        "Mesaj standart çıktıya yazılmalıydı"
+      ],
+      a: [0],
+      why: "<b>Sert engellemenin çıkış kodu 2'dir.</b> `0` başarılı sayılır ve standart çıktıdaki JSON okunur; diğer kodlar engellemeyen hata olarak değerlendirilir. Mesaj gereklidir ama belirleyici olan çıkış kodudur."
+    },
+    {
+      topic: "4.3 Hook",
+      q: "Bir ekip, ajanın her test çalıştırmasında yalnızca başarısızlıkları görmesini kalıcı olarak sağlamak istiyor. Hangi mekanizma kullanılır?",
+      opts: [
+        "Araç kullanımından önce çalışıp komut girdisini yeniden yazan bir hook",
+        "Kural dosyasına \"testleri filtreleyerek çalıştır\" yazmak",
+        "Her isteme filtreleme talimatı eklemek",
+        "Test komutunu bir skill'e taşımak"
+      ],
+      a: [0],
+      why: "<b>Hook'un girdi değiştirme yeteneği, günlük ve test çıktısı tuzağının kalıcı çözümüdür.</b> Hatırlamaya dayanan çözümler unutulur; yapılandırma unutulmaz — ve proje ayarına konursa ekipte herkeste çalışır."
+    },
+    {
+      topic: "4.4 MCP",
+      q: "Bir ekip sekiz MCP sunucusu bağladı ve ajan bazen yanlış aracı çağırıyor, oturumlar ağır başlıyor. En doğru hamle nedir?",
+      opts: [
+        "Kullanılmayan sunucuları kapatmak ve kapsamı daraltmak",
+        "Daha geniş bağlam penceresi olan modele geçmek",
+        "Araç aramayı devre dışı bırakmak",
+        "Tüm sunucuları proje kapsamına taşımak"
+      ],
+      a: [0],
+      why: "<b>Her iki belirti de bağlı araç sayısına bağlı.</b> Kapalı bir sunucu ne araç adı ekler ne veri döndürür — yüzeyi ve bağlamı birlikte küçültür. Araç aramayı kapatmak durumu kötüleştirir: o zaman tam tanımlar da yüklenir."
+    },
+    {
+      topic: "4.5 MCP sunucusu",
+      q: "Kendi MCP aracını tasarlarken en çok atlanan ilke hangisidir ve atlanınca ne olur?",
+      opts: [
+        "Küçük çıktı; tek çağrı bağlamı zehirleyebilir",
+        "Anlamlı hata; ajan çöker",
+        "Dar kapsam; sunucu yavaşlar",
+        "Güvenli varsayılan; araç listelenemez"
+      ],
+      a: [0],
+      why: "<b>Aracın döndürdüğü her şey ajanın bağlamına girer ve orada kalır.</b> Tüm tabloyu döndüren bir araç, tek çağrıda oturumu kullanılamaz hâle getirebilir. Bu yüzden bağlamadan önce en büyük olası çıktıyı ölçmek gerekir."
+    },
+    {
+      topic: "4.6 Eklenti",
+      q: "Bir eklenti kurmadan önce sorulması gereken sorulardan hangi ikisi doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Hangi hook'ları var ve ne yapıyorlar?",
+        "Hangi MCP sunucularını bağlıyor?",
+        "Kaç yıldızı var?",
+        "Kaç satır kod içeriyor?"
+      ],
+      a: [0, 1],
+      why: "<b>Eklenti kurmak kod çalıştırmayı kabul etmektir:</b> hook'lar makinende çalışır, sunucular yetkilerinle konuşur. Yıldız sayısı popülerlik ölçer, güvenlik değil; satır sayısı da anlamlı bir sinyal vermez — küçük bir betik de zararlı olabilir."
+    },
+    {
+      topic: "4.7 Otomasyon",
+      q: "Bir CI adımında `claude -p` ile çalıştırılan iş hiçbir şey yapmadan bitiyor. En olası sebep nedir?",
+      opts: [
+        "Başlangıç izin kipi Manual; izin verilmemiş ve soracak kimse yok",
+        "Ağ bağlantısı yok",
+        "Model seçilmemiş",
+        "Çıktı biçimi yanlış"
+      ],
+      a: [0],
+      why: "<b>Etkileşimsiz kipte başlangıç kipi Manual'dir.</b> Yazma ve komut çalıştırma onay ister; onay verecek kimse olmayınca eylem gerçekleşmez. Çözüm: izin kipini ve dar bir araç listesini açıkça vermek."
+    },
+    {
+      topic: "4.7 Otomasyon",
+      q: "\"Bende geçti, CI'da düştü\" durumunda otomasyon açısından en olası sebep nedir?",
+      opts: [
+        "Çıplak başlatılmamış; yereldeki hook, skill ve sunucular sonucu etkilemiş",
+        "CI'da daha küçük model kullanılıyor",
+        "CI'da bağlam penceresi daha dar",
+        "CI'da izin kuralları devre dışı"
+      ],
+      a: [0],
+      why: "<b>Öntanımlı etkileşimsiz çalıştırma, etkileşimli oturumun yüklediği her şeyi yükler:</b> hook, skill, eklenti, sunucu, bellek, kural dosyaları. Senin kurulumun sonucu iyileştirmiş, boş CI ortamı iyileştirmemiş olabilir. Çıplak başlatma her iki tarafı aynı temele oturtur."
+    },
+    {
+      topic: "5.1 Araç haritası",
+      q: "Aynı modeli kullanan iki araç neden farklı sonuç verir?",
+      opts: [
+        "Harness farklıdır: bağlam yönetimi, yönlendirme katmanları, doğrulama desteği",
+        "Modeller aslında farklı sürümlerdir",
+        "Ağ gecikmesi farklıdır",
+        "Aynı model her zaman aynı sonucu verir"
+      ],
+      a: [0],
+      why: "<b>Harness, modelin etrafındaki her şey:</b> bağlamı nasıl doldurduğu, ne zaman sıkıştırdığı, hangi kuralları yüklediği, testi çalıştırıp sonucu okuyup okumadığı. Bu yüzden \"model gücü\" değerlendirme eksenleri arasında yer almaz."
+    },
+    {
+      topic: "5.2 Araç kararı",
+      q: "Bir ekip yeni bir araca geçmeyi düşünüyor. Aşağıdakilerden hangisi **geçerli** bir yenileme sebebidir?",
+      opts: [
+        "İşin niteliği değişti; otomasyon ağırlığı belirgin biçimde arttı",
+        "Yeni bir sürüm duyurusu yayımlandı",
+        "Sosyal ağda beğenilen bir kıyaslama paylaşıldı",
+        "Yeni aracın arayüzü daha modern"
+      ],
+      a: [0],
+      why: "<b>Karar, ihtiyaç değiştiğinde yenilenir.</b> Geçerli sebeplerin ortak yanı, senin işin hakkında bir şey söylemeleri. Duyuru, kıyaslama ve arayüz araç hakkında bilgi verir ama ihtiyacında bir değişikliği göstermez."
+    },
+    {
+      topic: "5.2 Taşınma",
+      q: "Araç değiştirmeye hazırlanan bir ekip, kritik bir test denetiminin yalnızca hook'ta tanımlı olduğunu fark etti. Bunu önleyecek uygulama neydi?",
+      opts: [
+        "Aynı denetimi sürekli tümleştirme hattında da tutmak",
+        "Hook'u kural dosyasına çevirmek",
+        "Hook'u bir skill'e taşımak",
+        "Hook'u kullanıcı ayarlarına almak"
+      ],
+      a: [0],
+      why: "<b>Hook'lar taşınmaz.</b> Yalnızca hook'ta yaşayan bir güvence, göç günü sessizce ortadan kalkar. Hat, araçtan bağımsız bir taban sağlar; hook ise hızlı geri bildirim verir. İkisi birlikte kullanılır."
+    },
+    {
+      topic: "5.3 Kaynaklar",
+      q: "Bir derleme listesinde işine yarayabilecek bir eklenti buldun. Doğru sonraki adım nedir?",
+      opts: [
+        "Birincil kaynağına gidip içeriğini incelemek, sonra kurup kurmamaya karar vermek",
+        "Doğrudan kurup denemek",
+        "Yıldız sayısına bakmak",
+        "Alternatiflerini de kurup karşılaştırmak"
+      ],
+      a: [0],
+      why: "<b>Liste keşfi tamamlar, kararı başlatır.</b> Listede yer almak bir inceleme sürecinden geçildiği anlamına gelmez — 2026'da bu yüzeyde kötü niyetli paket kampanyaları raporlandı. Birden çok alternatifi kurup denemek ise araç biriktirmeye götürür."
+    },
+    {
+      topic: "6.1 Güvenlik",
+      q: "Bir sorun kaydını okuyan ajan, \"bu kayıtta şu işlemi yapmam isteniyor\" diyor. Doğru refleks nedir?",
+      opts: [
+        "Talimatı alıntılatıp uygulatmamak ve \"kim istiyor?\" diye sormak",
+        "İsteği onaylayıp ilerlemek",
+        "Sorun kaydını kapatmak",
+        "Ajanı yeniden başlatmak"
+      ],
+      a: [0],
+      why: "<b>Sorun kaydını herkes yazabilir; o istek senin isteğin değil.</b> \"Alıntıla, uygulama\" davranışı hem enjeksiyonu yakalar hem meşru istekleri kaybetmez — gerçekten yapılması gereken bir şeyse sen onaylarsın."
+    },
+    {
+      topic: "6.1 Güvenlik",
+      q: "Güvenlik katmanlarından hangisi, diğerlerinin hepsi aşılsa bile zararın büyüklüğünü sınırlar?",
+      opts: [
+        "En az yetki",
+        "İzin kuralları",
+        "Kum havuzu",
+        "Denetim izi"
+      ],
+      a: [0],
+      why: "<b>Diğer katmanlar saldırıyı engellemeye çalışır; en az yetki başarılı bir saldırının ne yapabileceğini sınırlar.</b> Salt okunur bir veritabanı kullanıcısıyla çalışan ajan, enjeksiyon başarılı olsa bile veri silemez. Denetim izi ise olay sonrası içindir."
+    },
+    {
+      topic: "6.2 Gizlilik",
+      q: "Bir ekip hassas dosyaların okunmasını engelledi ama gizli değerler yine bağlama girdi. En olası yol nedir?",
+      opts: [
+        "Bir komut çıktısı — örneğin ortam değişkenlerini listeleyen bir komut",
+        "Kural dosyası içeriği",
+        "Git durumu bloğu",
+        "Skill açıklamaları"
+      ],
+      a: [0],
+      why: "<b>Dosya okumayı engellemek yeterli değil</b> — aynı bilgi bir komutun çıktısıyla da gidebilir. Kapsamlı bir gizlilik yapılandırması hem okuma yollarını hem çıktı üreten komutları kapsar."
+    },
+    {
+      topic: "6.3 Lisans",
+      q: "Ajanın ürettiği kodda bir telif satırı bulundu. Ne **yapılmaz**?",
+      opts: [
+        "Satırı silip devam etmek",
+        "Kaynağını araştırmak",
+        "İncelemede işaretlemek",
+        "Kodun kullanılıp kullanılamayacağını değerlendirmek"
+      ],
+      a: [0],
+      why: "<b>İzi silmek riski kaldırmaz, yalnızca gizler</b> — ve sonradan bulunması hâlinde durumu daha kötü hâle getirir. Doğru davranış üç adımlı: araştır, işaretle, kararı bilerek ver."
+    },
+    {
+      topic: "6.4 Maliyet",
+      q: "İlgisiz bir işe geçen bir geliştirici, bağlamı temizlemek yerine sıkıştırma yaptı. İki hata nedir? (İki tanesini seç.)",
+      opts: [
+        "Sıkıştırma, özetlediği konuşmayı okuduğu için pahalı bir istektir",
+        "Özet, yeni işe yaramayacak geçmişi taşımaya devam eder",
+        "Sıkıştırma kural dosyalarını siler",
+        "Sıkıştırma bağlam penceresini kalıcı olarak daraltır"
+      ],
+      a: [0, 1],
+      why: "<b>Pahalı ve işe yaramaz.</b> Temizlemek bedavadır ve geçmişi tamamen siler; sıkıştırma ise bir model çağrısıdır ve elde işe yaramayan bir özet bırakır. Kural dosyaları sıkıştırmadan sonra diskten yeniden yüklenir."
+    },
+    {
+      topic: "6.5 Ekip",
+      q: "Bir ekipte kısıtlar o kadar sıkı ki geliştiriciler aracı kişisel hesaplarıyla kullanmaya başladı. Teşhis nedir?",
+      opts: [
+        "Fazla zorunluluk görünürlüğü kaybettirmiş; zorunluluk kümesi daraltılmalı",
+        "Ekip eğitimsiz; daha çok eğitim gerekiyor",
+        "Araç yanlış seçilmiş; değiştirilmeli",
+        "Maliyet sınırı düşük ayarlanmış"
+      ],
+      a: [0],
+      why: "<b>Gizli kullanım, aşırı kısıtın klasik göstergesidir</b> — ve en kötü sonucu doğurur: ne ölçebilirsin ne denetleyebilirsin. Ölçüte dönmek gerekir: yalnızca bir kişinin yanlış ayarıyla başkasını riske atan şeyler zorunlu kılınır."
+    },
+    {
+      topic: "6.5 Ekip",
+      q: "Bir ekip aracı tüm geliştiricilere açtı, sonra herkesin kendi kurulumunu yazdığını fark etti. Hangi adım atlanmıştı?",
+      opts: [
+        "Açılıştan önce kurulumun ve politikanın yazılması",
+        "Araç kararının verilmesi",
+        "Maliyet sınırının konması",
+        "Eğitim materyalinin hazırlanması"
+      ],
+      a: [0],
+      why: "<b>Yaygınlaştırma sırası: pilot → ölçüm → kurulum → politika → açılış → düzenli gözden geçirme.</b> Kurulum ve politika olmadan yapılan açılış, dağınık kurulumlar üretir — ve bunları sonradan birleştirmek baştan yapmaktan zordur."
+    },
+    {
+      topic: "6.6 Sınırlar",
+      q: "Bir geliştirici \"kod çalışıyor gibi ama ne yaptığını tam anlamıyorum\" diyor. Doğru hamle nedir?",
+      opts: [
+        "Açıklattırıp doğrulamak; anlaşılmıyorsa kullanmamak",
+        "Testler geçtiği için birleştirmek",
+        "Daha büyük modele yeniden yazdırmak",
+        "Not düşüp olduğu gibi bırakmak"
+      ],
+      a: [0],
+      why: "<b>Doğrulama zinciri kopmuş durumda</b> — testler geçse bile neyi ölçtüklerini değerlendiremezsin. Açıklattırmak bir başlangıçtır ama açıklamayı da doğrulaman gerekir. Anlaşılmayan kod, sorumluluğunu üstlenebileceğin kod değildir."
+    },
+    {
+      topic: "6.6 Sınırlar",
+      q: "Beceri körelmesini ölçen tek soru hangisidir ve cevap uzun süredir hayırsa ne anlama gelir?",
+      opts: [
+        "\"Bu kodu ajan olmadan yazabilir miydim?\" — o alanda denetleme yetkinliğini kaybediyorsun",
+        "\"Bu kod kaç satır?\" — kod tabanı büyüyor",
+        "\"Bu kod testlerden geçti mi?\" — kalite düşüyor",
+        "\"Bu kodu ne kadar sürede yazdım?\" — verimlilik artıyor"
+      ],
+      a: [0],
+      why: "<b>Sorunun gücü, üretim becerisi ile denetim becerisini birlikte ölçmesinde.</b> Yazamadığın kodu bir süre sonra değerlendiremez hâle gelirsin — ve setin tüm güvencesi o değerlendirmeye dayanıyor. Diğer sorular işin çıktısını ölçer, senin yetkinliğini değil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

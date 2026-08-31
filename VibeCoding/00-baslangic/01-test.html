@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>00.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "00-1",
+  code: "Başlangıç · 00.1",
+  title: "Vibe coding nedir, ne değildir — ve trickler",
+  back: "01-genel-bakis-ve-trickler.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Terimin hikâyesi",
+      q: "Bir ekip, üretime çıkacak bir ödeme servisini ajanla yazıyor ve kimse üretilen kodu okumuyor. \"Vibe coding yapıyoruz\" diyorlar. Bu tanıma göre asıl sorun ne?",
+      opts: [
+        "Vibe coding tek kullanımlık projeler için tarif edilmişti; yaşayacak yazılım denetim ister",
+        "Vibe coding yalnızca belirli programlama dilleri için geçerlidir",
+        "Ajanlar ödeme sistemleri hakkında kod yazamaz",
+        "Vibe coding terimi hiçbir zaman gerçek bir çalışma biçimini tarif etmedi"
+      ],
+      a: [0],
+      why: "<b>Terim, atılacak hafta sonu projeleri için tarif edildi.</b> Onu ortaya atan kişi bile bunu sonradan vurguladı ve yerine, yüksek denetim gerektiren <i>ajan mühendisliği</i>ni önerdi. Diğer şıklar uydurma sınırlar: dil ya da alan kısıtı yok, ve terim gerçek bir çalışma biçimini tarif ediyordu — yalnızca <b>hangi kullanım için</b> tarif edildiği kaçırıldı."
+    },
+    {
+      topic: "Terimin hikâyesi",
+      q: "\"Vibe coding tabanı, ajan mühendisliği tavanı yükseltir\" cümlesi ne anlatıyor?",
+      opts: [
+        "Vibe coding yeni başlayanın yapabildiğini artırır; ajan mühendisliği uzmanın ulaşabildiği en iyi sonucu artırır",
+        "Vibe coding ucuz, ajan mühendisliği pahalıdır",
+        "Vibe coding küçük projeler, ajan mühendisliği büyük projeler içindir",
+        "Vibe coding eski, ajan mühendisliği yeni modellerde çalışır"
+      ],
+      a: [0],
+      why: "<b>Taban</b> = hiç yapamayanın bir şey yapabilmesi; <b>tavan</b> = zaten yapabilenin daha iyisini yapabilmesi. Proje büyüklüğü ve maliyet bu ayrımın <i>sonucu</i> olabilir ama tanımı değil. Model sürümüyle hiç ilgisi yok."
+    },
+    {
+      topic: "Bağlam kısıtı",
+      q: "Bir geliştirici: \"Sabah harika çalışıyordu, öğleden sonra saçmalamaya başladı, model bozuldu galiba\" diyor. En olası açıklama ne?",
+      opts: [
+        "Bağlam penceresi doldu; performans dolarken sessizce bozulur",
+        "Model o gün sunucu tarafında değiştirildi",
+        "Ajan günlük istek kotasına yaklaştı ve kaliteyi düşürdü",
+        "Proje dosyaları çok büyüdüğü için ajan dosyaları okuyamıyor"
+      ],
+      a: [0],
+      why: "<b>Bağlam dolarken model önceki talimatları kaçırmaya ve daha çok hata yapmaya başlar.</b> Bu bir hata mesajı üretmez, bu yüzden \"model bozuldu\" gibi görünür. Kota dolduğunda açık bir uyarı alırsın, kalite sessizce düşmez; model sunucu tarafında gün ortasında değişmez."
+    },
+    {
+      topic: "Bağlam kısıtı",
+      q: "\"Bağlam penceresi dolduğunda oturum sona erer\" ifadesi neden yanlış?",
+      opts: [
+        "Sistem eski konuşmayı özetleyip yer açar, oturum devam eder",
+        "Bağlam penceresi pratikte hiç dolmaz",
+        "Oturum sona erer ama otomatik olarak yeniden başlatılır",
+        "Dolduğunda ajan yalnızca okuma kipine geçer"
+      ],
+      a: [0],
+      why: "<b>Sıkıştırma</b> devreye girer: eski konuşma özetlenir ve yer açılır. Asıl tehlike bitmesi değil, <i>dolarken kalitenin düşmesi</i>. Pencere kesinlikle dolar — bir oturum onbinlerce token üretebilir. Otomatik yeniden başlatma ya da salt-okunur kipe geçiş diye bir davranış yok."
+    },
+    {
+      topic: "Doğrulama refleksi",
+      q: "Aşağıdaki iki istemden hangisi ajanın kendi döngüsünü kapatmasını sağlar? (İki tanesini seç.)",
+      opts: [
+        "\"validateEmail yaz. a@b.com true, 'invalid' false olmalı. Yazınca testleri çalıştır.\"",
+        "\"Derleme şu hatayı veriyor: [hata]. Düzelt ve derlemenin geçtiğini doğrula.\"",
+        "\"Bu fonksiyonu daha iyi hâle getir.\"",
+        "\"Kod kalitesine dikkat ederek bir e-posta doğrulayıcı yaz.\""
+      ],
+      a: [0, 1],
+      why: "İlk ikisi ajanın <b>çalıştırabileceği bir geçti/kaldı sinyali</b> içeriyor: test sonuçları ve derleme çıkış kodu. Diğer ikisinde \"daha iyi\" ve \"kod kalitesi\" ölçülemez — ajan ne zaman biteceğini kendi kanısına göre belirler, doğrulama halkası sen olursun."
+    },
+    {
+      topic: "Doğrulama refleksi",
+      q: "\"Testleri de yaz\" demek neden tek başına doğrulama sayılmaz?",
+      opts: [
+        "Testin yazılması yetmez; ajanın onu çalıştırıp sonucu görmesi gerekir",
+        "Ajanlar yazdıkları testleri hiçbir zaman doğru yazamaz",
+        "Test yazmak bağlamı gereksiz yere doldurur",
+        "Testler yalnızca insan tarafından yazıldığında geçerlidir"
+      ],
+      a: [0],
+      why: "<b>Döngü ancak sonuç okunduğunda kapanır.</b> Yazılıp çalıştırılmayan test, ajanın hatasını yakalamaz. İstemde \"çalıştır ve sonucu göster\" yoksa elinde yalnızca bir iddia olur. Ajanların test yazamayacağı doğru değil; testin bağlam maliyeti de bu kararın gerekçesi değil."
+    },
+    {
+      topic: "Kanıt isteme",
+      q: "Ajan \"Tamamdır, düzelttim, çalışıyor\" dedi. En yararlı sonraki adım hangisi?",
+      opts: [
+        "Çalıştırdığı komutu ve dönen çıktıyı göstermesini istemek",
+        "Aynı işi ikinci bir ajana yeniden yaptırmak",
+        "Değişikliği doğrudan birleştirmek, ajan zaten kontrol etti",
+        "Aynı oturumda \"emin misin?\" diye sormak"
+      ],
+      a: [0],
+      why: "<b>Kanıt okumak, doğrulamayı kendin baştan yapmaktan hızlıdır</b> ve izlemediğin oturumlarda tek seçenektir. \"Emin misin?\" yalnızca ikinci bir iddia üretir. İşi baştan yaptırmak pahalıdır ve genelde gereksizdir; doğrulamasız birleştirmek ise tam olarak kaçınılması gereken şeydir."
+    },
+    {
+      topic: "Bağlamı temizleme",
+      q: "Aynı hatayı üçüncü kez düzeltmek üzeresin. Doğru hamle ne?",
+      opts: [
+        "Bağlamı temizle ve iki denemede öğrendiklerini içeren daha iyi bir ilk istem yaz",
+        "Daha sert ve daha uzun bir istemle aynı oturumda ısrar et",
+        "Daha büyük bir modele geç ve aynı oturumda devam et",
+        "Kodu kendin yazıp ajanı bu iş için bırak"
+      ],
+      a: [0],
+      why: "<b>İki düzeltmeden sonra bağlam, işe yaramadığı kanıtlanmış yaklaşımlarla doludur</b> ve bunlar her istekte tekrar gönderilir. Temiz oturum + iyi istem neredeyse her zaman kazanır. Aynı oturumda ısrar etmek ya da model büyütmek kirli bağlamı taşımaya devam eder. Kod diskte durduğu için temizlemek ilerlemeyi çöpe atmaz."
+    },
+    {
+      topic: "Plan modu ölçütü",
+      q: "Aşağıdakilerden hangisinde plan modu kullanmak gereksiz ek yüktür?",
+      opts: [
+        "Bir günlük satırındaki yazım hatasını düzeltmek",
+        "Kimlik doğrulama akışına yeni bir sağlayıcı eklemek",
+        "Hiç tanımadığın bir modülde davranış değiştirmek",
+        "Beş dosyaya dokunacak bir yeniden adlandırma tasarlamak"
+      ],
+      a: [0],
+      why: "Ölçüt tek cümle: <b>değişikliği tek cümleyle tarif edebiliyorsan plan yapma.</b> Yazım hatası bu tanıma girer. Diğer üçünde ya yaklaşım belirsiz, ya kod tanıdık değil, ya da değişiklik birden çok dosyaya yayılıyor — planın bedelini karşılayan durumlar bunlar."
+    },
+    {
+      topic: "Plan modu ölçütü",
+      q: "Plan modu hakkında hangisi doğrudur?",
+      opts: [
+        "Belirsizliği azaltır ama ajanın yetkisini kısıtlamak onun işi değildir",
+        "Ajanın hiçbir komut çalıştıramayacağını garanti eder",
+        "Her görevde kullanılması önerilen varsayılan çalışma biçimidir",
+        "Planı onaylamak zorunlu değildir, ajan planı kendi uygular"
+      ],
+      a: [0],
+      why: "<b>Plan modu belirsizlikle ilgilenir; yetkiyle ilgilenen şey izin kipi ve kum havuzudur.</b> İkisini karıştırmak yaygın bir hata: plan modunu güvenlik önlemi sanmak. Her görevde kullanmak da yanlış — küçük ve net işlerde sadece tur ve token harcatır."
+    },
+    {
+      topic: "Belirsizliği kapatma",
+      q: "\"Testleri düzelt\" isteminin en büyük eksiği nedir?",
+      opts: [
+        "Hangi test, hangi senaryo ve hangi kısıtlarla olduğunu söylemiyor",
+        "Türkçe yazılmış olması",
+        "Ajanın test araçlarını bilmediğini varsayıyor",
+        "Çok kısa olduğu için model onu görmezden gelir"
+      ],
+      a: [0],
+      why: "<b>Ajan niyetini okuyamaz.</b> \"auth modülündeki oturum zaman aşımı testini düzelt, mock kullanma\" ile arasındaki fark, alacağın düzeltme sayısıdır: dosya adı, senaryo ve kısıt verilmediğinde ajan tahmin eder. İstemin dili ya da uzunluğu sorunun kaynağı değil."
+    },
+    {
+      topic: "Kaybetme kalıpları",
+      q: "Bir oturumda önce bir hata ayıklıyorsun, arada ilgisiz bir mimari sorusu soruyorsun, sonra hata ayıklamaya dönüyorsun. Bu hangi kalıp ve çözümü ne?",
+      opts: [
+        "Çorba oturum — ilgisiz işler arasında bağlamı temizle",
+        "Sonsuz keşif — keşfi daraltarak sınırla",
+        "Güven-ama-doğrulama boşluğu — test ekle",
+        "Şişmiş kural dosyası — kural dosyasını kısalt"
+      ],
+      a: [0],
+      why: "<b>Çorba oturum</b>, bağlamı o an yapılan işle ilgisiz bilgiyle doldurma kalıbıdır; çözümü işler arasında temizlemektir. Sonsuz keşif kapsamsız araştırma isteğidir; doğrulama boşluğu makul görünen ama sınanmamış koddur; şişmiş kural dosyası ise talimatların gürültüde kaybolmasıdır."
+    },
+    {
+      topic: "Kaybetme kalıpları",
+      q: "Kural dosyana yazdığın kurallara ajan uymuyor. Hangi iki açıklama bu belirtiyle tutarlıdır? (İki tanesini seç.)",
+      opts: [
+        "Kural dosyası çok uzun; önemli kurallar gürültüde kayboluyor",
+        "Bağlam dolmuş ve model daha önceki talimatları kaçırıyor",
+        "Kural dosyaları yalnızca ilk oturumda okunur, sonrakilerde okunmaz",
+        "Kural dosyaları ajan tarafından hiçbir zaman dikkate alınmaz"
+      ],
+      a: [0, 1],
+      why: "İkisi de bilinen sebep: <b>şişmiş kural dosyası</b> ve <b>dolmuş bağlam</b>. Üçüncü şık yanlış — ana kural dosyası her oturumda okunur. Dördüncü de yanlış: kural dosyaları dikkate alınır, ama <i>bağlam</i> oldukları için garanti değildirler; garanti isteyen kural hook olmalıdır."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun \"büyük fikri\" olarak verilen cümle hangisi?",
+      opts: [
+        "Kod yazmanın maliyeti düştü; kodun doğru olduğunu bilmenin maliyeti düşmedi",
+        "Yeterince iyi bir istem yazarsan doğrulamaya gerek kalmaz",
+        "Ajanlar artık insanlardan daha az hata yapıyor",
+        "Bağlam penceresi büyüdükçe tüm sorunlar çözülür"
+      ],
+      a: [0],
+      why: "<b>Setin tamamı ikinci maliyetle ilgili.</b> Diğer üç şık bu setin karşı çıktığı varsayımlar: iyi istem doğrulamanın yerine geçmez, hata oranı karşılaştırması bu setin iddiası değildir, ve daha büyük pencere <i>dolarken bozulma</i> olgusunu ortadan kaldırmaz — yalnızca ertelemektedir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

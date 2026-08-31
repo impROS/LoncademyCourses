@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1-3",
+  code: "Temeller · 1.3",
+  title: "Bağlam penceresi",
+  back: "1.3-baglam-yonetimi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Pencereyi ne doldurur",
+      q: "Bağlamın en büyük **değişken** kalemleri hangi ikisidir? (İki tanesini seç.)",
+      opts: [
+        "Okunan dosyalar",
+        "Komut çıktıları",
+        "Sistem talimatı",
+        "Ortam ve git durumu bilgisi"
+      ],
+      a: [0, 1],
+      why: "<b>Sabit maliyetler yönetilebilir; oturumu bitiren şey değişken maliyetlerdir.</b> Okunan dosya ve komut çıktısı üst sınırsızdır — tek bir filtresiz test çalıştırması binlerce satır getirebilir. Sistem talimatı, ortam ve git bilgisi birkaç yüz ile birkaç bin token arasında sabit kalır ve senin kontrolünde değildir."
+    },
+    {
+      topic: "Pencereyi ne doldurur",
+      q: "Oturum başlangıcındaki sabit yükün hangi kalemi tamamen senin kontrolündedir?",
+      opts: [
+        "Ana kural dosyasının uzunluğu",
+        "Sistem talimatının uzunluğu",
+        "Git durumu bloğu",
+        "Ortam bilgisi"
+      ],
+      a: [0],
+      why: "<b>Kural dosyasını sen yazarsın</b> ve her isteğe binen sabit bir vergidir; şişmiş bir dosya hem para hem uyum kaybettirir. Diğer üçünü araç koyar, boyutlarını belirleyemezsin."
+    },
+    {
+      topic: "Dolma ve bozulma",
+      q: "Bağlam \"bozulması\" ile \"dolması\" arasındaki en kritik fark nedir?",
+      opts: [
+        "Bozulma sessizdir ve sınıra varmadan çok önce başlar; dolma görünürdür",
+        "Bozulma yalnızca büyük modellerde olur",
+        "Dolma kaliteyi düşürür, bozulma yalnızca maliyeti artırır",
+        "İkisi aynı şeyin iki adıdır"
+      ],
+      a: [0],
+      why: "<b>Dolma bir eşiktir ve sıkıştırma ile otomatik yönetilir; bozulma bir derece kaybıdır ve sessizdir.</b> Hata mesajı üretmediği için \"model bugün kötü\" gibi görünür. Belirtileri dolaylıdır: talimat kaçırma, az önce düzeltilen hatanın tekrarı."
+    },
+    {
+      topic: "Dolma ve bozulma",
+      q: "Aşağıdakilerden hangisi bağlam bozulmasının tipik bir belirtisidir?",
+      opts: [
+        "Ajanın az önce düzelttiği hatayı tekrar yapması",
+        "Ajanın izin istemesi",
+        "Yanıtların JSON biçiminde gelmesi",
+        "Ajanın araç çağırmayı bırakması"
+      ],
+      a: [0],
+      why: "<b>Talimat ve düzeltmelerin kaçırılması, bozulmanın klasik göstergesidir.</b> İzin isteme normal bir izin kipi davranışı; çıktı biçimi ayardan gelir; araç çağırmayı bırakmak ise döngünün normal bitişidir. Hiçbiri bağlam doluluğuna işaret etmez."
+    },
+    {
+      topic: "Sıkıştırma",
+      q: "Sıkıştırmadan sonra hangisi **kalıcı olarak** kaybolur?",
+      opts: [
+        "Yalnızca sohbette söylediğin, hiçbir dosyaya yazılmamış talimatlar",
+        "Ana kural dosyasının içeriği",
+        "Otomatik bellek notları",
+        "Plan modunda yazılan plan"
+      ],
+      a: [0],
+      why: "<b>Kural dosyası, otomatik bellek ve plan diskte durur ve sıkıştırma sonrası yeniden yüklenir.</b> Sohbette söylenen ise yalnızca konuşma geçmişinde yaşar; özete karışır ve ayrıntısı gider. Buradan çıkan kural: kalıcı olması gereken talimatı sohbette bırakma."
+    },
+    {
+      topic: "Sıkıştırma",
+      q: "Sıkıştırma sonrası okunan dosyalarla ilgili hangisi doğrudur?",
+      opts: [
+        "Yalnızca son değiştirilenlerden birkaçı yeniden okunur",
+        "Oturumda okunan tüm dosyalar yeniden okunur",
+        "Hiçbiri yeniden okunmaz, hepsi özete girer",
+        "Yalnızca ilk okunan dosya korunur"
+      ],
+      a: [0],
+      why: "<b>Sınırlı sayıda, en son değiştirilen dosya geri okunur</b> — hepsi değil. Bu yüzden uzun bir oturumdan sonra ajan \"hangi dosyalarda çalışıyorduk\" bilgisini kısmen kaybedebilir. Yönlendirmeli sıkıştırma bu kaybı azaltır."
+    },
+    {
+      topic: "Sıkıştırma",
+      q: "Bir skill yazarken en önemli talimatları dosyanın başına koymak neden önerilir?",
+      opts: [
+        "Sıkıştırmada skill gövdeleri kırpılırken başı korunur",
+        "Ajan dosyaların yalnızca ilk 20 satırını okur",
+        "Skill dosyalarında sıralama zorunludur",
+        "Baştaki satırlar daha yüksek öncelikle işlenir"
+      ],
+      a: [0],
+      why: "<b>Yeniden eklenen skill gövdeleri bir üst sınıra göre kırpılır ve kırpma sondan yapılır.</b> Dolayısıyla dosyanın altına yazılan kritik bir talimat, uzun bir oturumda kaybolabilir. Ajan dosyanın tamamını okur; öncelik sırası diye bir mekanizma yok."
+    },
+    {
+      topic: "Refleksler",
+      q: "Hata ayıklamayı bitirdin, tamamen ilgisiz bir özelliğe geçiyorsun. Doğru hamle?",
+      opts: [
+        "Bağlamı tamamen temizlemek",
+        "Yönlendirmeli sıkıştırma yapmak",
+        "Aynı oturumda devam edip yeni işi anlatmak",
+        "Daha geniş pencereli bir modele geçmek"
+      ],
+      a: [0],
+      why: "<b>Sıkıştırma özetler, temizleme siler.</b> İlgisiz bir işe geçerken eski konuşmanın özeti bile işe yaramaz — yalnızca yer kaplar ve dikkat dağıtır. Aynı oturumda devam etmek \"çorba oturum\" kalıbıdır; model büyütmek ise ilgisiz geçmişi taşımaya devam eder."
+    },
+    {
+      topic: "Refleksler",
+      q: "Keşif işini ayrı bağlamda çalışan bir yardımcıya devretmenin ana faydası nedir?",
+      opts: [
+        "Onlarca dosya onun penceresinde okunur, ana konuşmaya yalnızca özet döner",
+        "Daha hızlı çalışır çünkü paralel model kullanır",
+        "Daha ucuzdur çünkü daha küçük model kullanmak zorundadır",
+        "Ana oturumun izin kurallarını atlar"
+      ],
+      a: [0],
+      why: "<b>Asıl kazanç bağlam yalıtımıdır.</b> Hız ve maliyet duruma göre değişir; yardımcının modeli yapılandırmaya bağlıdır. İzin kurallarını atlamak ise ne doğru ne de istenen bir davranıştır."
+    },
+    {
+      topic: "Ölçme",
+      q: "Bağlamı neyin doldurduğunu kategori kategori görmek için hangisi kullanılır?",
+      opts: [
+        "/context",
+        "/usage",
+        "/doctor",
+        "/permissions"
+      ],
+      a: [0],
+      why: "<b>/context</b> bağlam dökümünü ve hangi kural dosyalarının yüklendiğini gösterir. <b>/usage</b> token ve maliyet tarafına bakar; <b>/doctor</b> kurulum sağlığını denetler; <b>/permissions</b> izin kurallarını listeler. Dördü farklı sorulara cevap verir."
+    },
+    {
+      topic: "Geniş pencere yanılgısı",
+      q: "\"1 milyon tokenlık pencere kullanıyorum, bağlam yönetimine gerek yok.\" Bu cümledeki iki hata hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Bozulma ortadan kalkmaz, yalnızca ertelenir",
+        "Dolan geniş pencere daha pahalıdır; her istek o yükü taşır",
+        "Geniş pencereli modeller sıkıştırma yapamaz",
+        "Geniş pencere yalnızca okuma araçlarını etkiler"
+      ],
+      a: [0, 1],
+      why: "<b>Bozulma doluluk oranıyla ilgilidir, mutlak sayıyla değil</b> — büyük pencere de dolarken bozulur. Ve <b>dolu geniş pencere her istekte taşınır</b>, yani maliyeti doğrudan artırır. Sıkıştırma geniş pencerede de aynı biçimde çalışır; etki okuma araçlarıyla sınırlı değildir."
+    },
+    {
+      topic: "Uygulama",
+      q: "Uzun bir işin ortasındasın, yer bitiyor ama işi bırakamıyorsun. En uygun hamle?",
+      opts: [
+        "Neyin korunacağını söyleyerek yönlendirmeli sıkıştırma yapmak",
+        "Bağlamı tamamen temizlemek",
+        "Hiçbir şey yapmadan otomatik sıkıştırmayı beklemek",
+        "Kural dosyasına bugüne kadarki konuşmayı kopyalamak"
+      ],
+      a: [0],
+      why: "<b>İş devam ederken temizlemek bağlamı kaybettirir; otomatik sıkıştırma ise neyin önemli olduğunu tahmin eder.</b> Yönlendirmeli sıkıştırma ikisinin arasındadır: yer açar ama önemli olanı sen belirlersin. Konuşmayı kural dosyasına kopyalamak, dosyayı şişirir ve her oturuma bindirir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Tek satırlık bir soru sordum ama kotamdan beklenenden fazla düştü.\" En olası sebep?",
+      opts: [
+        "O soru, oturumdaki tüm geçmişi birlikte taşıdı",
+        "Kısa istemler daha pahalı işlenir",
+        "Soru bir arka plan görevi tetikledi",
+        "Model, kısa istemlerde daha uzun düşünür"
+      ],
+      a: [0],
+      why: "<b>Her istek konuşmanın tamamını taşır.</b> Uzun bir oturumda \"ucuz\" soru diye bir şey yoktur. İstem uzunluğuyla işleme maliyeti arasında ters bir ilişki yok; arka plan görevleri ayrı bir olgudur ve burada tarif edilen belirtiyi açıklamaz."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Bağlam birikir, akmaz: ne girdiyse orada kalır ve her turda tekrar gider",
+        "Bağlam yönetimi yalnızca maliyetle ilgilidir",
+        "Sıkıştırma doğru yapılandırıldığında bağlam yönetimi gereksizleşir",
+        "Bağlam yalnızca çok uzun oturumlarda sorun olur"
+      ],
+      a: [0],
+      why: "<b>Birikme, hem maliyeti hem sessiz bozulmayı açıklayan tek mekanizma.</b> Bu yüzden konu yalnızca para değil, kalite konusudur. Sıkıştırma yardımcıdır ama ayrıntı kaybeder; ve bozulma uzun oturumları beklemez, doluluk arttıkça başlar."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

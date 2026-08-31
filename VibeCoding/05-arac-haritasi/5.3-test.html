@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5-3",
+  code: "Araç haritası · 5.3",
+  title: "Kaynaklar ve repolar",
+  back: "5.3-kaynaklar-ve-repolar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İki halka",
+      q: "Birinci halka (birincil kaynaklar) ile ikinci halka (derleme listeleri) arasındaki fark nedir?",
+      opts: [
+        "Birincil kaynak \"nasıl çalıştığını\" öğretir ve karar için kullanılır; listeler keşif içindir",
+        "Birincil kaynaklar ücretlidir, listeler ücretsizdir",
+        "Listeler daha günceldir",
+        "Birincil kaynaklar yalnızca kurumsal kullanıcılara açıktır"
+      ],
+      a: [0],
+      why: "<b>Liste sana neyin var olduğunu söyler; belge nasıl çalıştığını.</b> Karar her zaman birincil kaynaktan ve kendi ölçümünden gelir. Listeler ayrıca güncellik garantisi de vermez — birçoğu terk edilmiş durumdadır."
+    },
+    {
+      topic: "İki halka",
+      q: "Blog yazıları ve videolar bu sınıflandırmada nereye düşer?",
+      opts: [
+        "Birincil kaynağın yorumudur; eskir, belge ise güncellenir",
+        "Birincil kaynak sayılır",
+        "Derleme listesi sayılır",
+        "Hiçbir değeri yoktur"
+      ],
+      a: [0],
+      why: "<b>Yorum bir zamana aittir; kaynak yaşayan bir belgedir.</b> Bloglar bir kavramı anlamak için iyi olabilir, ama komut ve bayrak gibi ayrıntılar için belgeye gidilir. Değersiz değildirler — yalnızca güncellik garantileri yoktur."
+    },
+    {
+      topic: "Değişiklik günlüğü",
+      q: "Değişiklik günlüğü okumak neden haber akışı takip etmekten daha değerlidir?",
+      opts: [
+        "Bir bayrağın eklenmesi ya da bir varsayılanın değişmesi haberlerde yer almaz ama davranışını etkiler",
+        "Değişiklik günlükleri daha kısadır",
+        "Haber akışları ücretlidir",
+        "Değişiklik günlükleri daha sık yayımlanır"
+      ],
+      a: [0],
+      why: "<b>Haberler büyük duyuruları taşır; günlük ise seni doğrudan etkileyen küçük değişiklikleri.</b> \"Bir davranış değişmiş, haberim olmadı\" durumunun panzehiri budur — haftada 15 dakikalık bir alışkanlık yeter."
+    },
+    {
+      topic: "Değişiklik günlüğü",
+      q: "Bu sette önerilen takip düzeninde \"haftada bir 15 dakika\" neye ayrılır?",
+      opts: [
+        "Kullandığın aracın değişiklik günlüğüne",
+        "Derleme listelerini taramaya",
+        "Yeni araçları denemeye",
+        "Sosyal medyada tartışmaları okumaya"
+      ],
+      a: [0],
+      why: "<b>En yüksek getirili takip alışkanlığı budur</b> — çünkü seni doğrudan etkileyen değişiklikleri gösterir. Derleme listelerine ise \"ihtiyaç oldukça\" bakılır; düzenli taramak, problemsiz araç kurmaya götürür."
+    },
+    {
+      topic: "Kaynak değerlendirme",
+      q: "Bir kaynağı değerlendirirken sorulan beş sorudan hangisi **değildir**?",
+      opts: [
+        "Kaç kişi okumuş?",
+        "Ne zaman yazılmış?",
+        "Ölçüm var mı?",
+        "Sınırlarını söylüyor mu?"
+      ],
+      a: [0],
+      why: "<b>Popülerlik bir kalite ölçütü değil.</b> Beş soru şunlardır: tarih, bir şey satıyor mu, ölçüm var mı, sınırlarını söylüyor mu, kaynak gösteriyor mu. Üçünde takılan bir kaynak okumaya değmez."
+    },
+    {
+      topic: "Kaynak değerlendirme",
+      q: "\"Sınırlarını söylüyor mu?\" sorusunun kötü işareti nedir?",
+      opts: [
+        "Kaynağın her şeyi çözdüğünü ima etmesi",
+        "Kaynağın çok uzun olması",
+        "Kaynağın teknik terim kullanması",
+        "Kaynağın kod örneği içermemesi"
+      ],
+      a: [0],
+      why: "<b>Sınırlarını söyleyen bir kaynak, ne zaman işe yaramayacağını da anlatır</b> — bu, yazarın konuyu gerçekten kullandığının işaretidir. \"Her şeyi çözer\" ima eden içerik genelde ya satış yapıyordur ya da yüzeysel kalmıştır."
+    },
+    {
+      topic: "Kaçınılacaklar",
+      q: "\"En iyi 500 prompt\" listelerinden kaçınmanın gerekçesi nedir?",
+      opts: [
+        "İstem yazmak bir beceridir ve ezber liste senin projenin bilgisini taşımaz",
+        "Bu listeler her zaman ücretlidir",
+        "Uzun listeler bağlamı doldurur",
+        "Modeller ezberlenmiş istemleri reddeder"
+      ],
+      a: [0],
+      why: "<b>İyi istem eksiksizdir, sihirli değil (`1.2`).</b> Dört parça — hedef, kaynak, kısıt, kabul ölçütü — senin projenin bilgisini gerektirir; hazır bir liste bunu içeremez. Ücret ve bağlam ikincil sorunlardır."
+    },
+    {
+      topic: "Liste güvenliği",
+      q: "\"Derleme listesinde var, o zaman güvenlidir\" çıkarımının hatası nedir?",
+      opts: [
+        "Liste bir keşif aracıdır; güvenlik onayı vermez ve denetim sende kalır",
+        "Listeler yalnızca ücretli paketleri içerir",
+        "Listeler güncel değildir",
+        "Listelerde yalnızca resmî paketler yer alır"
+      ],
+      a: [0],
+      why: "<b>2026'da eklenti ve skill dağıtım yüzeyinde kötü niyetli paket kampanyaları raporlandı</b> (`4.6`). Listede yer almak bir inceleme sürecinden geçildiği anlamına gelmez. Kurmadan önce dört soru sorulur: hangi hook'lar, hangi sunucular, ne yetki, gizli değer istiyor mu."
+    },
+    {
+      topic: "Liste güvenliği",
+      q: "Bir derleme listesinde işine yarayabilecek bir şey buldun. Bir sonraki adım ne olmalı?",
+      opts: [
+        "Birincil kaynağına gidip incelemek, sonra kurup kurmamaya karar vermek",
+        "Doğrudan kurup denemek",
+        "Listedeki yıldız sayısına bakmak",
+        "Alternatiflerini de kurup karşılaştırmak"
+      ],
+      a: [0],
+      why: "<b>Liste keşfi tamamlar, kararı başlatır.</b> Birincil kaynak sana kimin yazdığını, ne yaptığını, hangi hook ve sunucuları getirdiğini gösterir. Yıldız sayısı popülerlik ölçer, güvenlik değil; birden çok alternatifi kurup denemek ise araç biriktirmeye götürür."
+    },
+    {
+      topic: "Takip düzeni",
+      q: "\"İhtiyaç olmadan listelere bakma\" tavsiyesinin gerekçesi nedir?",
+      opts: [
+        "Çözülmemiş bir problem yokken araç kurmak yük üretir",
+        "Listelere bakmak zaman alır",
+        "Listeler yanıltıcı bilgi içerir",
+        "Sürekli bakmak abonelik maliyetini artırır"
+      ],
+      a: [0],
+      why: "<b>\"Ne varmış\" diye gezinmek, ihtiyacın olmayan şeyleri kurmaya götürür</b> — ve kurulan her şey bakım, bağlam ve güvenlik yüzeyi demektir. Araç, bir problemin çözümü olarak kurulur; merakın sonucu olarak değil."
+    },
+    {
+      topic: "Bu setin ömrü",
+      q: "Bu setin **en hızlı** eskiyecek kısımları hangileridir?",
+      opts: [
+        "Araç adları, komut ve bayrak biçimleri, sürüm damgaları, fiyatlar",
+        "Bağlam yönetimi ilkeleri",
+        "Doğrulama refleksi",
+        "İş akışları"
+      ],
+      a: [0],
+      why: "<b>Somut ve dışarıya bağlı olan her şey hızlı eskir.</b> Bağlam yönetimi, doğrulama ve iş akışları ise modelin ve aracın doğasından türeyen ilkelerdir; araç değişse de geçerli kalırlar. `⚠️` işaretli her yer, kaynağına gitmen gereken yerdir."
+    },
+    {
+      topic: "Bu setin ömrü",
+      q: "Bu set kendi değerlendirme ölçütlerine göre nasıl duruyor?",
+      opts: [
+        "Tarihi belli, bir şey satmıyor, sınırlarını yazıyor ve birincil kaynakları gösteriyor",
+        "Ölçüt dışıdır, çünkü bir kurs materyalidir",
+        "Ölçütlerin hepsini karşılamaz, bu yüzden kullanılmamalıdır",
+        "Ölçütler yalnızca blog yazıları için geçerlidir"
+      ],
+      a: [0],
+      why: "<b>Bir kaynak, önerdiği ölçütlerden muaf değildir.</b> Setin tarihi yazılı, kurs satmayı açıkça önermiyor, README'de \"Bu set neyi öğretmez\" bölümü var ve birincil kaynaklara bağlantı veriyor. Ölçüm tarafını ise pratiklerdeki \"kaydet\" adımlarıyla senin üretmen isteniyor."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Blogdaki komut çalışmıyor.\" En doğru hamle nedir?",
+      opts: [
+        "Aracın belgesine ya da yardım çıktısına bakmak",
+        "Başka bir blog aramak",
+        "Komutu tahminle düzeltmeye çalışmak",
+        "Aracı yeniden kurmak"
+      ],
+      a: [0],
+      why: "<b>Blog bir yoruma, belge güncel gerçekliğe karşılık gelir.</b> Komut ve bayraklar sürümle değişir. Tahminle düzeltmek, uydurulmuş komut denemeye götürür — `3.5`'te uyarılan hatanın kendi elinle yapılan hâli."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Birincil kaynağa git, listeleri keşif için kullan, kurmadan önce denetle",
+        "Tüm topluluk kaynaklarından kaçınmak gerekir",
+        "Güncel kalmak için her gün takip yapmak şarttır",
+        "En popüler kaynaklar en güvenilir olanlardır"
+      ],
+      a: [0],
+      why: "<b>Üç adım, üç farklı soruyu cevaplıyor:</b> nasıl çalışıyor (birincil kaynak), ne var (listeler), güvenli mi (denetim). Topluluk kaynakları değerlidir ama yerleri bellidir; günlük takip gereksizdir — haftada 15 dakika yeter; popülerlik ise güvenilirlik ölçütü değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

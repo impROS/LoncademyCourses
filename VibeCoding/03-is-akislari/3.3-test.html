@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.3 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-3",
+  code: "İş akışları · 3.3",
+  title: "Hata ayıklama",
+  back: "3.3-hata-ayiklama.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Üç adım",
+      q: "Hata ayıklamada \"önce yeniden üret\" adımı atlanırsa hangi iki kanıt kaybolur? (İki tanesini seç.)",
+      opts: [
+        "Hatanın gerçekten var olduğunun kanıtı",
+        "Düzeltmenin gerçekten işe yaradığının kanıtı",
+        "Kodun biçim kurallarına uyduğunun kanıtı",
+        "Değişikliğin küçük olduğunun kanıtı"
+      ],
+      a: [0, 1],
+      why: "<b>Başarısız test iki yönlü bir kanıttır:</b> kırmızıyken hatanın varlığını, yeşile döndüğünde düzeltmenin etkisini gösterir. Testi olmayan bir düzeltme yalnızca bir umuttur. Biçim ve diff büyüklüğü bu adımla ilgisizdir."
+    },
+    {
+      topic: "Üç adım",
+      q: "Ajan hem düzeltmeyi hem testi birlikte yazdı ve test ilk çalıştırmada geçti. Bu neden bir uyarı işaretidir?",
+      opts: [
+        "Hiç kırmızı olmamış bir test, hatayı yakalamıyor olabilir",
+        "Testler her zaman düzeltmeden önce yazılmalıdır, aksi hâlde geçersizdir",
+        "Aynı turda iki dosya değiştirmek hataya yol açar",
+        "Yeşil geçen testler daha yavaş çalışır"
+      ],
+      a: [0],
+      why: "<b>Bir testin bir şey ölçtüğünü ancak başarısız olabildiğini görerek bilirsin.</b> Düzeltmeyle birlikte yazılan test, düzeltilmiş kodda geçer ama hatayı yakalayıp yakalamadığı bilinmez. Çözüm sırayı dayatmak: \"önce başarısız testi yaz ve kırmızı olduğunu göster\"."
+    },
+    {
+      topic: "İstem anatomisi",
+      q: "Hata metnini özetlemek yerine olduğu gibi yapıştırmanın gerekçesi nedir?",
+      opts: [
+        "Özet, ayırt edici satırı ve yığın izini düşürür",
+        "Yapıştırılan metin daha az token harcar",
+        "Ajanlar özetlenmiş metni okuyamaz",
+        "Özet, izin sistemini tetikler"
+      ],
+      a: [0],
+      why: "<b>Hata metnindeki asıl bilgi çoğu zaman senin önemsiz sandığın satırdadır:</b> dosya adı, satır numarası, çağrı zinciri. Özetleyince bunlar gider ve ajan tahmin etmeye başlar. Token açısından yapıştırmak daha pahalıdır — ama daha ucuza sonuç verir."
+    },
+    {
+      topic: "İstem anatomisi",
+      q: "Bir hata bildirimini aktarırken çözümü dikte etmek neden kötüdür?",
+      opts: [
+        "Ajanın kök sebebi aramasını engeller; senin teorine göre belirtiyi bastırabilir",
+        "Ajan dikte edilen çözümleri her zaman reddeder",
+        "Dikte edilen çözümler daha çok token harcar",
+        "İzin sistemi dikte edilen değişiklikleri engeller"
+      ],
+      a: [0],
+      why: "<b>Belirtiyi söylemek ile çözümü söylemek farklı şeyler.</b> Teorin yanlışsa ajan yanlış yerde çalışır ve genelde belirtiyi oradan bastırır. Doğrusu: belirtiyi, hata metnini ve beklenen düzeltilmiş davranışı ver; teşhisi ona bırak."
+    },
+    {
+      topic: "Bastırma kalıpları",
+      q: "Bastırma kalıplarının en sinsisi hangisidir ve neden?",
+      opts: [
+        "Varsayılan değerle örtme; hatayı görünmez yapar ve yanlış veriyi doğru gibi akıtır",
+        "Testi atlama; çünkü diff'te açıkça görünür",
+        "Boş yakalama; çünkü kolayca fark edilir",
+        "Denetimi kapatma; çünkü yalnızca uyarıları etkiler"
+      ],
+      a: [0],
+      why: "<b>`?? 0` gibi bir varsayılan, ne bir hata mesajı ne bir atlama işareti bırakır</b> — kod normal görünür ve yanlış veri sisteme sessizce girer. Testi atlama ve boş yakalama diff'te göze çarpar; denetim kapatma da bir yorum satırı bırakır."
+    },
+    {
+      topic: "Bastırma kalıpları",
+      q: "Ajanın hatayı bastırmasının en doğru açıklaması hangisidir?",
+      opts: [
+        "Verilen hedef \"denetim geçsin\"di ve o hedefe en kısa yoldan gidildi",
+        "Model kasıtlı olarak işi savsakladı",
+        "Bastırma, modelin eğitim verisindeki bir kusurdur",
+        "Bastırma yalnızca küçük modellerde görülür"
+      ],
+      a: [0],
+      why: "<b>Bu bir hedef tanımı sorunudur, niyet sorunu değil.</b> \"Testler geçsin\" hedefinin en kısa çözümü çoğu zaman testi susturmaktır. Hedefi \"kök sebebi düzelt, bastırma\" olarak yeniden koymak sorunu doğrudan çözer — model boyutundan bağımsız olarak."
+    },
+    {
+      topic: "Daraltma teknikleri",
+      q: "\"Bir zamanlar çalışıyordu, şimdi çalışmıyor\" durumunda en uygun daraltma tekniği hangisidir?",
+      opts: [
+        "Git geçmişinde ikiye bölerek son çalışan commit'i bulmak",
+        "Hatayı üreten en küçük girdiyi aramak",
+        "İki ortamın farkını listelemek",
+        "Günlükleri baştan sona okumak"
+      ],
+      a: [0],
+      why: "<b>Zaman ekseninde bir kırılma varsa, arama da zaman ekseninde yapılır.</b> İkiye bölme, yüzlerce commit'i birkaç adımda tarar. En küçük girdi karmaşık senaryolar için, ortam farkı ise \"bende çalışıyor\" durumları için uygundur."
+    },
+    {
+      topic: "Daraltma teknikleri",
+      q: "Ham bir günlük dosyasını ajana okutmanın iki zararı nedir? (İki tanesini seç.)",
+      opts: [
+        "Onbinlerce satır bağlama girer ve oturumun geri kalanını yavaşlatır",
+        "Aynı içerik sonraki her turda tekrar gönderilir",
+        "Günlük dosyaları ajan tarafından okunamaz",
+        "Günlük okumak izin sistemini devre dışı bırakır"
+      ],
+      a: [0, 1],
+      why: "<b>Bağlam birikir:</b> bir kez giren büyük çıktı, oturumun geri kalanında sabit bir yük olur. Doğrusu filtrelenmiş komut vermektir — `grep`, son N satır ya da yalnızca hata düzeyi. Ajan günlükleri okuyabilir; izin sistemiyle de ilgisi yoktur."
+    },
+    {
+      topic: "Durma işareti",
+      q: "\"Üçüncü teori\" işareti ne anlama gelir ve ne yapılmalı?",
+      opts: [
+        "Bağlam başarısız yaklaşımlarla doldu; temizleyip öğrenilenlerle yeniden başla",
+        "Sorun çözülemez, insana devret",
+        "Daha büyük modele geç ve aynı oturumda devam et",
+        "Üç teoriyi aynı anda denemek gerekir"
+      ],
+      a: [0],
+      why: "<b>İki başarısız teoriden sonra oturum, işe yaramadığı kanıtlanmış yollarla dolu</b> ve bunlar her turda tekrar gönderiliyor. Temiz bir oturumda, iki denemeyi birer satırda özetleyerek başlamak neredeyse her zaman daha iyi sonuç verir. Model büyütmek kirli bağlamı taşımaya devam eder."
+    },
+    {
+      topic: "Durma işareti",
+      q: "Yeniden başlarken önceki başarısız denemeleri nasıl taşırsın?",
+      opts: [
+        "Her denemeyi tek satırda, ne denendiğini ve neden tutmadığını yazarak",
+        "Önceki oturumun tamamını kopyalayarak",
+        "Hiç taşımayarak; sıfırdan başlamak en iyisidir",
+        "Denemeleri kural dosyasına ekleyerek"
+      ],
+      a: [0],
+      why: "<b>Değerli olan bilgi, o bilgiyi üreten konuşma değil.</b> \"Gövde boş değil, geliyor\" gibi tek satırlık bir eleme, sayfalarca turun yerini tutar. Hiç taşımamak aynı çıkmazları tekrarlatır; kural dosyasına eklemek ise geçici bir teşhisi kalıcı bir talimata dönüştürür."
+    },
+    {
+      topic: "Doğrulama",
+      q: "Düzeltmenin doğrulanmasında \"test yeşil\" dışında hangi ölçüt aranmalıdır?",
+      opts: [
+        "Başka hiçbir testin kırılmamış olması",
+        "Diff'in 20 satırdan kısa olması",
+        "Commit mesajının açıklayıcı olması",
+        "Değişikliğin tek dosyada kalması"
+      ],
+      a: [0],
+      why: "<b>Bir hatayı düzeltirken başka bir davranışı bozmak, hata ayıklamanın klasik yan etkisidir.</b> Bu yüzden ölçüt \"hedef test yeşil <i>ve</i> başka test kırılmadı\" biçimindedir. Diff boyutu, commit mesajı ve dosya sayısı iyi alışkanlıklardır ama düzeltmenin doğruluğunu ölçmez."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Düzeldi, ama artık hiç hata mesajı almıyoruz.\" Bu belirtinin en olası sebebi nedir?",
+      opts: [
+        "Geniş bir yakalama bloğu eklendi ve gerçek hatalar da yutuluyor",
+        "Günlük düzeyi yanlış ayarlandı",
+        "Testler devre dışı bırakıldı",
+        "Sunucu yeniden başlatılmadı"
+      ],
+      a: [0],
+      why: "<b>\"Artık hiç hata yok\" cümlesi neredeyse her zaman bir bastırma işaretidir.</b> Geniş yakalama, hedeflenen hatayla birlikte ilgisiz ve gerçekten önemli hataları da yutar. Sistem sağlıklı göründüğü için sorun aylarca fark edilmeyebilir."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir hata ayıklama isteminde sırayı dayatan ifade hangisidir?",
+      opts: [
+        "\"Önce bunu gösteren başarısız bir test yaz ve kırmızı olduğunu göster\"",
+        "\"Dikkatlice incele ve düzelt\"",
+        "\"Testleri de güncellemeyi unutma\"",
+        "\"Mümkün olan en hızlı çözümü bul\""
+      ],
+      a: [0],
+      why: "<b>\"Kırmızı olduğunu göster\" ifadesi, testin bir şey ölçtüğünü kanıtlar.</b> \"Testleri güncelle\" tam tersine testi düzeltmeye davet eder. \"Dikkatli incele\" ölçülemez; \"en hızlı çözüm\" ise doğrudan bastırmayı teşvik eder."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Yeniden üretilemeyen hata düzeltilemez, yalnızca kaybolur",
+        "Hata ayıklama ajanların en zayıf olduğu iştir",
+        "Her hata için ayrı bir test dosyası açılmalıdır",
+        "Hata mesajlarını bastırmak geçici çözümler için kabul edilebilir"
+      ],
+      a: [0],
+      why: "<b>\"Kaybolmak\" ile \"düzelmek\" arasındaki fark, bu konunun tamamı.</b> Ajanlar hata ayıklamada oldukça güçlüdür — sorun yetenekte değil, hedef tanımındadır. Her hata için ayrı dosya bir biçim tercihi; bastırma ise geçici bile olsa yanlış veriyi akıtmaya devam eder."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

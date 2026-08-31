@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.7 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-7",
+  code: "İş akışları · 3.7",
+  title: "Büyük dönüşümler",
+  back: "3.7-buyuk-donusum.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Araç seçimi",
+      q: "Bir toplu değişiklikte ajan yerine deterministik araç seçmeni sağlayan ayırt edici soru hangisidir?",
+      opts: [
+        "Bu değişikliği bir düzenli ifadeyle güvenle yapabilir miyim?",
+        "Kaç dosya etkileniyor?",
+        "Bu değişiklik ne kadar sürer?",
+        "Testler bu değişikliği kapsıyor mu?"
+      ],
+      a: [0],
+      why: "<b>Mekaniklik ölçütü, dosya sayısı değil.</b> Güvenle düzenli ifadeyle yapılabilen bir değişiklik için ajan daha pahalı, daha yavaş ve <i>daha az kesin</i>dir. Dosya sayısı yalnızca yöntemi (döngü, paralel) belirler, aracı değil."
+    },
+    {
+      topic: "Araç seçimi",
+      q: "Ajanı tamamen mekanik bir toplu işte kullanmanın risk yönü nedir?",
+      opts: [
+        "200 dosyanın 197'sini doğru yapıp 3'ünde \"iyileştirme\" yapabilir ve bu fark edilmez",
+        "Ajanlar çok dosyalı işleri tamamlayamaz",
+        "Deterministik araçlar her zaman daha hızlıdır",
+        "Ajan değişiklikleri geri alınamaz"
+      ],
+      a: [0],
+      why: "<b>Sorun ortalama başarı değil, dağılımın kuyruğu.</b> Bir kod dönüştürücü ya hepsinde doğru çalışır ya hiçbirinde; ajan ise çoğunda doğru, birkaçında yaratıcı davranabilir — ve iki yüz dosyada o birkaçını bulmak zordur."
+    },
+    {
+      topic: "Üç aşama",
+      q: "Üç aşamalı ölçek yaklaşımının doğru sırası nedir?",
+      opts: [
+        "Keşif → pilot → yayma",
+        "Pilot → keşif → yayma",
+        "Yayma → doğrulama → düzeltme",
+        "Keşif → yayma → pilot"
+      ],
+      a: [0],
+      why: "<b>Önce ne kadar iş olduğunu bil, sonra yöntemi küçük ölçekte doğrula, sonra ölçekle.</b> Keşif olmadan pilotun temsil edici olup olmadığını bilemezsin; pilot olmadan yayma, istemdeki eksiği çoğaltır."
+    },
+    {
+      topic: "Üç aşama",
+      q: "Pilot aşamasını atlamak neden ölçekle **çarpan** bir hata üretir?",
+      opts: [
+        "İstemdeki tek bir eksik, dosya sayısı kadar tekrarlanır",
+        "Pilot olmadan ajan çalışmayı reddeder",
+        "Pilot aşaması bağlamı temizler",
+        "Pilot olmadan testler çalıştırılamaz"
+      ],
+      a: [0],
+      why: "<b>İki dosyada iki küçük düzeltme, iki yüz dosyada iki yüz hatadır.</b> Pilot, istemi düzeltmenin en ucuz olduğu andır. Teknik bir engel yoktur; mesele tamamen maliyet dağılımıdır."
+    },
+    {
+      topic: "Üç aşama",
+      q: "Keşif aşamasında dosya listesini bir dosyaya yazdırmanın sebebi nedir?",
+      opts: [
+        "Sonraki adım dosyayı okuyarak ilerler; listenin bağlamda taşınması gerekmez",
+        "Listeyi git'e işlemek zorunludur",
+        "Ajan listeleri yalnızca dosyadan okuyabilir",
+        "Dosyaya yazılan liste daha doğru olur"
+      ],
+      a: [0],
+      why: "<b>Bağlam ekonomisi:</b> 200 satırlık bir liste bağlamda tutulursa sonraki her turda tekrar gönderilir. Diskteki liste ise gerektiğinde okunur. Ajan listeleri elbette bağlamdan da okuyabilir; mesele maliyet."
+    },
+    {
+      topic: "Yayma yöntemleri",
+      q: "Kabuk döngüsüyle yayma yönteminde her çağrının temiz bağlamla başlaması neyi sağlar?",
+      opts: [
+        "Bir dosyanın hatası ve karmaşası diğerine bulaşmaz",
+        "Her çağrı daha hızlı çalışır",
+        "İzin soruları ortadan kalkar",
+        "Dosyalar paralel işlenir"
+      ],
+      a: [0],
+      why: "<b>Yalıtım, toplu işlerde kalitenin sabit kalmasını sağlar.</b> Tek oturumda ilerlenirse yüzüncü dosya, doksan dokuz dosyalık birikmiş bağlamla işlenir — ve bu, sessiz bozulmanın tam koşuludur. Döngü kendiliğinden paralel değildir; sırayla çalışır."
+    },
+    {
+      topic: "Yayma yöntemleri",
+      q: "Gözetimsiz bir kabuk döngüsünde `--allowedTools` ile araç listesini daraltmanın gerekçesi nedir?",
+      opts: [
+        "Kimse onay veremeyeceği için ajanın yapabilecekleri önceden sınırlanmalıdır",
+        "Daha az araç daha hızlı çalışır",
+        "Araç listesi olmadan ajan başlamaz",
+        "Bağlam maliyetini düşürür"
+      ],
+      a: [0],
+      why: "<b>Etkileşimsiz kipte soracak kimse yoktur</b>, dolayısıyla yereldeki güvenliğin bir kısmı — sana sorulan sorular — ortadan kalkar. Dar araç listesi bu boşluğu doldurur. Hız ve bağlam etkisi ihmal edilebilir düzeydedir."
+    },
+    {
+      topic: "Paralel çalışma",
+      q: "İki ajanı aynı anda aynı çalışma kopyasında çalıştırmanın sorunu nedir ve çözümü?",
+      opts: [
+        "Birbirlerinin dosya yazımlarını ezerler; her iş kendi çalışma kopyasında çalıştırılmalı",
+        "İkisi aynı modeli paylaşamaz; farklı model seçilmeli",
+        "İzin sistemi ikinci ajanı engeller; izin kuralı eklenmeli",
+        "Sorun yoktur; git çakışmaları otomatik çözer"
+      ],
+      a: [0],
+      why: "<b>Aynı dizinde eşzamanlı yazma, klasik bir yarış durumu.</b> Ayrı çalışma kopyaları her ajana kendi dosya alanını verir ve sonuçlar sonradan birleştirilir. Git otomatik çözüm yapmaz — dosyalar zaten commit edilmeden ezilir."
+    },
+    {
+      topic: "Doğrulama",
+      q: "Toplu dönüşümde \"doğru yapıldı\" sorusunu hangi doğrulama katmanı cevaplar?",
+      opts: [
+        "Rastgele seçilen birkaç dosyanın elle okunması",
+        "Test takımının geçmesi",
+        "Derlemenin başarılı olması",
+        "Diff istatistiğinin makul görünmesi"
+      ],
+      a: [0],
+      why: "<b>Otomatik denetimler \"bozulmadı\" der, \"doğru yapıldı\" demez.</b> Derleme ve testler yapısal ve davranışsal bozulmayı yakalar; ama dönüşümün istenen biçimde uygulanıp uygulanmadığını yalnızca örneklem incelemesi gösterir. Bu katman en çok atlanandır."
+    },
+    {
+      topic: "Doğrulama",
+      q: "Desen taraması (`grep` ile sayma) hangi soruyu cevaplar?",
+      opts: [
+        "Eski kalıptan geriye kalan var mı",
+        "Yeni kod okunabilir mi",
+        "Testler yeterli mi",
+        "Değişiklik geri alınabilir mi"
+      ],
+      a: [0],
+      why: "<b>Sayısal ve hızlı bir kapsama denetimi.</b> Eski kalıbın sayısı sıfır, yeni kalıbın sayısı beklenen değer olmalıdır. Bu, sessiz kırpmayı yakalayan en ucuz katmandır ve testlerin göremediği bir boyutu ölçer."
+    },
+    {
+      topic: "Sessiz kırpma",
+      q: "Sessiz kırpmanın biçimlerinden hangi ikisi doğrudur? (İki tanesini seç.)",
+      opts: [
+        "İlk N dosyadan sonra durmak",
+        "Hata veren dosyaları raporlamadan atlamak",
+        "Her dosya için ayrı commit atmak",
+        "Değişiklikleri ayrı bir dala koymak"
+      ],
+      a: [0, 1],
+      why: "<b>Sessiz kırpma, işin bir kısmını yapıp tamamını yapmış gibi görünmektir.</b> Erken durma ve sessiz atlama bunun iki tipik biçimi. Ayrı commit ve ayrı dal ise iyi uygulamalardır; şeffaflığı artırırlar, azaltmazlar."
+    },
+    {
+      topic: "Sessiz kırpma",
+      q: "Sessiz kırpmaya karşı süreç tarafındaki savunma nedir?",
+      opts: [
+        "Beklenen ve gerçekleşen sayıları kendin karşılaştırmak",
+        "Daha büyük model kullanmak",
+        "İstemi daha kibar yazmak",
+        "Değişiklikleri tek commit'te toplamak"
+      ],
+      a: [0],
+      why: "<b>İstem tarafındaki savunma \"hiçbirini sessizce atlama, her biri için satır yaz\" demektir; süreç tarafındaki savunma ise sayıyı doğrulamaktır.</b> Listedeki satır sayısı ile başarılı rapor sayısı tutmuyorsa iş bitmemiştir — bu, ajanın raporuna bağlı olmayan bağımsız bir denetimdir."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Testler geçti ama dönüşüm yanlış uygulanmış.\" Hangi adım atlanmıştı?",
+      opts: [
+        "Örneklem incelemesi",
+        "Pilot aşaması",
+        "Keşif aşaması",
+        "Dal açma"
+      ],
+      a: [0],
+      why: "<b>Testlerin geçmesi, dönüşümün istenen biçimde yapıldığını göstermez</b> — yalnızca var olan davranışın korunduğunu. Pilot aşaması bu hatayı önleyebilirdi ama tarif edilen belirti (yayma sonrası fark edilen yanlışlık) doğrudan örneklem incelemesinin atlandığını gösterir."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Toplu değişikliğin kalitesi tek bir dosyada ne kadar doğru çalıştığına bakılarak belirlenir, sonra ölçeklenir",
+        "Toplu değişiklikler her zaman ajanla yapılmalıdır",
+        "Ölçek büyüdükçe doğrulama gereksizleşir",
+        "Paralel çalıştırma her zaman en hızlı yöntemdir"
+      ],
+      a: [0],
+      why: "<b>Ölçek, kaliteyi üretmez — var olan kaliteyi çoğaltır.</b> Bu yüzden pilot aşaması bu kadar kritiktir. Mekanik işlerde ajan yanlış araçtır; ölçek büyüdükçe doğrulama gereksizleşmez, biçim değiştirir; paralellik ise yalıtım maliyeti getirir ve her zaman kazançlı değildir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.5 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3-5",
+  code: "İş akışları · 3.5",
+  title: "Kod inceleme",
+  back: "3.5-kod-inceleme.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ajan kodunun hataları",
+      q: "Ajan kodunda insan koduna göre **daha seyrek** görülen hata türü hangisidir?",
+      opts: [
+        "Girinti ve biçim tutarsızlığı",
+        "Var olmayan bir işlev çağırmak",
+        "Hatayı sessizce bastırmak",
+        "Kapsam dışına taşmak"
+      ],
+      a: [0],
+      why: "<b>Ajan kodunda yüzeysel kalite genelde yüksektir:</b> biçim tutarlı, adlandırma düzgün, sözdizimi doğru. Hatalar daha derinde toplanır — uydurulmuş arayüzler, bastırılmış hatalar, kapsam taşması. Bu dağılım incelemeyi gevşetmek için değil, dikkati yeniden yönlendirmek için bir sebeptir."
+    },
+    {
+      topic: "Ajan kodunun hataları",
+      q: "\"Kod düzgün görünüyor\" hissinin inceleme açısından tehlikesi nedir?",
+      opts: [
+        "Düzgün görünen kod daha az dikkatle okunur, oysa hata derindedir",
+        "Düzgün kod daha çok satır içerir",
+        "Düzgün kod daha yavaş çalışır",
+        "Düzgün kod test edilmesi zor kodu gizler"
+      ],
+      a: [0],
+      why: "<b>Yüzey kalitesi bir güven sinyali üretir ve dikkati düşürür</b> — ama ajan kodunda yüzey ile derinlik arasındaki ilişki zayıftır. İnsan kodunda dağınık biçim genelde aceleyi işaret eder; ajan kodunda böyle bir ipucu yoktur."
+    },
+    {
+      topic: "Beş kontrol",
+      q: "Ajan diff'inde açılacak beş kontrolden biri **değildir**?",
+      opts: [
+        "Değişken adlarının anlamlı olup olmadığı",
+        "Uydurulmuş bir arayüz kullanılıp kullanılmadığı",
+        "Kapsam dışına çıkılıp çıkılmadığı",
+        "Testlerin gerçekten bir şey ölçüp ölçmediği"
+      ],
+      a: [0],
+      why: "<b>Adlandırma, ajan kodunda nadiren sorun çıkaran bir alandır</b> ve incelemenin sınırlı dikkatini oraya harcamak israftır. Beş kontrol, ajanın <i>sık</i> hata yaptığı yerlere odaklanır: uydurulmuş arayüz, sessiz davranış değişikliği, kapsam, bastırma, testin ölçtüğü."
+    },
+    {
+      topic: "Beş kontrol",
+      q: "\"Sessizce değişen davranış\" kontrolünde ne aranır?",
+      opts: [
+        "İstemediğin bir varsayılan, sıralama ya da dönüş tipi değişikliği",
+        "Yeni eklenen yorum satırları",
+        "Değişen dosya sayısı",
+        "Test dosyalarının boyutu"
+      ],
+      a: [0],
+      why: "<b>En zor yakalanan değişiklikler, hata üretmeyen ama davranışı kaydıranlardır.</b> Bir varsayılan değerin değişmesi, listenin sıralamasının farklılaşması ya da bir fonksiyonun artık `null` yerine boş nesne döndürmesi — hepsi derlenir, testler bile geçebilir, ama sistem farklı davranır."
+    },
+    {
+      topic: "İnceleyiciyi yönlendirme",
+      q: "İnceleyiciye verilecek yönergede bulunması gereken üç şey hangileridir?",
+      opts: [
+        "Neyi inceleyeceği, neye karşı inceleyeceği, neyin bulgu sayıldığı",
+        "Model, çaba düzeyi, süre sınırı",
+        "Dosya listesi, satır aralığı, çıktı biçimi",
+        "Rol, ton, uzunluk"
+      ],
+      a: [0],
+      why: "<b>Üçü de belirsiz kalırsa inceleyici kendi ölçütünü uydurur</b> ve genelde çok geniş bir ölçüt seçer. \"Neye karşı\" özellikle önemlidir: plana mı, gereksinim listesine mi, yoksa genel iyi uygulamalara mı bakılacağı sonucu tamamen değiştirir."
+    },
+    {
+      topic: "İnceleyiciyi yönlendirme",
+      q: "\"Yalnızca doğruluğu etkileyen eksikleri raporla\" cümlesi yazılmazsa ne olur?",
+      opts: [
+        "Gelen uzun liste seni aşırı mühendisliğe sürükler",
+        "İnceleyici hiçbir bulgu üretmez",
+        "İnceleme çok daha uzun sürer",
+        "İnceleyici kodu değiştirmeye başlar"
+      ],
+      a: [0],
+      why: "<b>Eksik aramaya gönderilen inceleyici, iş sağlam olsa bile eksik bulur</b> — çünkü ondan istenen budur. Filtresiz uygulanan bulgular gereksiz soyutlama, savunmacı kod ve olmayacak durumlar için testler üretir. Süre ya da davranış değişikliği bu cümlenin konusu değil."
+    },
+    {
+      topic: "Taze bağlam",
+      q: "Kodu yazan oturumun onu tarafsız inceleyememesinin sebebi nedir?",
+      opts: [
+        "Kendi gerekçesini bilir ve değişikliği o gerekçenin ışığında değerlendirir",
+        "Bağlamı dolu olduğu için diff'i okuyamaz",
+        "Aynı oturumda inceleme araçları kullanılamaz",
+        "Model kendi çıktısını okumaya programlanmamıştır"
+      ],
+      a: [0],
+      why: "<b>Fark teknik değil, bilgiseldir.</b> Yazan bağlam \"bu satırı şu yüzden böyle yazdım\"ı biliyor — ve o gerekçe, kusuru gizleyen şeyin ta kendisi olabilir. Teknik bir engel yoktur; belirleyici olan neyin görüldüğüdür."
+    },
+    {
+      topic: "Taze bağlam",
+      q: "\"Aynı modeli kullandık, o yüzden inceleme tarafsız değil.\" Bu gerekçe doğru mudur?",
+      opts: [
+        "Hayır; belirleyici olan farklı model değil, farklı bağlamdır",
+        "Evet; tarafsızlık için farklı bir model şarttır",
+        "Evet; aynı model aynı hataları tekrarlar",
+        "Hayır; tarafsızlık yalnızca insan incelemesiyle sağlanır"
+      ],
+      a: [0],
+      why: "<b>Aynı model, temiz bir pencerede yalnızca diff'i ve ölçütü görür</b> — onu üreten akıl yürütmeyi görmez, dolayısıyla sonucu bağımsız değerlendirir. Farklı model bir çeşitlilik katabilir ama gerekli koşul değildir. İnsan incelemesi de değerlidir ama tek yol değildir."
+    },
+    {
+      topic: "İnsanda kalanlar",
+      q: "Aşağıdakilerden hangi ikisi ajanın prensipte inceleyemeyeceği alanlardır? (İki tanesini seç.)",
+      opts: [
+        "Bu değişikliğin gerçekten istenen ürün kararı olup olmadığı",
+        "Bu sistemde hangi bozulmanın göze alınabileceği",
+        "Bir fonksiyonun var olup olmadığı",
+        "Testlerin geçip geçmediği"
+      ],
+      a: [0, 1],
+      why: "<b>Niyet ve kabul edilebilir risk, ajanın erişiminde olmayan bir bağlam gerektirir</b> — ürün hedefleri, iş kısıtları, sektör gerçekleri. Bu \"ajan yeterince iyi değil\" demek değil, <i>bilgi orada değil</i> demektir. Fonksiyonun varlığı ve test sonuçları ise doğrudan denetlenebilir olgulardır."
+    },
+    {
+      topic: "İnsanda kalanlar",
+      q: "Öncelik kararının (\"bu şimdi mi yapılmalı?\") insanda kalmasının sebebi nedir?",
+      opts: [
+        "Kurumsal hedefler, takvim ve kaynak kısıtları ajanın bilgisinde değildir",
+        "Ajanlar tarih hesaplayamaz",
+        "Öncelik kararları teknik değil, yalnızca idari kararlardır",
+        "Ajanlar yalnızca kodla ilgili kararlar alabilir"
+      ],
+      a: [0],
+      why: "<b>Öncelik, kodun kendisinden okunamayan bilgilerle belirlenir.</b> Ajan pekâlâ teknik önem sıralaması önerebilir; ama hangi işin şirket için şimdi kritik olduğunu bilemez. Bu bir yetenek sınırı değil, bir bilgi sınırıdır."
+    },
+    {
+      topic: "Bulguları yönetme",
+      q: "İnceleme bulguları hangi üç kovaya ayrılır?",
+      opts: [
+        "Doğruluk · yazılı gereksinim · tercih",
+        "Kritik · orta · düşük",
+        "Kod · test · belge",
+        "Şimdi · sonra · asla"
+      ],
+      a: [0],
+      why: "<b>İlk iki kova hemen düzeltilir, üçüncüsü ayrı bir iş olarak ele alınır.</b> Bu ayrım, önem derecesi sıralamasından farklıdır: mesele bulgunun ne kadar ciddi olduğu değil, <i>bu değişikliğin kapsamına girip girmediği</i>. Üçüncü kovayı hemen uygulamak temizlik tuzağının inceleme hâlidir."
+    },
+    {
+      topic: "Bulguları yönetme",
+      q: "Bir inceleyici 22 bulgu bildirdi, ikisi gerçek sorun. En doğru çıkarım nedir?",
+      opts: [
+        "Bulgu ölçütü fazla geniş verilmiş; ölçütü daraltıp tekrar incelet",
+        "Kod kötü yazılmış",
+        "İnceleyici modeli yetersiz",
+        "İnceleme aracı hatalı çalışıyor"
+      ],
+      a: [0],
+      why: "<b>Bulgu sayısı kalite göstergesi değil, ölçüt genişliği göstergesidir.</b> \"Bulabildiğin her sorunu listele\" isteğine karşılık gelen bir listedir bu. \"Yalnızca yanlış davranışa yol açan hatalar\" dendiğinde aynı kod için gelen liste çok daha kısa olur."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Ajan bir kütüphane fonksiyonu çağırdı ama o fonksiyon kütüphanede yok.\" Bu hangi kontrolün konusudur ve nasıl yakalanır?",
+      opts: [
+        "Uydurulmuş arayüz kontrolü; kodu çalıştırmadan ya da imzayı doğrulamadan güvenmeyerek",
+        "Kapsam kontrolü; diff'teki dosya sayısına bakarak",
+        "Bastırma kontrolü; yakalama bloklarını okuyarak",
+        "Test kontrolü; kapsam raporuna bakarak"
+      ],
+      a: [0],
+      why: "<b>Uydurulmuş arayüz, ajan kodunun en tipik hatalarından biri</b> ve okurken fark edilmesi zordur çünkü çağrı tamamen makul görünür. Yakalama yolu basit: çalıştır, ya da imzayı belgede/kod zekâsıyla doğrula."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "İnceleme, kodun yazılma gerekçesini bilmeyen bir gözle yapılmalıdır",
+        "Ajan kodu insan kodundan daha az inceleme gerektirir",
+        "En iyi inceleme, kodu yazan ajanın kendi kendini denetlemesidir",
+        "İnceleme tamamen otomatikleştirilebilir bir iştir"
+      ],
+      a: [0],
+      why: "<b>Gerekçeyi bilmemek bir eksiklik değil, incelemenin ön koşulu.</b> Bu ister insan ister taze bir bağlam olsun. Ajan kodu daha az değil <i>farklı</i> inceleme ister; kendi kendini denetleme yapısal olarak zayıftır; ve niyet, risk, öncelik gibi alanlar otomatikleştirilemez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

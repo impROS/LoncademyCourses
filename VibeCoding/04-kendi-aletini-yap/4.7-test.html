@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.7 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4-7",
+  code: "Kendi aletin · 4.7",
+  title: "Otomasyon ve SDK",
+  back: "4.7-otomasyon-ve-sdk.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Otomasyonun anlamı",
+      q: "\"Otomasyon ajanı güçlendirmez, denetimini kaldırır\" ifadesinin pratik sonucu nedir?",
+      opts: [
+        "Yerelde sorulan sorular orada yok; kısıtların önceden yazılması gerekir",
+        "Otomasyonda daha küçük model kullanılmalıdır",
+        "Otomasyonda test yazmak gereksizdir",
+        "Otomasyonda bağlam yönetimi önemsizleşir"
+      ],
+      a: [0],
+      why: "<b>Yereldeki güvenliğin bir kısmı, sana sorulan izin sorularından geliyordu.</b> Etkileşimsiz çalışmada soru soracak, diff okuyacak, \"dur\" diyecek kimse yok. Bu yüzden izin kipi, araç listesi ve yalıtım önceden ve açıkça belirlenir."
+    },
+    {
+      topic: "Etkileşimsiz kip",
+      q: "Etkileşimsiz kipte başlangıç izin kipi nedir ve bunu bilmemek hangi belirtiyi üretir?",
+      opts: [
+        "Manual; izin verilmediği ve soracak kimse olmadığı için iş ilerlemez",
+        "Otomatik; her şey sorulmadan çalışır ve beklenmedik değişiklikler olur",
+        "Kum havuzu; komutlar çalışmaz",
+        "Plan modu; yalnızca plan üretilir"
+      ],
+      a: [0],
+      why: "<b>\"Betik hiçbir şey yapmadan bitiyor\" belirtisinin en sık sebebi budur.</b> Manual kipte yazma ve komut çalıştırma onay ister; onay verecek kimse olmayınca eylem gerçekleşmez. Çözüm izin kipini ve araç listesini açıkça vermektir."
+    },
+    {
+      topic: "Etkileşimsiz kip",
+      q: "Etkileşimsiz çalıştırmanın betiklerde işe yarayan hangi iki özelliği vardır? (İki tanesini seç.)",
+      opts: [
+        "Başarıda sıfır, başarısızlıkta sıfırdan farklı çıkış kodu döndürmesi",
+        "Standart girdiden veri okuyabilmesi",
+        "Otomatik olarak git commit'i atması",
+        "İzin sorularını kaydedip sonra sorması"
+      ],
+      a: [0, 1],
+      why: "<b>Çıkış kodu betiğin dallanmasını, standart girdi ise boru hattına takılmasını sağlar</b> — `npm test 2>&1 | claude -p \"...\"` gibi. Otomatik commit ve ertelenmiş onay diye davranışlar yoktur."
+    },
+    {
+      topic: "Çıktı biçimleri",
+      q: "Betiklerin sonucu güvenilir biçimde okuması için hangi yaklaşım kullanılır?",
+      opts: [
+        "JSON çıktı biçimi ve bir şema vermek",
+        "Düz metin çıktısını düzenli ifadeyle ayrıştırmak",
+        "Akış biçimini satır satır okumak",
+        "Çıktıyı bir dosyaya yazdırıp elle kontrol etmek"
+      ],
+      a: [0],
+      why: "<b>Model çıktı biçimini değiştirebilir; şema değiştirmez.</b> Şema verildiğinde sonuç, o şemaya uyan yapılandırılmış bir nesne olarak döner ve metin ayrıştırmaya gerek kalmaz. Akış biçimi canlı ilerleme göstermek içindir, sonucu ayrıştırmak için değil."
+    },
+    {
+      topic: "Çıktı biçimleri",
+      q: "JSON çıktı biçimi sonuç metninin yanında başka ne döndürür?",
+      opts: [
+        "Oturum kimliği ve kullanım/maliyet bilgisi",
+        "Değiştirilen dosyaların tam içeriği",
+        "Kullanılan modelin sistem talimatı",
+        "Bağlam penceresinin tamamı"
+      ],
+      a: [0],
+      why: "<b>Oturum kimliği sürdürme için, kullanım bilgisi ise çalıştırma başına maliyet izlemek için değerlidir.</b> Bu, otomasyonun maliyetini ölçmenin en doğrudan yolu — `6.4`'te ekip ölçeğine taşınıyor."
+    },
+    {
+      topic: "Çıplak çalıştırma",
+      q: "Öntanımlı bir etkileşimsiz çalıştırma neyi yükler?",
+      opts: [
+        "Etkileşimli oturumun yüklediği her şeyi: hook, skill, eklenti, MCP sunucusu, bellek, kural dosyaları",
+        "Yalnızca kural dosyalarını",
+        "Hiçbir şeyi; temiz bir ortam sağlar",
+        "Yalnızca açıkça bayrakla verilenleri"
+      ],
+      a: [0],
+      why: "<b>\"`-p` temiz bir ortam verir\" yaygın ve tehlikeli bir yanılgı.</b> Öntanımlı davranış tam tersidir: çalışma dizinindeki ve kullanıcı yapılandırmasındaki her şey devreye girer. Bu hem yeniden üretilebilirliği hem güvenliği etkiler."
+    },
+    {
+      topic: "Çıplak çalıştırma",
+      q: "Çıplak başlatmanın iki gerekçesi hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Sonuç makineden bağımsız hâle gelir",
+        "Güvenmediğin bir depodaki hook ve sunucu tanımları çalışmaz",
+        "Daha büyük bağlam penceresi kullanılabilir",
+        "İzin kuralları devre dışı kalır"
+      ],
+      a: [0, 1],
+      why: "<b>Biri kalite, biri güvenlik kararı.</b> CI'da sonucun makineye bağlı olmaması gerekir; ve klonlanan bir depodaki yapılandırmanın sessizce çalışması ciddi bir risktir — etkileşimsiz kipte güven onayı da sorulmaz. Bağlam boyutu ve izin kuralları bundan etkilenmez."
+    },
+    {
+      topic: "Gözetimsiz kısıtlar",
+      q: "Gözetimsiz çalışmadaki üç kısıt katmanı hangileridir?",
+      opts: [
+        "İzin kipi, açık araç listesi, yalıtım",
+        "Model seçimi, çaba düzeyi, tur sınırı",
+        "Kural dosyası, skill, hook",
+        "Günlükleme, izleme, uyarı"
+      ],
+      a: [0],
+      why: "<b>Kip tabanı kurar (izin verilmeyen reddedilir), araç listesi yüzeyi daraltır, yalıtım ise zararı çevreler.</b> Üçü katmanlıdır: biri aşılsa diğerleri devrede kalır. Model ve çaba düzeyi maliyet ayarlarıdır, güvenlik katmanı değil."
+    },
+    {
+      topic: "Gözetimsiz kısıtlar",
+      q: "`--permission-mode dontAsk` kipi ne yapar?",
+      opts: [
+        "İzin verilmeyen her şeyi reddeder",
+        "Her şeyi sormadan onaylar",
+        "Soruları sıraya alır ve sonunda sorar",
+        "Yalnızca okuma araçlarını serbest bırakır"
+      ],
+      a: [0],
+      why: "<b>\"Sorma\" ifadesi \"onayla\" değil \"reddet\" anlamına gelir</b> — kilitli otomasyon için doğru taban budur. İzin verdiğin araçlar çalışır, geri kalan her şey durur. Her şeyi onaylayan kip bambaşka bir ayardır ve yalnızca yalıtılmış ortamda kullanılır."
+    },
+    {
+      topic: "Gözetimsiz kısıtlar",
+      q: "Kaçan bir otomasyon çalıştırmasının sınırsız uzamasını ne engeller?",
+      opts: [
+        "Tur sınırı ve zaman aşımı",
+        "Dar araç listesi",
+        "Çıplak başlatma",
+        "JSON çıktı biçimi"
+      ],
+      a: [0],
+      why: "<b>Araç listesi ne yapabileceğini, tur sınırı ise ne kadar uzun çalışabileceğini belirler.</b> İkisi farklı riskleri kapatır: biri zarar yüzeyini, diğeri maliyeti ve süreyi. Çıplak başlatma ve çıktı biçimi süreyi etkilemez."
+    },
+    {
+      topic: "Nerede ne",
+      q: "Ajanı kendi uygulamana gömmek istiyorsan hangisini kullanırsın ve komut satırından farkı nedir?",
+      opts: [
+        "Geliştirme kiti; akış denetimi sende olur (onay geri çağrıları, oturum yönetimi, kanca noktaları)",
+        "Komut satırı; daha hızlıdır",
+        "Sürekli tümleştirme iş akışı; daha güvenlidir",
+        "MCP sunucusu; daha yapılandırılmıştır"
+      ],
+      a: [0],
+      why: "<b>Komut satırı tek seferlik bir çalıştırmadır; kit ise aynı ajan döngüsünü kendi programının içinde çalıştırır.</b> Fark denetim ayrıntısında: hangi aracın onaylanacağına kod olarak karar verebilir, oturumu yönetebilir, akışa müdahale edebilirsin."
+    },
+    {
+      topic: "Nerede ne",
+      q: "Kitin desteklemediği bir dilden ajanı sürmek istiyorsan ne yaparsın?",
+      opts: [
+        "Komut satırını alt süreç olarak çağırıp JSON çıktısını okursun",
+        "Protokolü kendi dilinde baştan uygularsın",
+        "MCP sunucusu yazarsın",
+        "Mümkün değildir"
+      ],
+      a: [0],
+      why: "<b>Komut satırı, her dilden erişilebilen ortak arayüzdür.</b> Alt süreç olarak çağırıp yapılandırılmış çıktı almak, kitin sağladığı temel akışı taklit eder. MCP sunucusu ters yönde çalışır: ajana araç sunar, ajanı sürmez."
+    },
+    {
+      topic: "Uygulama",
+      q: "\"Bende geçti, sürekli tümleştirme hattında düştü.\" Otomasyon açısından en olası sebep?",
+      opts: [
+        "Çıplak başlatılmamış; yereldeki hook, skill ve sunucular sonucu etkilemiş",
+        "Hattaki model daha küçük",
+        "Hatta bağlam penceresi daha dar",
+        "Hatta izin kuralları devre dışı"
+      ],
+      a: [0],
+      why: "<b>Öntanımlı `-p` çalıştırması makinedeki her şeyi yükler</b> — senin kurulumun sonucu iyileştirmiş, hattaki boş ortam iyileştirmemiş olabilir. Çıplak başlatma her iki tarafı da aynı temele oturtur."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Otomasyon denetimi kaldırır; bu yüzden kısıtlar önceden ve açıkça yazılır",
+        "Otomasyon, ajanı daha yetenekli hâle getirir",
+        "Otomasyonda güvenlik ayarları gereksizdir çünkü ortam yalıtılmıştır",
+        "Etkileşimsiz kip her zaman etkileşimli kipten daha güvenlidir"
+      ],
+      a: [0],
+      why: "<b>Kaybolan şey yetenek değil, gözetim.</b> Ajan aynı ajandır; değişen tek şey senin orada olmaman. Yalıtım bir katmandır ama tek başına yeterli değildir; ve etkileşimsiz kip, güven onayı sorulmadığı için bazı açılardan daha risklidir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.4 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-4",
+  code: "Proje kuralları · 2.4",
+  title: "Kalıcı bellek",
+  back: "2.4-kalici-bellek.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İki bellek",
+      q: "Otomatik bellek ile kural dosyası arasındaki en temel fark nedir?",
+      opts: [
+        "Kural dosyasını sen yazarsın, otomatik belleği ajan yazar",
+        "Kural dosyası bağlamdır, otomatik bellek zorlayıcıdır",
+        "Kural dosyası depo başına, otomatik bellek proje başına tutulur",
+        "Kural dosyası her oturumda, otomatik bellek yalnızca istendiğinde yüklenir"
+      ],
+      a: [0],
+      why: "<b>Yazarlık farkı, diğer bütün farkların kaynağı</b>: denetim, risk ve güven düzeyi buradan çıkar. İkisi de bağlamdır, ikisi de zorlayıcı değildir; ikisinin de indeksi oturum başında yüklenir."
+    },
+    {
+      topic: "İki bellek",
+      q: "Otomatik bellek ve kural dosyalarının ortak noktası nedir?",
+      opts: [
+        "İkisi de bağlamdır; bir eylemi kesin olarak engellemek için yeterli değildirler",
+        "İkisi de depoya işlenir ve ekiple paylaşılır",
+        "İkisi de yalnızca ilk oturumda okunur",
+        "İkisi de ajan tarafından güncellenir"
+      ],
+      a: [0],
+      why: "<b>Her ikisi de modele sunulan metindir; uyulmasını garanti etmez.</b> Kesinlik gereken yerde yine hook devreye girer. Bellek depoya işlenmez ve makineye özgüdür; kural dosyasını ise ajan değil sen güncellersin."
+    },
+    {
+      topic: "Not türleri",
+      q: "Ajanın belleğe **kasten yazmadığı** bilgi türü hangisidir?",
+      opts: [
+        "Kod tabanını okuyarak çıkarabileceği mimari ve dosya yolları",
+        "Senin çalışma tercihlerin",
+        "Verdiğin düzeltmeler",
+        "Dış kaynaklara işaretler"
+      ],
+      a: [0],
+      why: "<b>Bellek, koddan okunamayacak bilgiye ayrılmıştır.</b> Mimariyi ve dosya yollarını her oturumda yeniden okuyabildiği için not almak yalnızca yer harcar ve eskiyen bilgi üretir. Diğer üçü tam olarak hedeflenen türlerdir."
+    },
+    {
+      topic: "Not türleri",
+      q: "\"Göç eylül sonunda tamamlanacak\" bilgisi hangi not türüne girer?",
+      opts: [
+        "project",
+        "user",
+        "feedback",
+        "reference"
+      ],
+      a: [0],
+      why: "<b>`project` türü, devam eden işi, kararları ve tarihleri tutar</b> — koddan ya da git geçmişinden çıkarılamayan bağlam. `user` kim olduğunla, `feedback` verdiğin düzeltmelerle, `reference` ise dış kaynak adresleriyle ilgilidir."
+    },
+    {
+      topic: "Yapı ve denetim",
+      q: "Bellek dizininin yapısı hakkında hangisi doğrudur?",
+      opts: [
+        "Bir indeks dosyası her oturumda yüklenir; konu dosyaları talep üzerine okunur",
+        "Tüm bellek dosyaları her oturumda tamamen yüklenir",
+        "Tek bir ikili biçimde saklanan dosyadan oluşur",
+        "Bellek yalnızca sunucu tarafında tutulur, yerelde dosyası yoktur"
+      ],
+      a: [0],
+      why: "<b>İndeks + konu dosyası yapısı, bağlam maliyetini düşük tutar.</b> Her şeyin yüklenmesi indeksin varlık sebebini ortadan kaldırırdı. Dosyalar düz markdown'dır — okunabilir, düzenlenebilir ve silinebilir olmaları bilinçli bir tasarım kararıdır."
+    },
+    {
+      topic: "Yapı ve denetim",
+      q: "Belleği görüntülemek ve düzenlemek için hangi komut kullanılır?",
+      opts: [
+        "/memory",
+        "/context",
+        "/config",
+        "/doctor"
+      ],
+      a: [0],
+      why: "<b>/memory bellek klasörünü açar ve dosyaları düzenlemene izin verir.</b> /context neyin yüklendiğini gösterir ama düzenleme yapmaz; /config ayarlarla, /doctor kurulum sağlığıyla ilgilenir."
+    },
+    {
+      topic: "Riskler",
+      q: "Bir kere \"bu sefer testleri atlayabilirsin\" dedin, ajan bunu kalıcı bir tercih olarak kaydetti. Bu hangi riskin örneğidir?",
+      opts: [
+        "Yanlış çıkarımın sessizce kalıcılaşması",
+        "Gizlilik ihlali",
+        "Bağlam dolması",
+        "İzin kuralının aşılması"
+      ],
+      a: [0],
+      why: "<b>Tek seferlik bir tercihin genel kural sanılması, otomatik belleğin ana riski.</b> Sessizdir: davranış değişir ama sebebi hiçbir kural dosyasında yazmaz. Karşılığı düzenli denetimdir — `/memory` açıp yanlışı silmek."
+    },
+    {
+      topic: "Riskler",
+      q: "Kural dosyasında yazmayan, açıklanamayan bir ajan davranışıyla karşılaştın. İlk nereye bakarsın?",
+      opts: [
+        "Otomatik belleğe",
+        "İzin kurallarına",
+        "Kum havuzu ayarlarına",
+        "Model yapılandırmasına"
+      ],
+      a: [0],
+      why: "<b>\"Görünmez etki\" riski tam olarak bu belirtiyle ortaya çıkar:</b> davranışın kaynağı yazılı kurallarda değil, ajanın kendi çıkarımlarındadır. İzin kuralları ve kum havuzu eylemleri <i>engeller</i>, tercih üretmez; model yapılandırması ise bu kadar özgül bir davranışı açıklamaz."
+    },
+    {
+      topic: "Ekip sınırı",
+      q: "\"Bende doğru davranıyor ama takım arkadaşımda davranmıyor.\" Bu durumun bellek kaynaklı olması nasıl mümkün? (İki tanesini seç.)",
+      opts: [
+        "Bellek makineye özgüdür; onun makinesinde o notlar yok",
+        "Bellek depoya işlenmez, dolayısıyla paylaşılmaz",
+        "Bellek yalnızca ilk kurulumda oluşturulur",
+        "Bellek yalnızca yönetici hesaplarında etkinleşir"
+      ],
+      a: [0, 1],
+      why: "<b>Bellek kullanıcı yapılandırma klasöründe tutulur, deponun içinde değil</b> — bu yüzden `git status` onu göstermez ve takım arkadaşına geçmez. Çözüm net: ekipçe geçerli olması gereken her şey kural dosyasına yazılır. Kurulum zamanı ya da hesap türüyle ilgisi yoktur."
+    },
+    {
+      topic: "Ekip sınırı",
+      q: "Aynı deponun birden çok çalışma kopyasında bellek nasıl davranır?",
+      opts: [
+        "Hepsi tek bir bellek dizinini paylaşır",
+        "Her kopya kendi ayrı belleğini tutar",
+        "Yalnızca ana kopyada bellek tutulur",
+        "Bellek kopyalar arasında otomatik eşitlenir ve sunucuya yedeklenir"
+      ],
+      a: [0],
+      why: "<b>Bellek dizini depo kimliğinden türetilir</b>, dolayısıyla aynı deponun tüm kopyaları ve alt dizinleri tek bir belleği paylaşır. Bu istenen davranıştır: aynı proje hakkındaki öğrenmeler bölünmez. Ama makineler arası eşitleme yoktur."
+    },
+    {
+      topic: "Oturum sürdürme",
+      q: "Otomatik bellek ile oturum sürdürme arasındaki fark nedir?",
+      opts: [
+        "Bellek çıkarılmış notları, sürdürme konuşmanın kendisini taşır",
+        "Bellek tek oturumu, sürdürme tüm depoyu kapsar",
+        "İkisi aynı mekanizmanın iki adıdır",
+        "Bellek elle, sürdürme otomatik çalışır"
+      ],
+      a: [0],
+      why: "<b>İki bağımsız mekanizma.</b> Bellek, oturumlardan süzülmüş kalıcı notlardır ve depo kapsamındadır. Sürdürme ise belirli bir oturumun tam geçmişini geri getirir. Bellek otomatik, sürdürme ise senin komutunla çalışır — şıktaki ilişki tersine kurulmuş."
+    },
+    {
+      topic: "Oturum sürdürme",
+      q: "Bir haftalık aradan sonra uzun bir oturumu sürdürmenin maliyet açısından dezavantajı nedir?",
+      opts: [
+        "Tüm geçmiş yeniden işlenir; önbellek ıskalandığı için ilk istek pahalı olur",
+        "Sürdürülen oturumlar iki katı ücretlendirilir",
+        "Sürdürme, belleği sıfırlar ve yeniden oluşturur",
+        "Sürdürülen oturumlarda sıkıştırma çalışmaz"
+      ],
+      a: [0],
+      why: "<b>İstem önbelleğinin bir ömrü vardır; uzun aradan sonraki ilk istek onu ıskalar</b> ve tüm geçmiş yeniden işlenir. Bu yüzden iş bittiyse sürdürmek yerine yeni oturum açmak hem ucuz hem temizdir. Özel bir ücretlendirme çarpanı yoktur."
+    },
+    {
+      topic: "Uygulama",
+      q: "Ekibin tamamının uyması gereken yeni bir test kuralı belirlediniz. Nereye yazılmalı?",
+      opts: [
+        "Depoya işlenen bir kural dosyasına",
+        "Otomatik belleğe, ajana söyleyerek",
+        "Her geliştiricinin kendi kullanıcı ayarlarına",
+        "Oturum başında istemde tekrarlanarak"
+      ],
+      a: [0],
+      why: "<b>Bellek makineye özgüdür; ekip kuralı orada yaşayamaz.</b> Kullanıcı ayarları da kişiseldir ve yeni katılan kimse için geçerli olmaz. İstemde tekrarlamak sıkıştırmadan sağ çıkmaz. Depoya işlenen kural dosyası, herkese ulaşan tek yoldur."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ajanın kendi tuttuğu notlar bir kolaylıktır, ama yazarı sen olmadığın için denetlenmesi gerekir",
+        "Otomatik bellek, kural dosyalarının yerini alacak daha iyi bir mekanizmadır",
+        "Bellek kapatılmalıdır; her şey elle yazılmalıdır",
+        "Bellek ekip çapında tutarlılığı sağlamanın en iyi yoludur"
+      ],
+      a: [0],
+      why: "<b>Kolaylık ve denetim gerekliliği bir arada.</b> Bellek kural dosyasının yerini almaz — farklı bir işi vardır ve paylaşılmaz. Tamamen kapatmak da gereksiz bir aşırılıktır; doğru yaklaşım düzenli olarak açıp okumaktır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

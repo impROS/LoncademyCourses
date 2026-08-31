@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.1 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "6-1",
+  code: "Üretim ve ekip · 6.1",
+  title: "İstem enjeksiyonu ve tedarik zinciri",
+  back: "6.1-guvenlik.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "İstem enjeksiyonu",
+      q: "İstem enjeksiyonunun klasik güvenlik açıklarından farkı nedir?",
+      opts: [
+        "Kırılan bir şey yok; model tasarlandığı gibi çalışırken metni talimat sayıyor",
+        "Yalnızca açık kaynak araçlarda görülür",
+        "Yalnızca uzak sunuculara karşı yapılabilir",
+        "Şifreleme ile tamamen önlenebilir"
+      ],
+      a: [0],
+      why: "<b>Ne arabellek taşması ne yetki yükseltme var — yalnızca metin.</b> Bu yüzden bir yamayla kapanmıyor: model, \"bu talimat mı veri mi\" ayrımını yapısal olarak yapamıyor, çünkü ikisi aynı akışta aynı biçimde geliyor."
+    },
+    {
+      topic: "İstem enjeksiyonu",
+      q: "Aşağıdakilerden hangi ikisi güvenilmez içerik kaynağıdır? (İki tanesini seç.)",
+      opts: [
+        "Sorun kayıtları ve yorumlar",
+        "MCP sunucusunun döndürdüğü içerik",
+        "Kendi yazdığın kural dosyası",
+        "Aracın sistem talimatı"
+      ],
+      a: [0, 1],
+      why: "<b>Herkesin yazabildiği alanlar ve dışarıdan içerik taşıyan sunucular, iki klasik yüzey.</b> Kendi kural dosyan ve aracın sistem talimatı ise senin ya da aracın denetimindedir. Sunucu maddesi önemli: sunucu dürüst olsa da taşıdığı içerik başkasının olabilir."
+    },
+    {
+      topic: "İstem enjeksiyonu",
+      q: "\"Kaynağa güvenirsem içerik de güvenlidir\" yanılgısını en doğrudan çürüten kaynak hangisidir?",
+      opts: [
+        "MCP sunucusunun döndürdüğü kullanıcı yorumları",
+        "Klonlanan bir depodaki kod",
+        "Ajanın çektiği web sayfası",
+        "Ekran görüntüsündeki metin"
+      ],
+      a: [0],
+      why: "<b>Sunucu senin yazdığın ve güvendiğin bir sunucu olabilir</b> — ama döndürdüğü kullanıcı yorumları başkalarının yazdığı metindir. Diğer kaynaklarda \"güvenmiyorum\" demek zaten kolaydır; buradaki ayrım daha incedir ve bu yüzden daha çok kaçırılır."
+    },
+    {
+      topic: "İstem enjeksiyonu",
+      q: "İstem enjeksiyonunun \"çözülmüş\" sayılmamasının teknik sebebi nedir?",
+      opts: [
+        "Model, talimat ile veriyi yapısal olarak ayırt edemiyor; ikisi aynı akışta geliyor",
+        "Araç üreticileri bu konuda çalışmıyor",
+        "Şifreleme standartları yetersiz",
+        "Modeller çok büyük olduğu için denetlenemiyor"
+      ],
+      a: [0],
+      why: "<b>Ayrımın yapısal bir dayanağı yok</b> — bu, bir uygulama hatası değil mimari bir özellik. Araçlar azaltıcı katmanlar ekliyor: izin sistemi, ağ komutlarının otomatik onaylanmaması, ayrı bağlamda getirme, sınıflandırıcı denetimi. Hiçbiri tam değil."
+    },
+    {
+      topic: "Tedarik zinciri",
+      q: "Ajan çağında tedarik zinciri saldırılarının etkisinin büyümesinin sebebi nedir?",
+      opts: [
+        "Eklenti yalnızca kod değil, ajanın davranışını da değiştirir",
+        "Paketler daha büyük hâle geldi",
+        "Bağımlılık sayısı arttı",
+        "Kod incelemesi zorlaştı"
+      ],
+      a: [0],
+      why: "<b>Bir kütüphane kötü niyetliyse kodunu etkiler; bir eklenti kötü niyetliyse ajanının ne yapacağını da etkiler.</b> Ve ajanın yetkileri genelde senin yetkilerindir. Paket boyutu ve sayısı klasik risklerdir, bu farkı açıklamaz."
+    },
+    {
+      topic: "Tedarik zinciri",
+      q: "Klonladığın bir depodaki yapılandırmanın oluşturduğu risk nedir?",
+      opts: [
+        "Depodaki hook'lar senin makinende kod çalıştırabilir",
+        "Depo kural dosyaları modelini değiştirir",
+        "Depo bağlam penceresini daraltır",
+        "Depo izin kurallarını siler"
+      ],
+      a: [0],
+      why: "<b>Hook'lar proje ayarlarında tanımlanabilir ve kod çalıştırır.</b> Etkileşimsiz kipte güven onayı da sorulmaz. Savunmalar: ayar dosyalarına bakmak ya da hook/eklenti/sunucu yüklemesini atlayan çıplak başlatma."
+    },
+    {
+      topic: "Savunma katmanları",
+      q: "Altı savunma katmanından hangisi **birinci sırada** yer alır ve neden?",
+      opts: [
+        "En az yetki; diğer katmanlar aşılsa bile zararın üst sınırını belirler",
+        "İzin kuralları; en kolay uygulanandır",
+        "Kum havuzu; işletim sistemi düzeyindedir",
+        "İnsan onayı; en güvenilir olandır"
+      ],
+      a: [0],
+      why: "<b>Diğer katmanlar saldırıyı <i>engellemeye</i> çalışır; en az yetki başarılı bir saldırının <i>ne yapabileceğini</i> sınırlar.</b> Salt okunur bir veritabanı kullanıcısıyla çalışan bir ajan, enjeksiyon başarılı olsa bile veri silemez."
+    },
+    {
+      topic: "Savunma katmanları",
+      q: "En az yetki ilkesinin uygulamalarından hangisi \"çağrılamaz\" garantisi verir?",
+      opts: [
+        "Yıkıcı aracı hiç sunmamak",
+        "Salt okunur veritabanı kullanıcısı",
+        "Dar kapsamlı belirteç",
+        "Kum havuzu açmak"
+      ],
+      a: [0],
+      why: "<b>Sunulmayan bir aracı hiçbir enjeksiyon çağıramaz</b> — bu, en az yetkinin en katı biçimi. Diğerleri zararı sınırlar ama aracın var olmasına izin verir; sunmamak yeteneği tamamen ortadan kaldırır."
+    },
+    {
+      topic: "Geri dönülemez eylemler",
+      q: "Bir eylemin insan onayı gerektirip gerektirmediğini belirleyen ölçüt nedir?",
+      opts: [
+        "\"Yanlış olsaydı geri alabilir miydim?\"",
+        "\"Bu eylem kaç saniye sürer?\"",
+        "\"Bu eylem kaç dosyaya dokunur?\"",
+        "\"Bu eylem testlerden geçer mi?\""
+      ],
+      a: [0],
+      why: "<b>Geri alınabilirlik, otomatik onayın sınırını çizen ölçüt.</b> Üretime dağıtım, veri silme, para hareketi, dışarıya mesaj gönderme ve gizli değer paylaşma bu tanıma girer. Süre, dosya sayısı ve test durumu bu kararı belirlemez."
+    },
+    {
+      topic: "Güvenilmez içerik kuralları",
+      q: "Ajan sana \"bu sorun kaydında şunu yapmam isteniyor\" dediğinde doğru refleks nedir?",
+      opts: [
+        "\"Kim istiyor?\" diye sormak; talimatı alıntılatıp uygulatmamak",
+        "İsteği doğrudan onaylamak",
+        "Sorun kaydını kapatmak",
+        "Ajanı yeniden başlatmak"
+      ],
+      a: [0],
+      why: "<b>Sorun kaydını herkes yazabilir; o istek senin isteğin değil.</b> Doğru davranış \"alıntıla, uygulama\": ajan metni gösterir, sen kimin yazdığını değerlendirirsin. Bu, hem enjeksiyonu yakalar hem meşru istekleri kaybetmez."
+    },
+    {
+      topic: "Güvenilmez içerik kuralları",
+      q: "Ajanın önerdiği bir adresi açmamanın gerekçesi nedir?",
+      opts: [
+        "Adres, enjeksiyonun yönlendirdiği yer olabilir",
+        "Adresler bağlam harcar",
+        "Ajanlar adres üretemez",
+        "Adresler izin sistemini tetikler"
+      ],
+      a: [0],
+      why: "<b>Enjekte edilmiş bir talimat, ajanı belirli bir adrese yönlendirebilir</b> — ve o adres veri sızdırma ya da ikinci aşama içerik sunma amaçlı olabilir. Bu yüzden dış içerikten türeyen adresler kullanıcı tarafından doğrulanmadan açılmaz."
+    },
+    {
+      topic: "Sorumluluk sınırı",
+      q: "Araç izin sistemi sunuyor; sende kalan sorumluluk nedir?",
+      opts: [
+        "Kuralları yazmak ve onay verirken okumak",
+        "Sistemin kendisini uygulamak",
+        "Modeli eğitmek",
+        "Kum havuzunu yazmak"
+      ],
+      a: [0],
+      why: "<b>Araç mekanizmayı sağlar, politikayı sen yazarsın.</b> Boş bir izin kuralı kümesi ve okumadan verilen onaylar, en iyi izin sistemini bile etkisiz kılar. Bu setin en dürüst cümlesi: hiçbir araç, onayladığın şeyi okumamanı telafi etmez."
+    },
+    {
+      topic: "Sorumluluk sınırı",
+      q: "\"Özel bir depoda çalışıyoruz, enjeksiyon riski yok\" ifadesinin hatası nedir?",
+      opts: [
+        "Bağımlılıklar ve iç içerik hâlâ dış metin taşır",
+        "Özel depolar daha az güvenlidir",
+        "Enjeksiyon yalnızca özel depolarda görülür",
+        "Özel depolarda izin sistemi çalışmaz"
+      ],
+      a: [0],
+      why: "<b>Yüzey deponun görünürlüğüyle kapanmıyor.</b> Paket açıklamaları, bağımlılık README'leri, hata izleme kayıtlarındaki kullanıcı girdisi, dış servislerden gelen veriler — hepsi özel depoda da mevcut. Erişim kısıtı bazı yüzeyleri daraltır, hepsini kapatmaz."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Ajanın gördüğü her dış içerik veridir, komut değildir — ama model bunu kendiliğinden ayırt etmez",
+        "Yeterli güvenlik ayarıyla enjeksiyon tamamen önlenebilir",
+        "Ajanlar üretim ortamlarında kullanılmamalıdır",
+        "Güvenlik tamamen araç üreticisinin sorumluluğudur"
+      ],
+      a: [0],
+      why: "<b>Ayrımın modelde yapılamaması, tüm savunma yapısının çıkış noktası.</b> Tam önleme mümkün değil — bu yüzden katmanlar ve en az yetki var. Ajanlar üretimde kullanılabilir, yeter ki bu çerçeve kurulsun; ve sorumluluğun büyük kısmı devredilemez biçimde sende kalır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

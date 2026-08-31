@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — VibeCoding</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2-2",
+  code: "Proje kuralları · 2.2",
+  title: "Kural dosyaları ve yola göre kapsam",
+  back: "2.2-kural-dosyalari.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Kapsamın faydası",
+      q: "Ana kural dosyanı beş parçaya bölüp `.claude/rules/` altına koydun ama hiçbirine `paths` yazmadın. Sonuç ne olur?",
+      opts: [
+        "Bağlam maliyeti aynı kalır; yalnızca düzen kazanılır",
+        "Bağlam maliyeti beşte birine iner",
+        "Kurallar artık hiç yüklenmez",
+        "Kurallar yalnızca ilgili dosyalara dokununca yüklenir"
+      ],
+      a: [0],
+      why: "<b>Tasarrufu sağlayan şey bölme değil, kapsamlamadır.</b> `paths` olmayan kural dosyası her oturumda, tamamıyla yüklenir — yani ana kural dosyasıyla aynı vergiyi öder. Bölmek yine de değerlidir: ekip ayrı ayrı bakım yapabilir."
+    },
+    {
+      topic: "Kapsamın faydası",
+      q: "Yola kapsanmış kural dosyalarının sağladığı iki fayda hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Talimatların konu konu ayrı dosyalarda tutulabilmesi",
+        "Yalnızca eşleşen dosyalarla çalışılırken bağlama girmesi",
+        "Kuralların zorlama katmanına taşınması",
+        "Kuralların sıkıştırmadan her koşulda sağ çıkması"
+      ],
+      a: [0, 1],
+      why: "<b>Düzen ve kapsam.</b> Kurallar hâlâ bağlamdır, zorlama değil — zorlama isteyen şey hook'tur. Ve kapsanmış kurallar sıkıştırmadan <i>kendiliğinden</i> sağ çıkmaz: ancak eşleşen dosya tekrar okunursa geri gelirler."
+    },
+    {
+      topic: "paths ön bilgisi",
+      q: "Kapsanmış bir kural tam olarak hangi anda bağlama yüklenir?",
+      opts: [
+        "Ajan, desene eşleşen bir dosyayı okuduğunda",
+        "Her araç çağrısından önce",
+        "Oturumun başında, diğer kurallarla birlikte",
+        "Kullanıcı kuralı açıkça çağırdığında"
+      ],
+      a: [0],
+      why: "<b>Tetikleyici, eşleşen dosyanın okunmasıdır.</b> Bu yüzden ajan o dosyaya hiç dokunmazsa kural hiç yüklenmez — istenen davranış budur, ama \"kuralımı neden görmedi?\" sorusunun da cevabıdır. Her araç çağrısında denetim yapılsaydı kapsamın maliyet avantajı kalmazdı."
+    },
+    {
+      topic: "paths ön bilgisi",
+      q: "Bir kural dosyasında `paths` ön bilgisi **yoksa** ne olur?",
+      opts: [
+        "Her oturumda yüklenir; ana kural dosyasıyla aynı maliyeti taşır",
+        "Dosya hiç yüklenmez",
+        "Yalnızca kök dizindeki dosyalara uygulanır",
+        "Ajan hangi dosyalara uygulanacağını kendi tahmin eder"
+      ],
+      a: [0],
+      why: "<b>`paths` yokluğu \"her zaman geçerli\" anlamına gelir</b> ve dosya koşulsuz yüklenir. Bu bilinçli bir seçim olabilir: sıkıştırmadan sağ çıkması gereken kritik kurallar için tam olarak istenen davranıştır."
+    },
+    {
+      topic: "Kapsam kararı",
+      q: "\"Göç dosyaları yalnızca eklenir, var olanlar değiştirilmez\" kuralı nereye yazılmalı?",
+      opts: [
+        "Göç klasörüne kapsanmış bir kural dosyasına",
+        "Ana kural dosyasına",
+        "Bir skill'e",
+        "Kullanıcı düzeyi kurallara"
+      ],
+      a: [0],
+      why: "<b>Yalnızca belirli dosyalarla çalışırken anlamlı olan bir kısıt</b> — kapsamlamanın tam örneği. Ana kural dosyasına yazmak her oturuma gereksiz yük bindirir; skill ara sıra çağrılan yordamlar içindir; kullanıcı düzeyi ise projeye özgü bir kuralın yeri değildir."
+    },
+    {
+      topic: "Kapsam kararı",
+      q: "Karar üçlüsüne göre \"bazen gereken çok adımlı bir yordam\" nereye yazılır?",
+      opts: [
+        "Skill'e",
+        "Ana kural dosyasına",
+        "Kapsanmış kural dosyasına",
+        "Hook'a"
+      ],
+      a: [0],
+      why: "<b>Her zaman → ana dosya; bazı dosyalarda → kapsanmış kural; bazen → skill; kesinlikle → hook.</b> Yordam ara sıra gerektiği için skill'e girer ve yalnızca çağrıldığında yüklenir. Hook ise yordam değil, olay tetiklemeli garanti içindir."
+    },
+    {
+      topic: "Öncelik",
+      q: "Kullanıcı düzeyi kurallar ile proje kuralları çakışırsa hangisi önceliklidir?",
+      opts: [
+        "Proje kuralları; sonra yüklendikleri için daha yakın okunurlar",
+        "Kullanıcı kuralları; kişisel ayarlar her zaman kazanır",
+        "İlk tanımlanan kazanır",
+        "Çakışma durumunda ikisi de yok sayılır"
+      ],
+      a: [0],
+      why: "<b>Yükleme sırası kullanıcıdan projeye doğrudur ve sonra yüklenen daha yakın okunur.</b> Bu, genel ilkeyle tutarlıdır: dar kapsam geniş kapsamı geçer. Yine de bu bir <i>eğilim</i>dir, katı bir kural değil — bu yüzden çelişki bırakmamak en iyisidir."
+    },
+    {
+      topic: "Öncelik",
+      q: "Aynı kural kümesini birden çok projede kullanmanın yolu nedir?",
+      opts: [
+        "Ortak dizini ya da dosyayı `.claude/rules/` içine sembolik bağla bağlamak",
+        "Kural dosyasını her projeye elle kopyalamak tek yoldur",
+        "Kuralları kullanıcı düzeyine taşımak dışında yol yoktur",
+        "Kurallar proje dışından yüklenemez"
+      ],
+      a: [0],
+      why: "<b>Kural dizini sembolik bağları çözer ve normal biçimde yükler</b>, hem tek dosya hem tüm dizin için. Kullanıcı düzeyine taşımak da bir seçenektir ama o zaman kural <i>tüm</i> projelere uygulanır — seçici paylaşım istiyorsan bağ daha uygundur."
+    },
+    {
+      topic: "Sıkıştırma davranışı",
+      q: "Uzun bir oturumda kapsanmış bir kural, sıkıştırmadan sonra neden uygulanmayı bırakabilir?",
+      opts: [
+        "Ancak eşleşen dosya tekrar okunursa geri yüklenir; okunmazsa yürürlükte olmaz",
+        "Sıkıştırma tüm kural dosyalarını kalıcı olarak siler",
+        "Kapsanmış kurallar oturum başına yalnızca bir kez yüklenebilir",
+        "Sıkıştırma `paths` ön bilgisini bozar"
+      ],
+      a: [0],
+      why: "<b>Kapsanmış kurallar mesaj geçmişine, tetikleyen dosya okunduğunda girer</b> — dolayısıyla sıkıştırma onları da özetler. Geri gelmeleri için tetikleyicinin tekrarlanması gerekir. Kapsanmamış kurallar ise diskten koşulsuz yeniden yüklenir."
+    },
+    {
+      topic: "Sıkıştırma davranışı",
+      q: "Bir kuralın sıkıştırmadan kesin olarak sağ çıkması gerekiyorsa ne yaparsın?",
+      opts: [
+        "`paths` ön bilgisini kaldırır ya da kuralı ana kural dosyasına taşırsın",
+        "Kurala daha fazla desen eklersin",
+        "Kuralı bir skill'e dönüştürürsün",
+        "Kural dosyasını salt okunur yaparsın"
+      ],
+      a: [0],
+      why: "<b>Kapsamsız kurallar ve ana kural dosyası diskten yeniden yüklenir.</b> Bedeli her oturumda bağlam; kararı riske göre verirsin. Desen eklemek tetikleyiciyi genişletir ama garanti vermez; skill ise yalnızca çağrıldığında yüklenir, daha da zayıftır."
+    },
+    {
+      topic: "Yaygın hatalar",
+      q: "Bir geliştirici kapsanmış kural dosyasına `paths: [\"**/*\"]` yazdı. Sonuç ne?",
+      opts: [
+        "Kapsamın anlamı kalmadı; pratikte her oturumda yüklenen bir kurala dönüştü",
+        "Kural hiçbir dosyada tetiklenmez",
+        "Yalnızca kök dizindeki dosyalarda tetiklenir",
+        "Kural artık zorlayıcı hâle gelir"
+      ],
+      a: [0],
+      why: "<b>Her şeye eşleşen bir desen, kapsamlamanın amacını ortadan kaldırır.</b> Elde kalan tek fayda düzendir. Eğer istenen buysa `paths` satırını hiç yazmamak daha dürüst ve daha öngörülebilirdir — çünkü kapsamsız kural sıkıştırmadan da sağ çıkar."
+    },
+    {
+      topic: "Yaygın hatalar",
+      q: "\"Kuralı yazdım ama `/context` ekranında görünmüyor\" durumunda ilk kontrol edilecek şey nedir?",
+      opts: [
+        "Kuralın kapsanmış olup olmadığı ve eşleşen dosyaya henüz dokunulup dokunulmadığı",
+        "Kural dosyasının salt okunur olup olmadığı",
+        "Modelin kural dosyalarını destekleyip desteklemediği",
+        "Kural dosyasının git'e işlenmiş olup olmadığı"
+      ],
+      a: [0],
+      why: "<b>En yaygın açıklama, kuralın kapsanmış olması ve tetikleyicinin henüz gerçekleşmemesidir</b> — bu bir arıza değil, tasarlanmış davranıştır. Dosya izinleri, model desteği ve git durumu yükleme davranışını belirlemez."
+    },
+    {
+      topic: "Uygulama",
+      q: "Bir ekip, TypeScript bileşen dosyaları için özel bir kanca kullanım kuralı yazmak istiyor. En uygun yapı hangisidir?",
+      opts: [
+        "`paths: [\"**/*.tsx\"]` ile kapsanmış bir kural dosyası",
+        "Ana kural dosyasına eklenen bir madde",
+        "Kullanıcı düzeyi kural dosyası",
+        "Bileşen dosyalarına yazılan kod yorumları"
+      ],
+      a: [0],
+      why: "<b>Dile ve dosya türüne özgü bir kural, kapsamlamanın ana kullanım alanıdır.</b> Ana dosyaya eklemek her oturuma yük bindirir; kullanıcı düzeyi projeye özgü bir kuralın yeri değildir; kod yorumları ise ancak o dosya okunduğunda görülür ve ekip için tutarlı bir kaynak oluşturmaz."
+    },
+    {
+      topic: "Ana fikir",
+      q: "Bu konunun büyük fikri hangisidir?",
+      opts: [
+        "Bir kural her zaman geçerli değilse, her zaman yüklü de olmamalı",
+        "Kuralları ne kadar çok dosyaya bölersen bağlam o kadar azalır",
+        "Kapsanmış kurallar, hook'ların hafif bir alternatifidir",
+        "Kural dosyaları yalnızca büyük tek depolarda anlamlıdır"
+      ],
+      a: [0],
+      why: "<b>Kapsam, \"yazılı olsun ama her zaman ödeme yapma\" isteğinin çözümü.</b> Bölme tek başına maliyeti düşürmez. Kapsanmış kural hâlâ bir ricadır, hook'un yerini tutmaz. Ve küçük projelerde de dile özgü kurallar kapsamlanmaya değer."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
