@@ -24,6 +24,11 @@ sonundaki testi çözersen, sınava girmek için başka bir kaynağa ihtiyacın 
 
 ---
 
+> **Terim tanımadıysan** [kavram sözlüğüne](00-baslangic/03-kavram-sozlugu.md) bak —
+> 38 terim, her biri sınavda göreceğin İngilizce karşılığıyla.
+
+---
+
 ## Sınav künyesi
 
 | | |
@@ -52,6 +57,7 @@ Her konuyu bitirdiğinde kutucuğu işaretle. Test skorunu yanına yaz.
 | [ ] | [Sınav künyesi, oyunun kuralları ve trickler](00-baslangic/00-sinav-kunyesi.md) | — | — |
 | [ ] | [Ortam kurulumu — Jira/Xray + Java/JUnit lab ortamı](00-baslangic/01-kurulum.md) | — | — |
 | [ ] | [Kayıt ve satın alma — ne alınmalı, ne alınmamalı](00-baslangic/02-kayit-ve-satin-alma.md) | — | — |
+| 📖 | [Kavram sözlüğü](00-baslangic/03-kavram-sozlugu.md) | başvuru | — |
 | ❓ | [Soru & cevap defteri](soru-cevap.md) | başvuru | — |
 
 ### 01 — Fundamentals of Testing *(8/40 puan · 180 dk)*
