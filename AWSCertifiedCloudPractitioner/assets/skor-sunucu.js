@@ -17,7 +17,7 @@ const path = require('path');
 const url  = require('url');
 
 const ROOT = path.resolve(__dirname, '..');
-const PORT = Number(process.env.SKOR_PORT || 8899);
+const PORT = Number(process.env.SKOR_PORT || 8898);
 
 const MIME = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
   '.css':'text/css; charset=utf-8', '.md':'text/plain; charset=utf-8', '.json':'application/json' };
