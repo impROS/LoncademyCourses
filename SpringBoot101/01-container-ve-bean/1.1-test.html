@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.1",
+  code: "Container ve bean'ler · 1.1",
+  title: "Container: nesneleri kim kuruyor",
+  back: "1.1-container-nedir.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Dert: kurulum kodu nereye gidecek",
+      q: "Spring'siz bir <code>main</code> metodunda 40 nesneyi elle kuruyorsun ve <code>siparis</code> satırını <code>stok</code> satırından önce yazdın. Ne olur, ve container bu işi nasıl devralıyor?",
+      opts: [
+        "Derlenmez; container ise constructor'lara bakıp dependency graph çıkarır ve sırayı kendisi hesaplar",
+        "Derlenir ama çalışırken <code>NullPointerException</code> alırsın; container bu yüzden alanları sonradan doldurur",
+        "Sorun olmaz, Java satır sırasını kendisi düzeltir; container da aynı davranışı taklit eder",
+        "Derlenmez; container ise sınıfları alfabetik sıraya dizerek kurar"
+      ],
+      a: [0],
+      why: "<b>Doğru: sıralama bilgisi zaten constructor'larda yazılı.</b> <code>SiparisServisi(StokIstemcisi, ...)</code> yazan biri \"önce <code>StokIstemcisi</code> lazım\" demiş oluyor; container bunu okuyup grafiği çıkarıyor. En yakın çeldirici alfabetik sıra — container adlara değil, <i>bağımlılıklara</i> bakar; alfabetik olsaydı iki sınıfın adını değiştirmek uygulamayı bozardı. <b>Kanca:</b> sırayı sen yazma, hesaplat."
+    },
+    {
+      topic: "ApplicationContext: container'ın kendisi",
+      q: "Container'ın elle tutulur bir nesne olduğunu görmek istiyorsun. Kodda ona nasıl erişirsin?",
+      opts: [
+        "<code>SpringApplication.run(...)</code> onu geri döndürür: <code>var container = SpringApplication.run(App.class, args);</code>",
+        "<code>ApplicationContext.getInstance()</code> statik metoduyla",
+        "Erişilemez; container yalnızca çalışma anında var olan iç bir yapıdır",
+        "<code>new ApplicationContext()</code> ile kendi kopyanı kurarsın"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>run(...)</code> container'ı döndürür.</b> Çoğu örnekte bu dönüş değeri kullanılmadığı için container'ın sorgulanabilir sıradan bir Java nesnesi olduğu gözden kaçar. En yakın çeldirici \"erişilemez\" — erişilir, ve öğrenirken erişmelisin: <code>getBeanDefinitionCount()</code>, <code>getBeanDefinitionNames()</code> hepsi elinin altında. <code>ApplicationContext</code> bir arayüz olduğu için <code>new</code> ile de kurulmaz. <b>Kanca:</b> <code>run</code> satırının solu boşsa bir şey kaçırıyorsun."
+    },
+    {
+      topic: "ApplicationContext: container'ın kendisi",
+      q: "Bir servisin içine <code>container.getBean(SiparisServisi.class)</code> yazan bir kod gözden geçiriyorsun. Bu neden üretim kodunda kabul edilmez, <code>getBean</code> ne zaman doğrudur?",
+      opts: [
+        "Service locator kalıbıdır — sınıfı container'a bağlar ve test edilemez hâle getirir; <code>getBean</code> öğrenirken ve hata ararken kullanılır",
+        "Yavaş çalışır — her çağrıda container bean'i yeniden kurar; yalnızca açılışta çağrılmalıdır",
+        "Derlenmez, çünkü <code>ApplicationContext</code> uygulama sınıflarına inject edilemez",
+        "Sorun değildir; injection'ın kısa yazılışıdır ve her yerde kullanılabilir"
+      ],
+      a: [0],
+      why: "<b>Doğru: service locator, injection'ın tersidir.</b> Injection'da sınıf container'ı hiç tanımaz; <code>getBean</code>'de tanımak zorunda kalır, testte de container kurman gerekir. En yakın çeldirici \"yavaş\" — hız sorunu değil; singleton bean zaten hazırdır ve <code>getBean</code> onu haritadan verir. Sorun bağımlılığın <i>yönü</i>. <b>Kanca:</b> <code>getBean</code> teşhis aletidir, montaj aleti değil."
+    },
+    {
+      topic: "Bean definition ile bean farkı",
+      q: "<code>getBeanDefinitionCount()</code> 180 döndürdü. Bir arkadaşın \"demek ki container'da 180 nesne var\" diyor. Nasıl düzeltirsin?",
+      opts: [
+        "180 <b>tanım</b> vardır; her tanım bir tariftir, ondan kaç nesne çıkacağı scope ayarına bağlıdır",
+        "180 nesne vardır; her tanımdan tam olarak bir nesne kurulur",
+        "Sayı yalnızca senin yazdığın sınıfları sayar, çerçevenin bean'lerini saymaz",
+        "Sayı yanlıştır; doğrusu için <code>getBeanDefinitionNames().length</code> kullanılmalıdır"
+      ],
+      a: [0],
+      why: "<b>Doğru: tanım = tarif, bean = tabaktaki yemek.</b> Metodun adı zaten bunu söylüyor: <code>BeanDefinition</code>Count. En yakın çeldirici \"her tanımdan tam bir nesne\" — bu yalnızca singleton scope için doğrudur; prototype bir tanımdan istendiği kadar nesne çıkar, üstelik container onları saymaz bile. <b>Kanca:</b> tarif tektir, tabak sayısı scope'a bağlıdır (1.5)."
+    },
+    {
+      topic: "Bean definition ile bean farkı",
+      q: "Kendi <code>@Service</code> sınıfını ekledikten sonra <code>getBeanDefinitionCount()</code> kaç artar?",
+      opts: [
+        "1",
+        "0 — kendi sınıfların tanım olarak sayılmaz",
+        "2 — sınıf ve onun proxy'si ayrı sayılır",
+        "Sınıfın bağımlılık sayısı kadar"
+      ],
+      a: [0],
+      why: "<b>Doğru: bir sınıf, bir tanım.</b> Pratikteki ölçümün de gösterdiği gibi sayı tam 1 artar. En yakın çeldirici \"2 — sınıf ve proxy'si\" — proxy, tanım değil, aynı tanımdan kurulan nesnenin sarmalanmış hâlidir; tanım sayısını değiştirmez. <b>Kanca:</b> tarif eklemek tarif sayısını artırır, tabağı süslemek artırmaz."
+    },
+    {
+      topic: "Container ne zaman ve kaç kere çalışır",
+      q: "Eksik bir bağımlılık yüzünden uygulaman hiç ayağa kalkmadı. Ekipten biri \"keşke çalışsaydı da hatayı ilk istekte görseydik\" diyor. Neden bu bir avantajdır?",
+      opts: [
+        "Yapılandırma hatası dağıtım anında ortaya çıkar; üretimde gece yarısı gelen bir sürpriz olmaz",
+        "Açılışta patlayan hatalar otomatik olarak geri alma (rollback) tetikler",
+        "Container açılışta hataları toplayıp tek seferde günlüğe yazar, sonra devam eder",
+        "Açılışta patlamak bir avantaj değildir; <code>@Lazy</code> ile hepsini ertelemek daha iyidir"
+      ],
+      a: [0],
+      why: "<b>Doğru: erken hata = ucuz hata.</b> Yapılandırma hataları açılışta patlar, ilk istekte değil; bu bir kusur değil, tasarım tercihidir. En yakın çeldirici <code>@Lazy</code> önerisi — <code>@Lazy</code> tam da bu güvenceyi <i>kaybettirir</i>: hata bean ilk istendiğinde, yani belki üretimde çıkar. <b>Kanca:</b> uygulamanın açılmaması, bir arıza değil, erken uyarıdır."
+    },
+    {
+      topic: "Container ne zaman ve kaç kere çalışır",
+      q: "\"Uygulama açıldı, demek ki bütün bean'ler doğrulandı\" cümlesi hangi iki bean türü yüzünden yanlıştır? (İki tanesini seç.)",
+      opts: [
+        "<code>@Lazy</code> işaretli bean'ler",
+        "Prototype scope'undaki bean'ler",
+        "<code>@Bean</code> metoduyla tanımlanan bean'ler",
+        "Auto-configuration'ın kurduğu bean'ler"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru: <code>@Lazy</code> ve prototype.</b> İkisi de açılışta kurulmaz, dolayısıyla hataları ilk kullanımda çıkar. En yakın çeldirici <code>@Bean</code> metotları — onlar da singleton ve erken kurulur; tanımlama <i>yolu</i> ile kurulma <i>zamanı</i> ayrı konulardır. <b>Kanca:</b> açılış yalnızca erken kurulan bean'leri doğrular."
+    },
+    {
+      topic: "Container ne zaman ve kaç kere çalışır",
+      q: "Container'ın çalışma aşamasında (uygulama istek karşılarken) ne olur?",
+      opts: [
+        "Hazır bean kullanılır; container yeni nesne kurmaz",
+        "Her istek için ilgili bean'ler yeniden kurulur",
+        "Container her istekte dependency graph'ı yeniden çözer",
+        "Container uykuya geçer; bean'ler artık container'dan bağımsız çalışır"
+      ],
+      a: [0],
+      why: "<b>Doğru: açılıştan sonra container yeni bean kurmaz, hazır olanı verir.</b> Bunun en kritik sonucu 1.5'te karşına çıkacak: singleton bir bean'in alanında her istekte değişen bir değer saklamak sessiz bir hatadır, çünkü o alan bütün kullanıcılar arasında paylaşılır. En yakın çeldirici \"her istekte yeniden kurulur\" — bu tam olarak <i>olmayan</i> şey ve pek çok hatanın kaynağı bu yanlış varsayımdır. <b>Kanca:</b> açılış → çalışma → kapanış; nesne kurma işi yalnızca birincisindedir."
+    },
+    {
+      topic: "Container'ın açılışta yaptığı iş, sırasıyla",
+      q: "Açılışta <code>required a bean of type '...' that could not be found</code> hatası aldın. Container hangi adımda takıldı ve bu ne demek?",
+      opts: [
+        "Dependency graph'ın çözüldüğü adımda — bean ya hiç yok ya da tanınmıyor",
+        "Component scan adımında — taranan paketlerde hiç sınıf bulunamadı",
+        "Nesnelerin kurulup inject edildiği adımda — bir bean'in constructor'u exception attı",
+        "Web sunucusunun başlatıldığı adımda — port zaten kullanımda"
+      ],
+      a: [0],
+      why: "<b>Doğru: 4. adım, dependency graph'ın çözülmesi.</b> \"could not be found\" = sıfır aday. En yakın çeldirici tarama adımı — tarama <i>sessizdir</i>: bulunmayan sınıf hata vermez, yok sayılır; hata bir adım sonra, o bean birine lazım olduğunda çıkar. Diğer iki şıkkın kendi mesajları vardır (<code>form a cycle</code>, <code>Port 8080 was already in use</code>). <b>Kanca:</b> mesajı ezberle, adım adlarını sadece tanı."
+    },
+    {
+      topic: "Container'ın açılışta yaptığı iş, sırasıyla",
+      q: "Açılışta <code>A bean with that name has already been defined</code> hatası çıktı. Bu hangi adımın hatasıdır?",
+      opts: [
+        "Bean definition'ların kaydedildiği adım — aynı ada sahip iki tanım var",
+        "Dependency graph'ın çözüldüğü adım — aynı türden iki aday var",
+        "Auto-configuration adımı — koşullar çelişti",
+        "<code>@PostConstruct</code> adımı — başlangıç metodu iki kez çağrıldı"
+      ],
+      a: [0],
+      why: "<b>Doğru: kayıt adımı.</b> Bean <i>adları</i> container genelinde benzersizdir; çakışma daha nesne kurulmadan, tanım kaydedilirken yakalanır. En yakın çeldirici \"aynı türden iki aday\" — o bambaşka bir hatadır (<code>required a single bean, but 2 were found</code>) ve aynı <i>türden</i> iki bean tamamen meşrudur; yasak olan aynı <i>ad</i>. <b>Kanca:</b> tür çoğalabilir, ad çoğalamaz."
+    },
+    {
+      topic: "@SpringBootApplication ne açıyor",
+      q: "<code>@SpringBootApplication</code> hangi üç anotasyonun kısaltmasıdır? (Üç tanesini seç.)",
+      opts: [
+        "<code>@Configuration</code>",
+        "<code>@ComponentScan</code>",
+        "<code>@EnableAutoConfiguration</code>",
+        "<code>@EnableWebMvc</code>"
+      ],
+      a: [0, 1, 2],
+      why: "<b>Doğru üçlü: <code>@Configuration</code> + <code>@ComponentScan</code> + <code>@EnableAutoConfiguration</code>.</b> Sırasıyla: bu sınıf da bir yapılandırma kaynağıdır, bu paketten aşağı bean ara, classpath'te ne varsa ona bakıp karar ver. En yakın çeldirici <code>@EnableWebMvc</code> — web kurulumu bir anotasyondan değil, classpath'teki bağımlılıktan doğar; zaten auto-configuration'ın işidir. <b>Kanca:</b> tek anotasyon gibi görünen şey üç işi birden açar, ve sorunların çoğu ortadakinden çıkar."
+    },
+    {
+      topic: "@SpringBootApplication ne açıyor",
+      q: "Ana sınıfın <code>tr.sirket.app</code> paketinde, servisin <code>tr.sirket.servis</code> paketinde. Açılışta <code>required a bean of type 'tr.sirket.servis.SiparisServisi' that could not be found</code> alıyorsun. Sebep nedir?",
+      opts: [
+        "Tarama ana sınıfın paketinden aşağı iner; <code>servis</code> kardeş pakettir, hiç taranmaz",
+        "Servis sınıfında <code>@Autowired</code> eksik olduğu için container onu kaydetmemiştir",
+        "İki paket aynı üst pakette olduğu için bean adları çakışmıştır",
+        "Servis sınıfı <code>public</code> olmadığı için tarama onu atlamıştır"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@ComponentScan</code> bulunduğu sınıfın paketinden başlar ve yalnızca <i>aşağı</i> iner.</b> <code>app</code> ile <code>servis</code> kardeştir, biri diğerinin altında değildir. En yakın çeldirici \"<code>@Autowired</code> eksik\" — bir sınıfı bean yapan şey <code>@Service</code>/<code>@Component</code>'tir; <code>@Autowired</code> bean'e bir şey <i>vermek</i> içindir, onu kaydetmek için değil. <b>Kanca:</b> hata mesajı sebebi söylemez: \"bulamadım\" der, \"o paketi taramıyorum\" demez."
+    },
+    {
+      topic: "@SpringBootApplication ne açıyor",
+      q: "Yukarıdaki paket sorununu çözmenin, konuda anlatılan doğrudan yolu hangisidir?",
+      opts: [
+        "Ana sınıfı ortak üst pakete (<code>tr.sirket</code>) taşı; iki paket de altında kalır",
+        "Servis sınıfını ana sınıfın dosyasına taşı",
+        "<code>spring.main.allow-bean-definition-overriding=true</code> ayarını aç",
+        "Servisi <code>@Bean</code> metoduna çevir; <code>@Bean</code> metotları taramadan bağımsızdır"
+      ],
+      a: [0],
+      why: "<b>Doğru: ana sınıfı yukarı taşı, tarama ikisini de kapsasın.</b> En yakın çeldirici <code>@Bean</code>'e çevirmek — <code>@Bean</code> metodu da bir <code>@Configuration</code> sınıfının içindedir ve o sınıfın <i>kendisi</i> taranmak zorundadır; sorunu bir kat aşağı taşımış olursun. Üçüncü şık ise bambaşka bir sorunun (ad çakışması) ayarıdır ve zaten açılmaması gereken bir ayardır. <b>Kanca:</b> paket sorununun çözümü pakette olur, ayarda değil."
+    },
+    {
+      topic: "@SpringBootApplication ne açıyor",
+      q: "Bir sınıftan <code>@Service</code> satırını sildin. Sınıf hâlâ derleniyor ama <code>getBean</code> çağrısı <code>No qualifying bean of type '...' available</code> veriyor. Bu neyi gösterir?",
+      opts: [
+        "Bean olmak, var olmak değildir — sınıf ortada durur ama container onu tanımıyorsa yoktur",
+        "Sınıf silinmiştir; derleyici önbelleği eskimiştir",
+        "Bean vardır ama henüz kurulmamıştır; ikinci çağrıda gelecektir",
+        "<code>getBean</code> yalnızca <code>@Bean</code> metotlarıyla tanımlanmış bean'leri görebilir"
+      ],
+      a: [0],
+      why: "<b>Doğru: bean olmak, var olmak değildir.</b> Sınıf derleniyor, JVM onu yüklüyor, ama container'ın haritasında kaydı yok — dolayısıyla injection, ayar okuma, ileride <code>@Transactional</code> gibi hiçbir şey işlemez. En yakın çeldirici \"ikinci çağrıda gelecek\" — container açılıştan sonra yeni tanım keşfetmez. <b>Kanca:</b> bu cümleyi kursun sonuna kadar hatırla; 201 ve 301'deki \"neden çalışmıyor\" sorularının çoğunun cevabı budur."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

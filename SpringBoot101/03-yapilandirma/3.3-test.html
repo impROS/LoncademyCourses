@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.3 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.3",
+  code: "Yapılandırma · 3.3",
+  title: "Profiller",
+  back: "3.3-profiller.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "En sade hâl: profil dosyaları",
+      q: "<code>application.properties</code> dört ayar içeriyor (<code>magaza-adi</code>, <code>zaman-asimi</code>, <code>bekleme</code>, <code>sunucular[0]</code>). <code>application-uretim.properties</code> yalnızca ilk ikisini yazıyor. <code>uretim</code> profili açıkken <code>bekleme</code> ve <code>sunucular</code> ne olur?",
+      opts: [
+        "Tabandan gelmeye devam eder: <code>PT45S</code> ve <code>[a.sirket.com]</code>",
+        "<code>null</code> ve boş liste olur; profil dosyası ana dosyanın yerine geçer",
+        "Bağlama başarısız olur; profil dosyası eksik anahtarlar yüzünden açılışı durdurur",
+        "Tip varsayılanlarına düşer: <code>PT0S</code> ve boş liste"
+      ],
+      a: [0],
+      why: "<b>Profil dosyası tabanın üzerine biner, yerine geçmez.</b> Ölçümde <code>uretim</code> profiliyle <code>magazaAdi</code> ve <code>zamanAsimi</code> değişti, <code>bekleme=PT45S</code> ve <code>sunucular=[a.sirket.com]</code> aynen kaldı. En yakın çeldirici ikinci şık: \"profil dosyası ana dosyayı değiştirir\" sanısı, insanların profil dosyasına tüm ayarları kopyalamasının sebebidir. <b>Kanca:</b> profil dosyasına yalnızca <b>farkı</b> yaz."
+    },
+    {
+      topic: "En sade hâl: profil dosyaları",
+      q: "Bir ekip her profil dosyasına ayarların tamamını kopyalıyor ve bugün her şey çalışıyor. Bu alışkanlık hakkında hangi iki şey doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Tabana yeni bir ayar eklendiğinde profil dosyalarına eklemeyi unutan kişi sessiz bir tutarsızlık yaratır",
+        "Doğrusu, profil dosyasına yalnızca tabandan farklı olan anahtarları yazmaktır",
+        "Aynı anahtarın hem tabanda hem profil dosyasında bulunması açılışta çakışma hatası verir",
+        "Kopyalanan ayarlar tabandakileri değil birbirlerini ezer, bu yüzden okuma sırası belirsizleşir"
+      ],
+      a: [0, 1],
+      why: "<b>Kopyalama, tabanla profil arasındaki bağı koparır:</b> tabana eklenen yeni ayar profil dosyalarına yazılmayınca ortamlar sessizce ayrışır — kural bu yüzden \"yalnızca farkı yaz\". En yakın çeldirici üçüncü şık: aynı anahtarın iki dosyada bulunması tamamen normaldir ve hata vermez; ezme mekanizmasının işleyiş biçimi budur, arıza değil. <b>Kanca:</b> yazmadığın anahtar tabandan gelir; yazdığın anahtar senin bakımına kalır."
+    },
+    {
+      topic: "En sade hâl: profil dosyaları",
+      q: "<code>test</code> profili için ayar dosyasının adı ne olmalıdır?",
+      opts: [
+        "<code>application-test.properties</code>",
+        "<code>test-application.properties</code>",
+        "<code>application.test.properties</code>",
+        "<code>application-profile-test.properties</code>"
+      ],
+      a: [0],
+      why: "<b>Kalıp: <code>application-&lt;profil&gt;.properties</code></b>. Profil adı dosya adının içinde tireden sonra gelir. En yakın çeldirici <code>application.test.properties</code>: nokta ayar dosyalarında anahtar ayracıdır, dosya adında profil ayracı değildir — Spring bu dosyayı hiçbir profille ilişkilendirmez ve <b>hata da vermez</b>, sadece okumaz. <b>Kanca:</b> önce <code>application</code>, sonra tire, sonra profil adı."
+    },
+    {
+      topic: "Profil nasıl açılır",
+      q: "Aynı imajı üç ortamda çalıştıran bir Kubernetes dağıtımında profili açmanın yolu hangisidir?",
+      opts: [
+        "Ortam değişkeni: <code>SPRING_PROFILES_ACTIVE=uretim</code>",
+        "<code>application.properties</code> içine <code>spring.profiles.active=uretim</code> yazmak",
+        "Ortam başına ayrı imaj üretip profili yapı zamanında sabitlemek",
+        "Ayar sınıfına <code>@Profile(\"uretim\")</code> yazmak"
+      ],
+      a: [0],
+      why: "<b>Docker ve Kubernetes'te yol ortam değişkenidir</b>; imajı bir kere üretir, üç ortamda farklı <code>SPRING_PROFILES_ACTIVE</code> ile çalıştırırsın. En yakın çeldirici ikinci şık: gerçekten profili açar ama <b>varsayılan olarak</b> açar ve ortam adını kaynak koda gömer — dışarıdan ezmek isteyen herkesin bunu bilmesi gerekir. <code>@Profile</code> ise profili <b>açmaz</b>, açık profile göre bean seçer. <b>Kanca:</b> kaynak kodda bir ortam adı görüyorsan dur ve düşün."
+    },
+    {
+      topic: "Profil nasıl açılır",
+      q: "<code>--spring.profiles.active=uretim,izleme</code> ile başlattın. Her iki profil dosyasında da <code>siparis.zaman-asimi</code> tanımlı. Hangi değer kullanılır?",
+      opts: [
+        "<code>izleme</code> dosyasındaki — çakışmada listedeki sondaki profil kazanır",
+        "<code>uretim</code> dosyasındaki — ilk yazılan profil daha yüksek önceliklidir",
+        "Alfabetik olarak önce gelen <code>izleme</code> dosyasındaki",
+        "Belirsizdir; iki profil aynı anahtarı tanımlarsa Spring açılışta hata verir"
+      ],
+      a: [0],
+      why: "<b>Çoklu profilde çakışmada sondaki kazanır</b> — <code>uretim,izleme</code> yazdığında <code>izleme</code> dosyasındaki değer <code>uretim</code> dosyasındakini ezer. En yakın çeldirici üçüncü şık: sonucu doğru buluyor ama gerekçesi uydurma — kazanan alfabetik sıra değil, <b>senin yazdığın sıradır</b>; <code>izleme,uretim</code> yazsaydın <code>uretim</code> kazanırdı. <b>Kanca:</b> listeyi soldan sağa okuyup üst üste bindir; en sağdaki en üstte."
+    },
+    {
+      topic: "Profil nasıl açılır",
+      q: "Profili dışarıdan açmanın hangi iki yolu, kaynak kodu ve yapı çıktısını hiç değiştirmeden çalışır? (İki tanesini seç.)",
+      opts: [
+        "<code>--spring.profiles.active=uretim</code> komut satırı argümanı",
+        "<code>-Dspring.profiles.active=uretim</code> sistem özelliği",
+        "<code>application.properties</code> içindeki <code>spring.profiles.active=uretim</code> satırı",
+        "Test sınıfındaki <code>@ActiveProfiles(\"uretim\")</code>"
+      ],
+      a: [0, 1],
+      why: "<b>Komut satırı argümanı ve sistem özelliği çalıştırma anında verilir</b>; jar'a dokunmazsın. Ayar dosyasındaki satır yapı çıktısının <b>içindedir</b> — değiştirmek yeniden paketleme demektir. <code>@ActiveProfiles</code> en yakın çeldirici: gerçekten kod değiştirmeden mi diye düşündürür, ama o bir <b>kaynak kod anotasyonudur</b> ve yalnızca testlerde çalışır, dağıtımda hiçbir işe yaramaz. <b>Kanca:</b> profil dışarıdan gelir; öncelik sırası burada da aynıdır."
+    },
+    {
+      topic: "Ortam değişkeni yazımı",
+      q: "Kubernetes'te profil bir türlü geçmiyor. Ortam değişkeni adı olarak hangisi doğrudur?",
+      opts: [
+        "<code>SPRING_PROFILES_ACTIVE</code>",
+        "<code>SPRING_PROFILES.ACTIVE</code>",
+        "<code>SPRING_PROFILE_ACTIVE</code>",
+        "<code>spring.profiles.active</code>"
+      ],
+      a: [0],
+      why: "<b>Relaxed binding kuralı: nokta alt çizgi olur, hepsi büyük harf</b> — <code>spring.profiles.active</code> → <code>SPRING_PROFILES_ACTIVE</code>. En yakın çeldirici <code>SPRING_PROFILE_ACTIVE</code>: tek harf eksik ve tam olarak bu yüzden sinsi — eşleşmez, hata da vermez, uygulama varsayılan profille açılır. Anahtar çoğuldur çünkü birden çok profil alır. <b>Kanca:</b> \"profiles\" çoğul; sondaki \"s\" harfini düşürürsen sessizce kaybedersin."
+    },
+    {
+      topic: "Profile bağlı bean: `@Profile`",
+      q: "Bildirim servisinin üretimde gerçekten SMS göndermesi, diğer her ortamda ekrana yazması isteniyor. Hangi ikili doğru kurar?",
+      opts: [
+        "Gerçek bean'e <code>@Profile(\"uretim\")</code>, mock bean'e <code>@Profile(\"!uretim\")</code>",
+        "Gerçek bean'e <code>@Profile(\"uretim\")</code>, mock bean'e <code>@Profile(\"yerel\")</code>",
+        "Gerçek bean'e <code>@Profile(\"uretim\")</code>, mock bean'e <code>@Profile({\"uretim\", \"yerel\"})</code>",
+        "Gerçek bean'e <code>@Profile(\"uretim & yerel\")</code>, mock bean'e <code>@Profile(\"!uretim\")</code>"
+      ],
+      a: [0],
+      why: "<b><code>!uretim</code> \"uretim açık değilse\" demektir</b> ve \"diğer her ortam\" isteğini tam karşılar — profil hiç verilmemişse bile mock bean kurulur. En yakın çeldirici ikinci şık: <code>yerel</code> profili açık olmayan bir ortamda (örneğin adı verilmemiş bir test koşusu) <b>hiçbir bean kurulmaz</b> ve bağımlılık bulunamadığı için uygulama açılmaz. Son şık <code>&</code> ile iki profili birden şart koşar, gerçek bean hiç devreye girmez. <b>Kanca:</b> \"diğer her şey\" için ünlem, liste değil."
+    },
+    {
+      topic: "Profile bağlı bean: `@Profile`",
+      q: "Bir yönetim uç noktasını üretimde kapatmak için <code>@Profile(\"!uretim\")</code> yeterli bir güvenlik önlemi midir?",
+      opts: [
+        "Hayır — profil yanlış ayarlanırsa uç nokta açılır; koruma güvenlik katmanıyla kurulur",
+        "Evet — bean hiç kurulmadığı için uç noktaya erişmenin başka yolu yoktur",
+        "Evet — <code>@Profile</code> koşulu derleme zamanında uygulanır, sınıf jar'a hiç girmez",
+        "Hayır — <code>@Profile</code> uç noktaları değil yalnızca ayar sınıflarını etkiler"
+      ],
+      a: [0],
+      why: "<b><code>@Profile</code> bean seçim aracıdır, güvenlik aracı değil.</b> Korumanın tamamı \"profil doğru ayarlanmış olsun\" varsayımına dayanır — ve profil adının yanlış yazılması hata bile vermez. En yakın çeldirici ikinci şık: bean kurulmadığında uç nokta gerçekten yoktur, mantık doğru görünür; hatalı olan <b>koşulun kendisine güvenmektir</b>, sonucuna değil. Son şık yanlış: <code>@Profile</code> her tür bean'de çalışır ve çalışma zamanında değerlendirilir. <b>Kanca:</b> yapılandırmayla kapatılan şey, yapılandırmayla açılır."
+    },
+    {
+      topic: "Tek dosyada çoklu profil",
+      q: "YAML'da <code>---</code> ile ayrılmış bir belgeye <code>spring.profiles: uretim</code> yazdın; blok hiç uygulanmıyor ve hata da yok. Doğrusu nedir?",
+      opts: [
+        "<code>spring.config.activate.on-profile: uretim</code> yazmak",
+        "<code>spring.profiles.active: uretim</code> yazmak",
+        "<code>spring.profiles.include: uretim</code> yazmak",
+        "Belgeyi <code>---</code> yerine <code>...</code> ile ayırmak"
+      ],
+      a: [0],
+      why: "<b><code>spring.profiles</code> Boot 2.4'ten beri ölü bir anahtardır</b> ve — beklendiği gibi — sessizce hiçbir şey yapmaz; çalışan anahtar <code>spring.config.activate.on-profile</code>. En yakın çeldirici <code>spring.profiles.active</code>: geçerli bir anahtardır ama işi başkadır — profili <b>açar</b>, bir belgeyi profile <b>koşullamaz</b>; belgenin içine yazınca profili kendi kendine açan bir kısır döngü kurarsın. İnternetteki eski örneklerin çoğu ölü anahtarı kullanır. <b>Kanca:</b> <code>active</code> açar, <code>on-profile</code> koşullar."
+    },
+    {
+      topic: "Tek dosyada çoklu profil",
+      q: "Üç ortam arasında yalnızca ikişer ayar farkı var. Ayrı dosyalar yerine tek dosyada <code>---</code> ile ayrılmış belgeleri seçmenin gerekçesi nedir?",
+      opts: [
+        "Küçük farklar tek ekranda görünür; ortamlar arası farkı okumak için iki dosya açmazsın",
+        "Tek dosya ayrı dosyalardan önce okunur, bu yüzden önceliği daha yüksektir",
+        "<code>---</code> ile ayrılan belgelerde girinti hatası riski ortadan kalkar",
+        "Ayrı profil dosyaları yalnızca <code>.properties</code> biçiminde yazılabilir"
+      ],
+      a: [0],
+      why: "<b>Küçük farklar için tek dosya, farkı tek ekranda gösterir.</b> Fark büyüdükçe (üçten fazla ayar) dosya uzar ve ayrı dosyalar okunaklı hâle gelir. En yakın çeldirici ikinci şık: öncelik uydurması — belgenin tek dosyada olması ona ek bir öncelik vermez, profil ayarları yine aynı katmanda değerlendirilir. Son şık da yanlış: profil dosyaları YAML olarak da yazılır. <b>Kanca:</b> küçük fark tek dosya, büyük fark ayrı dosya."
+    },
+    {
+      topic: "Hangi profillerin açık olduğunu görmek",
+      q: "Bir sorunu araştırırken hangi profillerin açık olduğunu öğrenmenin en hızlı yolu nedir?",
+      opts: [
+        "Açılış günlüğünün ikinci satırındaki <code>The following 1 profile is active:</code> ya da <code>No active profile set...</code> satırını okumak",
+        "Ayar sınıfının değerlerine bakıp hangi profilden geldiklerini çıkarmak",
+        "<code>application-*.properties</code> dosyalarını listeleyip hangilerinin var olduğunu görmek",
+        "Dağıtım betiğindeki <code>SPRING_PROFILES_ACTIVE</code> satırını okumak"
+      ],
+      a: [0],
+      why: "<b>Açılış günlüğü her çalıştırmada gerçekte ne olduğunu yazar</b>; geri kalan her yöntem çıkarım yapar. En yakın çeldirici son şık: betik <b>niyeti</b> gösterir, sonucu değil — değişken adı yanlış yazılmışsa ya da başka bir kaynak ezmişse betik yine aynı satırı içerir, ama profil açılmamıştır. Dosyaların var olması da bir profilin açık olduğu anlamına gelmez. <b>Kanca:</b> tahmin etme, sor — ilk bakılacak yer ikinci satır."
+    },
+    {
+      topic: "Hangi profillerin açık olduğunu görmek",
+      q: "Açılış günlüğünde <code>No active profile set, falling back to 1 default profile: \"default\"</code> satırı var, oysa dağıtımda <code>uretim</code> bekleniyordu. Bu satır neyi kanıtlar?",
+      opts: [
+        "Profil hiç ulaşmamış; ayarlar tamamen <code>application.properties</code>'ten okunuyor",
+        "Profil ulaşmış ama <code>application-uretim.properties</code> dosyası bulunamamış",
+        "Profil ulaşmış, yalnızca günlük satırı profil dosyası okunmadan önce yazılmış",
+        "<code>default</code> adında bir profil açık; <code>application-default.properties</code> okunuyor"
+      ],
+      a: [0],
+      why: "<b>\"No active profile set\" = hiçbir profil verilmedi.</b> Ne komut satırından, ne ortam değişkeninden — değer uygulamaya ulaşmamış (en sık sebep: değişken adının yanlış yazımı). En yakın çeldirici ikinci şık: <b>yanlış yazılmış bir profil adında</b> günlük <code>The following 1 profile is active: \"uretmi\"</code> yazar — yani profil ulaşır, dosya bulunamaz. İki durumun sonucu benzer (taban ayarları), ama teşhisleri ve düzeltmeleri farklıdır. <b>Kanca:</b> \"ulaşmadı\" ile \"ulaştı ama karşılığı yok\"u bu satır ayırır."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Dağıtım betiğinde <code>--spring.profiles.active=uretmi</code> yazılı (harfler yer değiştirmiş). Ne olur?",
+      opts: [
+        "Hata çıkmaz; <code>application-uretmi.properties</code> aranır, bulunamaz, uygulama taban ayarlarıyla açılır",
+        "Açılış <code>profile not found</code> hatasıyla durur",
+        "Günlüğe <code>WARN</code> düşer ve en yakın profil adı önerilir",
+        "Uygulama açılır ve tanımlı profil dosyalarından ilkini kullanır"
+      ],
+      a: [0],
+      why: "<b>Yanlış yazılmış profil adı hata vermez</b> — dosya aranır, bulunamaz, sessizce geçilir. Sonuç: üretim dağıtımı taban ayarlarıyla, yani test veritabanına bağlanmış hâlde açılabilir. En yakın çeldirici uyarı seçeneği: burada bir öneri mekanizması olsaydı sorun büyük ölçüde biterdi, ama yok. İki savunma var: her dağıtımda <code>The following 1 profile is active:</code> satırını okumak, ve 3.2'deki ayar doğrulamasıyla eksik zorunlu ayarı açılışta patlatmak. <b>Kanca:</b> profilin sessizliği, en pahalı sessizliktir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4.2",
+  code: "Web katmanı · 4.2",
+  title: "Exception handling ve ProblemDetail",
+  back: "4.2-exception-handling.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Standart: RFC 9457 ve ProblemDetail",
+      q: "İstemci ekibi \"sipariş bulunamadı\" hatasında farklı bir ekran göstermek istiyor ve kodunu hangi alana göre yazacağını soruyor. Hangi alanı gösterirsin ve neden?",
+      opts: [
+        "<code>type</code> — bütün \"sipariş bulunamadı\" olaylarında aynı kalır, istemci ona bakarak dallanır",
+        "<code>detail</code> — hatayı en iyi anlatan metin odur, istemci onu ayrıştırabilir",
+        "<code>title</code> — kısa ve okunabilir olduğu için karşılaştırması kolaydır",
+        "<code>instance</code> — hatanın oluştuğu adresi verdiği için hangi uç noktada olduğunu ayırt eder"
+      ],
+      a: [0],
+      why: "<b><code>type</code> hata <b>türünü</b> tanımlayan sabit bir adrestir; istemci program mantığını ona bağlar.</b> En yakın çeldirici <code>detail</code>: en okunabilir alan odur ve tam bu yüzden yanlış seçilir — <code>detail</code> her olayda değişen, <b>insan için</b> yazılmış bir metindir. İstemci <code>if (detail.startsWith(\"Sipariş bulunamadı\"))</code> yazarsa, sen mesajı düzelttiğin gün onun kodu kırılır. <code>title</code> de insan içindir; <code>instance</code> ise tek olayın adresi, tür değil. <b>Kanca:</b> <code>type</code> makineye, <code>detail</code> insana."
+    },
+    {
+      topic: "Standart: RFC 9457 ve ProblemDetail",
+      q: "<code>ProblemDetail</code>'in RFC 9457 standart alanları hangileridir?",
+      opts: [
+        "<code>type</code>, <code>title</code>, <code>status</code>, <code>detail</code>, <code>instance</code>",
+        "<code>timestamp</code>, <code>status</code>, <code>error</code>, <code>path</code>, <code>message</code>",
+        "<code>code</code>, <code>message</code>, <code>severity</code>, <code>trace</code>, <code>url</code>",
+        "<code>type</code>, <code>title</code>, <code>status</code>, <code>errors</code>, <code>timestamp</code>"
+      ],
+      a: [0],
+      why: "<b>Beş standart alan: <code>type</code> · <code>title</code> · <code>status</code> · <code>detail</code> · <code>instance</code>.</b> Bunların üstüne <code>setProperty</code> ile istediğin kadar kendi alanını ekleyebilirsin. En yakın çeldirici ikinci şık: o alanlar gerçek ama <b>başka bir şeye ait</b> — Spring'in <code>ProblemDetail</code> yokken döndürdüğü varsayılan hata gövdesinin alanları (<code>{\"timestamp\":...,\"status\":400,\"error\":\"Bad Request\",\"path\":\"/siparisler\"}</code>). Tam da bu iki gövdeyi ayırt etmen isteniyor. <b>Kanca:</b> <code>timestamp</code> görüyorsan standarda henüz geçmemişsin."
+    },
+    {
+      topic: "En sade hâl: tek bir exception'ı ele al",
+      q: "<code>@RestControllerAdvice</code> içinde <code>SiparisBulunamadi</code> için bir <code>ProblemDetail</code> döndürüyorsun ve <code>setTitle</code> ile <code>setType</code> çağırıyorsun. <code>GET /siparisler/yok</code> isteğinin ölçülen gövdesi <code>{\"detail\":\"Sipariş bulunamadı: yok\",\"instance\":\"/siparisler/yok\",\"status\":404,\"title\":\"Sipariş bulunamadı\",\"type\":\"https://loncademy.tr/hatalar/siparis-bulunamadi\"}</code>. <code>instance</code> alanını kim doldurdu?",
+      opts: [
+        "Spring — isteğin yolunu kendisi koyar, sen <code>setInstance</code> çağırmadın",
+        "Sen — <code>ProblemDetail.forStatusAndDetail(...)</code> çağrısı ikinci argümanı <code>instance</code> yapar",
+        "Jackson — serileştirme sırasında eksik standart alanları tamamlar",
+        "<code>@RestControllerAdvice</code> — sınıf düzeyinde tanımlı taban adres oraya yazılır"
+      ],
+      a: [0],
+      why: "<b><code>instance</code>'ı Spring dolduruyor: isteğin yolu (<code>/siparisler/yok</code>) yanıta kendiliğinden giriyor.</b> Kodda <code>setInstance</code> yok, çıktıda alan var — ölçüm bunu gösteriyor. En yakın çeldirici ikinci şık: <code>forStatusAndDetail(...)</code>'in ikinci argümanı gerçekten kullanılır ama o <code>detail</code>'e gider, çıktıdaki <code>\"detail\":\"Sipariş bulunamadı: yok\"</code> satırı onun karşılığıdır. Jackson yalnızca yazar, alan üretmez. <b>Kanca:</b> <code>instance</code> bedava gelir — sen <code>type</code> ve <code>title</code> ile ilgilen."
+    },
+    {
+      topic: "En sade hâl: tek bir exception'ı ele al",
+      q: "Kendi <code>ProblemDetail</code> işleyicini yazdıktan sonra <code>curl -i localhost:8080/siparisler/yok</code> çıktısındaki <code>Content-Type</code> ne olur ve bu istemciye ne kazandırır?",
+      opts: [
+        "<code>application/problem+json</code> — istemci başlığa bakarak gövdenin bir hata sözleşmesi olduğunu anlar",
+        "<code>application/json</code> — <code>ProblemDetail</code> de sonuçta sıradan bir JSON nesnesidir",
+        "<code>application/problem+json</code> ama yalnızca <code>spring.mvc.problemdetails.enabled=true</code> yazılmışsa",
+        "<code>text/plain</code> — hata gövdeleri içerik türü pazarlığına girmez"
+      ],
+      a: [0],
+      why: "<b>Ölçülen başlık <code>application/problem+json</code>.</b> Kazanç şu: istemci gövdeyi ayrıştırmadan, yalnızca başlığa bakarak \"bu bir hata gövdesi\" diyebilir. En yakın çeldirici üçüncü şık: <code>spring.mvc.problemdetails.enabled</code> gerçek bir ayardır ama o ayar <b>Spring'in kendi yerleşik hatalarını</b> (405, 415, bozuk JSON) standarda çevirir; <b>senin kendi yazdığın</b> <code>ProblemDetail</code> işleyicin o ayardan bağımsız olarak <code>problem+json</code> döner. Ölçüm de bunu ayarı açmadan aldı. <b>Kanca:</b> kendi işleyicin kendi başlığını getirir."
+    },
+    {
+      topic: "Doğrulama hatalarını anlamlı hâle getirmek",
+      q: "\"Hangi alan hatalı?\" sorusunu yanıtlayan bir hata gövdesi üretmek istiyorsun. Hangi exception'ı yakalarsın ve alan haritasını gövdeye nasıl koyarsın?",
+      opts: [
+        "<code>MethodArgumentNotValidException</code>'ı yakala, <code>getBindingResult().getFieldErrors()</code>'u haritaya çevir ve <code>p.setProperty(\"alanlar\", ...)</code> ile ekle",
+        "<code>ConstraintViolationException</code>'ı yakala ve haritayı <code>p.setDetail(...)</code> içine metin olarak yaz",
+        "<code>HttpMessageNotReadableException</code>'ı yakala; <code>@Valid</code> hataları bu exception'a sarılır",
+        "Exception yakalamaya gerek yok; <code>spring.mvc.problemdetails.enabled=true</code> alan haritasını kendiliğinden ekler"
+      ],
+      a: [0],
+      why: "<b><code>@Valid</code> gövdede başarısız olduğunda Spring <code>MethodArgumentNotValidException</code> atar;</b> onu yakalayıp <code>getFieldErrors()</code>'u alan → mesaj haritasına çevirir, <code>setProperty</code> ile kendi alanın olarak eklersin. Ölçülen sonuç: <code>\"alanlar\":{\"urunKodu\":\"must not be blank\",\"adet\":\"must be greater than or equal to 1\"}</code>. En yakın çeldirici son şık: ayar gerçek ama <b>biçimi</b> düzeltir, <b>içeriği</b> değil — alan ayrıntısını hiçbir ayar sana vermez. İkinci şıkta haritayı <code>detail</code> metnine gömmek de yanlış yön: istemci metin ayrıştırmak zorunda kalır. <b>Kanca:</b> alan ayrıntısı elle yazılır, ayarla gelmez."
+    },
+    {
+      topic: "Doğrulama hatalarını anlamlı hâle getirmek",
+      q: "İşleyicini yazdın ve gövdede <code>\"alanlar\":{\"urunKodu\":\"must not be blank\"}</code> görüyorsun. Ürün ekibi mesajların Türkçe olmasını istiyor. Ne yaparsın?",
+      opts: [
+        "Kısıta mesaj ver: <code>@NotBlank(message = \"Ürün kodu boş olamaz\")</code>",
+        "İşleyicide <code>h.getDefaultMessage()</code> yerine <code>h.getField()</code> yaz; Türkçe karşılık oradan gelir",
+        "<code>spring.mvc.problemdetails.enabled=true</code> yaz; ayar açıkken mesajlar sunucu diline çevrilir",
+        "<code>ProblemDetail</code>'in <code>setTitle</code> alanını Türkçeleştir; <code>alanlar</code> haritası ondan türetilir"
+      ],
+      a: [0],
+      why: "<b>Kısıt mesajları varsayılan olarak İngilizcedir (<code>must not be blank</code>); Türkçeleştirmek için kısıta <code>message</code> ver.</b> <code>@NotBlank(message = \"Ürün kodu boş olamaz\")</code> ve <code>@Min(value = 1, message = \"Adet en az 1 olmalı\")</code>. En yakın çeldirici ikinci şık: <code>getField()</code> gerçekten haritanın bir parçasıdır — ama <b>anahtar</b> tarafıdır (<code>urunKodu</code>), mesaj değil; onu yazarsan haritanın değeri de alan adı olur. Üçüncü şık ayara olmayan bir yetenek yüklüyor: o ayar biçimi düzeltir, çeviri yapmaz. <b>Kanca:</b> mesaj kısıtın yanında yaşar."
+    },
+    {
+      topic: "Kolay yol: yerleşik hataları da standarda çevirmek",
+      q: "<code>spring.mvc.problemdetails.enabled</code> ayarının varsayılan değeri nedir ve <code>true</code> yaptığında hangi iki şey değişir? (İki tanesini seç.)",
+      opts: [
+        "Varsayılan <code>false</code>'tur",
+        "Yerleşik hataların gövdesi RFC 9457 biçimine ve <code>Content-Type</code> <code>application/problem+json</code>'a döner",
+        "Varsayılan <code>true</code>'dur; kapatmak için açıkça <code>false</code> yazman gerekir",
+        "Doğrulama hataları artık hangi alanın neden geçersiz olduğunu da yazar"
+      ],
+      a: [0, 1],
+      why: "<b>Varsayılan <code>false</code>'tur ve açtığında yerleşik hatalar da <code>problem+json</code> olur</b> — ölçülen örnek: <code>curl -X DELETE /siparisler/1</code> artık <code>{\"detail\":\"Method 'DELETE' is not supported.\",\"instance\":\"/siparisler/1\",\"status\":405,\"title\":\"Method Not Allowed\"}</code> döndürüyor. En yakın çeldirici son şık: herkesin bu ayardan <b>umduğu</b> şey tam olarak budur ve olmaz — ayar <b>biçimi</b> düzeltir, <b>içeriği</b> değil. Alan ayrıntısını yine kendi <code>MethodArgumentNotValidException</code> işleyicinle eklersin; ikisini birlikte kullan. <b>Kanca:</b> ayar zarfı düzeltir, mektubu sen yazarsın."
+    },
+    {
+      topic: "Kolay yol: yerleşik hataları da standarda çevirmek",
+      q: "Ayarı açtın ve <code>curl -X DELETE localhost:8080/siparisler/1</code> istediğinde <code>{\"detail\":\"Method 'DELETE' is not supported.\",\"status\":405,\"title\":\"Method Not Allowed\"}</code> alıyorsun. Aynı uygulamada geçersiz gövdeli bir POST attığında gövde hangi alan bilgisini içerir?",
+      opts: [
+        "Hiçbirini — alan bazlı ayrıntı yalnızca kendi yazdığın işleyiciden gelir",
+        "<code>errors</code> adında bir dizi; ayar açıkken Spring alan hatalarını kendiliğinden ekler",
+        "<code>alanlar</code> nesnesi; <code>problemdetails</code> ayarı bu alanı standart olarak üretir",
+        "Yalnızca ilk başarısız alanın adını; standart tek alan raporlamaya izin verir"
+      ],
+      a: [0],
+      why: "<b>Hiçbirini. Ayar biçimi standarda çevirir, içeriği zenginleştirmez.</b> Tablonun \"Alan ayrıntısı\" satırı ayar kapalıyken de açıkken de \"Yok\" der — onu <b>sen</b> eklersin. En yakın çeldirici <code>alanlar</code> nesnesi: o gövdeyi gerçekten göreceksin, ama <b>kendi <code>MethodArgumentNotValidException</code> işleyicini yazdığın için</b>, ayardan dolayı değil; üstelik <code>alanlar</code> standart bir alan değil, <code>setProperty</code> ile eklediğin kendi alanın. <b>Kanca:</b> ayarı açtıktan sonra hâlâ \"hangi alan?\" sorusu cevapsızsa şaşırma — o senin işin."
+    },
+    {
+      topic: "Exception tasarımı",
+      q: "Servis katmanında atacağın bir \"sipariş yok\" exception'ını tasarlıyorsun. Hangi iki karar doğrudur? (İki tanesini seç.)",
+      opts: [
+        "<code>RuntimeException</code>'dan türet — checked exception her katmana <code>throws</code> yazdırır",
+        "Adı alan adı taşısın: <code>SiparisBulunamadi</code> — <code>NotFoundException</code> web katmanına bağımlılık yaratır",
+        "Sınıfın adında HTTP kodunu taşı: <code>Http404Exception</code> — eşleme böylece kendiliğinden okunur",
+        "<code>Exception</code>'dan türet — checked exception, çağıranı hatayı ele almaya zorladığı için daha güvenlidir"
+      ],
+      a: [0, 1],
+      why: "<b>Unchecked (<code>RuntimeException</code>) ve alan adı taşıyan bir exception.</b> Checked exception her ara katmana <code>throws</code> ekletir; ayrıca <code>@Transactional</code> checked exception'larda geri alma <b>yapmaz</b> — sessiz bir veri sorunu kaynağı. En yakın çeldirici son şık: \"checked daha güvenli\" sezgisi çok yaygındır, ama Spring dünyasında maliyeti kazancından büyüktür. HTTP kodunu sınıf adına taşımak da yanlış yön: HTTP eşlemesi <b>tek yerde</b>, <code>@RestControllerAdvice</code>'ta durur; alan sınıfın web'i tanımasın. <b>Kanca:</b> exception alanın dilini konuşsun, HTTP'nin değil."
+    },
+    {
+      topic: "Exception tasarımı",
+      q: "Bir metotta <code>try { odemeAl(siparis); } catch (Exception e) { return null; }</code> yazılmış. İstemci ne görür ve doğru düzeltme nedir?",
+      opts: [
+        "İstemci <code>200 OK</code> ve boş gövde görür; günlükte iz yoktur — ya anlamlı bir exception'a çevir ya günlüğe yazıp yeniden at",
+        "İstemci <code>500</code> görür; yakalanan exception Spring'e yine de ulaşır — düzeltme <code>@RestControllerAdvice</code> eklemektir",
+        "İstemci <code>204 No Content</code> görür; <code>null</code> dönüşü gövdesiz yanıta çevrilir — düzeltme <code>ResponseEntity.notFound()</code> döndürmektir",
+        "Uygulama açılışta uyarı verir; yutulmuş exception'lar derleme sırasında yakalanır"
+      ],
+      a: [0],
+      why: "<b>Yutulmuş exception, exception handling'in tersidir:</b> ödeme başarısız olmuştur ama istemci <code>200 OK</code> ve boş gövde alır, günlükte de iz yoktur. Kimse hatayı öğrenemez. Düzeltme: yakalayacaksan ya anlamlı bir exception'a çevir, ya günlüğe yaz ve yeniden at. En yakın çeldirici ikinci şık: <code>@RestControllerAdvice</code> gerçekten doğru araçtır — ama <b>exception yakalanıp yutulduğu için ona hiç ulaşmaz</b>; önce yutmayı bırakman gerekir. Derleme zamanı uyarısı diye bir şey yok. <b>Kanca:</b> <code>catch</code> içinde <code>return null</code> gördüğün yerde dur."
+    },
+    {
+      topic: "Ne kadarını söylemeli",
+      q: "Üretimde beklenmeyen bir hata oluştu. Kullanıcı destek hattını arıyor. Yanıtta ne olmalı, günlükte ne olmalı?",
+      opts: [
+        "Yanıtta genel bir mesaj + izleme numarası; günlükte tam stack trace — numara ikisini bağlar",
+        "Yanıtta stack trace'in ilk üç satırı; günlükte tamamı — kullanıcı da bir şey görmeli",
+        "Yanıtta exception sınıfının adı ve mesajı; günlükte yalnızca istek yolu",
+        "Yanıtta hiçbir şey (boş gövde); günlükte tam stack trace — istemciye bilgi vermek her koşulda sızıntıdır"
+      ],
+      a: [0],
+      why: "<b>Kural: ayrıntı günlüğe, genel mesaj istemciye, izleme numarası ikisini bağlar.</b> Kullanıcı \"izleme numaram <code>abc-123</code>\" der, sen günlükte tam stack trace'i bulursun. En yakın çeldirici son şık: sızıntı korkusu doğru ama <b>mutlak ifadeye</b> dikkat — boş gövde döndürmek destek sürecini imkânsızlaştırır; istemciye verilebilecek güvenli bir bilgi vardır ve o izleme numarasıdır. Stack trace'i kısmen bile döndürmek sınıf adlarını, kütüphane sürümlerini ve dosya yollarını sızdırır; <code>server.error.include-stacktrace</code> varsayılanı <code>never</code>'dır, değiştirme. <b>Kanca:</b> kullanıcıya numara ver, ayrıntıyı sen ara."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Hata işleyici sınıfının başına <code>@ControllerAdvice</code> yazdın. Ne olur ve doğrusu nedir?",
+      opts: [
+        "Dönen <code>ProblemDetail</code> nesnesi view name sanılır; doğrusu <code>@RestControllerAdvice</code>",
+        "Hiçbir şey değişmez; iki anotasyon eş anlamlıdır, ikincisi yalnızca daha okunaklıdır",
+        "İşleyici hiç devreye girmez; <code>@ControllerAdvice</code> yalnızca <code>@Controller</code> sınıflarını dinler, <code>@RestController</code>'ları dinlemez",
+        "Uygulama açılışta \"no view resolver\" hatasıyla kapanır"
+      ],
+      a: [0],
+      why: "<b><code>@ControllerAdvice</code>'ta <code>@ResponseBody</code> yoktur; dönen nesne view name sanılır</b> — [2.1]'deki <code>@Controller</code> tuzağının aynısı. Doğrusu <code>@RestControllerAdvice</code>. En yakın çeldirici üçüncü şık: hangi kontrolcüleri dinlediğine dair mantıklı görünen bir kural uyduruyor — oysa <b>işleyici gayet devreye girer</b>, sorun yanıtın nasıl yazıldığındadır; belirti de \"hata yanıtında view çözme hatası alıyorum\" olur. Açılışta kapanma yoktur: hata ilk istekte çıkar. <b>Kanca:</b> gövde yazacaksan <code>Rest</code> önekini unutma."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "20 uç noktalı bir serviste her kontrolcü metodunun içinde <code>try/catch</code> blokları var ve hata gövdeleri uç noktadan uç noktaya farklı biçimlerde dönüyor. En doğru düzeltme nedir?",
+      opts: [
+        "Eşlemeyi tek bir <code>@RestControllerAdvice</code> sınıfında topla; kontrolcüler exception'ı yukarı bıraksın",
+        "Ortak bir taban kontrolcü sınıfı yaz ve 20 kontrolcüyü ondan türet; <code>try/catch</code> orada tek yerde dursun",
+        "Her kontrolcüde aynı <code>Map.of(\"hata\", ...)</code> biçimini kullanmayı ekip kuralı yap; sorun biçim tutarsızlığıdır",
+        "<code>spring.mvc.problemdetails.enabled=true</code> yaz; ayar açıkken kontrolcü içindeki <code>try/catch</code> blokları devre dışı kalır"
+      ],
+      a: [0],
+      why: "<b>HTTP kodu eşlemesi tek yerde olmalı: <code>@RestControllerAdvice</code>.</b> Kontrolcü ince kalır, exception'ı yukarı bırakır, biçim tek noktada tanımlanır. En yakın çeldirici taban sınıf: tekrarı gerçekten azaltır ama <b>yanlış araçla</b> — kalıtımla çözülen şey burada Spring'in zaten sunduğu bir kesişen ilgi (cross-cutting concern) mekanizmasıdır, üstelik taban sınıf 20 kontrolcünün hepsini birbirine bağlar. Üçüncü şık belirtiyi tedavi ediyor, sebebi değil. Son şık ayara olmayan bir yetenek yüklüyor: kodundaki <code>try/catch</code>'i hiçbir ayar devre dışı bırakmaz. <b>Kanca:</b> aynı şeyi 20 yerde yazıyorsan yanlış katmandasın."
+    },
+    {
+      topic: "Doğrulama hatalarını anlamlı hâle getirmek",
+      q: "Kendi işleyicini yazdıktan sonra <code>{\"urunKodu\":\"\",\"adet\":0}</code> gövdesiyle POST attığında ölçülen yanıt <code>{\"detail\":\"İstek gövdesi geçersiz.\",\"instance\":\"/siparisler\",\"status\":400,\"title\":\"Doğrulama hatası\",\"alanlar\":{\"urunKodu\":\"must not be blank\",\"adet\":\"must be greater than or equal to 1\"}}</code>. Bu gövdedeki <code>alanlar</code> anahtarı hakkında hangi iki şey doğrudur? (İki tanesini seç.)",
+      opts: [
+        "RFC 9457'nin standart alanlarından biri değildir; <code>setProperty</code> ile eklenmiş kendi alanındır",
+        "İstemci hangi form kutusunun altına ne yazacağını bu haritadan öğrenir",
+        "Standart bir alandır; <code>ProblemDetail</code> her doğrulama hatasında onu kendiliğinden üretir",
+        "İçindeki mesajlar sunucunun yerel ayarına göre Türkçeleşir; ek bir şey yapman gerekmez"
+      ],
+      a: [0, 1],
+      why: "<b><code>alanlar</code> senin eklediğin bir alandır (<code>p.setProperty(\"alanlar\", ...)</code>) ve asıl kazancı buradadır:</b> mobil geliştirici artık hangi kutunun altına ne yazacağını biliyor. Standart beşli <code>type · title · status · detail · instance</code>'tır; <code>alanlar</code> onların yanına eklenen ekstradır. En yakın çeldirici üçüncü şık: gövdede standart alanların yanında durduğu için standart sanılır — ama kendiliğinden üretilseydi zaten [4.1](4.1-request-mapping.md)'deki varsayılan 400 yanıtında da görürdün, görmedin. Mesajlar da kendiliğinden Türkçeleşmez; kısıta <code>message</code> vermen gerekir. <b>Kanca:</b> standarda kendi alanını eklemek serbest — ama eklediğini bil."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

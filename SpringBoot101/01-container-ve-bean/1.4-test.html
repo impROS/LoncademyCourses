@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.4 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.4",
+  code: "Container ve bean'ler · 1.4",
+  title: "Bean lifecycle",
+  back: "1.4-bean-lifecycle.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Dert: constructor'da iş yapmak",
+      q: "<code>StokServisi</code>'nin constructor'unda <code>istemci.get().uri(\"/stoklar\").retrieve()</code> ile önbellek dolduruluyor. Bu kodun somut sonuçları hangi ikisidir? (İki tanesini seç.)",
+      opts: [
+        "Uygulamanın açılışı stok servisinin ağ hızına bağlanır; o yavaşsa uygulama açılmaz",
+        "Sınıf test edilemez hâle gelir — <code>new StokServisi(mock)</code> bile ağa çıkmaya çalışır",
+        "Uygulama açılır ama önbellek her istekte yeniden doldurulur",
+        "Container constructor'daki ağ çağrısını fark edip onu <code>@PostConstruct</code>'a erteler"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: açılış ağa bağlanır, ve sınıf test edilemez olur.</b> (Üçüncü dert: constructor'daki exception \"bean oluşturulamadı\" diye çıkar ve asıl sebep kaybolur.) En yakın çeldirici \"container onu erteler\" — container senin constructor'un içine bakmaz, orada ne yazdıysan aynen çalışır; erteleme kararı senin, kodu <code>@PostConstruct</code>'a taşımanla olur. <b>Kanca:</b> constructor'da atama yap, iş yapma."
+    },
+    {
+      topic: "Dert: constructor'da iş yapmak",
+      q: "Yukarıdaki kodu düzeltmenin doğru yolu nedir?",
+      opts: [
+        "Constructor'da yalnızca <code>this.istemci = istemci;</code> bırak, ağ çağrısını <code>@PostConstruct</code> metoduna taşı",
+        "Constructor'u <code>synchronized</code> yap",
+        "Sınıfı <code>@Lazy</code> işaretle; o zaman constructor açılışta çalışmaz",
+        "Önbellek alanını <code>static</code> yap; statik alanlar constructor'dan önce dolar"
+      ],
+      a: [0],
+      why: "<b>Doğru: kurulumu ikiye ayır — atama yapıcıda, iş <code>@PostConstruct</code>'ta.</b> En yakın çeldirici <code>@Lazy</code> — açılışı gerçekten hızlandırır ama sorunu <i>taşır</i>, çözmez: aynı ağ çağrısı bu sefer ilk istekte, belki üretimde patlar; üstelik sınıf hâlâ test edilemez. <b>Kanca:</b> \"bu kod yapıcıya mı, <code>@PostConstruct</code>'a mı?\" sorusunun cevabı: atamaysa yapıcıya, iş ise <code>@PostConstruct</code>'a."
+    },
+    {
+      topic: "Lifecycle'ın sırası",
+      q: "Bir bean'in başından geçen aşamaların doğru sırası hangisidir?",
+      opts: [
+        "Constructor → alan/setter injection → <code>@PostConstruct</code> → proxy'lenme → kullanıma hazır",
+        "Constructor → proxy'lenme → <code>@PostConstruct</code> → field injection → kullanıma hazır",
+        "<code>@PostConstruct</code> → constructor → field injection → proxy'lenme → kullanıma hazır",
+        "Constructor → <code>@PostConstruct</code> → field injection → kullanıma hazır → proxy'lenme"
+      ],
+      a: [0],
+      why: "<b>Doğru sıra bu, ve ezberlenecek tek şey 1 ile 4 arasındaki farktır:</b> constructor'da nesne henüz eksiktir, <code>@PostConstruct</code>'ta tamdır. En yakın çeldirici, proxy'lenmeyi <code>@PostConstruct</code>'tan <i>öne</i> alan şık — bu tam tersi ve pahalı bir yanlış varsayımdır; proxy sonradan devreye girer. <b>Kanca:</b> kurul → hazırlan → sarmalan → hazır ol."
+    },
+    {
+      topic: "Lifecycle'ın sırası",
+      q: "<code>@PostConstruct</code> metodunun içinde kendi sınıfının <code>@Transactional</code> işaretli bir metodunu çağırıyorsun. Transaction açılmıyor ve hata da yok. Sebep nedir?",
+      opts: [
+        "Proxy'lenme <code>@PostConstruct</code>'tan sonra olur; o anda proxy henüz devrede değildir",
+        "<code>@PostConstruct</code> metotları transaction bağlamı dışında çalışacak şekilde işaretlenmiştir",
+        "<code>@Transactional</code> yalnızca web isteklerinden gelen çağrılarda geçerlidir",
+        "Veri kaynağı bean'i henüz kurulmamıştır"
+      ],
+      a: [0],
+      why: "<b>Doğru: sıra meselesi — 5. adım 4. adımdan sonra gelir.</b> Resmî belgede de açıkça yazar. En yakın çeldirici \"yalnızca web isteklerinde geçerli\" — <code>@Transactional</code> çağrının nereden geldiğine bakmaz, proxy'den geçip geçmediğine bakar; bu ayrımın tamamını 201'de göreceksin. <b>Kanca:</b> şimdilik tanı, yeter: <code>@PostConstruct</code> içinde proxy yoktur."
+    },
+    {
+      topic: "@PostConstruct ve @PreDestroy",
+      q: "Bir örnekte <code>import javax.annotation.PostConstruct;</code> yazıyor. Spring Boot 4.1.1 projene kopyalarsan ne olur ve ne yaparsın?",
+      opts: [
+        "<code>package javax.annotation does not exist</code> hatası alırsın; <code>jakarta.annotation.PostConstruct</code> yazarsın",
+        "Uyarı verir ama çalışır; geriye dönük uyumluluk için <code>javax</code> desteklenir",
+        "Derlenir ve çalışır; iki paket aynı sınıfın takma adıdır",
+        "Sorun olmaz; Spring Boot çalışma anında <code>javax</code> paketini <code>jakarta</code>'ya yönlendirir"
+      ],
+      a: [0],
+      why: "<b>Doğru: paket classpath'te yok, derlenmez.</b> Spring Boot 3'ten beri Jakarta EE'ye geçildi. En yakın çeldirici \"uyarı verir ama çalışır\" — çalışmaz; ve asıl tehlike, yanlış paketten <i>başka</i> bir <code>PostConstruct</code> sınıfı içeri alırsan kodun derlenip anotasyonun hiç çalışmamasıdır. <b>Kanca:</b> <code>jakarta</code>, <code>javax</code> değil — internetteki eski örneklerin çoğunda <code>javax</code> yazar."
+    },
+    {
+      topic: "@PostConstruct ve @PreDestroy",
+      q: "Bir <code>@PostConstruct</code> metodunun imzası hakkında doğru olan hangisidir?",
+      opts: [
+        "Dönüş türü <code>void</code>, parametre almaz; <code>public</code> olması gerekmez ama gelenek <code>public</code>'tir",
+        "Dönüş türü nesnenin kendisi olmalı, parametre olarak <code>ApplicationContext</code> alır",
+        "<code>public</code> ve <code>static</code> olmak zorundadır",
+        "Parametre alabilir; container parametreleri bean olarak inject eder"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>void</code>, parametresiz.</b> En yakın çeldirici \"parametre alabilir, container inject eder\" — injection zaten bir önceki adımda bitmiştir; <code>@PostConstruct</code> bir injection noktası değil, hazırlık kancasıdır. Bir sınıfta birden çok tane yazabilirsin ama <b>sıraları garanti değildir</b>, bu yüzden tek tane yaz. <b>Kanca:</b> kanca metodu bir şey almaz, bir şey döndürmez — sadece hazırlar."
+    },
+    {
+      topic: "@PostConstruct ve @PreDestroy",
+      q: "<code>@PostConstruct</code> metodun bir exception atarsa ne olur ve bu istenen bir şey midir?",
+      opts: [
+        "Uygulama açılmaz — ve bu genellikle istediğin şeydir, çünkü hata dağıtım anında görünür",
+        "Bean o hâliyle kaydedilir; hata yalnızca günlüğe yazılır",
+        "Container metodu üç kez yeniden dener, sonra devam eder",
+        "Hata yutulur; <code>@PostConstruct</code> exception'ları container tarafından bastırılır"
+      ],
+      a: [0],
+      why: "<b>Doğru: açılış patlar, ve bu bir özelliktir.</b> Yapılandırma hataları açılışta çıksın diye kurulan bütün düzenin devamıdır bu (1.1). En yakın çeldirici \"hata yalnızca günlüğe yazılır\" — kulağa hoşgörülü gelir ama yarım kurulmuş bir bean'le çalışan bir uygulama, açılmayan bir uygulamadan çok daha pahalıdır. <b>Kanca:</b> açılışta patlamak kötü haber değil, erken haberdir."
+    },
+    {
+      topic: "Kapanış: @PreDestroy ne zaman çalışmaz",
+      q: "<code>@PreDestroy</code> hangi durumlarda çağrılmaz? (İki tanesini seç.)",
+      opts: [
+        "Süreç <code>kill -9</code> (SIGKILL) aldığında",
+        "Bean prototype scope'ta olduğunda",
+        "<code>Ctrl+C</code> ile normal kapatıldığında",
+        "<code>System.exit()</code> çağrıldığında"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: <code>kill -9</code> ve prototype scope.</b> Birincisinde işletim sistemi süreci anında öldürür, JVM'in çalıştıracak vakti olmaz; ikincisinde container prototype nesneye referans tutmadığı için onun öldüğünü bilemez (1.5). En yakın çeldirici <code>System.exit()</code> — sezgiye aykırı biçimde <i>çalışır</i>, çünkü kapanış kancası devreye girer. <code>Ctrl+C</code> de SIGTERM olduğu için çalışır. <b>Kanca:</b> süreci öldüren mi, süreci durduran mı — ayrım burada."
+    },
+    {
+      topic: "Kapanış: @PreDestroy ne zaman çalışmaz",
+      q: "Bir geliştirici \"bekleyen kayıtları <code>@PreDestroy</code>'da veritabanına yazarım\" diyor. Neden yanlış ve doğrusu ne?",
+      opts: [
+        "<code>kill -9</code> yediğin gün o kayıtlar yok olur; veriyi geldiği anda kalıcı hâle getir, <code>@PreDestroy</code>'da yalnızca kaynak bırak",
+        "<code>@PreDestroy</code> içinde veritabanı erişimi derleme hatası verir; işi <code>@PostConstruct</code>'a al",
+        "Yanlış değil; <code>server.shutdown=graceful</code> ayarı verinin yazılmasını garanti eder",
+        "Yanlış değil; Spring kapanışta <code>@PreDestroy</code> metotlarını üç kez dener"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@PreDestroy</code> kaynak bırakmak içindir (bağlantı, dosya), veri güvenliği için değil.</b> En yakın çeldirici <code>graceful</code> kapanış — o gerçekten yardımcıdır: devam eden istekleri bitirir, yeni istek almaz. Ama yalnızca <i>düzgün</i> bir kapanış sinyali geldiğinde iş görür; SIGKILL'de, elektrik kesintisinde, container zorla durdurulduğunda hiçbir şey yapmaz. <b>Kanca:</b> kapanışa emanet edilen veri, kaybedilmeye razı olunmuş veridir."
+    },
+    {
+      topic: "Kapanış: @PreDestroy ne zaman çalışmaz",
+      q: "Kubernetes'te süreç önce SIGTERM, bir süre sonra SIGKILL alıyor. Spring Boot'un aradaki sürede işini bitirmesi için hangi ayarları yaparsın?",
+      opts: [
+        "<code>server.shutdown=graceful</code> ve <code>spring.lifecycle.timeout-per-shutdown-phase=30s</code>",
+        "<code>spring.main.lazy-initialization=true</code> ve <code>server.shutdown=immediate</code>",
+        "<code>spring.main.allow-circular-references=true</code>",
+        "Hiçbir ayar gerekmez; Spring Boot varsayılan olarak SIGKILL'i erteler"
+      ],
+      a: [0],
+      why: "<b>Doğru: graceful shutdown + faz timeout.</b> <code>graceful</code>, yeni istek kabul etmeyi bırakır, devam edenleri bitirir, sonra kapanır; timeout da bunun ne kadar sürebileceğini sınırlar. En yakın çeldirici \"hiçbir ayar gerekmez, Spring SIGKILL'i erteler\" — hiçbir uygulama SIGKILL'i erteleyemez, sinyalin tanımı budur; erteleyebildiğin tek şey SIGTERM ile SIGKILL arasındaki süredir ve onu da orkestratör belirler. <b>Kanca:</b> SIGTERM'le pazarlık edebilirsin, SIGKILL'le edemezsin."
+    },
+    {
+      topic: "@Lazy: kurulumu ertelemek",
+      q: "Açılış süresini kısaltmak için bütün servislerinizi <code>@Lazy</code> yapmayı öneren bir ekip arkadaşına ne dersin?",
+      opts: [
+        "<code>@Lazy</code> bir takastır: açılış hızını, hatayı açılışta görme güvencesiyle değişirsin — hatalar üretime taşınır",
+        "Katılırım; <code>@Lazy</code> saf bir iyileştirmedir, kaybettiğin bir şey yoktur",
+        "<code>@Lazy</code> bean'leri prototype yapar, bu yüzden bellek tüketimi artar",
+        "<code>@Lazy</code> yalnızca <code>@Bean</code> metotlarında çalışır, <code>@Component</code> sınıflarında etkisizdir"
+      ],
+      a: [0],
+      why: "<b>Doğru: takas, iyileştirme değil.</b> Varsayılan erken kurulum bir <i>özelliktir</i> — eksik bağımlılığı dağıtım anında görürsün; <code>@Lazy</code> ile o hata bean ilk istendiğinde, belki üretimde gece yarısı çıkar. En yakın çeldirici \"saf iyileştirme\" — pratikte en sık duyulan cümle ve tam olarak yanlış olan cümle. <code>spring.main.lazy-initialization=true</code> ile hepsini birden tembelleştirmek geliştirme sırasında açılışı hızlandırmak içindir, üretimde değil. <b>Kanca:</b> ne kazandığını değil, neyi verdiğini sor."
+    },
+    {
+      topic: "@Lazy: kurulumu ertelemek",
+      q: "Bir sınıfa <code>@Lazy</code> ekledin ve çalıştırdın. Constructor'daki ve <code>@PostConstruct</code>'taki yazdırma satırları hiç çıkmadı. Neden?",
+      opts: [
+        "Bean kurulmadı bile — <code>@Lazy</code> kurulumu ilk isteğe erteler ve kimse o bean'i istemedi",
+        "<code>@Lazy</code> yazdırma çıktısını bastırır",
+        "<code>@Lazy</code> bean'ler ayrı bir container'da kurulur, günlükleri oraya gider",
+        "<code>@Lazy</code> <code>@PostConstruct</code>'ı devre dışı bırakır ama constructor yine çalışmalıydı"
+      ],
+      a: [0],
+      why: "<b>Doğru: hiç kurulmadı.</b> Tembel bean, birisi onu isteyene kadar var olmaz. En yakın çeldirici \"constructor yine çalışmalıydı\" — erteleme kısmi değildir; nesne hiç kurulmadığı için constructor da çalışmaz. Bu davranış aynı zamanda 1.1'deki uyarının kanıtıdır: \"uygulama açıldı = her şey yolunda\" doğru değildir. <b>Kanca:</b> tembel bean, hatası da tembel bean'dir."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>RaporServisi</code>'nin constructor'unda <code>this.toplam = depo.hepsiniSay();</code> yazıyor. Kod bazen çalışıyor, bazen çalışmıyor. Bu belirsizliğin sebebi nedir?",
+      opts: [
+        "Constructor çalışırken depo bean'i kurulmuş olsa bile proxy'si oluşturulmamış ya da veri kaynağı hazır olmamış olabilir",
+        "Constructorlar çok thread'li çalıştığı için sonuç sıraya bağlıdır",
+        "<code>depo</code> alanı <code>final</code> olmadığı için değeri değişkendir",
+        "Container constructor'lar rastgele sırayla çağırır"
+      ],
+      a: [0],
+      why: "<b>Doğru: constructor 1. aşamadır ve orada nesne dünyası henüz eksiktir.</b> Bağımlılık gelmiş olabilir ama tamamlanmamıştır — proxy'lenme 5. adımdadır. En yakın çeldirici \"container constructor'lar rastgele sırayla çağırır\" — hayır, sıra dependency graph'tan hesaplanır ve deterministiktir (1.1); belirsizlik sırada değil, aşamanın <i>eksikliğinde</i>. <b>Kanca:</b> \"bazen çalışıyor\" cümlesi neredeyse her zaman aşama hatasıdır."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Uygulama sorunsuz açıldı ama ilk istekte patladı. En olası sebep nedir?",
+      opts: [
+        "<code>@Lazy</code> bir bean var; kurulumu ve dolayısıyla hatası ilk kullanıma ertelenmiş",
+        "<code>@PostConstruct</code> metodu exception atmış",
+        "Bean adları çakışmış",
+        "Döngüsel bağımlılık var"
+      ],
+      a: [0],
+      why: "<b>Doğru: erteleme.</b> Diğer üç şıkkın hepsi <i>açılışta</i> patlar — <code>@PostConstruct</code> exception'ı uygulamayı açtırmaz, ad çakışması tanım kaydında, döngü ise grafiğin çözülmesinde yakalanır. Dolayısıyla \"açıldı ama sonra patladı\" tarifine yalnızca ertelenmiş kurulum uyar (ve prototype bean'ler, 1.5). En yakın çeldirici <code>@PostConstruct</code> istisnası — çünkü o da senin kodundan gelir, ama zamanlaması tutmaz. <b>Kanca:</b> hatayı zamanına göre ayıkla: açılış mı, ilk kullanım mı?"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

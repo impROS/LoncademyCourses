@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.4 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.4",
+  code: "Anotasyon haritası · 2.4",
+  title: "Starter'lar ve Spring Boot 4 modül bölünmesi",
+  back: "2.4-starterlar.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Starter nedir",
+      q: "Bir starter jar'ını açıp içine baktın. Ne bulursun?",
+      opts: [
+        "Sınıf yok, yalnızca başka bağımlılıkları listeleyen bir pom.xml var",
+        "Auto-configuration sınıfları ve onların koşulları var",
+        "Yalnızca derlenmiş configuration sınıfları var, kaynak kod yok",
+        "Bağımlılıkların birleştirilmiş (shaded) tek bir kopyası var"
+      ],
+      a: [0],
+      why: "<b>Starter kod içermez; tek işi 'bu işi yapmak için şunlar lazım' listesini tutmak ve sürümleri uyumlu tutmaktır.</b> <code>spring-boot-starter-webmvc</code> açtığında altında <code>spring-boot-starter</code>, <code>spring-boot-starter-json</code>, <code>spring-boot-starter-tomcat</code>, <code>spring-web</code> ve <code>spring-webmvc</code> görürsün. En yakın çeldirici 'auto-configuration sınıfları var': o sınıflar starter'da değil, starter'ın <b>çektiği</b> modüllerdedir (örneğin <code>spring-boot-jdbc</code>). <i>Kanca:</i> <b>starter bir liste, kütüphane değil.</b>"
+    },
+    {
+      topic: "Starter nedir",
+      q: "pom.xml'e tek satır starter yazmak yerine 15 bağımlılığı elle yazmanın somut bedeli nedir?",
+      opts: [
+        "Sürümleri kendin uyumlu tutmak zorunda kalırsın; biri güncellenince diğerini kırabilir",
+        "Uygulama daha yavaş açılır çünkü bağımlılıklar tek tek çözümlenir",
+        "Auto-configuration devreye girmez, her bean'i elle tanımlaman gerekir",
+        "Maven bu kadar bağımlılığı elle kabul etmez, starter zorunludur"
+      ],
+      a: [0],
+      why: "<b>Starter'ın asıl getirisi sürüm uyumu:</b> üst proje (parent) birlikte test edilmiş bir kümeyi yayınlar, sen tek satır yazarsın. En yakın çeldirici 'auto-configuration devreye girmez': doğru bağımlılıkları elle yazarsan auto-configuration yine çalışır — çünkü koşullar <b>classpath'e</b> bakar, starter yazıp yazmadığına değil (2.3). <i>Kanca:</i> <b>starter zaman değil, uyumsuzluk kazandırır.</b>"
+    },
+    {
+      topic: "Spring Boot 4: modül bölünmesi",
+      q: "Spring Boot 3'teki devasa spring-boot-autoconfigure jar'ı Spring Boot 4'te neden teknoloji başına modüllere bölündü?",
+      opts: [
+        "Kullanmadığın teknolojinin sınıfları hiç inmesin: daha küçük classpath, daha hızlı açılış, daha küçük güvenlik yüzeyi",
+        "Auto-configuration'ı tamamen kaldırıp yerine elle yapılandırmayı getirmek için",
+        "Koşul anotasyonlarını gereksiz kılmak için; artık koşul yerine modül varlığına bakılıyor",
+        "Starter kavramını kaldırıp her bağımlılığın tek tek yazılmasını sağlamak için"
+      ],
+      a: [0],
+      why: "<b>Kazanç classpath'te:</b> Kafka'dan LDAP'a kadar her şeyin auto-configuration'ı artık tek jar'da değil; kullanmadığın teknoloji hiç inmez. Bedeli de var: her yükseltmede <code>import</code> satırları değişir ve internetteki her örnek eski adı kullanır. En yakın çeldirici 'koşul anotasyonlarını gereksiz kıldı': koşullar yerinde duruyor — bölünme yalnızca hangi sınıfın hangi jar'da olduğunu değiştirdi, <code>@ConditionalOnClass</code> mantığını değil. <i>Kanca:</i> <b>bölünme paket adlarını değiştirdi, mekanizmayı değil.</b>"
+    },
+    {
+      topic: "Spring Boot 4: modül bölünmesi",
+      q: "DataSourceAutoConfiguration sınıfının paket adı Spring Boot 4'te nasıl oldu?",
+      opts: [
+        "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration",
+        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+        "org.springframework.boot.autoconfigure.DataSourceAutoConfiguration",
+        "org.springframework.jdbc.boot.autoconfigure.DataSourceAutoConfiguration"
+      ],
+      a: [0],
+      why: "<b>autoconfigure kelimesi öne değil, sona taşındı:</b> önce teknoloji (<code>jdbc</code>), sonra <code>autoconfigure</code>. En yakın çeldirici ikinci şık: bu <b>Spring Boot 3'ün</b> adıdır ve internetteki örneklerin tamamında o yazar — bu yüzden en çok kopyalanan yanlış odur. <i>Kanca:</i> <b>boot.&lt;teknoloji&gt;.autoconfigure</b> sırasını bir kere aklına yaz; <code>import</code> hatası aldığında ilk deneyeceğin bu olur."
+    },
+    {
+      topic: "Değişen adlar",
+      q: "Spring Boot 4'te aşağıdaki iki starter adı değişti. Yeni adları hangi iki seçenek doğru veriyor? (İki tanesini seç.)",
+      opts: [
+        "spring-boot-starter-web yerine spring-boot-starter-webmvc",
+        "spring-boot-starter-aop yerine spring-boot-starter-aspectj",
+        "spring-boot-starter-json yerine spring-boot-starter-jackson",
+        "spring-boot-starter-tomcat yerine spring-boot-starter-servlet"
+      ],
+      a: [0, 1],
+      why: "<b>Ezberlenecek iki ad değişikliği bunlar:</b> <code>web → webmvc</code> ve <code>aop → aspectj</code> (ayrıca <code>oauth2-client → security-oauth2-client</code>). En yakın çeldirici <code>json → jackson</code>: kulağa doğru gelir çünkü Jackson gerçekten 3'e geçti ve groupId <code>tools.jackson</code> oldu — ama starter'ın adı <code>spring-boot-starter-json</code> olarak kaldı. Değişen kütüphane sürümüyle değişen starter adını karıştırma. <i>Kanca:</i> <b>webmvc ve aspectj — teknolojinin gerçek adı yazılıyor artık.</b>"
+    },
+    {
+      topic: "Değişen adlar",
+      q: "Spring Boot 4 projende spring-boot-starter-web yazıyor. Uygulamayı çalıştırınca ne olur?",
+      opts: [
+        "Sorunsuz açılır; eski ad kaldırılmadı, yalnızca kullanımdan kaldırıldı (deprecated) olarak işaretlendi",
+        "Açılışta 'starter has been removed' hatası verir",
+        "Açılır ama Tomcat başlamaz, sunucu bağımlılığını elle eklemen gerekir",
+        "Açılır ama auto-configuration devre dışı kalır"
+      ],
+      a: [0],
+      why: "<b>Çalışır — ve asıl tuzak bu.</b> Eski starter'ın kendi tanımında <i>deprecated in favor of spring-boot-starter-webmvc</i> yazar, ama hiçbir şey kırılmadığı için ad değişikliğini fark etmezsin. En yakın çeldirici 'Tomcat başlamaz': eski starter hâlâ Tomcat'i getiriyor, uygulama tam olarak eskisi gibi ayağa kalkıyor. <i>Kanca:</i> <b>sessizce çalışan eski ad, sessizce eskiyen projedir.</b> Pratikte bunu <code>./mvnw dependency:tree -Dincludes=org.springframework.boot:spring-boot-starter-web</code> ile kendin doğruladın."
+    },
+    {
+      topic: "Değişen adlar",
+      q: "Spring Boot 4'te bir kontrolcü ve bir depo testi yazacaksın. pom.xml'e ne eklersin?",
+      opts: [
+        "spring-boot-starter-webmvc-test ve spring-boot-starter-data-jpa-test; genel test starter'ını ayrıca yazmaya gerek yok",
+        "Yalnızca spring-boot-starter-test; teknoloji starter'ları onun içinden gelir",
+        "spring-boot-starter-test ve yanına spring-boot-starter-webmvc-test",
+        "spring-boot-starter-test-classic; Spring Boot 4'te test starter'ı bu ad altında toplandı"
+      ],
+      a: [0],
+      why: "<b>Kural resmî belgede yazıyor: tüm test starter'ları spring-boot-starter-&lt;teknoloji&gt;-test biçimindedir</b>, ve hepsi <code>spring-boot-starter-test</code>'i geçişli (transitive) olarak getirdiği için genel olanı ayrıca yazmana gerek yoktur. En yakın çeldirici üçüncü şık: zararsızdır ama gereksizdir; iki satırla aynı sonucu alırsın. İkinci şık ise ilişkiyi ters kurar — akış teknolojiden genele doğrudur, tersi değil. <i>Kanca:</i> <b>her teknoloji kendi test starter'ını getirir, genel olan onların içinde gelir.</b>"
+    },
+    {
+      topic: "Değişen adlar",
+      q: "@WebMvcTest testinde @WithMockUser(roles = 'ADMIN') satırı 'cannot find symbol' veriyor. Eksik olan nedir?",
+      opts: [
+        "spring-boot-starter-security-test bağımlılığı",
+        "spring-boot-starter-test bağımlılığı",
+        "spring-boot-starter-security bağımlılığı",
+        "@WebMvcTest yerine @SpringBootTest kullanılması"
+      ],
+      a: [0],
+      why: "<b>@WithMockUser ve @WithUserDetails artık spring-boot-starter-security-test ile gelir;</b> eskiden genel test starter'ının içinde geliyordu, bölünmede kendi modülüne ayrıldı. En yakın çeldirici <code>spring-boot-starter-security</code>: uygulamanın güvenlik bağımlılığıdır, test anotasyonlarını getirmez — <b>-test</b> ekini atlamak bu konunun en sık hatası. Testi <code>@SpringBootTest</code>'e çevirmek de sınıfı classpath'e getirmez, yani derleme hatası aynen durur. <i>Kanca:</i> <b>test anotasyonu → test starter'ı.</b>"
+    },
+    {
+      topic: "Sınıf adları da değişti",
+      q: "Eski bir örnekten kopyaladığın kodda 'cannot find symbol: class WebMvcTest' hatası alıyorsun. İlk refleksin ne olmalı?",
+      opts: [
+        "Paket adı değişmiş olabilir; IDE'nin import önerisine bakarım",
+        "Bağımlılık sürümünü elle yükseltirim",
+        "Sınıf adı değişmiştir; benzer adlı yeni bir anotasyon ararım",
+        "Component scan sınıfı görmüyordur; scanBasePackages eklerim"
+      ],
+      a: [0],
+      why: "<b>Bölünme jar adlarını değil paket adlarını da değiştirdi</b> — <code>@WebMvcTest</code> artık <code>org.springframework.boot.webmvc.test.autoconfigure</code> altında, <code>TestRestTemplate</code> ise <code>org.springframework.boot.resttestclient</code> altında. Bu paketleri <b>ezberleme</b>; kazanman gereken şey 'paket adı değişmiş olabilir' refleksi. En yakın çeldirici 'sınıf adı değişmiştir': sınıfın adı aynı kaldı, yeri değişti — yeni ad aramak seni boşuna dolaştırır. <code>scanBasePackages</code> ise component scan ile ilgilidir (2.1), derleme hatasıyla değil. <i>Kanca:</i> <b>cannot find symbol = önce import'a bak.</b>"
+    },
+    {
+      topic: "Sınıf adları da değişti",
+      q: "Açılış günlüğünde 'o.s.boot.tomcat.TomcatWebServer : Tomcat started on port 8080 (http)' satırını görüyorsun. Bu satır sana ne söylüyor?",
+      opts: [
+        "Sınıf org.springframework.boot.tomcat altında; Spring Boot 3'te org.springframework.boot.web.embedded.tomcat altındaydı",
+        "Tomcat harici bir sunucu olarak çalışıyor, gömülü değil",
+        "Günlük kısaltması bozuk; sınıf adı tam yazılmalıydı",
+        "Tomcat'in paketi değişmedi, yalnızca günlük biçimi kısaldı"
+      ],
+      a: [0],
+      why: "<b>Günlükteki kısaltılmış paket adı bile bölünmenin izini taşıyor:</b> <code>org.springframework.boot.tomcat</code>, Spring Boot 3'teki <code>org.springframework.boot.web.embedded.tomcat</code>'in yerini aldı. En yakın çeldirici son şık: biçim gerçekten kısaltılıyor (<code>o.s.boot</code>), ama <b>kısaltmanın altındaki paket ağacı da değişti</b> — ikisini ayırt edebilmen gerekiyor. Sunucu hâlâ gömülüdür; jar'ın içinde çalışır. <i>Kanca:</i> <b>günlük satırı, sürümü ele veren en ucuz kanıt.</b>"
+    },
+    {
+      topic: "Kaçış yolu: classic starter'ları",
+      q: "Büyük ve eski bir projeyi Spring Boot 4'e yükseltiyorsun; ad değişikliklerini şimdilik ertelemek istiyorsun. spring-boot-starter-classic hakkında doğru olan nedir?",
+      opts: [
+        "Eski toplu davranışı geri getiren bir geçiş aletidir; yeni projede kullanılmaz",
+        "Spring Boot 4'ün önerilen varsayılan starter'ıdır, yeni projeler de bununla başlar",
+        "Spring Boot 3 sürümüne geri döndüren bir bağımlılıktır",
+        "Yalnızca test bağımlılıklarını kapsar, uygulama bağımlılıklarını etkilemez"
+      ],
+      a: [0],
+      why: "<b>classic starter'ları geçişi erteler, bitirmez.</b> <code>spring-boot-starter-classic</code> ve <code>spring-boot-starter-test-classic</code> eski toplu davranışı geri getirir; adından da belli olduğu gibi bir <b>geçiş aleti</b>dir, varış noktası değil. En yakın çeldirici 'Spring Boot 3'e geri döner': hayır — sürüm 4 kalır, yalnızca bağımlılık kümesi eski gibi davranır. <i>Kanca:</i> <b>yeni projede classic yazıyorsan yanlış yoldan girmişsin.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "İnternetten kopyaladığın şu bağımlılıkta kaç hata var: artifactId spring-boot-starter-web, version 3.2.0?",
+      opts: [
+        "İki: eski starter adı ve elle yazılmış sürüm (üst projenin uyumlu sürümünü ezer)",
+        "Bir: yalnızca starter adı eski; sürüm yazmak zararsızdır",
+        "Bir: yalnızca sürüm yanlış; starter adı hâlâ önerilen addır",
+        "Hata yok; ikisi de Spring Boot 4'te geçerli kullanımdır"
+      ],
+      a: [0],
+      why: "<b>İki hata birden var.</b> (1) <code>spring-boot-starter-web</code> kullanımdan kaldırıldı, doğrusu <code>spring-boot-starter-webmvc</code>. (2) Elle yazılan <code>&lt;version&gt;</code>, üst projenin birlikte test ettiği uyumlu sürümü ezer ve sürüm karmaşasını başlatır. En yakın çeldirici ikinci şık: 'sürüm yazmak zararsız' en yaygın yanlış inanç — starter'ın tek getirisi zaten sürüm yönetimiyken onu elle ezmek getiriyi çöpe atar. <i>Kanca:</i> <b>starter yaz, sürüm yazma.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "application.properties dosyasına spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration yazdın. Ne olur?",
+      opts: [
+        "Hiçbir şey: o paket Spring Boot 4'te yok, satır sessizce yok sayılır ve DataSource yine kurulmaya çalışılır",
+        "Açılışta 'class not found' hatası alırsın, uygulama başlamaz",
+        "Dışlama tutar; Spring eski paket adlarını yeni adlara kendisi eşler",
+        "Uygulama açılır ama günlükte 'unknown auto-configuration' uyarısı çıkar"
+      ],
+      a: [0],
+      why: "<b>Bölünmenin en sinsi sonucu: yanlış paket adı hata vermez, sadece işe yaramaz.</b> Uygulama açılır, uyarı da çıkmaz, sen dışlamanın tuttuğunu sanırsın. Doğrusu <code>org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration</code>. En yakın çeldirici 'class not found hatası': <code>import</code> satırında yanlış paket gerçekten derleme hatası verir — ama ayar dosyası düz metindir, derleyici oraya bakmaz. <i>Kanca:</i> <b>import bağırır, properties susar.</b> Dışlamanın tuttuğunu <code>--debug</code> raporunun Exclusions bölümünden doğrula (2.3)."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Elindeki bir pom.xml'in Spring Boot 3 için mi yazıldığını hangi iki satırdan anlarsın? (İki tanesini seç.)",
+      opts: [
+        "spring-boot-starter-web (webmvc değil)",
+        "Tek başına duran spring-boot-starter-test",
+        "spring-boot-starter-tomcat satırının bulunmaması",
+        "spring-boot-maven-plugin satırının bulunması"
+      ],
+      a: [0, 1],
+      why: "<b>İki işaret yeter:</b> eski <code>spring-boot-starter-web</code> ve teknoloji ayrımı olmadan tek başına yazılmış <code>spring-boot-starter-test</code>. Spring Boot 4'te birincisi <code>webmvc</code>, ikincisi <code>&lt;teknoloji&gt;-test</code> biçiminde olurdu. En yakın çeldirici Tomcat satırının yokluğu: her iki sürümde de Tomcat starter'ı web starter'ının içinden geçişli gelir, o yüzden ayırt etmez. <code>spring-boot-maven-plugin</code> ise iki sürümde de vardır. <i>Kanca:</i> <b>web + tek test starter'ı görüyorsan 3.x.</b>"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

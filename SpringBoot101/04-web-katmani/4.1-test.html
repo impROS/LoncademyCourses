@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.1 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4.1",
+  code: "Web katmanı · 4.1",
+  title: "Request mapping ve body binding",
+  back: "4.1-request-mapping.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "En sade hâl",
+      q: "<code>@GetMapping(\"/{no}\")</code> metodun bir <code>record Siparis(String no, String urunKodu, int adet)</code> döndürüyor. İstemciye <code>{\"no\":\"S-100\",\"urunKodu\":\"ABC-1\",\"adet\":2}</code> gidiyor ama sen hiçbir dönüştürme kodu yazmadın. Bu çeviriyi kim yaptı ve Spring Boot 4'te hangi paketten geliyor?",
+      opts: [
+        "Jackson 3 — paket <code>tools.jackson</code>, <code>spring-boot-starter-webmvc</code> ile geliyor",
+        "Jackson 2 — paket <code>com.fasterxml.jackson</code>, <code>spring-boot-starter-webmvc</code> ile geliyor",
+        "Spring'in kendi <code>ObjectMapper</code> sınıfı — paket <code>org.springframework.http.converter</code>",
+        "<code>record</code> türleri JSON'a Java'nın kendi <code>toString()</code> mekanizmasıyla çevrilir"
+      ],
+      a: [0],
+      why: "<b>Çeviriyi Jackson yapıyor ve Spring Boot 4'te bu Jackson 3'tür: paket <code>tools.jackson</code>.</b> Starter'ı ekledin, dönüştürücü de onunla geldi. En yakın çeldirici Jackson 2: kütüphane doğru, <b>paket yanlış</b> — internetteki neredeyse her örnek <code>com.fasterxml.jackson</code> yazar ve o <code>import</code> Boot 4'te derlenmez. <code>toString()</code> ile JSON üretilmez; <code>record</code>'un <code>toString()</code> çıktısı <code>Siparis[no=S-100, ...]</code> biçimindedir, JSON değil. <b>Kanca:</b> Boot 4'te Jackson'ın soyadı değişti — <code>fasterxml</code> değil, <code>tools</code>."
+    },
+    {
+      topic: "İstekten değer almanın dört yolu",
+      q: "Bir uç noktaya <code>GET /siparisler/S-100?durum=yeni</code> isteği geliyor ve istemci ayrıca <code>X-Izleme-No: abc</code> başlığını gönderiyor. <code>S-100</code>, <code>yeni</code> ve <code>abc</code> değerlerini metoda almak için sırasıyla hangi anotasyonları yazarsın?",
+      opts: [
+        "<code>@PathVariable</code> · <code>@RequestParam</code> · <code>@RequestHeader</code>",
+        "<code>@RequestParam</code> · <code>@PathVariable</code> · <code>@RequestHeader</code>",
+        "<code>@PathVariable</code> · <code>@RequestBody</code> · <code>@RequestHeader</code>",
+        "<code>@PathVariable</code> · <code>@RequestParam</code> · <code>@RequestBody</code>"
+      ],
+      a: [0],
+      why: "<b><code>@PathVariable</code> adresin içinden, <code>@RequestParam</code> sorgu dizesinden, <code>@RequestHeader</code> başlıktan okur.</b> <code>S-100</code> adresin parçası, <code>durum=yeni</code> sorgu dizesinde, <code>X-Izleme-No</code> bir başlık. En yakın çeldirici ilk ikisinin yer değiştirdiği şık: en sık karıştırılan çift bu — ama <code>?durum=yeni</code> ile <code>/siparisler/S-100</code> isteğin <b>farklı yerleri</b>. <code>@RequestBody</code> burada hiç devrede değil; GET isteğinde okunacak bir gövde yok. <b>Kanca:</b> soru işaretinden sonrası param, eğik çizgiden sonrası path."
+    },
+    {
+      topic: "İstekten değer almanın dört yolu",
+      q: "Kodunda <code>@RequestParam(required = false) int sayfa</code> yazıyor. Kullanıcı <code>GET /siparisler</code> diyor, yani <code>?sayfa=</code> hiç göndermiyor. Ne olur?",
+      opts: [
+        "İstek hata verir: gelmeyen parametre için <code>null</code> üretilir ve <code>null</code> ilkel <code>int</code> türüne atanamaz",
+        "<code>sayfa</code> alanına <code>0</code> atanır ve istek sorunsuz çalışır",
+        "Spring <code>required = false</code> gördüğü için parametreyi metottan tamamen çıkarır",
+        "İstek <code>400 Bad Request</code> ile reddedilir; eksik parametre doğrulama hatası sayılır"
+      ],
+      a: [0],
+      why: "<b><code>required = false</code> demek \"gelmezse <code>null</code> olsun\" demektir; <code>null</code>'ı <code>int</code>'e atamaya çalışan çevirme patlar.</b> Bu yüzden \"<code>?sayfa=</code> göndermeyince 500 alıyorum\" şikâyetinin kaynağı budur. En yakın çeldirici <code>0</code> atanması: ilkel türlerin alan varsayılanının <code>0</code> olması yüzünden çok mantıklı görünür — ama burada alan değil <b>metot parametresi</b> dolduruluyor ve Spring varsayılan uydurmaz. Çözüm iki tane: <code>Integer sayfa</code> yaz ya da <code>defaultValue</code> ver. <b>Kanca:</b> \"olmayabilir\" diyorsan tür de \"olmayabilir\" diyebilmeli — yani wrapper olmalı."
+    },
+    {
+      topic: "İstekten değer almanın dört yolu",
+      q: "Yukarıdaki <code>@RequestParam(required = false) int sayfa</code> hatasını düzeltmenin hangi iki yolu doğrudur? (İki tanesini seç.)",
+      opts: [
+        "<code>@RequestParam(required = false) Integer sayfa</code>",
+        "<code>@RequestParam(defaultValue = \"1\") int sayfa</code>",
+        "<code>@RequestParam(required = false, defaultValue = \"1\") int sayfa</code>",
+        "<code>@RequestParam int sayfa</code> yazıp parametrenin gelmediği durumu kontrolcü içinde <code>try/catch</code> ile yakalamak"
+      ],
+      a: [0, 1],
+      why: "<b>İki doğru yol var: türü wrapper yapmak (<code>Integer</code>) ya da bir <code>defaultValue</code> vermek</b> — ikincisinde parametre gelmezse metoda <code>\"1\"</code> çevrilerek girer, ortada <code>null</code> oluşmaz. En yakın çeldirici üçüncü şık: teknik olarak çalışır ama <b>gereksizdir ve yanlış anlaşılır</b> — <code>defaultValue</code> yazdığın anda <code>required</code> zaten <code>false</code> sayılır, ikisini birden yazma. Son şık büsbütün yanlış: hata metot çağrılmadan <b>önce</b>, parametre bağlanırken oluşur; kontrolcünün içindeki <code>try/catch</code> oraya hiç ulaşmaz. <b>Kanca:</b> <code>defaultValue</code> varsa <code>required</code> yazma."
+    },
+    {
+      topic: "Gövde bağlama ve doğrulama",
+      q: "<code>record YeniSiparis(@NotBlank String urunKodu, @Min(1) int adet)</code> yazdın ama kontrolcüde <code>@Valid</code> koymayı unuttun. <code>{\"urunKodu\":\"\",\"adet\":0}</code> gövdesiyle POST atılıyor. Ne olur?",
+      opts: [
+        "İstek başarıyla işlenir, <code>201</code> döner ve boş <code>urunKodu</code> ile <code>adet=0</code> içeri girer",
+        "Uygulama açılışta \"doğrulama yapılandırılmamış\" hatası verir",
+        "<code>400</code> döner; kısıtlar <code>record</code>'un üstünde durduğu için kendiliğinden çalışır",
+        "Günlüğe \"validation annotations present but not enabled\" uyarısı düşer, istek yine de işlenir"
+      ],
+      a: [0],
+      why: "<b>Kısıtlar <code>record</code>'da durur ama onları çalıştıran şey <code>@Valid</code>'dir.</b> <code>@Valid</code> yoksa hiçbir kontrol yapılmaz: geçersiz veri sorunsuz içeri girer, sen <code>201</code> dönersin, veritabanına çöp yazarsın. En yakın çeldirici üçüncü şık: \"anotasyonu yazdım, iş bitti\" sanısı tam olarak bu konunun tuzağı — [3.2]'deki <code>@Validated</code> ile aynı aile. Uyarı da yoktur: bu hatanın hiç sesi yok, sen geçersiz bir gövde gönderip <code>201</code> aldığında fark edersin. <b>Kanca:</b> doğrulama koyduğunu sanmak, koymamış olmak."
+    },
+    {
+      topic: "Gövde bağlama ve doğrulama",
+      q: "<code>@Valid</code>'i doğru yazdın. Hiçbir ek ayar ya da hata işleyici yokken <code>{\"urunKodu\":\"\",\"adet\":0}</code> gönderiliyor. İstemci <code>400</code> ile birlikte hangi gövdeyi görür?",
+      opts: [
+        "<code>{\"timestamp\":\"...\",\"status\":400,\"error\":\"Bad Request\",\"path\":\"/siparisler\"}</code> — hangi alanın neden geçersiz olduğu yazmaz",
+        "<code>{\"errors\":[{\"field\":\"urunKodu\",\"message\":\"must not be blank\"}]}</code> — alan alan liste",
+        "<code>{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"alanlar\":{\"urunKodu\":\"must not be blank\"}}</code>",
+        "Gövdesiz bir <code>400</code>; ayrıntı yalnızca sunucu günlüğüne yazılır"
+      ],
+      a: [0],
+      why: "<b>Ölçülen varsayılan gövde budur ve içinde alan bilgisi yoktur:</b> <code>timestamp</code>, <code>status</code>, <code>error</code>, <code>path</code>. Mobil geliştiricinin elinde yalnızca \"bir şey yanlış\" bilgisi kalır. En yakın çeldirici alan alan liste dönen şık: insanların <b>beklediği</b> davranış budur ve bu yüzden çeldirici — o çıktıyı almak için <code>MethodArgumentNotValidException</code> işleyicisini <b>sen</b> yazmalısın ([4.2](4.2-exception-handling.md)). Gövde de boş değildir; varsayılan hata sayfası JSON döndürür. <b>Kanca:</b> varsayılan 400 \"yanlış\" der, \"neresi yanlış\" demez."
+    },
+    {
+      topic: "Gövde bağlama ve doğrulama",
+      q: "Yeni sipariş üreten bir POST uç noktası yazıyorsun. <code>ResponseEntity.created(URI.create(\"/siparisler/\" + s.no())).body(s)</code> döndürdüğünde ölçülen yanıt ne olur ve bu neden düz <code>200 OK</code>'ten iyidir?",
+      opts: [
+        "<code>HTTP/1.1 201</code> + <code>Location: /siparisler/S-100</code> — istemci yeni kaynağın adresini öğrenir",
+        "<code>HTTP/1.1 200</code> + <code>Location: /siparisler/S-100</code> — durum kodu değişmez, yalnızca başlık eklenir",
+        "<code>HTTP/1.1 201</code> ama gövdesiz — <code>created(...)</code> gövde yazılmasını engeller",
+        "<code>HTTP/1.1 204</code> + <code>Location: /siparisler/S-100</code> — yeni kaynakta gövde döndürülmez"
+      ],
+      a: [0],
+      why: "<b><code>ResponseEntity.created(...)</code> hem durumu <code>201</code> yapar hem <code>Location</code> başlığını koyar</b> — ölçülen çıktı tam olarak <code>HTTP/1.1 201</code> ve <code>Location: /siparisler/S-100</code>. Kazanç şu: istemci oluşturduğu kaynağın adresini <b>tahmin etmek</b> zorunda kalmaz. En yakın çeldirici üçüncü şık: <code>201</code>'i doğru buluyor ama gövde yasağı uyduruyor — <code>.body(s)</code> zinciri tam da gövdeyi eklemek için var. <code>200</code> dönmek yanlış değil, <b>eksiktir</b>. <b>Kanca:</b> yeni kaynak ürettiysen adresini de ver."
+    },
+    {
+      topic: "Eşleme anotasyonları",
+      q: "Sınıfta <code>@RequestMapping(\"/siparisler\")</code>, metotta yalnızca <code>@GetMapping(\"/{no}\")</code> var. <code>curl -i -X DELETE localhost:8080/siparisler/1</code> çalıştırıyorsun. Ölçülen yanıt nedir?",
+      opts: [
+        "<code>405</code> ve yanıtta <code>Allow: GET</code> başlığı",
+        "<code>404</code>, çünkü DELETE için tanımlı bir metot yok",
+        "<code>400</code>, çünkü istek eşleşmeyen bir HTTP metodu taşıyor",
+        "<code>405</code> ama <code>Allow</code> başlığı olmadan; hangi metotların geçerli olduğunu istemci öğrenemez"
+      ],
+      a: [0],
+      why: "<b>Adres eşleşiyor, yalnızca metot yanlış — bu <code>405</code>'tir ve Spring yanıta <code>Allow: GET</code> başlığını koyar.</b> Ölçülen çıktı da bu. En yakın çeldirici son şık: durum kodunu doğru buluyor ama başlığı yok sayıyor — oysa asıl tanı koydurucu bilgi o başlıkta: adresin hangi metotları kabul ettiğini tek satırda söyler. <code>404</code> ise adresin <b>hiç</b> eşleşmediği durumdur. <b>Kanca:</b> 404 = adres yok, 405 = adres doğru ama metot yanlış."
+    },
+    {
+      topic: "Eşleme anotasyonları",
+      q: "Bir ekip arkadaşın \"uç nokta çalışmıyor\" diyor. Elinde yalnızca yanıtın durum kodu ve başlıkları var. <code>404</code> ile <code>405</code> arasındaki farkı ona nasıl açıklarsın?",
+      opts: [
+        "<code>404</code> adresin hiç eşleşmediğini, <code>405</code> adresin doğru ama HTTP metodunun yanlış olduğunu söyler",
+        "<code>404</code> kaynağın veritabanında bulunamadığını, <code>405</code> adresin hiç tanımlı olmadığını söyler",
+        "İkisi de adresin bulunamadığını söyler; fark yalnızca Spring sürümündendir",
+        "<code>405</code> adresin doğru olduğunu ama istek gövdesinin okunamadığını söyler"
+      ],
+      a: [0],
+      why: "<b><code>404</code> = eşleşen bir eşleme yok; <code>405</code> = eşleme var, o metot için yok.</b> <code>405</code>'in <code>Allow:</code> başlığı hangi metotların kabul edildiğini yazar, yani \"adres mi yanlış, metot mu yanlış\" sorusunu tek bakışta bitirir. En yakın çeldirici ikinci şık: <code>404</code>'ü \"kayıt bulunamadı\" ile karıştırıyor — bu ikisi <b>farklı katmanlar</b>; kayıt bulunamadığında da <code>404</code> dönebilirsin ama o senin yazdığın bir karardır, eşleme sonucu değil. Son şık gövde okunamamasını anlatıyor; o <code>400</code> ya da <code>415</code>'in konusu. <b>Kanca:</b> <code>Allow:</code> başlığını gördüysen adres doğrudur."
+    },
+    {
+      topic: "Dönüş türü ne olmalı",
+      q: "Bir geliştirici JPA varlık sınıfı <code>SiparisVarligi</code>'ni kontrolcüden doğrudan döndürüyor. Bunun hangi üç zararı vardır? (Üç tanesini seç.)",
+      opts: [
+        "Veritabanı şeman dış dünyaya sızar ve API sözleşmesine dönüşür",
+        "Veritabanına bir alan eklediğin gün istemcilere haber vermeden API'yi değiştirmiş olursun",
+        "Tembel yüklenen alanlar JSON'a çevrilirken beklenmedik veritabanı sorguları tetikler",
+        "Varlık sınıfları Jackson tarafından hiç serileştirilemez; uygulama açılışta hata verir"
+      ],
+      a: [0, 1, 2],
+      why: "<b>Üç zarar: şema sızıntısı, habersiz sözleşme değişikliği ve tembel yüklemenin tetiklediği sorgular.</b> Çözüm bir DTO <code>record</code>'u — <code>Siparis</code> ve <code>YeniSiparis</code> tam olarak bunlar. En yakın çeldirici son şık: sorunun \"çalışmıyor\" olduğunu sanıyor, oysa asıl tuzak tam tersi — <b>gayet iyi çalışır</b>, bu yüzden kimse fark etmez ve altı ay sonra API'yi kırar. Mutlak ifadeye de dikkat: \"hiç serileştirilemez\" ve \"açılışta hata verir\" ikisi de yanlış. <b>Kanca:</b> veritabanı sınıfın API sözleşmen değildir."
+    },
+    {
+      topic: "Dönüş türü ne olmalı",
+      q: "Bir GET uç noktası kaynağı bulup <code>200 OK</code> ile JSON döndürecek, başka hiçbir başlık ya da özel durum kodu gerekmiyor. Dönüş türü ne olmalı?",
+      opts: [
+        "Doğrudan nesne (<code>Siparis</code>) — Spring gövdeyi ve <code>200</code>'ü kendisi ayarlar",
+        "<code>ResponseEntity&lt;Siparis&gt;</code> — durum kodunu her zaman açıkça yazmak daha güvenlidir",
+        "<code>void</code> — gövde Jackson tarafından ayrıca yazılır",
+        "<code>Map&lt;String, Object&gt;</code> — JSON döndürmenin tek doğrudan yolu budur"
+      ],
+      a: [0],
+      why: "<b>Özel bir durum kodu ya da başlık gerekmiyorsa nesneyi doğrudan döndür</b>; Spring <code>200 OK</code> + JSON gövdeyi zaten üretir. En yakın çeldirici <code>ResponseEntity</code>: yanlış değil, <b>gereksiz</b> — <code>ResponseEntity</code>'yi durum kodunu ya da başlığı <b>sen</b> belirleyeceğinde kullanırsın (örneğin <code>201</code> + <code>Location</code>). \"Her zaman açıkça yazmak daha güvenli\" cümlesindeki <b>mutlak ifadeye</b> dikkat: her metodu <code>ResponseEntity</code>'ye sarmak kodu okunmaz yapar. <code>void</code> gövdesiz yanıttır; <code>Map</code> ise mümkün ama tür güvenliğini atar. <b>Kanca:</b> kontrol lazımsa <code>ResponseEntity</code>, değilse nesne."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>curl -X POST localhost:8080/siparisler -d '{\"urunKodu\":\"ABC-1\",\"adet\":2}'</code> çalıştırıyorsun ve <code>415</code> ile birlikte <code>Accept: application/json, application/*+json</code> başlığını alıyorsun. Sorun nerede?",
+      opts: [
+        "İstemcide: <code>-H 'Content-Type: application/json'</code> verilmediği için <code>curl</code> <code>application/x-www-form-urlencoded</code> gönderdi",
+        "Sunucuda: kontrolcü metoduna <code>consumes = \"application/json\"</code> yazmayı unutmuşsun",
+        "Gövdede: JSON geçersiz olduğu için ayrıştırıcı gövdeyi okuyamadı",
+        "Doğrulamada: <code>@Valid</code> kısıtları başarısız oldu ve Spring bunu <code>415</code> olarak raporladı"
+      ],
+      a: [0],
+      why: "<b>Sunucu kodunda hata yok; istemcinin başlığı eksik.</b> <code>curl</code>, <code>-H</code> verilmezse gövdeyi <code>application/x-www-form-urlencoded</code> olarak gönderir ve Spring o türü kabul etmediği için <code>415</code> döner. Yanıttaki <code>Accept: application/json, application/*+json</code> başlığı sunucunun <b>hangi türleri kabul ettiğini</b> söyler — teşhisin kanıtı bu satır. En yakın çeldirici üçüncü şık: bozuk JSON gerçekten bir hata sebebidir ama karşılığı <code>400</code>'dür; <b><code>415</code>'te gövdeye hiç bakılmamıştır</b>. <b>Kanca:</b> <code>415</code> gördüysen önce <code>curl</code> satırına bak, koda değil."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Aynı POST uç noktasından bir istek <code>400</code>, bir başkası <code>415</code> alıyor. Bu iki durum kodunun ayırdığı şey nedir?",
+      opts: [
+        "<code>400</code>: gövde okundu ama içeriği geçersiz · <code>415</code>: <code>Content-Type</code> desteklenmiyor, gövdeye hiç bakılmadı",
+        "<code>400</code>: gövde hiç gönderilmedi · <code>415</code>: gövde gönderildi ama boştu",
+        "<code>400</code>: <code>Content-Type</code> eksik · <code>415</code>: gövdedeki alanlar kısıtları geçemedi",
+        "İkisi de aynı şeydir; Spring sürümüne göre biri ya da diğeri döner"
+      ],
+      a: [0],
+      why: "<b>Sıra önemli: önce <code>Content-Type</code> kontrol edilir, sonra gövde okunur.</b> Tür desteklenmiyorsa <code>415</code> döner ve gövde hiç ayrıştırılmaz; tür uygunsa gövde okunur ve içeriği geçersizse <code>400</code> döner. En yakın çeldirici üçüncü şık: tam olarak <b>ikisini ters çevirmiş</b> — bu, en sık yapılan karıştırmadır ve teşhisi yanlış yöne çevirir (kodda kısıt ararsın, oysa sorun istemcinin başlığındadır). Son şık mutlak ve yanlış: iki kod farklı aşamaları anlatır. <b>Kanca:</b> <code>415</code> = zarfı açmadım, <code>400</code> = açtım ama içi bozuk."
+    },
+    {
+      topic: "Gövde bağlama ve doğrulama",
+      q: "Bir kod incelemesinde POST uç noktasının imzası <code>public ResponseEntity&lt;Siparis&gt; olustur(@RequestBody YeniSiparis istek)</code>. Hangi iki gözlem doğrudur? (İki tanesini seç.)",
+      opts: [
+        "<code>@Valid</code> eksik; <code>record</code>'daki <code>@NotBlank</code> ve <code>@Min(1)</code> kısıtları hiç çalışmayacak",
+        "<code>ResponseEntity</code> dönüş türü doğru seçilmiş; yeni kaynakta <code>201</code> + <code>Location</code> vermeni sağlar",
+        "<code>@RequestBody</code> yerine <code>@RequestParam</code> yazılmalıydı; JSON gövde sorgu dizesinden okunur",
+        "İmza eksiksiz; <code>record</code> üstündeki kısıtlar Spring tarafından kendiliğinden uygulanır"
+      ],
+      a: [0, 1],
+      why: "<b>İki gözlem doğru: <code>@Valid</code> eksik, ama dönüş türü olarak <code>ResponseEntity</code> yerinde.</b> Kısıtlar <code>record</code>'da dursa da <code>@Valid</code> olmadan çalışmazlar — sessizce. <code>ResponseEntity</code> ise burada gerekli, çünkü <code>201</code> ve <code>Location</code> başlığını sen ayarlayacaksın. En yakın çeldirici son şık: \"kısıtlar kendiliğinden uygulanır\" — bu konunun tek numaralı tuzağı ve <b>tam tersi</b> doğru. <code>@RequestParam</code> önerisi ise kategoriyi karıştırıyor: JSON gövde sorgu dizesinde değil, istek gövdesindedir. <b>Kanca:</b> <code>@RequestBody</code> gördüğün her yerde yanında <code>@Valid</code> ara."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

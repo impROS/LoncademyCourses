@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.2",
+  code: "Container ve bean'ler · 1.2",
+  title: "Bean tanımlamanın iki yolu",
+  back: "1.2-bean-tanimlama.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Yol A — Component scan",
+      q: "<code>@Service</code> işaretli <code>SiparisServisi</code> sınıfın var ve bean'i ada göre almak istiyorsun. Hangi adı kullanırsın?",
+      opts: [
+        "<code>siparisServisi</code> — sınıf adının ilk harfi küçültülür",
+        "<code>SiparisServisi</code> — sınıf adı aynen kullanılır",
+        "<code>siparisservisi</code> — sınıf adı tamamen küçültülür",
+        "<code>siparisServisiBean</code> — sona <code>Bean</code> eklenir"
+      ],
+      a: [0],
+      why: "<b>Doğru: sınıf adı, ilk harf küçük.</b> <code>SiparisServisi</code> → <code>siparisServisi</code>. En yakın çeldirici tamamen küçük yazım — Spring yalnızca <i>ilk</i> harfe dokunur, gerisi olduğu gibi kalır; bu yüzden <code>getBean(\"siparisservisi\")</code> hata verir. Kendin ad vermek istersen <code>@Service(\"siparisIslemleri\")</code> yazarsın. <b>Kanca:</b> bean adı, sınıf adının küçük harfle başlayan hâlidir — çeviri değil, tek harflik değişiklik."
+    },
+    {
+      topic: "Yol A — Component scan",
+      q: "<code>URLIstemcisi</code> adlı bir sınıfa <code>@Component</code> yazdın. Bean'in adı ne olur?",
+      opts: [
+        "<code>URLIstemcisi</code> — ilk iki harf de büyükse ilk harf küçültülmez",
+        "<code>uRLIstemcisi</code> — kural istisnasız uygulanır",
+        "<code>urlIstemcisi</code> — baştaki kısaltma tamamen küçültülür",
+        "<code>istemcisi</code> — baştaki kısaltma atılır"
+      ],
+      a: [0],
+      why: "<b>Doğru: ilk iki harf de büyükse ad olduğu gibi kalır.</b> Bu istisna kısaltmalar için vardır. En yakın çeldirici <code>uRLIstemcisi</code> — kuralı mekanik uygularsan bunu beklersin, ve zaten istisna tam olarak bu çirkin sonucu önlemek için konmuştur. <b>Kanca:</b> <code>URL</code>, <code>XML</code>, <code>API</code> gibi başlangıçlar dokunulmadan kalır."
+    },
+    {
+      topic: "Yol B — @Bean metodu",
+      q: "Uygulamanda <code>RestClient</code> sınıfından bir bean lazım. Bu sınıfın kaynağı Spring'de, senin projende değil. Ne yaparsın?",
+      opts: [
+        "<code>@Configuration</code> sınıfında bir <code>@Bean</code> metodu yazıp nesneyi orada kurarsın",
+        "<code>RestClient</code>'i genişleten bir alt sınıf yazıp ona <code>@Service</code> koyarsın",
+        "Kütüphanenin jar dosyasını açıp sınıfa <code>@Component</code> eklersin",
+        "<code>@ComponentScan</code>'e <code>org.springframework.web.client</code> paketini eklersin"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@Bean</code> metodu tam olarak bunun için var.</b> Sınıf senin değilse başına anotasyon yazamazsın; nesneyi sen kurar, container'a \"al sakla\" dersin. En yakın çeldirici taranan paketlere kütüphane paketini eklemek — tarama yalnızca <code>@Component</code> ailesi işaretli sınıfları toplar; işaretsiz bir kütüphane sınıfı taransa da bean olmaz, üstelik taramayı yabancı paketlere açmak başka sürprizler getirir. <b>Kanca:</b> kendi sınıfın → <code>@Component</code>; başkasının sınıfı → <code>@Bean</code>."
+    },
+    {
+      topic: "Yol B — @Bean metodu",
+      q: "<code>@Bean public DataSource veriKaynagi() { ... }</code> metodunu yazdın. Bu bean'in adı ve türü nedir?",
+      opts: [
+        "Ad <code>veriKaynagi</code>, tür <code>DataSource</code>",
+        "Ad <code>dataSource</code>, tür <code>DataSource</code>",
+        "Ad <code>veriKaynagi</code>, tür döndürülen somut sınıf ne ise o",
+        "Ad, metodun içinde <code>new</code> ile kurulan sınıfın adı"
+      ],
+      a: [0],
+      why: "<b>Doğru: ad = metot adı, tür = metodun dönüş türü.</b> Bu ikisi <code>@Component</code>'ten farklı çalışır ve en sık karıştırılan yer burasıdır. En yakın çeldirici <code>dataSource</code> — <code>@Bean</code> metodunun döndürdüğü <i>sınıfın</i> adı bean adı değildir; container metodun adına bakar. <b>Kanca:</b> <code>@Bean</code>'de metot imzası her şeyi söyler: adı soldan (metot adı), türü sağdan (dönüş türü) okursun."
+    },
+    {
+      topic: "Yol B — @Bean metodu",
+      q: "Hangi iki durumda <code>@Bean</code> metodu kullanmak zorundasın? (İki tanesini seç.)",
+      opts: [
+        "Nesnenin kurulumu mantık istiyor — <code>if</code>, ayar okuma, birden çok adım",
+        "Aynı türden farklı adreslere bakan iki nesne lazım",
+        "Sınıfın çok fazla bağımlılığı var",
+        "Sınıf bir arayüz gerçekliyor"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: kurulumda mantık, ve aynı türden çoklu nesne.</b> (Üçüncü zorunlu durum, sınıfın senin olmamasıdır.) En yakın çeldirici \"arayüz gerçekliyor\" — arayüz gerçeklemek <code>@Component</code>'e hiçbir engel değildir; tam tersine 1.3'teki liste injection'ı kalıbı tamamen arayüz gerçekleyen <code>@Component</code> sınıflarına dayanır. Bağımlılık sayısı ise tanımlama yolunu değil, sınıfın çok iş yaptığını gösterir. <b>Kanca:</b> <code>@Bean</code>'in üç sebebi: sınıf senin değil · kurulum mantık istiyor · aynı türden çok nesne."
+    },
+    {
+      topic: "Yol B — @Bean metodu",
+      q: "Bir <code>@Configuration</code> sınıfında <code>@Bean public RestClient stokIstemcisi()</code> metodu var. Aynı sınıftaki başka bir <code>@Bean</code> metodundan bu nesneye ihtiyacın oldu. Bu metodu elle çağırmak konusunda doğru olan hangisidir?",
+      opts: [
+        "<code>@Bean</code> metotlarını container çağırır, sen çağırmazsın — elle çağırmak 2.2'de açıklanan sebeplerle sorun çıkarır",
+        "Elle çağırmalısın; container yalnızca hiç çağrılmamış <code>@Bean</code> metotlarını kendisi çalıştırır",
+        "Elle çağıramazsın; <code>@Bean</code> metotları derleyici tarafından <code>private</code> yapılır",
+        "Fark etmez; container her <code>@Bean</code> metodunun sonucunu otomatik olarak önbelleğe alır ve elle çağırsan da aynı nesne gelir"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@Bean</code> metotlarının çağıranı container'dır.</b> Metodun adı bean adı, dönüş türü bean türüdür — yani metot bir tarif bildirimidir, çağırdığın sıradan bir yardımcı metot değil. En yakın çeldirici, \"container sonucu otomatik önbelleğe alır, fark etmez\" — <code>@Configuration</code> içinde gerçekten böyle bir mekanizma çalışır, ama nasıl çalıştığını ve nerede bozulduğunu bilmeden buna güvenmek tehlikelidir; sınıf <code>@Configuration</code> değilse aynı çağrı yeni nesne üretir (bkz. lite mode). <b>Kanca:</b> şimdilik kuralı uygula — <code>@Bean</code> metodunu elle çağırma; mekanizması 2.2'de."
+    },
+    {
+      topic: "İkisinin karşılaştırması",
+      q: "<code>@Component</code> ailesi ile <code>@Bean</code> metodu arasındaki farkı bir cümlede nasıl özetlersin?",
+      opts: [
+        "<code>@Component</code> \"bu sınıfı bul ve kur\" der (sınıfa yazılır); <code>@Bean</code> \"bu nesneyi ben kurdum, al sakla\" der (metoda yazılır)",
+        "<code>@Component</code> singleton bean üretir, <code>@Bean</code> her çağrıda yeni nesne üretir",
+        "<code>@Component</code> Spring Framework'e, <code>@Bean</code> Spring Boot'a aittir",
+        "<code>@Component</code> açılışta, <code>@Bean</code> ilk kullanımda kurulur"
+      ],
+      a: [0],
+      why: "<b>Doğru: biri sınıfa \"bul ve kur\", diğeri metoda \"ben kurdum, al sakla\".</b> Nesneyi kimin kurduğu tek gerçek ayrımdır. En yakın çeldirici \"<code>@Bean</code> her çağrıda yeni nesne üretir\" — bu yalnızca metot <code>@Configuration</code> <i>dışında</i> olduğunda, yani hatalı kullanımda doğrudur; doğru yerde <code>@Bean</code> de singleton'dır. Dördüncü şık da yanlış: kurulma zamanını tanımlama yolu değil, <code>@Lazy</code> ve scope belirler. <b>Kanca:</b> sınıfa mı yazıldı, metoda mı — cevabın tamamı bu."
+    },
+    {
+      topic: "İkisinin karşılaştırması",
+      q: "Kendi yazdığın basit bir <code>SiparisServisi</code> sınıfını <code>@Bean</code> metoduyla tanımladın. Kod çalışıyor. Neden yine de tercih edilmez?",
+      opts: [
+        "Kurulum bilgisini sınıftan uzağa taşır; sınıfa bakan kişi onun bean olup olmadığını göremez",
+        "Kendi sınıfların için <code>@Bean</code> kullanmak açılış hatası verir",
+        "<code>@Bean</code> ile tanımlanan bean'lere injection yapılamaz",
+        "<code>@Bean</code> ile tanımlanan bean'ler <code>getBeansOfType</code> ile bulunamaz"
+      ],
+      a: [0],
+      why: "<b>Doğru: sebep okunabilirlik, teknik bir engel değil.</b> Sorunun kendisi \"çalışıyor\" diyerek bunu zaten söylüyor. En yakın çeldirici \"açılış hatası verir\" — vermez, ve tam da bu yüzden bu alışkanlık kod tabanlarına yerleşir; bedeli hata değil, sınıfa bakınca bean olduğunu anlayamamaktır. <b>Kanca:</b> bean'liği sınıfın kendisinde göremiyorsan, sonraki okuyucu da göremez."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Bir <code>@Bean</code> metodunu <code>@Configuration</code> yerine <code>@Service</code> işaretli bir sınıfa koydun. Ne olur?",
+      opts: [
+        "Hata almazsın — ama metot \"lite mode\"te çalışır ve singleton garantisi kaybolur",
+        "Açılışta <code>@Bean</code> methods must be declared in @Configuration hatası alırsın",
+        "Metot hiç çağrılmaz, bean üretilmez ve container sessizce devam eder",
+        "Bean üretilir ve singleton garantisi <code>@Configuration</code>'daki ile birebir aynıdır"
+      ],
+      a: [0],
+      why: "<b>Doğru: hata yok — asıl tehlike bu.</b> Metot yine bean üretir, ama <code>@Configuration</code> dışında olduğu için lite mode'da çalışır: metodu her çağıran yeni bir nesne alır. Sessiz hata, gürültülü hatadan pahalıdır. En yakın çeldirici \"açılışta hata alırsın\" — hata alsaydın sorun zaten kendini çözerdi; mekanizmanın ayrıntısı 2.2'de. <b>Kanca:</b> \"bean'im her seferinde yeni nesne dönüyor\" dersen, ilk bakacağın yer metodun hangi sınıfta durduğudur."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "İki farklı <code>@Configuration</code> sınıfında da <code>@Bean public RestClient istemci()</code> var. Açılışta <code>The bean 'istemci' ... could not be registered. A bean with that name has already been defined ... and overriding is disabled.</code> hatası çıktı. Doğru çözüm nedir?",
+      opts: [
+        "Metot adlarını ayır: <code>stokIstemcisi</code> ve <code>odemeIstemcisi</code>",
+        "<code>spring.main.allow-bean-definition-overriding=true</code> ayarını aç",
+        "Birine <code>@Primary</code> ekle; ad çakışmasını <code>@Primary</code> çözer",
+        "İki <code>@Configuration</code> sınıfını birleştir; ad çakışması yalnızca farklı sınıflarda olur"
+      ],
+      a: [0],
+      why: "<b>Doğru: bean adları container genelinde benzersizdir, ad değiştir.</b> En yakın çeldirici <code>allow-bean-definition-overriding</code> — hata mesajının sonundaki <code>overriding is disabled</code> bunu davet ediyor gibi görünür ama <b>açma</b>: bu ayar hatayı çözmez, onu sessiz bir \"hangisi kazandı?\" bilmecesine çevirir. <code>@Primary</code> ise aynı <i>türden</i> çoklu bean sorununu çözer (1.3), aynı <i>addan</i> değil; zaten iki tanım kaydedilemediği için sıra ona hiç gelmez. <b>Kanca:</b> aynı tür serbest, aynı ad yasak."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>@Service</code> işaretli <code>SiparisServisi</code> içinde <code>private final StokIstemcisi stok = new StokIstemcisi();</code> yazıyor. Bu satırın somut sonuçları hangi ikisidir? (İki tanesini seç.)",
+      opts: [
+        "<code>StokIstemcisi</code> bir bean değildir; container ona injection yapmaz",
+        "İleride <code>@Transactional</code> veya <code>@Retryable</code> gibi anotasyonları bu nesnede işlemez",
+        "<code>SiparisServisi</code> de bean olmaktan çıkar",
+        "Açılışta <code>required a bean of type StokIstemcisi</code> hatası alırsın"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: injection yapılmaz ve Spring anotasyonları işlemez.</b> İkisi de aynı kökten gelir — container'ın haberi olmayan nesneye container dokunmaz. En yakın çeldirici \"açılışta hata alırsın\" — <i>almazsın</i>, ve tehlike tam olarak budur: kod sorunsuz açılır, arıza aylar sonra \"transaction neden açılmıyor\" diye çıkar. <code>SiparisServisi</code> ise bean olmaya devam eder; içindeki alan onun bean'liğini etkilemez. <b>Kanca:</b> bean olmak, var olmak değildir."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>getBeansOfType(RestClient.class)</code> çağrısı iki sonuç döndürdü: <code>stokIstemcisi</code> ve <code>odemeIstemcisi</code>. Bu durum için doğru olan hangisidir?",
+      opts: [
+        "Tanımlamada sorun yok; sorun bu türü tek başına inject etmeye çalıştığında çıkacak",
+        "Tanımlamada hata var; container aynı türden iki bean kaydetmemeliydi",
+        "İkisinden biri lite mode'da kurulmuştur, bu yüzden iki tane görünüyor",
+        "Bean adları çakıştığı için container ikisini de kaydetmiştir"
+      ],
+      a: [0],
+      why: "<b>Doğru: aynı türden iki bean tamamen meşrudur.</b> Ad ayrı olduğu sürece container ikisini de kaydeder. Sorun tanımlamada değil, <i>tüketimde</i> çıkar: <code>RestClient</code> parametresi olan bir constructor yazdığında container hangisini vereceğini bilemez (1.3). En yakın çeldirici \"tanımlamada hata var\" — hata olsaydı <code>getBeansOfType</code> çağrısına kadar gelemezdin, uygulama zaten açılmazdı. <b>Kanca:</b> aynı tür tanımlamada serbest, injection'da belirsizdir."
+    },
+    {
+      topic: "Bir bean'i koşullu hâle getirmek",
+      q: "<code>@Bean @ConditionalOnMissingBean(RestClient.class) public RestClient varsayilanIstemci()</code> yazan bir metot ne yapar?",
+      opts: [
+        "Container'da başka bir <code>RestClient</code> bean'i yoksa bu bean'i kurar, varsa hiç kurmaz",
+        "Container'da başka bir <code>RestClient</code> varsa onun üzerine yazar",
+        "Bean'i her zaman kurar ama injection'da ikinci sırada değerlendirir",
+        "Bean'i yalnızca ilk istekte kurar, açılışta atlar"
+      ],
+      a: [0],
+      why: "<b>Doğru: \"kullanıcı kendisininkini tanımladıysa benimkini kurma\".</b> Bu satır, Spring Boot'un bütün auto-configuration'ının kullandığı mekanizmanın ta kendisidir — Tomcat'in, <code>ObjectMapper</code>'ın, veri kaynağının hepsi böyle geri çekilir. En yakın çeldirici \"üzerine yazar\" — tam tersi; üzerine yazma zaten kapalıdır ve <code>@ConditionalOnMissingBean</code>'in varlık sebebi çakışmayı hiç yaşamamaktır. <b>Kanca:</b> şimdilik tanı, ezberleme — ayrıntısı 2.3'te."
+    },
+    {
+      topic: "Bir bean'i koşullu hâle getirmek",
+      q: "Auto-configuration'ın \"sen kendi <code>ObjectMapper</code>'ını tanımlarsan ben benimkini kurmam\" davranışı, senin de yazabileceğin hangi mekanizmayla çalışır?",
+      opts: [
+        "<code>@Conditional</code> ailesi — <code>@Bean</code> metotlarına konan koşul anotasyonları",
+        "Bean adlarının alfabetik önceliği",
+        "<code>@Primary</code> — kullanıcının bean'i her zaman birincil sayılır",
+        "Classpath sırası — kullanıcının jar'ı önce yüklenir"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@Conditional</code> ailesi.</b> Auto-configuration sihir değil, bir dizi koşuldur; aynı anotasyonları kendi <code>@Bean</code> metotlarına da yazabilirsin. En yakın çeldirici <code>@Primary</code> — o, iki bean <i>kurulduktan sonra</i> hangisinin varsayılan olacağını söyler; <code>@Conditional</code> ise ikincisinin hiç kurulmamasını sağlar. Aradaki fark önemli: biri seçim, diğeri geri çekilme. <b>Kanca:</b> koşul kurulumu engeller, <code>@Primary</code> seçimi yönlendirir."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

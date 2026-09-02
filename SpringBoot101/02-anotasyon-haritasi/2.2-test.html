@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.2 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.2",
+  code: "Anotasyon haritası · 2.2",
+  title: "@Configuration ve gizli proxy",
+  back: "2.2-configuration.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ölçüm: üç mod, üç farklı sonuç",
+      q: "Pratikteki ölçümde üç mod sırasıyla full:1,1 · proxysiz:6,7 · lite:3,4 bastı. Bu üç satır neyi kanıtlıyor?",
+      opts: [
+        "Yalnızca full mode'da @Bean metodunun ikinci çağrısı container'dan geliyor; diğer ikisinde gerçekten yeni nesne kuruluyor",
+        "Üç modte de aynı nesne dönüyor, sayılar yalnızca sayaç sırasından farklı",
+        "Full mode'da iki nesne, diğer ikisinde tek nesne kuruluyor",
+        "Sayı farkı scope ayarından geliyor; full mode singleton, diğerleri prototype"
+      ],
+      a: [0],
+      why: "<b>Sayıların eşit olması tek nesne, farklı olması iki nesne demektir.</b> <code>full:1,1</code> aynı örneği iki kere okuduğunu, <code>proxysiz:6,7</code> ve <code>lite:3,4</code> ise iki ayrı <code>new Kaynak()</code> çalıştığını gösterir. En yakın çeldirici scope açıklaması: üçünde de bean'ler singleton'dır — fark scope'tan değil, <b>metot çağrısının proxy'den geçip geçmemesinden</b> gelir. <i>Kanca:</i> <b>eşit sayı = proxy var.</b>"
+    },
+    {
+      topic: "Ölçüm: üç mod, üç farklı sonuç",
+      q: "Container'dan aldığın configuration bean'inin sınıf adını yazdırdın ve ProxyDenemesi$FullMode$$SpringCGLIB$$0 gördün. Bu ne anlama gelir?",
+      opts: [
+        "Spring, senin sınıfının çalışma zamanında üretilmiş bir alt sınıfını kullanıyor",
+        "Sınıf yükleyicide bir çakışma var, aynı sınıf iki kere yüklenmiş",
+        "Sınıf derlenirken CGLIB eklentisi tarafından değiştirilmiş",
+        "Bean adı çakıştığı için Spring sınıfı yeniden adlandırmış"
+      ],
+      a: [0],
+      why: "<b>$$SpringCGLIB$$ eki, proxy'nin somut kanıtıdır:</b> Spring @Configuration sınıfını olduğu gibi kullanmaz, ondan bir alt sınıf üretir ve @Bean metotlarını ezer. Aynı ölçümde proxysiz mod'daki sınıf adı <code>ProxyDenemesi$ProxysizMode</code> olarak sade kalır — proxy yoktur. En yakın çeldirici 'derleme sırasında değiştirildi': üretim <b>çalışma zamanındadır</b>, .class dosyan olduğu gibi durur. <i>Kanca:</i> stack trace'te <code>$$SpringCGLIB$$</code> görürsen <b>bu bir hata değil, mekanizmanın kendisidir</b>."
+    },
+    {
+      topic: "Proxy ne yapıyor",
+      q: "Full mode'da bir @Bean metodunu ikinci kez çağırdığında metodun gövdesi neden çalışmaz?",
+      opts: [
+        "Üretilen alt sınıf metodu ezmiştir; bean container'da varsa gövdeye hiç inmeden container'dan döner",
+        "Spring metodun sonucunu ilk çağrıda bir önbelleğe alır ve tüm metotlar için aynısını yapar",
+        "İkinci çağrıda Java aynı yığın çerçevesini yeniden kullandığı için gövde atlanır",
+        "Metot static'e dönüştürüldüğü için ikinci çağrı doğrudan alana erişir"
+      ],
+      a: [0],
+      why: "<b>Ezme (override) + container'dan okuma.</b> Üretilen alt sınıfın metodu kavramsal olarak 'container'da zaten var mı? varsa onu ver, yoksa <code>super</code> gövdesini bir kere çalıştır ve container'a koy' der. Yani <code>kaynak()</code> yazmak aslında 'container'dan kaynak bean'ini ver' demektir. En yakın çeldirici 'tüm metotların sonucunu önbelleğe alır': ayrım önemli — bu yalnızca <b>@Bean işaretli örnek metotlar</b> için geçerlidir, sıradan metotların gövdesi her çağrıda çalışır. <i>Kanca:</i> <b>gövde bir kere, dönüş sonsuz kere.</b>"
+    },
+    {
+      topic: "Proxy ne yapıyor",
+      q: "Bir @Configuration sınıfında ayarlar() bean'i var ve iki ayrı RestClient bean'i kurulurken ayarlar() çağrılıyor. Full mode'da kaç HttpAyarlari nesnesi kurulur?",
+      opts: [
+        "Bir tane; iki çağrı da container'daki aynı nesneyi alır",
+        "İki tane; her çağrı gövdeyi yeniden çalıştırır",
+        "İki tane, ama Spring bunları sonradan birleştirir",
+        "Üç tane; bean'in kendisi bir kere, çağrılar için birer tane daha"
+      ],
+      a: [0],
+      why: "<b>Full mode'da @Bean metotlarını birbirinden çağırabilirsin ve singleton'lık bozulmaz</b> — iki istemci de aynı <code>HttpAyarlari</code> nesnesini paylaşır. En yakın çeldirici 'iki tane': bu, aynı sınıfa <code>proxyBeanMethods = false</code> yazdığında gerçekleşen sonuçtur ve ölçümde <code>proxysiz:6,7</code> olarak görünür. <i>Kanca:</i> 3 saniyelik timeout'u iki istemcide de aynı nesneden okuyorsan <b>proxy çalışıyor demektir</b>; ayarı tek yerden değiştirmen yeter."
+    },
+    {
+      topic: "Proxy ne yapıyor",
+      q: "Bir configuration sınıfı için proxy'nin gerçekten üretildiğini hangi iki gözlemle kanıtlarsın? (İki tanesini seç.)",
+      opts: [
+        "Container'dan alınan bean'in sınıf adında $$SpringCGLIB$$ eki bulunur",
+        "Sınıfı final yapınca 'may not be final' hatası alınır",
+        "Aynı @Bean metodu iki kere çağrıldığında iki farklı nesne döner",
+        "Açılış günlüğünde 'proxy created for configuration class' satırı çıkar"
+      ],
+      a: [0, 1],
+      why: "<b>İki kanıt da elinde:</b> sınıf adındaki <code>$$SpringCGLIB$$</code> eki (üretilmiş alt sınıfı gösterir) ve sınıfı <code>final</code> yaptığında çıkan <code>@Configuration class '...' may not be final</code> hatası — alt sınıf üretilemediği için patlıyor demektir. En yakın çeldirici 'iki farklı nesne döner': bu tam tersinin kanıtıdır, proxy <b>yokken</b> olur (<code>proxysiz:6,7</code>, <code>lite:3,4</code>). Dördüncü şık ise uydurma bir günlük satırı; Spring böyle bir satır basmaz. <i>Kanca:</i> <b>bir kanıt sınıf adında, bir kanıt hata mesajında.</b>"
+    },
+    {
+      topic: "Üç modin karşılaştırması",
+      q: "Yeni bir configuration sınıfı yazıyorsun ve hangi modu seçeceğine karar vereceksin. Varsayılan tercihin ne olmalı?",
+      opts: [
+        "Düz @Configuration — doğru davranışı verir, sürprizi yoktur",
+        "@Configuration(proxyBeanMethods = false) — açılış her zaman daha hızlıdır",
+        "@Component + @Bean — en hafif seçenektir",
+        "Duruma göre değişir; ölçmeden karar verilemez"
+      ],
+      a: [0],
+      why: "<b>Varsayılan @Configuration'dır.</b> Proxy üretiminin maliyeti küçüktür ve karşılığında @Bean metotları arasında singleton garantisi alırsın. En yakın çeldirici <code>proxyBeanMethods = false</code>: hızlıdır ama <b>iki şart birden</b> doğruysa güvenlidir — metotlar birbirini çağırmıyor <i>ve</i> açılış süresi ölçülebilir biçimde önemli. 'Ölçmeden karar verilemez' de kaçamaktır: konu net bir varsayılan veriyor, ölçüm yalnızca varsayılandan sapmak için gerekir. <i>Kanca:</i> <b>önce doğruluk, sonra milisaniye.</b>"
+    },
+    {
+      topic: "Üç modin karşılaştırması",
+      q: "proxyBeanMethods = false yazmanın güvenli olduğu iki şartı seç. (İki tanesini seç.)",
+      opts: [
+        "O sınıftaki @Bean metotları birbirini çağırmıyor",
+        "Açılış süresi ölçülebilir biçimde önemli (çok sayıda configuration sınıfı olan büyük uygulama)",
+        "Sınıfta static @Bean metotları bulunuyor",
+        "Sınıf final olarak işaretlenmiş"
+      ],
+      a: [0, 1],
+      why: "<b>İki şart birden aranır:</b> metotlar birbirini çağırmıyor olmalı (yoksa singleton'lık sessizce bozulur) ve kazanacağın açılış süresi gerçekten ölçülebilir olmalı. En yakın çeldirici 'sınıf final': bu bir <i>şart</i> değil, <code>proxyBeanMethods = false</code>'un bir <b>sonucu</b>dur — proxy üretilmediği için sınıf final olabilir. Nedeni sonuçla karıştırma. <i>Kanca:</i> Spring Boot'un kendi auto-configuration'ları bu ikisini de sağladığı için <code>false</code> kullanır; <b>onların şartları seninkinden farklı.</b>"
+    },
+    {
+      topic: "Üç modin karşılaştırması",
+      q: "Bir arkadaşın 'Spring Boot'un kaynak kodunda auto-configuration sınıfları proxyBeanMethods = false kullanıyor, demek ki doğrusu bu' diyor. Ne cevap verirsin?",
+      opts: [
+        "Onların şartları farklı: yüzlerce configuration sınıfı var ve hiçbiri diğerinin @Bean metodunu çağırmıyor",
+        "Haklı; framework kodu her zaman uygulama kodu için de en iyi örnektir",
+        "Haklı, çünkü proxy üretimi açılışı ölçülebilir biçimde yavaşlatan en büyük kalemdir",
+        "Yanlış; Spring Boot'un auto-configuration'ları da düz @Configuration kullanır"
+      ],
+      a: [0],
+      why: "<b>Ölçek farkı kararı değiştirir.</b> Boot'un jar'larında yüzlerce configuration sınıfı vardır ve birbirlerinin @Bean metodunu çağırmazlar; senin tek bir configuration sınıfında aynı iki şart genelde sağlanmaz. En yakın çeldirici son şık: gözlem <i>doğru</i>, Boot gerçekten <code>false</code> kullanıyor — yanlış olan kısım o gözlemi senin projene taşımak. <i>Kanca:</i> <b>kaynak koda bakıp kopyalama; hangi soruna cevap verdiğine bak.</b>"
+    },
+    {
+      topic: "Lite mode: sessiz tuzak",
+      q: "Bir @Service sınıfının içine @Bean metodu koydun. Uygulamayı çalıştırınca ne olur?",
+      opts: [
+        "Açılır, bean de üretilir; ama metodu sınıf içinden çağıran her yer yeni nesne alır",
+        "Açılışta hata verir: @Bean metotları yalnızca @Configuration sınıflarında bulunabilir",
+        "Açılır ama bean hiç üretilmez, inject etmeye çalışınca NoSuchBeanDefinitionException alırsın",
+        "Açılır ve proxy üretilir, çünkü @Service de sonuçta bir @Component'tir"
+      ],
+      a: [0],
+      why: "<b>Lite mode hata vermez — tuzağın tanımı budur.</b> Kod derlenir, uygulama açılır, bean bile üretilir; kaybettiğin tek şey metodu çağırdığında container'dan gelme garantisidir, ve bunu sana kimse söylemez. En yakın çeldirici 'proxy üretilir çünkü @Service de @Component': tarama açısından doğru olan bu cümle, proxy açısından yanlış — <b>alt sınıf yalnızca @Configuration için üretilir</b>, ölçüm bunu <code>lite:3,4</code> ile gösteriyor. <i>Kanca:</i> <b>@Bean metotları @Configuration sınıflarında durur, istisnası yok.</b>"
+    },
+    {
+      topic: "Lite mode: sessiz tuzak",
+      q: "Lite mode'da kurulumu pahalı bir ObjectMapper bean'i tanımladın. Bu neden özellikle sinsi bir sorundur?",
+      opts: [
+        "Her çağrıda yeni ObjectMapper kurulur; bellek ve başarım sessizce bozulur, günlükte hiçbir iz kalmaz",
+        "Uygulama açılışta ObjectMapper'ı iki kere kurmaya çalışıp bean adı çakışması hatası verir",
+        "Inject edilen ObjectMapper null gelir",
+        "ObjectMapper singleton kalır ama yapılandırması sıfırlanır"
+      ],
+      a: [0],
+      why: "<b>Hata olmadığı için fark edilmez.</b> Metodu çağıran her yer yeni nesne alır; <code>ObjectMapper</code> gibi kurulumu pahalı bir nesnede bu, bellek ve başarım sorununa dönüşür ve teşhisi zordur. En yakın çeldirici bean adı çakışması: o gerçekten hata verir ve <i>fark edilir</i> — bu tuzağın tehlikeli yanı tam da böyle bir işaret vermemesidir. <i>Kanca:</i> 'ObjectMapper'ım her yerde farklı davranıyor' kalıbını duyduğunda <b>ilk bakacağın yer @Bean metodunun hangi sınıfta durduğudur.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Açılışta şu hatayı aldın: @Configuration class 'Yapilandirma' may not be final. Remove the final modifier to continue. Bu hatanın iki geçerli çözümünü seç. (İki tanesini seç.)",
+      opts: [
+        "final değiştiricisini kaldır",
+        "Metotlar birbirini çağırmıyorsa @Configuration(proxyBeanMethods = false) yaz",
+        "@Configuration yerine @Service yaz, sınıf final kalabilir",
+        "Sınıftaki @Bean metotlarını static yap"
+      ],
+      a: [0, 1],
+      why: "<b>Hata proxy üretilemediği için çıkar</b>, o yüzden iki çözüm var: ya sınıfı alt sınıflanabilir hâle getir (final'ı kaldır), ya da proxy'ye hiç ihtiyaç bırakma (<code>proxyBeanMethods = false</code>). En yakın çeldirici '@Service yaz': hata gerçekten kaybolur, çünkü artık lite mode'dasin — ama sorunu çözmez, <b>singleton'lığı sessizce feda eder</b>. Bu, hatayı susturmakla düzeltmek arasındaki farkın tipik örneği. <i>Kanca:</i> Kotlin'de sınıflar varsayılan olarak final olduğu için bu hata orada sık başa gelir (<code>open</code> ya da all-open eklentisi)."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Aynı final @Configuration hatasını ararken ekranda APPLICATION FAILED TO START kutusunu bulamıyorsun. Nasıl ilerlersin?",
+      opts: [
+        "Kutu her hatada çıkmaz; bu hata düz stack trace olarak gelir, en üstteki Caused by satırını oku",
+        "Kutu yoksa hata açılışla ilgili değildir, uygulama günlüğünün sonuna bak",
+        "Kutuyu görmek için --debug bayrağıyla yeniden çalıştır",
+        "Stack trace'in en alttaki satırı asıl sebebi verir, oradan başla"
+      ],
+      a: [0],
+      why: "<b>BeanDefinitionParsingException, kutusuz gelen hatalara örnektir.</b> 'Önce kutuya bak' iyi bir alışkanlıktır ama kutu her zaman yoktur; kutu yoksa stack trace'in <b>en üstteki</b> <code>Caused by</code> satırını okursun. En yakın çeldirici son şık: stack trace'i en alttan okumak yaygın bir alışkanlıktır ve seni çerçevenin iç katmanlarına götürür, sebebe değil. <code>--debug</code> ise kutuyu getirmez, koşul raporunu basar (2.3). <i>Kanca:</i> <b>kutu yoksa yukarıdan oku.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Bir servis sınıfı configuration bean'ini inject edip yapilandirma.stokIstemcisi() diye çağırıyor. Bu kod çalışıyor. Sorun ne?",
+      opts: [
+        "Çalışır ama yanlış alışkanlık: bean'i inject etmek yerine configuration sınıfını inject ediyorsun",
+        "Çalışmaz; proxy yalnızca sınıfın kendi içindeki çağrıları yakalar",
+        "Çalışır ama her çağrıda yeni RestClient kurulur",
+        "Çalışır ve doğru kullanımdır; @Bean metotları dışarıdan böyle çağrılır"
+      ],
+      a: [0],
+      why: "<b>Proxy devrede olduğu için nesne container'dan gelir — teknik olarak sorun yok, tasarım olarak var.</b> İhtiyacın olan şey <code>RestClient</code>'ken configuration sınıfına bağımlı hâle geliyorsun. Doğrusu: <code>RestClient</code>'i doğrudan inject et, birden fazla varsa <code>@Qualifier</code> ile ayır. En yakın çeldirici 'her çağrıda yeni nesne': bu ancak hızlı ya da lite mode'da doğru olurdu; full mode'da container'dan gelir. <i>Kanca:</i> <b>bean'i iste, bean'in fabrikasını değil.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Bir @Configuration sınıfındaki @Bean metodunu static yaptın. Ne değişir?",
+      opts: [
+        "Metot proxy'den geçmez; ezilecek bir örnek metot olmadığı için singleton garantisini kaybedersin",
+        "Hiçbir şey; static @Bean metotları da proxy'den geçer",
+        "Açılışta 'static @Bean methods are not allowed' hatası alırsın",
+        "Bean prototype scope'una geçer ve her injection'da yeniden kurulur"
+      ],
+      a: [0],
+      why: "<b>Proxy, örnek metotları ezerek çalışır; static metotta ezilecek bir şey yoktur.</b> Bu bilinçli bir kullanımdır (çok erken kurulması gereken bean'ler, örneğin <code>PropertySourcesPlaceholderConfigurer</code>) ama farkında olarak yazılır. En yakın çeldirici 'hiçbir şey değişmez': @Configuration yazınca her @Bean metodunun korunduğunu sanmak yaygındır — <code>static</code> o korumanın dışındadır. <i>Kanca:</i> <b>static yazdığın anda proxy'nin dışına çıktın.</b>"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

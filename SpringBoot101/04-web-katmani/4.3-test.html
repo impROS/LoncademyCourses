@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.3 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "4.3",
+  code: "Web katmanı · 4.3",
+  title: "RestClient ile dışarıya çağrı",
+  back: "4.3-restclient.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Hangi istemci",
+      q: "Bloklayan bir HTTP çağrısı yazacaksın ve ekipteki biri \"<code>RestTemplate</code> kullanma, kaldırıldı\" diyor. Spring Framework 7.0 durumunu doğru anlatan cümle hangisi?",
+      opts: [
+        "<code>RestTemplate</code> henüz <code>@Deprecated</code> bile değil; kaldırılma niyeti açıklandı, yine de yeni kodda <code>RestClient</code> kullan",
+        "<code>RestTemplate</code> 7.0'da <code>@Deprecated</code> işaretlendi; mevcut kullanımlar derleme uyarısı veriyor",
+        "<code>RestTemplate</code> 7.0'da kaldırıldı; mevcut projeler <code>RestClient</code>'a geçmek zorunda",
+        "<code>RestTemplate</code> destekleniyor ve önerilen istemci olmaya devam ediyor; <code>RestClient</code> yalnızca reaktif işler için"
+      ],
+      a: [0],
+      why: "<b>Spring Framework 7.0'da <code>RestTemplate</code> hâlâ <code>@Deprecated</code> işaretli değildir</b> — resmî plan 7.1'de işaretlenmesi, 8.0'da kaldırılması. Yani mevcut projendeki kod bugün uyarı bile vermiyor; ama yeni kod yazarken önerilen istemci <code>RestClient</code>. En yakın çeldirici ikinci şık: sonucun pratik tarafını doğru veriyor (\"kullanma\") ama <b>bugünkü teknik durumu yanlış</b> anlatıyor; bir kod incelemesinde \"derleme uyarısı alıyoruz\" dersen kimse o uyarıyı bulamaz. Son şık ise rolleri karıştırıyor: reaktif ve akış işleri <code>WebClient</code>'ın alanı. <b>Kanca:</b> \"kaldırıldı\" değil, \"niyet açıklandı\"."
+    },
+    {
+      topic: "Hangi istemci",
+      q: "Bir yönetici \"<code>WebClient</code> da kaldırılıyormuş, ondan da kaçalım\" diyor. Doğru cevap nedir?",
+      opts: [
+        "<code>WebClient</code> kaldırılmıyor; reaktif akış gerektiren işler için önerilmeye devam ediyor",
+        "<code>WebClient</code> 7.0'da kullanımdan kaldırıldı; yerine <code>RestClient</code> geçti",
+        "<code>WebClient</code> yalnızca Spring WebFlux projelerinde kaldırıldı; MVC'de duruyor",
+        "<code>WebClient</code> ve <code>RestTemplate</code> birleştirilip <code>RestClient</code> oldu; ikisi de artık yok"
+      ],
+      a: [0],
+      why: "<b><code>WebClient</code> kaldırılmıyor.</b> Tabloya göre durumu \"destekleniyor\": reaktif akış (streaming) gerektiğinde doğru araç odur. <code>RestClient</code> onun yerini almaz; bloklayan çağrılar için önerilen istemcidir. En yakın çeldirici ikinci şık: <code>RestTemplate</code> hakkındaki gerçek plan <code>WebClient</code>'a yanlışlıkla yapıştırılmış — iki istemcinin durumu <b>farklıdır</b> ve bu ayrımı yapamamak ekipte yanlış geçiş kararları doğurur. <b>Kanca:</b> bloklayan iş <code>RestClient</code>, akış işi <code>WebClient</code>, yeni kodda <code>RestTemplate</code> yok."
+    },
+    {
+      topic: "En sade hâl",
+      q: "Bir ürün kodu <code>A/B?x=1</code> değerini alabiliyor. <code>.uri(\"/stoklar/\" + urunKodu)</code> yazan kod üretimde 404 vermeye başlıyor. Sorun ve doğrusu nedir?",
+      opts: [
+        "Kod adresin yapısını bozdu; <code>.uri(\"/stoklar/{kod}\", urunKodu)</code> yaz — placeholder kullanınca kaçış işini <code>RestClient</code> yapar",
+        "Taban adres eksik; <code>baseUrl</code> verilmediği için göreli adres çözülemedi",
+        "Ürün kodu URL kodlaması gerektirmez; sorun karşı taraftaki eşlemede, senin kodunda değil",
+        "<code>.uri(...)</code> yerine <code>.url(...)</code> çağrılmalı; birleştirme yalnızca <code>url</code> ile güvenlidir"
+      ],
+      a: [0],
+      why: "<b>Adresi <code>+</code> ile birleştirdiğinde <code>/</code> ve <code>?</code> gibi karakterler adresin yapısına karışır</b> — <code>A/B?x=1</code> ayrı bir yol parçası ve sorgu dizesi gibi okunur. Placeholder kullanınca <code>RestClient</code> kaçışı (URL encoding) kendisi yapar. En yakın çeldirici üçüncü şık: \"karşı tarafta sorun var\" en sık verilen yanlış teşhistir ve saatler yaktırır — oysa karşı taraf gerçekten var olmayan bir adres görüyor. <code>.url(...)</code> diye bir kurtarıcı da yok. <b>Kanca:</b> adres birleştirmek istiyorsan dur; placeholder yaz."
+    },
+    {
+      topic: "Hata gelince ne oluyor",
+      q: "Kendi servisini çağırdın, karşı taraf 404 döndü ve <code>retrieve().body(Yanit.class)</code> yazmıştın. Ölçülen exception sınıfı nedir?",
+      opts: [
+        "<code>org.springframework.web.client.HttpClientErrorException$NotFound</code>",
+        "<code>org.springframework.web.client.HttpServerErrorException$NotFound</code>",
+        "<code>org.springframework.web.client.ResourceAccessException</code>",
+        "Exception atılmaz; <code>body(...)</code> 404 durumunda <code>null</code> döner"
+      ],
+      a: [0],
+      why: "<b><code>retrieve()</code> başarısız durum kodlarını exception'a çevirir ve exception sınıfı duruma özgüdür:</b> ölçümde <code>HttpClientErrorException$NotFound</code>, durum <code>404 NOT_FOUND</code>. 4xx → <code>HttpClientErrorException</code>, 5xx → <code>HttpServerErrorException</code>; ikisi de <code>RestClientResponseException</code> altındadır. En yakın çeldirici ikinci şık: iç sınıf adı doğru ama <b>dış sınıf yanlış</b> — 404 bir istemci hatasıdır, sunucu hatası değil; <code>catch</code> bloğunu yanlış sınıfla yazarsan exception hiç yakalanmaz. <code>ResourceAccessException</code> ise ağ/timeout ailesindendir. <b>Kanca:</b> 4xx senin isteğin, 5xx karşı tarafın derdi."
+    },
+    {
+      topic: "Hata gelince ne oluyor",
+      q: "Aynı 404 exception'ını yakaladın. Karşı tarafın [4.2](4.2-exception-handling.md)'de ürettiğin <code>ProblemDetail</code> gövdesine nasıl ulaşırsın?",
+      opts: [
+        "<code>e.getResponseBodyAsString()</code> — exception gövdeyi taşır, ölçümde tam <code>ProblemDetail</code> JSON'u geldi",
+        "Ulaşamazsın; exception atıldığı anda yanıt akışı kapanır ve gövde kaybolur",
+        "<code>e.getMessage()</code> — hata gövdesi exception mesajının kendisidir",
+        "Yeniden istek atman gerekir; bu kez <code>.toEntity(...)</code> ile çağırıp gövdeyi oradan okursun"
+      ],
+      a: [0],
+      why: "<b><code>getResponseBodyAsString()</code> karşı tarafın hata gövdesini verir</b> — ölçülen çıktı, 4.2'de kendi ürettiğin <code>{\"detail\":\"Sipariş bulunamadı: yok\",...,\"type\":\"https://loncademy.tr/hatalar/siparis-bulunamadi\"}</code> gövdesinin ta kendisi. Hata sözleşmesi yazmanın karşılığı tam olarak bu: çağıran taraf onu okuyabiliyor. En yakın çeldirici son şık: <code>.toEntity(...)</code> gerçekten durum kodunu ve başlıkları verir, ama <b>bu iş için ikinci bir istek atmak gereksizdir</b> — gövde zaten elindeki exception'ın içinde. \"Gövde kaybolur\" ise doğrudan ölçümün tersi. <b>Kanca:</b> exception bir kayıp değil, taşınmış bir yanıttır."
+    },
+    {
+      topic: "Hata gelince ne oluyor",
+      q: "Bir çağrıda hem gövdeye hem durum koduna ihtiyacın var (404 gelirse \"stok yok\" diyeceksin). Hangi yöntemi kullanırsın?",
+      opts: [
+        "<code>.toEntity(StokBilgisi.class)</code> — gövde + durum kodu + başlıkları birlikte verir",
+        "<code>.body(StokBilgisi.class)</code> — durum kodu dönen nesnenin içine yazılır",
+        "<code>.toBodilessEntity()</code> — durum kodunu verir, gövdeyi sonradan ayrıca okursun",
+        "<code>.retrieve()</code> tek başına yeterli — zincirin sonuna hiçbir şey yazmazsan hem gövde hem durum döner"
+      ],
+      a: [0],
+      why: "<b><code>.toEntity(T.class)</code> bir <code>ResponseEntity</code> döndürür: gövde, durum kodu ve başlıklar bir arada.</b> <code>yanit.getStatusCode() == HttpStatus.NOT_FOUND</code> kontrolünü ancak böyle yazabilirsin. En yakın çeldirici <code>.body(...)</code>: en sık kullanılan yöntemdir ve tam bu yüzden refleks olarak seçilir — ama <b>yalnızca gövdeyi</b> verir, durum kodu geri gelmez. <code>.toBodilessEntity()</code> ise adı gibi gövdesizdir; gövdeyi \"sonradan okumak\" diye bir seçenek yok. <b>Kanca:</b> gövde <code>body</code>, gövde+durum <code>toEntity</code>, yalnız durum <code>toBodilessEntity</code>."
+    },
+    {
+      topic: "Timeout: en kritik ayar",
+      q: "Bir <code>RestClient</code> bean'i kurdun, hiçbir timeout ayarı yazmadın ve karşı taraf yanıt vermeyi bıraktı. Ne olur?",
+      opts: [
+        "Varsayılan timeout olmadığı için istek sonsuza kadar bekler; thread'ler tükendikçe senin servisin de cevap veremez hâle gelir",
+        "30 saniyelik varsayılan timeout devreye girer ve istek <code>ResourceAccessException</code> ile biter",
+        "Sunucunun <code>server.tomcat.connection-timeout</code> ayarı istemci tarafını da sınırlar",
+        "İstek hemen <code>503</code> ile döner; Spring erişilemeyen karşı tarafı circuit breaker ile kapatır"
+      ],
+      a: [0],
+      why: "<b>Varsayılan timeout yoktur.</b> İstek sonsuza kadar bekler, thread bloklanır ve yeterince istek gelirse havuz tükenir — kendi kodunda hiçbir hata olmadan servisin çöker. Kendi günlüklerinde hata bile görünmez, sadece her şey yavaşlar. En yakın çeldirici ikinci şık: \"makul bir varsayılan vardır\" sezgisi çok yaygındır ve tam da bu yüzden üretimde patlar — <b>mutlak güven kurma, ayarı sen yaz</b>. Circuit breaker da kendiliğinden gelmez (301'in konusu). <b>Kanca:</b> timeout yazmadıysan, koymamışsındır."
+    },
+    {
+      topic: "Timeout: en kritik ayar",
+      q: "Spring Boot 4'te auto-configuration ile kurulan istemcilere timeout vermek için hangi iki özelliği kullanırsın? (İki tanesini seç.)",
+      opts: [
+        "<code>spring.http.clients.connect-timeout</code>",
+        "<code>spring.http.clients.read-timeout</code>",
+        "<code>spring.restclient.timeout</code>",
+        "<code>server.servlet.session.timeout</code>"
+      ],
+      a: [0, 1],
+      why: "<b>Ayar ailesi <code>spring.http.clients.*</code>:</b> <code>connect-timeout</code> bağlantı kurulana kadarki süreyi, <code>read-timeout</code> ilk yanıt baytı gelene kadarki süreyi sınırlar. Makul başlangıç: 1–3 sn ve 3–10 sn. En yakın çeldirici <code>spring.restclient.timeout</code>: adı en makul duran uydurma ayardır ve yazarsan hiçbir şey olmaz, hata da almazsın ([3.1]'deki sessiz ayar tuzağı). <code>server.servlet.session.timeout</code> ise sunucu tarafına, oturuma ait — istemci çağrısıyla ilgisi yok. <b>Kanca:</b> istemci ayarı <code>spring.http.clients</code> altında yaşar."
+    },
+    {
+      topic: "Timeout: en kritik ayar",
+      q: "<code>connect-timeout</code> ile <code>read-timeout</code> arasında hangisi daha küçük olmalı ve neden?",
+      opts: [
+        "<code>connect-timeout</code> daha küçük olmalı — bağlantı kurulamıyorsa karşı taraf ayakta değildir, beklemenin anlamı yok",
+        "<code>read-timeout</code> daha küçük olmalı — okuma her zaman bağlantı kurmaktan hızlı biter",
+        "İkisi eşit olmalı — farklı değerler yanıltıcı timeout exception'ları üretir",
+        "Fark etmez — ikisi toplanarak tek bir üst sınır oluşturur"
+      ],
+      a: [0],
+      why: "<b><code>connect-timeout</code> her zaman <code>read-timeout</code>'tan küçük olmalı.</b> Bağlantı kurulamıyorsa karşı taraf ayakta değildir; orada uzun beklemek hiçbir bilgi kazandırmaz. Ama bağlantı kurulduysa karşı taraf çalışıyordur ve iş yapıyor olabilir — ona biraz daha süre tanırsın. En yakın çeldirici ikinci şık: gerekçesi (\"okuma daha hızlıdır\") ilk bakışta makul ama <b>tersinedir</b> — okuma karşı tarafın iş süresini kapsar, bağlantı kurulumu yalnızca ağ erişilebilirliğini. Son şık da yanlış: ikisi toplanmaz, ayrı aşamaları sınırlar. <b>Kanca:</b> zile basmak kısa, içeride beklemek uzun."
+    },
+    {
+      topic: "Timeout: en kritik ayar",
+      q: "<code>application.properties</code>'e <code>spring.http.clients.read-timeout=1s</code> yazdın ama istek yine 3 saniye bekleyip başarıyla dönüyor. En olası sebep nedir?",
+      opts: [
+        "İstemci <code>RestClient.builder()</code> ile sıfırdan kurulmuş; Boot'un ayarlarını taşımıyor",
+        "<code>1s</code> yazımı geçersiz; süre birimi yalnızca milisaniye olarak yazılabilir",
+        "Timeout yalnızca bağlantı kurulamadığında devreye girer; yanıt gecikmesini sınırlamaz",
+        "Ayar üretim profilinde geçerlidir; varsayılan profilde yok sayılır"
+      ],
+      a: [0],
+      why: "<b><code>RestClient.builder()</code> ile sıfırdan kurulan istemci Boot'un auto-configuration ile kurduğu ayarları taşımaz</b> — timeout da, observability ekleri de kaybolur, üstelik hiçbir uyarı çıkmaz. Belirti tam olarak budur: \"ayarladık ama çalışmıyor\". Doğrusu <code>RestClient.Builder</code>'ı <b>inject etmek</b>. En yakın çeldirici üçüncü şık: iki ayarı karıştırıyor — yanıt gecikmesini sınırlayan zaten <code>read-timeout</code>'tur, sınırlamasaydı ayarın hiçbir işlevi olmazdı. Profil bağımlılığı da uydurma. <b>Kanca:</b> builder inject edilir, sıfırdan kurulmaz."
+    },
+    {
+      topic: "Bean tasarımı: her servise bir istemci",
+      q: "Stok ve ödeme servisleri için iki ayrı <code>RestClient</code> bean'i tanımladın. Tüketen sınıfta ne yapman gerekir?",
+      opts: [
+        "<code>@Qualifier(\"stokIstemcisi\")</code> ile hangi bean'i istediğini belirtmek — aynı türden iki bean var",
+        "Hiçbir şey; Spring parametre adına bakarak doğru bean'i kendiliğinden ve garantili biçimde seçer",
+        "İki bean'den birine <code>@Primary</code> yazmak zorunludur; başka çözüm yoktur",
+        "İki bean'i tek bir <code>List&lt;RestClient&gt;</code> olarak inject edip sırayla denemek"
+      ],
+      a: [0],
+      why: "<b>Aynı türden birden fazla bean varsa tüketen tarafta <code>@Qualifier</code> gerekir</b> ([1.3](../01-container-ve-bean/1.3-dependency-injection.md)) — <code>@Qualifier(\"stokIstemcisi\") RestClient istemci</code>. En yakın çeldirici <code>@Primary</code>: gerçek bir çözümdür ama <b>burada yanlış</b> — \"başka çözüm yoktur\" mutlak ifadesi bir yana, iki istemci de eşit derecede meşru; birine \"varsayılan\" demek diğerini kazara inject etme riskini yaratır. Parametre adına güvenmek de kırılgandır: derleyici ayarları ad bilgisini düşürebilir. <b>Kanca:</b> iki eşit bean varsa adıyla çağır."
+    },
+    {
+      topic: "Bean tasarımı: her servise bir istemci",
+      q: "Bir servis metodunun içinde her çağrıda <code>var istemci = RestClient.create();</code> satırı var. Hangi iki sorun doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Her çağrıda yeni bir connection pool kurulur; kaynak israfı ve gecikme üretir",
+        "Boot'un auto-configuration ile kurduğu timeout ve observability ayarları taşınmaz",
+        "Uygulama açılışta \"RestClient bean bulunamadı\" hatasıyla kapanır",
+        "<code>RestClient.create()</code> derlenmez; <code>RestClient</code> yalnızca bean olarak üretilebilir"
+      ],
+      a: [0, 1],
+      why: "<b>İki sorun: her çağrıda yeni connection pool ve Boot ayarlarının kaybı.</b> <code>RestClient</code> bir <b>bean</b> olmalı, bir kere kurulmalı; kurulurken de inject edilen <code>RestClient.Builder</code> kullanılmalı. En yakın çeldirici son iki şık: ikisi de \"kod patlar\" diyor — oysa bu hatanın en tehlikeli yanı <b>gayet çalışmasıdır</b>; yerelde ve testte kusursuz görünür, üretimde yavaşlık ve timeout'suz çağrı olarak ortaya çıkar. <b>Kanca:</b> patlamayan hata, en pahalı hatadır."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Bir dış çağrı <code>try { ... } catch (Exception e) { return null; }</code> ile sarılmış. Çağıran taraf <code>null</code> görünce \"stok yok\" diye yorumluyor. Doğru davranış nedir?",
+      opts: [
+        "4xx ile 5xx'i ayır: <code>404</code> \"yok\" anlamına gelebilir; <code>500</code> kendi exception'ına çevrilip yukarı atılmalı",
+        "Her hata durumunda <code>null</code> dönmek doğrudur; çağıran taraf <code>null</code> kontrolü yapmalıdır",
+        "Bütün hataları tek bir exception'a çevir; çağıran taraf zaten ayrım yapamaz",
+        "Hataları hiç yakalama; <code>RestClientResponseException</code> istemciye doğrudan yansısın"
+      ],
+      a: [0],
+      why: "<b>4xx senin isteğinin hatalı olduğunu, 5xx karşı tarafın bozuk olduğunu söyler — tepkileri de farklı olmalı.</b> <code>404</code>'ü \"ürün yok\" diye yorumlaman meşru olabilir; <code>500</code>'ü aynı sepete atarsan, ödeme servisi çökmüşken sipariş almaya devam edersin. En yakın çeldirici üçüncü şık: <code>@RestControllerAdvice</code> mantığıyla \"tek yerde topla\" refleksi doğru ama <b>ayrım yapmadan toplamak</b> bilgiyi yok eder; toplama işi ayrımdan <b>sonra</b> gelir. Son şık ise dış servisin exception'ını olduğu gibi kendi istemcine yansıtır — sözleşmen karşı tarafın hatalarına bağlanır. <b>Kanca:</b> \"yok\" ile \"bilmiyorum\" aynı şey değildir."
+    },
+    {
+      topic: "Timeout: en kritik ayar",
+      q: "Ekip <code>read-timeout=5s</code> ayarladı ve \"artık dayanıklıyız\" diyor. Bu değerlendirmedeki eksik nedir?",
+      opts: [
+        "Timeout bir çözüm değil sınırdır; \"5 saniyede cevap gelmezse ne yapacağım?\" sorusu hâlâ cevapsız",
+        "5 saniye çok kısadır; üretimde en az 30 saniye olmalıdır",
+        "Timeout yalnızca <code>WebClient</code> için anlamlıdır; <code>RestClient</code> onu yok sayar",
+        "Eksik yok; timeout ayarlandığında retry ve circuit breaker kendiliğinden devreye girer"
+      ],
+      a: [0],
+      why: "<b>Timeout bir sınırdır, strateji değil.</b> Süre dolduğunda ne yapacağın — yeniden dene, önbellekten dön, hata ver — hâlâ senin kararın; retry (<code>@Retryable</code>) ve circuit breaker <b>301</b>'in konusu. En yakın çeldirici son şık: ayarın kendisini bir dayanıklılık paketi sanıyor; \"kendiliğinden devreye girer\" cümlesindeki mutlaklık uyarı işareti. \"En az 30 saniye\" de yanlış yön: uzun bir timeout, timeout olmamasına yaklaşmaktır. <b>Kanca:</b> timeout beklemeyi bitirir, sorunu bitirmez."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

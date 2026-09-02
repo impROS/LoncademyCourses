@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.3",
+  code: "Anotasyon haritası · 2.3",
+  title: "Auto-configuration'ı teşhis etmek",
+  back: "2.3-auto-configuration.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Mekanizma: koşullu bean'ler",
+      q: "Kendi ObjectMapper bean'ini tanımladın ve Spring'inki artık kurulmuyor. Bunu sağlayan mekanizmanın adı nedir?",
+      opts: [
+        "Spring'in bean'indeki @ConditionalOnMissingBean koşulu",
+        "Bean definition'ların üzerine yazılması (bean definition overriding)",
+        "Senin bean'ine otomatik eklenen @Primary",
+        "Component scan'in auto-configuration'dan önce çalışması sayesinde adın kazanması"
+      ],
+      a: [0],
+      why: "<b>@ConditionalOnMissingBean, senin bean'inin Spring'inkini ezmesini sağlayan mekanizmadır.</b> Spring'in tanımı 'kullanıcı tanımlamadıysa kur' der; sen tanımlayınca koşul sağlanmaz ve o bean hiç kurulmaz. En yakın çeldirici 'üzerine yazma': o farklı bir olaydır ve Spring Boot'ta varsayılan olarak kapalıdır, hata verir — burada çakışma bile oluşmaz, çünkü <b>rakip bean hiç doğmaz</b>. <i>Kanca:</i> raporda bunu <code>@ConditionalOnMissingBean ... found beans</code> satırıyla Negative matches'ta görürsün."
+    },
+    {
+      topic: "Mekanizma: koşullu bean'ler",
+      q: "'Benim bean'im mi önce kaydediliyor, Spring'inki mi? Bu bir yarış değil mi?' diye soran bir arkadaşına ne dersin?",
+      opts: [
+        "Yarış yok: auto-configuration senin bean'lerin kaydedildikten sonra değerlendirilir, sen her zaman kazanırsın",
+        "Yarış var; sınıf tarama sırasına göre bazen Spring'inki kazanır",
+        "Yarışı @Order ile kendin çözmen gerekir",
+        "Yarış yok çünkü Spring önce kendi bean'ini kurar, seninki onu çalışma zamanında değiştirir"
+      ],
+      a: [0],
+      why: "<b>Sıralama garantilidir: auto-configuration en sonda değerlendirilir.</b> Bu yüzden 'önce kim yazdı' diye bir soru yoktur; koşullar bakıldığında senin bean'in çoktan kayıtlıdır. En yakın çeldirici <code>@Order</code>: bean'lerin listelenme sırasını etkiler, auto-configuration'ın değerlendirme sırasını değil — burada işe yaramaz. <i>Kanca:</i> <b>auto-configuration son sözü söylemez, son bakan taraftır.</b>"
+    },
+    {
+      topic: "Mekanizma: koşullu bean'ler",
+      q: "Aşağıdaki iki koşul anotasyonundan hangileri classpath'te bir sınıfın varlığına/yokluğuna bakar? (İki tanesini seç.)",
+      opts: [
+        "@ConditionalOnClass",
+        "@ConditionalOnMissingClass",
+        "@ConditionalOnMissingBean",
+        "@ConditionalOnProperty"
+      ],
+      a: [0, 1],
+      why: "<b>Class ile biten koşullar classpath'e, Bean ile bitenler container'a bakar.</b> <code>@ConditionalOnClass</code> 'şu sınıf classpath'te varsa', <code>@ConditionalOnMissingClass</code> 'yoksa' der; raporda <code>did not find required class 'org.aspectj.weaver.Advice'</code> satırını üreten budur. En yakın çeldirici <code>@ConditionalOnMissingBean</code>: adı benzer ama container'daki <b>bean definition'lara</b> bakar, jar'lara değil. <code>@ConditionalOnProperty</code> ise ayar dosyasına bakar. <i>Kanca:</i> <b>Class = jar, Bean = container, Property = ayar.</b>"
+    },
+    {
+      topic: "Rapor: Spring'e ne karar verdiğini sordur",
+      q: "Bir uç noktan beklediğin gibi davranmıyor ve hangi auto-configuration'ın devrede olduğunu görmek istiyorsun. Uygulamayı nasıl çalıştırırsın?",
+      opts: [
+        "./mvnw spring-boot:run -Dspring-boot.run.arguments=--debug",
+        "./mvnw spring-boot:run -Dspring-boot.run.profiles=debug",
+        "logging.level.root=DEBUG ayarını verip normal çalıştırırım",
+        "./mvnw spring-boot:run -Dspring-boot.run.arguments=--trace"
+      ],
+      a: [0],
+      why: "<b>Raporu basan şey --debug bayrağıdır.</b> Jar çalıştırıyorsan <code>java -jar hedef/uygulama.jar --debug</code> da aynı işi yapar. En yakın çeldirici <code>logging.level.root=DEBUG</code>: günlük seviyesini gerçekten yükseltir ve ekranı doldurur, ama <b>CONDITIONS EVALUATION REPORT'u basmaz</b> — rapor bir günlük satırı değil, açılış sonunda üretilen ayrı bir çıktıdır. <i>Kanca:</i> <code>--debug</code> günlük seviyesini de değiştirir ama <b>asıl işi raporu basmaktır</b>."
+    },
+    {
+      topic: "Rapor: Spring'e ne karar verdiğini sordur",
+      q: "Beklediğin bir özellik devreye girmemiş. Raporun hangi bölümüne bakarsın?",
+      opts: [
+        "Negative matches — devreye girmeyenleri ve tek satırlık sebebini yazar",
+        "Positive matches — devreye girenleri görüp eksiği çıkarımla bulursun",
+        "Exclusions — devreye girmeyen her şey burada listelenir",
+        "Unconditional classes — koşulsuz sınıflarla karşılaştırarak eksiği bulursun"
+      ],
+      a: [0],
+      why: "<b>Bir şey çalışmıyorsa cevap neredeyse her zaman Negative matches'tadır ve sebep tek satırda yazılıdır:</b> <code>did not find required class ...</code>, <code>did not find any beans ...</code>. En yakın çeldirici Exclusions: adı yanıltıcı — orada <b>yalnızca senin elle dışladıkların</b> vardır, koşulu tutmayanlar değil. Positive matches'ı taramak da en yaygın zaman kaybıdır: orada olmayan bir şeyi aramak, olan bir şeyi okumaktan yavaştır. <i>Kanca:</i> <b>çalışmıyorsa Negative, nereden geldi diye soruyorsan Positive.</b>"
+    },
+    {
+      topic: "Rapor: Spring'e ne karar verdiğini sordur",
+      q: "Raporda şu satırı gördün: AopAutoConfiguration.AspectJAutoProxyingConfiguration → Did not match: @ConditionalOnClass did not find required class 'org.aspectj.weaver.Advice'. Bunu düzeltmek için ne yaparsın?",
+      opts: [
+        "AspectJ sınıflarını getiren bağımlılığı ekle; koşul classpath'te o sınıfı arıyor",
+        "application.properties dosyasına spring.aop.auto=true yaz",
+        "@SpringBootApplication üzerinde AopAutoConfiguration dışlamasını kaldır",
+        "Kendi @Bean metodunla AspectJAutoProxyingConfiguration bean'ini tanımla"
+      ],
+      a: [0],
+      why: "<b>Satır sebebi zaten söylüyor: gerekli sınıf classpath'te yok.</b> Çözüm koşulun aradığı şeyi sağlamak, yani bağımlılığı eklemek. En yakın çeldirici <code>spring.aop.auto=true</code>: aynı raporun üst satırında <code>@ConditionalOnBooleanProperty (spring.aop.auto=true) matched</code> yazıyor — o koşul <b>zaten sağlanmış</b>, sağlanmayan koşulu düzeltmen gerekiyor. <i>Kanca:</i> <b>raporu okurken 'Did not match' altındaki satırı düzelt, eşleşmiş olanı değil.</b>"
+    },
+    {
+      topic: "Raporu okuma alışkanlığı",
+      q: "Boş bir uygulamada bile 61 koşul değerlendirmesi var ve rapor ekrana sığmıyor. Nasıl çalışırsın?",
+      opts: [
+        "Çıktıyı dosyaya yönlendirip aradığın sınıf adına göre grep ile süzerim",
+        "Raporu baştan sona okur, ilgisiz satırları atlarım",
+        "Sadece raporun ilk 30 satırına bakarım, önemli kararlar başta yazar",
+        "--debug yerine --trace kullanıp raporu kısaltırım"
+      ],
+      a: [0],
+      why: "<b>Tarama değil, arama yap.</b> <code>./mvnw spring-boot:run -Dspring-boot.run.arguments=--debug &gt; acilis.log 2&gt;&amp;1</code> ile dosyaya al, sonra <code>grep -A 4 \"DataSourceAutoConfiguration\" acilis.log</code> ya da <code>sed -n '/Negative matches:/,/Exclusions:/p'</code> ile ilgilendiğin yeri kes. En yakın çeldirici baştan sona okumak: mümkündür ama 61 değerlendirmede bile dakikalar alır ve büyük projede işe yaramaz. Rapor sınıf adına göre sıralı değildir, o yüzden 'ilk 30 satır' da rastgeledir. <i>Kanca:</i> <b>ezberlenecek tek şey --debug bayrağı ve Negative matches adı; gerisi arama.</b>"
+    },
+    {
+      topic: "Raporu okuma alışkanlığı",
+      q: "acilis.log dosyasında yalnızca devreye girmeyen configuration'ları görmek istiyorsun. Hangi komut tam bu işi yapar?",
+      opts: [
+        "sed -n '/Negative matches:/,/Exclusions:/p' acilis.log",
+        "grep -c 'matched' acilis.log",
+        "grep 'CONDITIONS EVALUATION REPORT' acilis.log",
+        "grep -n 'Positive matches' acilis.log"
+      ],
+      a: [0],
+      why: "<b>Aralık kesme:</b> <code>sed -n '/Negative matches:/,/Exclusions:/p'</code> raporun tam olarak 'devreye girmeyenler' bölümünü, başlıktan bir sonraki başlığa kadar keser. En yakın çeldirici <code>grep -c 'matched'</code>: sayı verir (kaç koşul değerlendirildiğini ölçmek için pratikte kullandığın komut) ama <b>hangi</b> configuration'ın neden elenmiş olduğunu göstermez. Diğer ikisi raporun var olduğunu doğrular, içeriğini vermez. <i>Kanca:</i> <b>sayma başka, okuma başka.</b>"
+    },
+    {
+      topic: "Kararı değiştirmenin üç yolu",
+      q: "Spring'in kurduğu ObjectMapper yerine kendi yapılandırdığını kullanmak istiyorsun. Hangi yolu seçersin?",
+      opts: [
+        "Kendi @Bean metodunla ObjectMapper tanımlarım; Spring'inki kendiliğinden geri çekilir",
+        "JacksonAutoConfiguration sınıfını exclude ile dışlarım",
+        "spring.autoconfigure.exclude ayarına JacksonAutoConfiguration yazarım",
+        "Kendi bean'ime @ConditionalOnMissingBean ekleyip Spring'inkiyle yarışa sokarım"
+      ],
+      a: [0],
+      why: "<b>Yol 1 en doğal ve çoğu durumda doğru cevaptır:</b> Spring'in bean'i <code>@ConditionalOnMissingBean</code> taşıdığı için sen tanımlayınca geri çekilir. En yakın çeldirici dışlama: işe yarar görünür ama <b>kaba bir alettir</b> — bir configuration sınıfı genelde birden çok bean kurar ve dışladığında hepsini birden kaybedersin, eksiği aylar sonra fark edersin. Kendi bean'ine <code>@ConditionalOnMissingBean</code> yazmak ise sıra garantisi olmadığı için bazen çalışır bazen çalışmaz. <i>Kanca:</i> <b>önce tanımla, sonra ayarla kapat, en son dışla.</b>"
+    },
+    {
+      topic: "Kararı değiştirmenin üç yolu",
+      q: "Bir auto-configuration'ın hangi ayarla kapatılabileceğini nereden öğrenirsin?",
+      opts: [
+        "Rapordaki @ConditionalOnProperty satırı ayarın adını doğrudan yazar",
+        "Yalnızca Spring Boot kaynak kodunu okuyarak",
+        "spring.autoconfigure.exclude listesine bakarak",
+        "Ayar adları raporda geçmez; belgelerden aramak gerekir"
+      ],
+      a: [0],
+      why: "<b>Rapor sana ayarın adını söyler.</b> <code>@ConditionalOnBooleanProperty (spring.aop.auto=true) matched (OnPropertyCondition)</code> gibi satırlarda hem ayarın adı hem beklenen değer yazar; kapatmak için o ayarı ters değere kurarsın. En yakın çeldirici kaynak kodu okumak: sonuca götürür ama gereksizdir — zaten çalışan uygulamanın raporunda hazır duruyor. <code>spring.autoconfigure.exclude</code> ise senin yazdığın dışlamaları tutar, ayar adlarını değil. <i>Kanca:</i> <b>ayarı aramadan önce rapora sor.</b>"
+    },
+    {
+      topic: "Kararı değiştirmenin üç yolu",
+      q: "@SpringBootApplication(exclude = ...) kullanmadan önce denemen gereken iki yolu seç. (İki tanesini seç.)",
+      opts: [
+        "Kendi bean'ini tanımlayıp auto-configuration'ın geri çekilmesini sağlamak",
+        "İlgili ayarı vererek (örneğin spring.jpa.open-in-view=false) davranışı kapatmak",
+        "@SpringBootApplication sınıfını farklı bir pakete taşımak",
+        "Configuration sınıfına @ConditionalOnMissingBean eklemek"
+      ],
+      a: [0, 1],
+      why: "<b>Sıra bellidir: kendi bean'ini tanımla → ayarla kapat → dışla (son çare).</b> İlk ikisi hedefe iğneyle dokunur, dışlama ise sınıfın kurduğu tüm bean'leri birden götürür. En yakın çeldirici kendi configuration'ına <code>@ConditionalOnMissingBean</code> eklemek: doğru araç gibi görünür ama o anotasyon auto-configuration sınıfları için tasarlanmıştır, senin sınıfında değerlendirme sırası garanti değildir. Ana sınıfı taşımak taramayı etkiler (2.1), auto-configuration'ı değil. <i>Kanca:</i> <b>exclude listesi uzuyorsa asıl sorun pom.xml'dedir.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Kendi @Configuration sınıfındaki @Bean metoduna @ConditionalOnMissingBean eklediğin bir kod incelemesi geldi. Ne dersin?",
+      opts: [
+        "Kaldır: o anotasyon auto-configuration sınıfları içindir, kendi configuration'ında sıra garantisi yoktur",
+        "Kalsın: aynı türden iki bean tanımlanmasını engelleyen doğru yoldur",
+        "Kalsın ama @Order ile birlikte kullanılmalı",
+        "Kaldır ve yerine exclude ile ilgili auto-configuration'ı dışla"
+      ],
+      a: [0],
+      why: "<b>Kendi bean'ine koşul yazma; sen tanımla, Spring geri çekilsin.</b> <code>@ConditionalOnMissingBean</code> auto-configuration için tasarlanmıştır ve orada değerlendirme sırası garantilidir; kendi sınıfında bazen çalışır bazen çalışmaz — en kötü hata türü. En yakın çeldirici 'kalsın, çift tanımı engeller': niyet doğru, araç yanlış — çift tanım sorununu bean adları ve <code>@Qualifier</code> çözer (1.2). <i>Kanca:</i> <b>koşul yazmak Spring'in işi, tanımlamak senin.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Açılışta 'Failed to configure a DataSource: url attribute is not specified and no embedded datasource could be configured' hatası aldın. Bu mesaj tam olarak neyi anlatıyor?",
+      opts: [
+        "JDBC classpath'te olduğu için DataSource kurulmaya çalışıldı, ama ne adres ne de gömülü veritabanı bulundu",
+        "Veritabanı sunucusu çalışmıyor, bağlantı reddedildi",
+        "spring.datasource.url yazılmış ama sürücü sınıfı yanlış yazılmış",
+        "Spring Boot'un JDBC auto-configuration'ı bu sürümde bozuk"
+      ],
+      a: [0],
+      why: "<b>Mesaj sebebi zaten söylüyor:</b> classpath'te JDBC olduğu için auto-configuration bir <code>DataSource</code> kurmayı denedi, sürücü ya da adres bulamadı. Üç çözümü var: <code>spring.datasource.url</code> ver, gömülü bir veritabanı (H2/HSQL/Derby) ekle, ya da o auto-configuration'ı dışla. En yakın çeldirici 'sunucu çalışmıyor': o durumda bağlantı hatası alırdın — burada henüz bağlanmaya bile çalışılmadı, adres yok. <i>Kanca:</i> mesajın <b>Action</b> bölümü sana seçenekleri sayıyor; 'Spring bozuk' demeden önce onu oku."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Ana sınıftaki exclude listesi üç auto-configuration'a çıktı ve büyümeye devam ediyor. Asıl sorun nerede?",
+      opts: [
+        "Bağımlılıklarda: kullanmadığın bir starter pom.xml'de duruyor, onu kaldırınca dışlamalara gerek kalmaz",
+        "Paket düzeninde: ana sınıf yanlış pakette olduğu için fazla sınıf taranıyor",
+        "Ayar dosyasında: aynı dışlamalar hem exclude hem spring.autoconfigure.exclude ile yazılmış",
+        "Sürümde: exclude listesi Spring Boot 4'te artık desteklenmiyor"
+      ],
+      a: [0],
+      why: "<b>Uzayan exclude listesi bir belirtidir, hastalık pom.xml'dedir.</b> Kullanmadığın bir starter classpath'e JDBC/JPA sınıflarını indiriyor, auto-configuration da haklı olarak onları kurmaya çalışıyor. Bağımlılığı kaldırdığında koşullar kendiliğinden sağlanmaz olur. En yakın çeldirici paket düzeni: o, component scan'i ilgilendirir (2.1) — auto-configuration senin paketlerine bakmaz, <b>classpath'e</b> bakar. <i>Kanca:</i> <b>dışlama semptom ilacı; bağımlılığı silmek tedavi.</b>"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

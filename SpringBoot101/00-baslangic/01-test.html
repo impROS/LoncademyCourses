@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>00.1 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "00.1",
+  code: "Başlangıç · 00.1",
+  title: "Spring Boot ne yapıyor, ve nerede kaybediliyor",
+  back: "01-genel-bakis.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Dert: new ile bağlanan kod",
+      q: "<code>StokIstemcisi</code>'ni 40 sınıf kullanıyor ve her biri kendi içinde <code>new StokIstemcisi(\"https://stok.sirket.com\")</code> yazıyor. Şimdi bu istemciye bir timeout ayarı eklemen gerekiyor. Bu tasarımın seni sokacağı somut sonuç nedir?",
+      opts: [
+        "40 dosyayı da tek tek düzenlersin, ayrıca çalışırken 40 ayrı connection pool açılır",
+        "Tek bir yerde değiştirirsin; Java aynı adresle kurulan nesneleri paylaştırır",
+        "Derleme hatası alırsın, çünkü aynı sınıftan 40 kez örnek kurulamaz",
+        "Hiçbir sonucu olmaz; timeout sınıf düzeyinde bir ayardır"
+      ],
+      a: [0],
+      why: "<b>Doğru: 40 dosya + 40 connection pool.</b> Adres ve ayar sınıfın <i>içine</i> gömülü olduğu için değişiklik her kullanıcıya dağılır, ve her <code>new</code> ayrı bir nesne demek olduğu için 40 connection pool açılır. En yakın çeldirici olan \"tek yerde değiştirirsin\" yanlış, çünkü Java'da <code>new</code> paylaşım yapmaz — aynı argümanlarla çağırsan da her seferinde yeni nesne kurulur; paylaştırma işi container'ın işidir. <b>Kanca:</b> nesneyi kuran sınıf, o nesnenin ayarına da mahkûmdur."
+    },
+    {
+      topic: "Dert: new ile bağlanan kod",
+      q: "<code>SiparisServisi</code>'ni test ederken gerçek ödeme servisine gitmesini engellemek istiyorsun. Bağımlılıkları constructor'dan almak bu sorunu nasıl çözüyor?",
+      opts: [
+        "Sınıf artık nesneyi kurmadığı için teste mock bir <code>OdemeIstemcisi</code> verebilirsin",
+        "Spring test sırasında <code>new</code> çağrılarını otomatik olarak mock'larla değiştirir",
+        "Constructor injection ağ çağrılarını kendiliğinden engeller",
+        "Test ortamında adresler <code>application.properties</code> üzerinden zaten değişir"
+      ],
+      a: [0],
+      why: "<b>Doğru: kurma işi dışarı çıktığı için ne vereceğini sen seçersin.</b> Sınıf artık \"bana şu lazım\" diyor, \"onu şöyle kuracağım\" demiyor. En yakın çeldirici \"Spring <code>new</code> çağrılarını değiştirir\" — değiştirmez; container'ın <code>new</code> ile kurulmuş nesnelere hiçbir müdahalesi yoktur, zaten bütün derdin kaynağı budur. <b>Kanca:</b> testi çözen şey Spring değil, constructor'ın kendisi."
+    },
+    {
+      topic: "Dert: new ile bağlanan kod",
+      q: "Bir arkadaşın \"dependency injection, alanın başına anotasyon yazma tekniğidir\" diyor. Bu cümlenin yanlış olduğunu gösteren iki gerekçe hangileridir? (İki tanesini seç.)",
+      opts: [
+        "Fikrin kendisi constructor'dır; Spring olmadan da geçerli bir tasarımdır",
+        "Anotasyon yalnızca Spring'e haber verme biçimidir, fikrin kendisi değildir",
+        "Anotasyonlar çalışma anında silindiği için hiçbir etkileri yoktur",
+        "Dependency injection yalnızca <code>@Configuration</code> sınıflarında geçerlidir"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru olan iki şık, aynı ayrımın iki yüzü:</b> fikir = bağımlılığı dışarıdan almak (constructor), anotasyon = bunu Spring'e bildirme biçimi. \"Anotasyonlar çalışma anında silinir\" en inandırıcı çeldirici çünkü Java'da gerçekten silinen anotasyonlar vardır — ama Spring'inkiler <code>RUNTIME</code> saklanır ve okunur, yoksa container onları hiç göremezdi. <b>Kanca:</b> anotasyonu sil, tasarım ayakta kalır; constructor'ı sil, hiçbir şey kalmaz."
+    },
+    {
+      topic: "Container: nesneleri tutan yer",
+      q: "Bir sınıfın hem <code>@Service</code> işaretli, hem de kodun bir yerinde <code>new</code> ile kurulmuş bir örneği var. Bu iki nesne için doğru cümle hangisidir?",
+      opts: [
+        "Container'ın kurduğu bean'dir; <code>new</code> ile kurulan sıradan bir nesnedir ve Spring ona dokunmaz",
+        "İkisi de bean'dir, çünkü sınıfın başında <code>@Service</code> yazıyor",
+        "İkisi de bean değildir; bean olmak için sınıfın <code>Bean</code> arayüzünü gerçeklemesi gerekir",
+        "<code>new</code> ile kurulan da bean olur ama injection'ı ilk kullanımda yapılır"
+      ],
+      a: [0],
+      why: "<b>Doğru: bean'i bean yapan tek şey, container'ın onu tanıyor olmasıdır.</b> Anotasyon sınıfa yazılır ama bean'lik nesneye aittir. En yakın çeldirici \"ikisi de bean, çünkü sınıf <code>@Service</code>\" — bu tam olarak insanların düştüğü tuzak: anotasyon container'a \"bu sınıftan bir tane kur\" der, senin elle kurduğun nesneyi geri dönüp sahiplenmez. <b>Kanca:</b> bean, özel bir Java türü değildir — bean olmak, container'ın haritasında olmaktır."
+    },
+    {
+      topic: "Container: nesneleri tutan yer",
+      q: "Bir yardımcı nesneyi <code>new</code> ile kurdun ve içindeki <code>@Autowired</code> alan <code>null</code> geliyor. Sebebi nedir?",
+      opts: [
+        "Container o nesneyi tanımıyor; injection yalnızca bean'lere yapılır",
+        "<code>@Autowired</code> field injection Spring Boot 4'te kaldırıldı",
+        "Alanı <code>final</code> yapmadığın için container injection'ı atladı",
+        "Uygulama henüz tam açılmadı; alan ilk istekte dolacak"
+      ],
+      a: [0],
+      why: "<b>Doğru: container kurmadığı nesneye injection yapmaz.</b> Anotasyonu container okur; container'ın haberi olmayan bir nesnede o anotasyon sadece kaynak kodda duran bir yazıdır. En yakın çeldirici \"alan ilk istekte dolacak\" — container açılıştan sonra yeni bean kurmaz ve geriye dönüp senin nesnelerini taramaz. <b>Kanca:</b> alan <code>null</code> ise ilk soru her zaman \"bu nesneyi kim kurdu?\"dur."
+    },
+    {
+      topic: "Spring ≠ Spring Boot",
+      q: "Ekip toplantısında biri \"Spring Boot, Spring'in yeni sürümü\" diyor. Bu iddiayı düzelten cümle hangisidir?",
+      opts: [
+        "Spring Framework çekirdektir (7.0.x); Spring Boot onun üstünde duran, onu senin yerine yapılandıran ayrı bir katmandır (4.1.x)",
+        "Spring Boot, Spring Framework'ün 4.1 sürümüdür; eski sürüme Spring Framework deniyordu",
+        "Spring Boot container'ı ve dependency injection'ı getirir; Spring Framework yalnızca web katmanıdır",
+        "İkisi aynı üründür, biri Maven'daki adı diğeri belgelerdeki adıdır"
+      ],
+      a: [0],
+      why: "<b>Doğru: iki ayrı proje, iki ayrı sürüm numarası.</b> Container, dependency injection, transaction, AOP — hepsi Framework'te. Boot bunları yapılandırır. En yakın çeldirici \"Boot container'ı getirir\" — tam tersi: bu kursta öğrendiğin container ve bean bilgisi <i>Framework</i> bilgisidir, Boot sürümü değişse de geçerliliğini korur. <b>Kanca:</b> sürüm numaraları farklıysa ürün de farklıdır — 7.0.x ile 4.1.x aynı şey olamaz."
+    },
+    {
+      topic: "Spring ≠ Spring Boot",
+      q: "Spring Boot'un Spring Framework'ün üstüne kattığı üç şey hangileridir? (Üç tanesini seç.)",
+      opts: [
+        "Auto-configuration — classpath'tekine bakıp senin yerine karar verir",
+        "Starter'lar — tek bağımlılıkla uyumlu sürümleriyle onlarca kütüphane",
+        "Embedded server — <code>java -jar</code> ile çalışan sıradan bir Java programı",
+        "Dependency injection ve <code>ApplicationContext</code>"
+      ],
+      a: [0, 1, 2],
+      why: "<b>Doğru üçlü: auto-configuration, starter'lar, embedded server.</b> Dördüncü şık en yakın çeldirici ve kasıtlı: dependency injection ile <code>ApplicationContext</code> <i>Framework</i>'e aittir, Boot'a değil — Boot olmadan da vardır, sadece yapılandırmasını sen yazarsın. <b>Kanca:</b> Boot bir şey icat etmez, var olanı senin yerine ayarlar."
+    },
+    {
+      topic: "Auto-configuration'ın bedeli",
+      q: "8 satırlık boş bir Spring Boot uygulamasını çalıştırdın ve günlükte <code>Tomcat started on port 8080 (http)</code> satırını gördün. Kodda Tomcat'e dair tek satır yok. Bu kararı ne verdi?",
+      opts: [
+        "Auto-configuration, web starter'ını classpath'te gördüğü için \"web uygulaması yazıyor\" diye karar verdi",
+        "<code>main</code> metodu bir web sunucusu başlatmak üzere yazılmıştır",
+        "<code>@SpringBootApplication</code> her uygulamada koşulsuz olarak Tomcat kurar",
+        "Tomcat, JDK ile birlikte gelen ve boşta duran portu dinleyen bir bileşendir"
+      ],
+      a: [0],
+      why: "<b>Doğru: karar classpath'e bakılarak verildi.</b> Bağımlılığı sen ekledin, sunucuyu Boot çıkardı. En yakın çeldirici \"<code>@SpringBootApplication</code> koşulsuz Tomcat kurar\" — anotasyon yalnızca auto-configuration'ı <i>açar</i>; kararı veren, classpath'teki koşullardır. Web bağımlılığı olmayan bir uygulamada aynı anotasyonla hiç sunucu açılmaz. <b>Kanca:</b> \"bu nereden geldi?\" sorusunun cevabı neredeyse her zaman classpath'tedir."
+    },
+    {
+      topic: "Auto-configuration'ın bedeli",
+      q: "Var olmayan bir adrese istek attın ve hiç yazmadığın şu gövde döndü: <code>{\"timestamp\":\"...\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/yok\"}</code>. Buradan çıkarman gereken asıl ders nedir?",
+      opts: [
+        "Varsayılanlar kodda görünmez; bir gün biri istediğin gibi olmayınca arayacak dosya bulamazsın",
+        "Bu JSON bir hatadır; üretimde gövdesiz 404 dönmesi gerekir",
+        "Hata gövdesini değiştirmenin tek yolu Tomcat'i kaldırmaktır",
+        "Auto-configuration yalnızca veri kaynağı ve sunucu kurar, yanıt gövdesine karışmaz"
+      ],
+      a: [0],
+      why: "<b>Doğru: bedel, görünmezliktir.</b> Auto-configuration işi kolaylaştırır ve <i>aynı sebeple</i> kafa karıştırır. En yakın çeldirici \"auto-configuration yanıt gövdesine karışmaz\" — karışır; o gövdeyi varsayılan hata işleyicisi üretti, ve o işleyici de auto-configuration'ın kurduğu bir bean'dir. <b>Kanca:</b> sihir değil, bir dizi <code>if</code> — ama <code>if</code>'ler senin dosyalarında değil, kütüphanenin içinde."
+    },
+    {
+      topic: "Spring Boot 4 ne değiştirdi",
+      q: "Bir blog yazısında test sınıfında <code>@MockBean</code> anotasyonunu gördün. Bu yazı hangi sürüm için yazılmıştır ve kodu Spring Boot 4.1.1 projene kopyalarsan ne olur?",
+      opts: [
+        "Spring Boot 3.x için; 4.x'te derlenmez, karşılığı <code>@MockitoBean</code>'dir",
+        "Spring Boot 4.x için; <code>@MockBean</code> 4.0'da eklendi",
+        "Sürümden bağımsız; <code>@MockBean</code> Mockito'nun kendi anotasyonudur",
+        "Spring Boot 3.x için; 4.x'te uyarı verir ama çalışmaya devam eder"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@MockBean</code> 3.x işaretidir, 4.x'te yerini <code>@MockitoBean</code> aldı.</b> En yakın çeldirici \"uyarı verir ama çalışır\" — hayır, sınıf classpath'te olmadığı için <i>derlenmez</i>; bu aslında iyi haber, çünkü sessizce yanlış çalışmaktan iyidir. <b>Kanca:</b> bir örneğe bakarken önce sürümüne bak; anotasyon adları sürüm parmak izidir."
+    },
+    {
+      topic: "Spring Boot 4 ne değiştirdi",
+      q: "3.x'ten gelen bir <code>@SpringBootTest</code> sınıfını 4.x projesine taşıdın; testte <code>MockMvc</code> inject edilemiyor. Ne yapman gerekir?",
+      opts: [
+        "Test sınıfına <code>@AutoConfigureMockMvc</code> ekle — 4.x'te kendiliğinden gelmiyor",
+        "<code>@SpringBootTest</code> yerine <code>@MockitoBean</code> kullan",
+        "Undertow sunucusuna geç; MockMvc yalnızca onunla çalışır",
+        "Jackson 3'e geçmen gerekir; MockMvc Jackson 2 ile inject edilmez"
+      ],
+      a: [0],
+      why: "<b>Doğru: 3.x'te kendiliğinden gelen <code>MockMvc</code>, 4.x'te <code>@AutoConfigureMockMvc</code> istiyor.</b> En yakın çeldirici Jackson: 4.x'te JSON kütüphanesi gerçekten <code>com.fasterxml.jackson</code>'dan <code>tools.jackson</code>'a taşındı, ama bu yanıt gövdesi dönüşümüyle ilgilidir, <code>MockMvc</code>'nin inject edilip edilmemesiyle değil. Undertow ise 4.x'te tamamen kaldırıldı. <b>Kanca:</b> 4.x'te \"eskiden bedavaydı\" olan şeyler açıkça istenir hâle geldi."
+    },
+    {
+      topic: "Spring Boot 4 ne değiştirdi",
+      q: "3.x'ten 4.x'e geçiş yapan bir projede, aşağıdakilerden hangi ikisi kod değişikliği gerektirir? (İki tanesini seç.)",
+      opts: [
+        "Jackson paketleri: <code>com.fasterxml.jackson</code> → <code>tools.jackson</code>",
+        "Undertow kullanan yapılandırma — sunucu kaldırıldığı için başka bir sunucuya geçilir",
+        "En düşük Java sürümünün 17'den 21'e çıkması",
+        "<code>ApplicationContext</code> arayüzünün <code>BeanContainer</code> olarak yeniden adlandırılması"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: Jackson 3 paket taşınması ve Undertow'un kaldırılması.</b> \"En düşük Java 21\" en yakın çeldirici, çünkü 4.x gerçekten Java 25'i birinci sınıf destekliyor — ama <i>en düşük</i> sürüm 17 olarak kaldı, yükseltilmedi. Dördüncü şık ise uydurma: <code>ApplicationContext</code> yerinde duruyor. <b>Kanca:</b> geçiş listesinde \"yeni destek\" ile \"artık zorunlu\" ayrı sütunlardır."
+    },
+    {
+      topic: "Bu kursta nerede kaybedilir",
+      q: "Üretime yeni bir ayar çıktın. Uygulama açıldı, hata yok, günlükte iz yok — ama davranış değişmedi. Bu tabloda hangi bilinen tuzağa denk geldin?",
+      opts: [
+        "Ayar okunmamış; kod varsayılan değerle çalışıyor",
+        "Aynı türden iki bean olduğu için container yanlış olanı seçmiş",
+        "Bean döngüsel bağımlılık yüzünden yarım kurulmuş",
+        "Scope uyumsuzluğu yüzünden bean her istekte yeniden kurulmuş"
+      ],
+      a: [0],
+      why: "<b>Doğru: sessiz varsayılan.</b> Bu, listedeki beş tuzağın en sinsisi çünkü tek belirtisi \"hiçbir belirti olmaması\"dır; diğerlerinin hepsi açılışta bağırır. En yakın çeldirici belirsizlik (iki bean) — o durumda uygulama <i>hiç açılmaz</i>, <code>required a single bean, but 2 were found</code> der. <b>Kanca:</b> hata mesajı yoksa şüphelen; en pahalı hatalar sessiz olanlardır."
+    },
+    {
+      topic: "Bu kursta nerede kaybedilir",
+      q: "Aynı türden iki bean tanımladın ve birini bir servise inject etmeye çalıştın. Container ne yapar?",
+      opts: [
+        "Hangisini seçeceğini bilemez ve açılışta hata verir",
+        "Alfabetik olarak ilk gelen bean'i seçer",
+        "İkisini de inject eder; alan son kurulan bean'i tutar",
+        "Sessizce yeni bir örnek kurup onu verir"
+      ],
+      a: [0],
+      why: "<b>Doğru: seçemez ve açılışta patlar.</b> Container türe göre arar; iki aday çıkınca durur ve <code>required a single bean, but 2 were found</code> der — çözümlerini de mesajın içinde sıralar. En yakın çeldirici \"alfabetik seçer\" — böyle bir kural yok, ve olsaydı çok daha kötü olurdu: yanlış bean sessizce inject edilirdi. <b>Kanca:</b> container tahmin etmez, sorar; tahmin etmesi istenen tek yer <code>@Primary</code>'dir. (1.3'te çözüyoruz.)"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

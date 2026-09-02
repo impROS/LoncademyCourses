@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.3",
+  code: "Container ve bean'ler · 1.3",
+  title: "Dependency injection ve belirsizlik",
+  back: "1.3-dependency-injection.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Üç injection biçimi",
+      q: "Ekipte \"field injection daha kısa, onu kullanalım\" tartışması çıktı. Estetik değil, ölçülebilir dayanağın hangisidir?",
+      opts: [
+        "Eksik bağımlılık constructor'da açılışta patlar; field injection'da uygulama kalkar ve kullanımda <code>NullPointerException</code> alırsın",
+        "Field injection çalışma anında reflection kullandığı için her çağrıda yavaştır",
+        "Field injection Spring Boot 4'te kaldırıldı, derlenmez",
+        "Field injection'da bean adları sınıf adıyla eşleşmediği için belirsizlik çıkar"
+      ],
+      a: [0],
+      why: "<b>Doğru: hatanın ne zaman çıktığı.</b> Constructor injection'da eksik bağımlılık uygulamayı hiç açtırmaz; field injection'da uygulama açılır, arıza ilk kullanımda — belki üretimde — çıkar. En yakın çeldirici \"yavaş\" — injection <i>bir kere</i>, kurulum anında olur; çalışma anında hiçbir maliyeti yoktur, dolayısıyla hız argümanı ölçüde karşılığı olmayan bir argümandır. <b>Kanca:</b> tartışmayı kısalıkla değil, hatanın çıktığı anla kazanırsın."
+    },
+    {
+      topic: "Üç injection biçimi",
+      q: "Constructor injection'ın field injection'a göre sağladığı avantajlar hangi ikisidir? (İki tanesini seç.)",
+      opts: [
+        "Alanı <code>final</code> yapabilirsin — nesne kurulduktan sonra değişemez",
+        "Testte Spring'siz kurabilirsin: <code>new SiparisServisi(mockStok)</code>",
+        "Injection sırasını kendin belirleyebilirsin",
+        "Aynı türden birden çok bean olduğunda belirsizlik oluşmaz"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: <code>final</code> ve Spring'siz test.</b> Field injection'da ikisi de mümkün değildir; testte reflection kullanmaya ya da tam bir Spring container'ına mecbur kalırsın. En yakın çeldirici \"belirsizlik oluşmaz\" — belirsizlik <i>tür</i> eşleştirmesinden doğar ve injection biçiminden bağımsızdır; constructorla da aynı <code>required a single bean, but 2 were found</code> hatasını alırsın. <b>Kanca:</b> constructor, sınıfın sözleşmesini imzasında görünür kılar."
+    },
+    {
+      topic: "Üç injection biçimi",
+      q: "Tek constructor'u olan bir <code>@Service</code> sınıfında constructor'un üstünde <code>@Autowired</code> görüyorsun. Ne yaparsın?",
+      opts: [
+        "Silebilirsin — Spring 4.3'ten beri tek constructor'da gereksiz; yazsan da çalışır",
+        "Bırakırsın — silersen injection çalışmaz",
+        "Silersin, çünkü <code>@Autowired</code> constructor'da derleme hatası verir",
+        "Bırakırsın — Spring Boot 4'te constructor'da zorunlu hâle geldi"
+      ],
+      a: [0],
+      why: "<b>Doğru: gereksiz ama zararsız.</b> Spring 4.3'ten beri tek constructor otomatik olarak injection noktasıdır; eski örneklerde göreceksin, yazmamak günümüz alışkanlığı. En yakın çeldirici \"silersen çalışmaz\" — bu, eski örneklere bakan herkesin varsayımı ve yanlış; sınıfta <i>birden çok</i> constructor varsa iş değişir, o zaman hangisinin kullanılacağını işaretlemek gerekir. <b>Kanca:</b> tek constructor = anotasyona gerek yok."
+    },
+    {
+      topic: "Container nasıl eşleştiriyor: önce tür, sonra ad",
+      q: "Container bir constructor parametresini doldururken izlediği sıra hangisidir?",
+      opts: [
+        "Tür → <code>@Primary</code> → <code>@Qualifier</code> → parametre adı",
+        "Parametre adı → tür → <code>@Qualifier</code> → <code>@Primary</code>",
+        "<code>@Qualifier</code> → parametre adı → tür → <code>@Primary</code>",
+        "Bean definition sırası → tür → ad"
+      ],
+      a: [0],
+      why: "<b>Doğru: önce tür, ad en sonda.</b> Tür tek adayla eşleşiyorsa iş zaten biter; <code>@Primary</code>, <code>@Qualifier</code> ve parametre adı yalnızca 2+ aday çıktığında devreye girer. En yakın çeldirici \"parametre adı önce\" — pek çok kişi böyle sanır çünkü ad eşleştirmesi çalıştığında öyle görünür; oysa ad, türün yetmediği yerde devreye giren <i>ikinci</i> ölçüttür. <b>Kanca:</b> bu sırayı ezberle — injection hatalarının tamamı bu akışın bir adımında düğümlenir."
+    },
+    {
+      topic: "Container nasıl eşleştiriyor: önce tür, sonra ad",
+      q: "Container bir parametrenin türüne uyan hiç bean bulamazsa hangi hatayı verir?",
+      opts: [
+        "<code>required a bean of type '...' that could not be found</code>",
+        "<code>required a single bean, but 0 were found</code>",
+        "<code>No qualifying bean: ambiguous match</code>",
+        "Hata vermez; parametreye <code>null</code> geçer"
+      ],
+      a: [0],
+      why: "<b>Doğru: sıfır aday = \"could not be found\".</b> Bu mesajı görünce sorun \"seçemedim\" değil, \"hiç yok\"tur: sınıf ya bean değildir (anotasyon yok) ya da taranmayan bir pakettedir (1.1). En yakın çeldirici \"<code>null</code> geçer\" — container zorunlu bir bağımlılığı asla sessizce <code>null</code> bırakmaz; sessiz <code>null</code> istiyorsan bunu <code>Optional&lt;T&gt;</code> ile açıkça istemen gerekir. <b>Kanca:</b> \"could not be found\" = bean ekle; \"but N were found\" = bean seç."
+    },
+    {
+      topic: "Belirsizlik: birden çok aday",
+      q: "Container'da <code>stokIstemcisi</code> ve <code>odemeIstemcisi</code> adlı iki <code>RestClient</code> bean'i var. <code>public StokServisi(RestClient istemci)</code> yazdın ve şu hatayı aldın: <code>Parameter 0 of constructor in ... StokServisi required a single bean, but 2 were found</code>. Spring'in mesajda önerdiği üç çözüm hangileri?",
+      opts: [
+        "Bean'lerden birini <code>@Primary</code> işaretle · tüketiciyi birden çok bean kabul edecek şekilde güncelle · <code>@Qualifier</code> ile hangisinin geleceğini belirt",
+        "Bean'lerden birini sil · <code>@Lazy</code> ekle · ad çakışmasını çöz",
+        "<code>spring.main.allow-bean-definition-overriding</code> aç · <code>@Primary</code> ekle · sınıfı yeniden adlandır",
+        "<code>@Autowired(required=false)</code> yaz · <code>Optional</code> kullan · <code>@Order</code> ekle"
+      ],
+      a: [0],
+      why: "<b>Doğru: hata mesajının <code>Action:</code> bölümü bu üçünü aynen yazar.</b> Spring hatayı söylemekle kalmıyor, çözümleri de sıralıyor — okumaya değer. En yakın çeldirici <code>allow-bean-definition-overriding</code> içeren şık; o ayar aynı <i>addaki</i> tanım çakışmasıyla ilgilidir ve zaten açılmaması gereken bir ayardır, buradaki sorun ise aynı <i>türden</i> iki geçerli bean. <b>Kanca:</b> Spring'in hata metni bu kursun en iyi belgesidir; <code>Action:</code> satırını atlamayı bırak."
+    },
+    {
+      topic: "Belirsizlik: birden çok aday",
+      q: "<code>@Qualifier</code> ile <code>@Primary</code> arasındaki fark nedir?",
+      opts: [
+        "<code>@Qualifier</code> tüketen tarafa yazılır ve tek bir noktada seçim yapar; <code>@Primary</code> üreten tarafa yazılır ve container genelinde varsayılan ilan eder",
+        "<code>@Qualifier</code> üreten tarafa, <code>@Primary</code> tüketen tarafa yazılır",
+        "İkisi de tüketen tarafa yazılır; <code>@Primary</code> yalnızca daha kısadır",
+        "<code>@Qualifier</code> yalnızca <code>@Bean</code> metotlarında, <code>@Primary</code> yalnızca <code>@Component</code> sınıflarında çalışır"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>@Qualifier</code> tüketende, <code>@Primary</code> üretende.</b> Bu yön farkı davranışı belirler: <code>@Primary</code> bir kere yazılır ve <i>bütün</i> injection noktalarını etkiler; <code>@Qualifier</code> yalnızca yazıldığı parametreyi. En yakın çeldirici, ikisinin yerini takas eden şık — pratikte en sık yapılan karıştırma budur ve <code>@Primary</code>'yi tüketiciye yazmak hiçbir işe yaramaz. <b>Kanca:</b> \"kim seçiyor?\" diye sor: <code>@Primary</code>'de üretici, <code>@Qualifier</code>'da tüketici."
+    },
+    {
+      topic: "Belirsizlik: birden çok aday",
+      q: "İki <code>RestClient</code> bean'i var; biri normal kullanım, diğeri özel bir durum için. Sistemde çoğu tüketici normal olanı istiyor. Hangi çözümü seçersin?",
+      opts: [
+        "Normal olana <code>@Primary</code>; özel olanı isteyen az sayıdaki yere <code>@Qualifier</code>",
+        "İkisine de <code>@Primary</code>; container sırayla dener",
+        "Her tüketiciye <code>@Qualifier</code> yaz; <code>@Primary</code> hiçbir zaman kullanılmaz",
+        "Parametre adlarını bean adlarıyla eşitle; en kısa çözüm budur"
+      ],
+      a: [0],
+      why: "<b>Doğru: baskın durum için <code>@Primary</code>, istisna için <code>@Qualifier</code>.</b> Tablo bunu \"biri normal, diğeri özel durum\" satırında söylüyor. En yakın çeldirici \"her yere <code>@Qualifier</code>\" — yanlış değil ama gereksiz gürültüdür; buna karşılık <code>@Primary</code>'yi <i>her yerde</i> kullanmak da tehlikelidir: bir yerde kolaylık, on yerde sürprizdir. Parametre adı çözümü ise kırılgandır. <b>Kanca:</b> <code>@Primary</code> = varsayılan, <code>@Qualifier</code> = istisna."
+    },
+    {
+      topic: "Belirsizlik: birden çok aday",
+      q: "Bir gün \"kodu hiç değiştirmedik ama injection bozuldu\" diyorsun. Kod parametre adının bean adıyla eşleşmesine dayanıyordu. İlk bakacağın yer neresidir?",
+      opts: [
+        "Derleyicinin <code>-parameters</code> bayrağı — Java parametre adlarını <code>.class</code> dosyasına varsayılan olarak yazmaz",
+        "<code>application.properties</code> içindeki bean adı eşlemeleri",
+        "<code>@ComponentScan</code> paketi — parametre adları yalnızca taranan paketlerde korunur",
+        "Java sürümü — parametre adı eşleştirmesi Java 21'de kaldırıldı"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>-parameters</code> bayrağı.</b> Spring Boot'un Maven yapılandırması bu bayrağı senin için açar, ama başka bir derleme düzeninde açık olmayabilir — o zaman ad bilgisi <code>.class</code>'a hiç yazılmaz ve eşleştirme çalışmaz. Hata çıktısı bunu <code>This may be due to missing parameter name information</code> ve <code>Ensure that your compiler is configured to use the '-parameters' flag</code> satırlarıyla söyler. En yakın çeldirici Java sürümü — böyle bir kaldırma olmadı; sorun dilde değil, derleme ayarında. <b>Kanca:</b> parametre adına güvenme, <code>@Qualifier</code> yaz."
+    },
+    {
+      topic: "Hepsini birden almak: liste ve harita injection'ı",
+      q: "<code>OdemeYontemi</code> arayüzünün <code>KrediKarti</code>, <code>Havale</code>, <code>Kapida</code> adlı üç <code>@Component</code> gerçeklemesi var. Dördüncüsünü eklerken <code>OdemeServisi</code>'ne dokunmak istemiyorsun. Ne yaparsın?",
+      opts: [
+        "Constructor'da <code>List&lt;OdemeYontemi&gt;</code> inject et; yeni <code>@Component</code> eklendiğinde liste kendiliğinden büyür",
+        "Her gerçeklemeye <code>@Primary</code> ekle; container hepsini sırayla dener",
+        "<code>OdemeServisi</code>'ne <code>ApplicationContext</code> inject edip <code>getBean</code> ile ara",
+        "Ödeme türüne göre <code>if/else</code> zinciri yaz; her yeni türde bir dal ekle"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>List&lt;T&gt;</code> injection'ı — bu kursun en çok işine yarayacak kalıbı.</b> Container o arayüzün bütün bean'lerini toplayıp listeye koyar; yeni sınıf yazmak mevcut kodu değiştirmez. En yakın çeldirici <code>getBean</code> ile arama — çalışır ama service locator kalıbıdır: sınıfı container'a bağlar ve test edilemez hâle getirir (1.1). <code>if/else</code> ise tam olarak kaçındığın şeydir. <b>Kanca:</b> yeni davranış eklemek için mevcut dosyayı açıyorsan, kalıbı kaçırmışsındır."
+    },
+    {
+      topic: "Hepsini birden almak: liste ve harita injection'ı",
+      q: "Aynı üç ödeme yöntemini <code>Map&lt;String, OdemeYontemi&gt;</code> olarak inject edersen haritanın anahtarları ne olur?",
+      opts: [
+        "Bean adları: <code>krediKarti</code>, <code>havale</code>, <code>kapida</code>",
+        "Sınıf adları: <code>KrediKarti</code>, <code>Havale</code>, <code>Kapida</code>",
+        "Arayüzün tam nitelikli adı, her anahtarda aynı",
+        "<code>@Order</code> değerlerinin metin hâli"
+      ],
+      a: [0],
+      why: "<b>Doğru: anahtar bean adıdır.</b> <code>@Component</code> ile tanımlandıklarına göre bean adı sınıf adının ilk harfi küçültülmüş hâli olur (1.2). En yakın çeldirici sınıf adları — ilk harf farkı küçük görünür ama <code>map.get(\"Havale\")</code> yazan kod sessizce <code>null</code> döner ve hatayı bulmak vakit alır. <b>Kanca:</b> harita anahtarı bean adıdır; bean adı da 1.2'deki kuralla üretilir."
+    },
+    {
+      topic: "Hepsini birden almak: liste ve harita injection'ı",
+      q: "<code>List&lt;OdemeYontemi&gt;</code> inject ettin, uygulama sorunsuz açıldı, ama liste boş geldi ve hiçbir hata yok. Olası iki sebep hangisidir? (İki tanesini seç.)",
+      opts: [
+        "Hiç gerçekleme sınıfı yok — Spring bu durumda boş liste inject eder, hata vermez",
+        "Gerçeklemeler taranmayan bir pakette; container onları hiç görmedi",
+        "Gerçeklemeler <code>@Order</code> almadığı için container onları listeye koymadı",
+        "Liste injection'ı <code>@Qualifier</code> olmadan çalışmaz"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: hiç aday yok, ya da adaylar taranmayan pakette.</b> İkisi de container açısından aynı şeydir: sıfır aday. En yakın çeldirici <code>@Order</code> — <code>@Order</code> yalnızca listedeki <i>sırayı</i> belirler, üyeliği değil; hiç yazmazsan da elemanlar gelir, sadece sıraları garanti değildir. <b>Kanca:</b> boş liste tuzağı sessizdir — <code>isEmpty()</code> kontrolünü sen yazacaksın."
+    },
+    {
+      topic: "İsteğe bağlı bağımlılık",
+      q: "<code>SmsIstemcisi</code> bean'i bazı ortamlarda var, bazılarında yok. Uygulamanın ikisinde de açılmasını istiyorsun. Ne yaparsın?",
+      opts: [
+        "Constructor'da <code>Optional&lt;SmsIstemcisi&gt;</code> al ve <code>sms.ifPresent(...)</code> ile kullan",
+        "Field injection'a geç; bean yoksa alan <code>null</code> kalır ama uygulama açılır",
+        "Bean'i <code>@Lazy</code> işaretle; olmayan bean tembel olduğunda hata vermez",
+        "Bütün bağımlılıkları <code>Optional</code> yap; en güvenli yaklaşım budur"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>Optional&lt;T&gt;</code> ile sarmala, açılış patlamaz.</b> Ama bu bir <i>tasarım kararıdır</i>: \"bu parça gerçekten olmayabilir\" demektir. En yakın çeldirici \"bütün bağımlılıkları <code>Optional</code> yap\" — böyle yaparsan eksik yapılandırmayı açılışta yakalama şansını kaybedersin, yani 1.3'ün sana verdiği asıl güvenceyi elinle atarsın. <b>Kanca:</b> <code>Optional</code>, hata bastırma aracı değil, niyet beyanıdır."
+    },
+    {
+      topic: "Döngüsel bağımlılık",
+      q: "Açılışta şu hatayı aldın: <code>The dependencies of some of the beans in the application context form a cycle</code>, altında <code>AServisi</code> ve <code>BServisi</code>'ni gösteren bir kutu çizimi var. Mesaj <code>spring.main.allow-circular-references</code> ayarından da söz ediyor. Ne yaparsın?",
+      opts: [
+        "Ayarı açmam — döngü bir tasarım sorunudur; A ile B'nin paylaştığı işi üçüncü bir sınıfa çıkarırım",
+        "Ayarı açarım; mesajda yazdığına göre desteklenen bir çözümdür",
+        "<code>AServisi</code>'yi <code>@Lazy</code> yapıp döngüyü çalışma anına ertelerim",
+        "İki sınıfı da field injection'a çeviririm; o zaman döngü sorun çıkarmaz"
+      ],
+      a: [0],
+      why: "<b>Doğru: ortak parçayı üçüncü bir sınıfa çıkar — en sık doğru cevap budur.</b> (Diğer iki gerçek çözüm: event kullanmak, ya da sınırı yeniden çizmek.) En yakın çeldirici ayarı açmak — mesaj gerçekten ondan söz eder ama aynı cümlede <code>As a last resort</code> der; ayar tasarım sorununu çözmez, erteler. Field injection'a geçmek ise en tehlikelisi: döngü <i>sessizce çalışır</i> ve tasarım hatası saklanır. <b>Kanca:</b> Spring 2.6'dan beri döngüler varsayılan olarak yasak — bu bir kısıtlama değil, teşhis."
+    },
+    {
+      topic: "Döngüsel bağımlılık",
+      q: "Field injection döngüsel bağımlılığı neden \"saklar\"?",
+      opts: [
+        "Nesne önce yarım kurulur, sonra alanlar doldurulur — bu yüzden döngü çalışabilir ve tasarım hatası fark edilmez",
+        "Field injection'da container dependency graph'ı hiç çıkarmaz",
+        "Alanlar <code>final</code> olmadığı için container onları döngü kontrolünden muaf tutar",
+        "Field injection bean'leri prototype scope'ta kurar, döngü de böylece kırılır"
+      ],
+      a: [0],
+      why: "<b>Doğru: iki aşamalı kurulum — önce boş nesne, sonra alan doldurma.</b> Constructor'da ise B'yi kurmadan A'yı kurmak <i>imkânsızdır</i>, bu yüzden döngü açılışta patlar. En yakın çeldirici \"grafiği hiç çıkarmaz\" — çıkarır; fark grafiğin varlığında değil, kurulumun bölünebilmesinde. <b>Kanca:</b> constructor injection'ın sana verdiği asıl hediye, tasarım hatanı saklamamasıdır."
+    },
+    {
+      topic: "Döngüsel bağımlılık",
+      q: "<code>required a bean of type '...' that could not be found</code> ile <code>required a single bean, but 3 were found</code> hatalarının çözümleri neden birbirinin tersidir?",
+      opts: [
+        "Birincisinde sıfır aday vardır — bean <b>eklersin</b>; ikincisinde fazla aday vardır — aralarından <b>seçersin</b>",
+        "Birincisi tarama hatası, ikincisi ad çakışması hatasıdır",
+        "Birincisi açılışta, ikincisi ilk istekte çıkar",
+        "İkisi de aynı sorundur; ikinci mesaj yalnızca daha ayrıntılı yazılmıştır"
+      ],
+      a: [0],
+      why: "<b>Doğru: sıfır aday vs. fazla aday.</b> Birincisinde sınıfa anotasyon eklersin ya da paketi taramaya alırsın; ikincisinde <code>@Qualifier</code> veya <code>@Primary</code> ile seçim yaparsın — birinde bean sayısını artırır, diğerinde etkili bean sayısını bire indirirsin. En yakın çeldirici \"ikisi de aynı sorun\" — mesajları birbirine benzediği için çok yapılan bir karıştırmadır ve yanlış yöne yarım saat harcatır. <b>Kanca:</b> mesajdaki sayıya bak: yok mu, çok mu?"
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

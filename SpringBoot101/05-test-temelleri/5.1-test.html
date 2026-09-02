@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5.1",
+  code: "Test temelleri · 5.1",
+  title: "Test piramidi ve slice test'ler",
+  back: "5.1-slice-test.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ölçüm: aynı uç nokta, iki test",
+      q: "Aynı uç noktayı iki testle ölçtün: <code>@WebMvcTest</code> ile yazılan <code>SliceTest</code> <b>0,174 sn</b>, <code>@SpringBootTest</code> + <code>@AutoConfigureMockMvc</code> ile yazılan <code>FullContextTest</code> <b>1,083 sn</b> sürdü ve gövdeleri farklıydı: <code>MOCK</code> ve <code>GERCEK-A-1</code>. Bu fark neden çıktı?",
+      opts: [
+        "Slice test'te <code>SiparisServisi</code> <code>@MockitoBean</code> ile mock'landı; tam testte container'da gerçek servis vardı",
+        "Slice test henüz ısınmamış JVM üzerinde çalıştığı için farklı bir kod yolu izledi",
+        "<code>@WebMvcTest</code> yanıt gövdesini kısaltır; <code>MOCK</code> aslında <code>GERCEK-A-1</code>'in kısaltılmış hâlidir",
+        "İki test farklı uç noktaları çağırdı; aynı adres olsa gövdeler de aynı olurdu"
+      ],
+      a: [0],
+      why: "<b>Gövdeler farklı çünkü container'lardaki bean'ler farklı:</b> slice test'te servis mock'tu (<code>given(...)</code> ile <code>MOCK</code> döndürüldü), tam testte gerçek servis çalıştı ve <code>GERCEK-A-1</code> döndü. Süre farkı da (~6,5 kat) aynı sebepten: biri yalnızca web katmanını, diğeri her şeyi kuruyor. En yakın çeldirici son şık: \"aynı adres aynı cevabı verir\" sezgisi çok güçlüdür ve <b>tam da bu konunun kırdığı sezgidir</b> — aynı adres, farklı container, farklı cevap. <b>Kanca:</b> testin cevabını uç nokta değil, container'daki bean belirler."
+    },
+    {
+      topic: "Ölçüm: aynı uç nokta, iki test",
+      q: "Bir ekip arkadaşın \"slice test tam testin ucuz taklidi, ikisi aynı şeyi ölçüyor\" diyor. Doğru itiraz nedir?",
+      opts: [
+        "Farklı sorular soruyorlar: slice \"kontrolcü doğru çeviriyor mu\", tam test \"parçalar birbirine bağlanıyor mu\"",
+        "Doğru söylüyor; slice test yalnızca hız için var, kapsamı tam testin alt kümesidir",
+        "Tam test slice test'in taklididir; slice test daha gerçekçi çünkü mock servis daha kararlıdır",
+        "İkisi aynı şeyi ölçer ama slice test daha az güvenilirdir; kritik akışlarda kullanılmamalıdır"
+      ],
+      a: [0],
+      why: "<b>İkisi farklı şeyler ölçüyor.</b> Slice test \"kontrolcü, servisten gelen cevabı doğru biçimde HTTP'ye çeviriyor mu?\" diye sorar; tam test \"bütün parçalar birbirine bağlandığında çalışıyor mu?\" diye. İkisi de gerekli — ama aynı oranda değil. En yakın çeldirici ikinci şık: hız farkını doğru görüyor ama \"alt küme\" diyerek <b>kapsam ilişkisi kuruyor</b>; oysa slice test bağlantıları hiç ölçmez, tam test de mock servisle izole davranışı ölçmez. Piramit tam bu yüzden var: çok birim, orta slice, az tam container. <b>Kanca:</b> hız bir yan ürün; asıl fark sorunun kendisi."
+    },
+    {
+      topic: "Test piramidi",
+      q: "Bir <code>SiparisHesaplayici</code> sınıfının indirim hesabını test edeceksin; sınıf hiçbir Spring bean'ine bağımlı değil. En doğru test nedir?",
+      opts: [
+        "Spring'siz saf birim testi: <code>new SiparisHesaplayici()</code> ve doğrudan çağır — milisaniyede biter",
+        "<code>@SpringBootTest</code> + <code>@Autowired SiparisHesaplayici</code> — bean olarak alıp test etmek daha gerçekçidir",
+        "<code>@WebMvcTest</code> — slice test olduğu için hızlıdır ve hesaplayıcıyı container'a alır",
+        "<code>@DataJpaTest</code> — hesaplama sonuçları veritabanına yazıldığı için veri slice'ı gerekir"
+      ],
+      a: [0],
+      why: "<b>Piramidin en geniş katmanı Spring'in hiç devrede olmadığı testlerdir.</b> Saf hesaplama için container kurmak, milisaniyelik bir işi saniyelere çıkarır. En yakın çeldirici <code>@SpringBootTest</code>: \"gerçekçi olsun\" gerekçesi makul görünür ama burada <b>gerçeklik katmıyor</b> — sınıfın Spring'e bağımlılığı yok, container ne bir şey ekliyor ne çıkarıyor. <code>@WebMvcTest</code> zaten <code>@Service</code> ve benzeri sınıfları container'a almaz. <b>Kanca:</b> \"testim yavaş\"ın en sık çözümü aracı değiştirmek değil, mantığı Spring'den ayırmaktır."
+    },
+    {
+      topic: "Slice anotasyonları",
+      q: "<code>@WebMvcTest(SiparisKontrolcusu.class)</code> yazdın ve test \"<code>SiparisServisi</code> bean bulunamadı\" diyerek kalktı. Bu bir eksiklik mi, ne yapmalısın?",
+      opts: [
+        "Eksiklik değil, tasarım: slice <code>@Service</code> almaz — bağımlılığı <code>@MockitoBean</code> ile mock'la",
+        "Eksiklik: <code>@WebMvcTest</code>'e <code>@Import(SiparisServisi.class)</code> eklemek zorunlu, aksi hâlde slice test yazılamaz",
+        "Eksiklik: <code>@WebMvcTest</code> yerine <code>@SpringBootTest</code> kullanmalısın; slice test'ler bağımlılığı olan kontrolcülerde çalışmaz",
+        "Hata testin değil kodun: kontrolcü servisi constructor injection ile değil field injection ile almalı"
+      ],
+      a: [0],
+      why: "<b><code>@WebMvcTest</code> container'a yalnızca kontrolcüleri, <code>@ControllerAdvice</code>'ları, dönüştürücüleri ve filtreleri koyar; <code>@Service</code> ve <code>@Repository</code> almaz.</b> Bu kasıtlıdır: bağımlılığı <b>sen</b> mock'larsın, böylece test yalnızca web katmanını ölçer. En yakın çeldirici üçüncü şık: <code>@SpringBootTest</code>'e kaçmak hatayı gerçekten susturur ama <b>testi ölçmek istemediğin şeye bağlar</b> ve 6,5 kat yavaşlatır — slice'tan kaçmanın en sık yolu budur. Field injection önerisi ise [1.3]'ün tersini söylüyor. <b>Kanca:</b> slice'ın dışı mock'lanır, slice büyütülmez."
+    },
+    {
+      topic: "Slice anotasyonları",
+      q: "Bir testte hem kontrolcüyü hem JPA deposunu ölçmek istiyorsun ve aynı sınıfa <code>@WebMvcTest</code> ile <code>@DataJpaTest</code>'i birlikte yazdın. Ne yapmalısın?",
+      opts: [
+        "Slice'lar birleştirilemez; muhtemelen iki ayrı teste ihtiyacın var (ya da uçtan uca doğrulama için tek bir <code>@SpringBootTest</code>)",
+        "İkisini birlikte yazmak desteklenir; yalnızca sıralamaya dikkat etmen gerekir",
+        "<code>@DataJpaTest</code>'i silip <code>@WebMvcTest</code>'e <code>@AutoConfigureTestDatabase</code> ekle; slice'lar böyle birleştirilir",
+        "Aynı sınıfta iki slice çalışır ama context cache devre dışı kalır; tek maliyet budur"
+      ],
+      a: [0],
+      why: "<b>Slice anotasyonları birleştirilemez.</b> İkisine birden ihtiyacın olduğunu düşünüyorsan, genellikle aslında iki ayrı teste ihtiyacın vardır — ya da gerçekten uçtan uca doğrulamak istiyorsundur, o zaman doğru araç <code>@SpringBootTest</code>'tir. En yakın çeldirici son şık: birleşmeyi kabul edip maliyeti context cache'e yıkıyor — context cache gerçek bir konudur ([5.1 §6]) ve tam bu yüzden inandırıcı, ama buradaki sorun performans değil, <b>yapılandırmanın hiç kurulamaması</b>. <b>Kanca:</b> iki slice istiyorsan iki test yaz."
+    },
+    {
+      topic: "Slice test yazmak",
+      q: "İnternetten aldığın bir <code>@WebMvcTest</code> örneği <code>package org.springframework.boot.test.autoconfigure.web.servlet does not exist</code> hatası veriyor. Spring Boot 4'te <code>@WebMvcTest</code> ve <code>@AutoConfigureMockMvc</code> hangi pakettedir?",
+      opts: [
+        "İkisi de <code>org.springframework.boot.webmvc.test.autoconfigure</code>",
+        "<code>@WebMvcTest</code> <code>org.springframework.boot.webmvc.test.autoconfigure</code>, <code>@AutoConfigureMockMvc</code> eski paketinde kaldı",
+        "İkisi de <code>org.springframework.boot.test.autoconfigure.webmvc</code>",
+        "İkisi de <code>org.springframework.test.context.bean.override.mockito</code>"
+      ],
+      a: [0],
+      why: "<b>Boot 4'te ikisi de <code>org.springframework.boot.webmvc.test.autoconfigure</code> paketinde.</b> Boot 3'te <code>@AutoConfigureMockMvc</code> <code>org.springframework.boot.test.autoconfigure.web.servlet</code> altındaydı; internetteki her örnek hâlâ eski paketi yazıyor ve <code>package ... does not exist</code> hatası buradan geliyor. En yakın çeldirici ikinci şık: \"biri taşındı, biri kaldı\" en makul duran yarım doğru — <b>ikisi birlikte taşındı</b>, yarısını düzeltirsen derleme hatası sürer. Son şıktaki paket <code>@MockitoBean</code>'e ait. <b>Kanca:</b> web testinin paketinde artık <code>webmvc</code> geçer."
+    },
+    {
+      topic: "Tam container testi",
+      q: "Spring Boot 3 için yazılmış bir <code>@SpringBootTest</code> sınıfını 4'e taşıdın ve şu hatayı aldın: <code>No qualifying bean of type 'MockMvcTester' available</code>. Sebep ve düzeltme nedir?",
+      opts: [
+        "Boot 4'te <code>@SpringBootTest</code> MockMvc'yi kendiliğinden getirmiyor; sınıfa <code>@AutoConfigureMockMvc</code> ekle",
+        "<code>MockMvcTester</code> Boot 4'te kaldırıldı; eski <code>MockMvc</code> yazımına dönmen gerekir",
+        "Test sınıfına <code>@ExtendWith(MockitoExtension.class)</code> eklemen gerekiyor; injection onsuz çalışmaz",
+        "<code>@SpringBootTest</code>'in <code>webEnvironment</code> değeri <code>RANDOM_PORT</code> yapılmalı; MockMvc yalnızca gerçek portta gelir"
+      ],
+      a: [0],
+      why: "<b>Boot 4'ün en çok takılınan test değişikliği bu:</b> Boot 3'te <code>@SpringBootTest</code> yazınca MockMvc kendiliğinden gelirdi, 4'te gelmiyor — <code>@AutoConfigureMockMvc</code> yazacaksın. Aynısı <code>TestRestTemplate</code> için de geçerli (<code>@AutoConfigureTestRestTemplate</code>, paketi <code>org.springframework.boot.resttestclient</code>). En yakın çeldirici üçüncü şık: <code>@ExtendWith(MockitoExtension.class)</code> Boot 4'te gerçekten gereken bir eklemedir — ama <code>@Mock</code>/<code>@Captor</code> alanları için ([5.2](5.2-mockitobean.md)), <code>MockMvcTester</code> için değil. Doğru mesajı yanlış hataya yapıştırmak buradaki tuzak. <b>Kanca:</b> \"MockMvcTester yok\" görürsen tek satır ekle."
+    },
+    {
+      topic: "Tam container testi",
+      q: "<code>@SpringBootTest</code>'i hangi iki durumda kullanmak yerindedir? (İki tanesini seç.)",
+      opts: [
+        "Birkaç kritik akışın uçtan uca çalıştığını doğrulamak",
+        "Yapılandırmanın gerçekten yüklendiğini ve bean bağlantılarının kurulduğunu görmek",
+        "Her kontrolcü için standart test biçimi olarak",
+        "Saf iş mantığı hesaplamalarını test etmek için"
+      ],
+      a: [0, 1],
+      why: "<b><code>@SpringBootTest</code> az sayıda, uçtan uca ve bağlantı doğrulayan testler içindir.</b> Piramidin tepesi dardır: birkaç kritik akış ve \"her şey gerçekten ayağa kalkıyor mu\" sorusu. En yakın çeldirici \"her kontrolcü için\": en yaygın kullanım şekli budur ve tam bu yüzden test paketleri 11 dakikaya çıkar — her kontrolcünün doğru yeri slice test'tir. Saf iş mantığı ise en alt katmanın işi: <code>new</code> yeter. <b>Kanca:</b> tam test bir güvence, bir alışkanlık değil."
+    },
+    {
+      topic: "Context cache: neden bazı testler yavaş",
+      q: "50 tane <code>@SpringBootTest</code> sınıfın var ve hepsi aynı yapılandırmayı kullanıyor. Spring kaç container kurar?",
+      opts: [
+        "Bir tane — aynı yapılandırmaya sahip testler container'ı paylaşır (context cache)",
+        "Elli tane — her test sınıfı kendi container'ını kurar, izolasyon bunu gerektirir",
+        "Her test <b>metodu</b> için bir tane; sınıf sayısı değil metot sayısı belirler",
+        "İki tane — biri testler, biri ana uygulama bağlamı için"
+      ],
+      a: [0],
+      why: "<b>Spring aynı yapılandırmaya sahip testler için container'ı bir kere kurar ve yeniden kullanır.</b> Bu yüzden 50 <code>@SpringBootTest</code> sınıfı 50 container kurmaz. En yakın çeldirici ikinci şık: \"izolasyon için her test kendi container'ını kurmalı\" sezgisi doğru gibi durur ve Spring'in ölçülen davranışının tersidir — container paylaşımı zaten test paketinin makul sürede bitmesini sağlayan mekanizmadır. Bu bilgi pratikte şuna dönüşür: container'ı <b>değiştiren</b> her şey pahalıdır. <b>Kanca:</b> aynı yapılandırma = aynı container = hızlı."
+    },
+    {
+      topic: "Context cache: neden bazı testler yavaş",
+      q: "Test paketin son üç ayda 2 dakikadan 9 dakikaya çıktı. Container'ın yeniden kurulmasına yol açan hangi üç şeyi ararsın? (Üç tanesini seç.)",
+      opts: [
+        "Test sınıflarına eklenmiş <code>@ActiveProfiles(\"test\")</code> anotasyonları",
+        "<code>@TestPropertySource(properties = \"x=1\")</code> ile ayar ezen sınıflar",
+        "Sınıftan sınıfa değişen <code>@MockitoBean</code> kümeleri",
+        "Test metodu sayısının artması — her <code>@Test</code> metodu container'ı yeniden kurar"
+      ],
+      a: [0, 1, 2],
+      why: "<b>Context cache'in anahtarı yapılandırmadır:</b> <code>@ActiveProfiles</code>, <code>@TestPropertySource</code> ve farklı <code>@MockitoBean</code> kümeleri — üçü de <b>ayrı container</b> demektir. <code>@DirtiesContext</code> ise container'ı doğrudan attırır. En yakın çeldirici son şık: test sayısıyla süre gerçekten birlikte artar, bu yüzden inandırıcı — ama metot sayısı container kurulumunu tetiklemez; aynı sınıftaki 40 metot tek container üstünde koşar. Aradığın şey sayı değil, <b>yapılandırma çeşitliliği</b>. <b>Kanca:</b> kaç test değil, kaç farklı yapılandırma."
+    },
+    {
+      topic: "Context cache: neden bazı testler yavaş",
+      q: "Testler tek tek geçiyor ama birlikte çalıştırınca kalıyor. Bir arkadaşın 20 test sınıfına <code>@DirtiesContext</code> eklemeyi öneriyor. Değerlendir.",
+      opts: [
+        "Belirtiyi bastırır, sebebi bırakır: her kullanım yeni bir container kurulumu demektir — asıl sorun genelde paylaşılan durumdur, onu düzelt",
+        "Doğru çözüm: <code>@DirtiesContext</code> testler arası sızıntının standart ve maliyetsiz çözümüdür",
+        "Yetersiz: <code>@DirtiesContext</code> yalnızca veritabanını temizler, bean durumuna dokunmaz",
+        "Gereksiz: Spring zaten her test sınıfı için ayrı container kurar, sızıntı mümkün değildir"
+      ],
+      a: [0],
+      why: "<b><code>@DirtiesContext</code> container'ı attırır; her kullanımı bir container kurulumu demektir.</b> 20 yere yazarsan test paketin dakikalarca uzar ve sızıntının kaynağı yerinde durur — asıl sorun genelde paylaşılan durumdur ([1.5](../01-container-ve-bean/1.5-scope.md)). En yakın çeldirici ikinci şık: anotasyon gerçekten işe yarar ve tam bu yüzden \"maliyetsiz\" sanılır; <b>mutlak ifadeye dikkat</b> — maliyeti container kurulumudur. Son şık ise context cache'in varlığını inkâr ediyor: sızıntı mümkündür, çünkü container <b>paylaşılır</b>. <b>Kanca:</b> temizlemek yerine kirletmeyi bırak."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Test sınıfının adını <code>SiparisKontrolcusuTesti</code> koydun ve <code>./mvnw test</code> çalıştırdın. Çıktıda <code>BUILD SUCCESS</code> yazıyor. Ne oldu?",
+      opts: [
+        "Test hiç çalışmadı: Maven Surefire yalnızca <code>*Test</code>, <code>Test*</code>, <code>*Tests</code>, <code>*TestCase</code> adlarını çalıştırır — yapı yeşil, testin yok",
+        "Test çalıştı ve geçti; Surefire sınıf adına değil <code>@Test</code> anotasyonuna bakar",
+        "Test çalıştı ama sonucu raporlanmadı; Surefire Türkçe adları rapordan çıkarır",
+        "Test derleme sırasında atlandı ve günlüğe <code>skipping unmatched test class</code> uyarısı yazıldı"
+      ],
+      a: [0],
+      why: "<b>Surefire kalıbı sınıf adına bakar: <code>*Test</code>, <code>Test*</code>, <code>*Tests</code>, <code>*TestCase</code>.</b> <code>...Testi</code> hiçbirine uymaz; sınıf <b>sessizce atlanır</b> ve derleme başarılı görünür. Kursun en sinsi hatası bu: başarısız olmayan, hiç çalışmayan test. En yakın çeldirici ikinci şık: <code>@Test</code> anotasyonunun yeterli olacağı sezgisi çok yaygındır — anotasyon gerekli ama sınıf zaten <b>hiç taranmadığı için</b> ona sıra gelmez. Uyarı da yoktur; fark etmenin tek yolu çalışan test <b>sayısına</b> bakmaktır. Metot adları Türkçe olabilir, sınıf adı kalıba uymak zorunda. <b>Kanca:</b> yeşil renge değil, <code>Tests run:</code> satırına bak."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Bir ekip \"testler 11 dakika sürüyor, kimse çalıştırmıyor\" diyor. Elinde 300 test var ve neredeyse hepsi <code>@SpringBootTest</code>. İlk hamle ne olmalı?",
+      opts: [
+        "Piramidi kur: iş mantığını Spring'den ayırıp birim testle, web katmanını slice test'e indir, <code>@SpringBootTest</code>'i birkaç kritik akışa bırak",
+        "Testleri paralel çalıştıracak bir Surefire yapılandırması ekle; sorun süredir, tasarım değil",
+        "Yavaş testleri <code>@Disabled</code> ile kapat ve yalnızca gece derlemesinde çalıştır",
+        "Bütün test sınıflarına <code>@DirtiesContext</code> ekleyerek container kurulumlarını öngörülebilir hâle getir"
+      ],
+      a: [0],
+      why: "<b>Yavaş test paketi = çalıştırılmayan test paketi; bu bir hız değil, varlık sorunudur.</b> Çözüm araç değil tasarım: mantığı Spring'den ayır (milisaniye), web katmanını slice'a indir (~0,2 sn), tam container testini birkaç kritik akışa sakla (~1 sn+). En yakın çeldirici paralelleştirme: gerçek bir teknik ve süreyi bir miktar düşürür, ama <b>300 gereksiz container kurulumunu ortadan kaldırmaz</b>, yalnızca aynı anda yapar. <code>@Disabled</code> ise sorunu \"çalıştırılmayan test\"ten \"resmen kapatılmış test\"e taşır. <b>Kanca:</b> önce doğru katmanı seç, sonra hızlandır."
+    },
+    {
+      topic: "Slice test yazmak",
+      q: "Bir kontrolcüye <code>@Component</code> yazılmış ve <code>@WebMvcTest(SiparisKontrolcusu.class)</code> testi \"kontrolcü bulunamıyor, 404 dönüyor\" diyor. Sebep nedir?",
+      opts: [
+        "Slice yalnızca <code>@Controller</code> ailesini container'a alır; <code>@Component</code> ile işaretlenmiş sınıf web slice'ına girmez",
+        "<code>@WebMvcTest</code>'e sınıf adı verilmişse anotasyon aranmaz; sorun sınıfın <code>public</code> olmamasıdır",
+        "<code>@Component</code> ve <code>@Controller</code> eş anlamlıdır; sorun eşleme adresinin yanlış yazılmasıdır",
+        "Slice test'ler hiçbir stereotype anotasyonunu okumaz; kontrolcüyü <code>@Import</code> ile eklemen gerekir"
+      ],
+      a: [0],
+      why: "<b><code>@WebMvcTest</code> container'a <code>@Controller</code> ailesini koyar; <code>@Component</code> yazılmış bir sınıf o taramaya girmez</b> — [2.1](../02-anotasyon-haritasi/2.1-stereotype.md)'deki kuralın test tarafındaki karşılığı budur. En yakın çeldirici üçüncü şık: <code>@Controller</code>'ın <code>@Component</code>'ten türediği doğrudur, bu yüzden \"eş anlamlı\" demek çok kolaydır — ama tersi geçerli değil, slice <b>özel olarak</b> <code>@Controller</code> arar ve eşleme de ancak o zaman kaydedilir. <b>Kanca:</b> stereotype seçimi yalnızca okunabilirlik değil, aracın seni bulup bulamaması."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

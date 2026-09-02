@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "2.1",
+  code: "Anotasyon haritası · 2.1",
+  title: "Stereotype'lar: @Service gerçekten ne yapar",
+  back: "2.1-stereotype.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Hepsi aynı şey — meta-annotation",
+      q: "Ekip arkadaşın kod incelemesinde şunu yazdı: 'Bu sınıfta @Service var ama @Component yok, bu yüzden bean olmayacak; ikisini birden yaz.' Ne cevap verirsin?",
+      opts: [
+        "@Service zaten üzerinde @Component taşır; tarama onu bulur, ikinci anotasyon gereksiz",
+        "Doğru söylüyor; stereotype'ların bean olması için @Component'in ayrıca yazılması gerekir",
+        "İkisini birden yazmak gerekmez ama @ComponentScan'e sınıfı elle eklemek gerekir",
+        "@Service yalnızca @SpringBootApplication ile aynı sınıfta işe yarar, alt paketlerde @Component şart"
+      ],
+      a: [0],
+      why: "<b>@Service'in kaynak kodunda <code>@Component</code> meta-annotation olarak duruyor.</b> Spring taramada 'üzerinde @Component olan her anotasyonu' arar, o yüzden @Service tek başına yeter. En yakın çeldirici olan 'ikisini birden yaz' seçeneği, stereotype'ları birbirinden bağımsız anotasyonlar sanmaktan doğar; oysa @Repository, @Controller ve @Configuration da aynı zincirin üstünde durur. <i>Kanca:</i> beşi de aynı kökten — <b>tarama açısından hepsi @Component'tir</b>."
+    },
+    {
+      topic: "Hepsi aynı şey — meta-annotation",
+      q: "@RestController hangi iki anotasyonun birleşimidir? (İki tanesini seç.)",
+      opts: [
+        "@Controller",
+        "@ResponseBody",
+        "@RequestMapping",
+        "@Configuration"
+      ],
+      a: [0, 1],
+      why: "<b>@RestController = @Controller + her metoda @ResponseBody.</b> İki katmanlıdır: @Controller zaten @Component taşır, @ResponseBody de dönen değerin view name değil gövdenin kendisi olduğunu söyler. En yakın çeldirici <code>@RequestMapping</code>: sınıf düzeyinde sık yazılır ama @RestController'ın parçası değildir — onu sen ayrıca yazarsın. <i>Kanca:</i> @RestController'ın tek işi, 2.1 pratiğinde elle yaptığın <b>@Controller + @ResponseBody</b> birleşimini tek satıra indirmek."
+    },
+    {
+      topic: "Peki fark ne",
+      q: "Servis katmanına ham java.sql.SQLException düşüyor, DataIntegrityViolationException değil. Depo sınıfının üstünde @Component yazıyor. En küçük doğru düzeltme nedir?",
+      opts: [
+        "@Component yerine @Repository yaz",
+        "@Component yerine @Service yaz",
+        "Depo metotlarına throws SQLException ekle ve servis katmanında yakala",
+        "Servis sınıfına @Transactional ekle; çeviri onunla devreye girer"
+      ],
+      a: [0],
+      why: "<b>Exception translation yapan tek stereotype @Repository'dir.</b> Sınıfın etrafına bir wrapper koyar ve kütüphaneye özgü exception'ı <code>org.springframework.dao.DataAccessException</code> ailesine çevirir. En yakın çeldirici @Service: o da bean yapar, ama teknik etkisi olmadığı için @Component ile birebir aynı davranır — çeviri yine olmaz. <code>@Transactional</code> ise çeviriyi başlatmaz; tam tersine çeviriden <i>etkilenen</i> taraftır. <i>Kanca:</i> <b>@Service etiket, @Repository makine.</b>"
+    },
+    {
+      topic: "Peki fark ne",
+      q: "Bir sınıftaki @Service'i @Component ile değiştirdin. Çalışma zamanında ne değişir?",
+      opts: [
+        "Hiçbir şey — davranış aynıdır, yalnızca okuyan insan katmanı kaybeder",
+        "Bean artık container'da oluşmaz",
+        "Bean singleton olmaktan çıkıp her injection'da yeniden kurulur",
+        "Exception translation devre dışı kalır"
+      ],
+      a: [0],
+      why: "<b>@Service'in teknik etkisi yoktur.</b> Konu tablosunda 'Ek davranış' sütunu @Service satırında boştur; sınıf yine bean olur, yine singleton kalır. En yakın çeldirici 'exception translation kalkar': o cümle @Repository için doğrudur, @Service için değil — bu ikisini karıştırmak görüşmelerin klasik tuzağıdır. Scope da anotasyonla değil <code>@Scope</code> ile belirlenir. <i>Kanca:</i> <b>Kaybettiğin şey davranış değil, okunabilirlik ve araçların (5.1 slice test) sınıfı tanıması.</b>"
+    },
+    {
+      topic: "Peki fark ne",
+      q: "@Repository'nin yaptığı çeviri, 201'deki transaction davranışını neden ilgilendiriyor?",
+      opts: [
+        "Çevrilen exception'lar unchecked'tir; @Transactional yalnızca unchecked exception'larda geri alma yapar",
+        "Çeviri, transaction'ı otomatik olarak yeniden başlatır",
+        "Çeviri sırasında bağlantı kapatılır, bu yüzden geri alma gerekmez",
+        "Çevrilen exception'lar checked'tir; @Transactional checked exception'larda geri alma yapar"
+      ],
+      a: [0],
+      why: "<b>DataAccessException ailesinin tamamı unchecked'tir.</b> <code>SQLException</code> ise checked'tir ve @Transactional checked exception'da geri alma yapmaz. @Repository yazmayı unuttuğunda hata mesajı değişmez, sadece <b>geri alma sessizce çalışmaz</b>. En yakın çeldirici son şık: checked/unchecked ilişkisini ters kurar — ezberi tersten hatırlayanların düştüğü yer. <i>Kanca:</i> <b>unchecked = rollback var.</b>"
+    },
+    {
+      topic: "Peki fark ne",
+      q: "@Repository hakkında doğru olan iki ifadeyi seç. (İki tanesini seç.)",
+      opts: [
+        "JDBC, Hibernate ve JPA exception'larını ortak DataAccessException ailesine çevirir",
+        "Çevrilen exception'ların hepsi unchecked'tir, throws yazmak gerekmez",
+        "Sınıfı otomatik olarak transaction sınırı hâline getirir",
+        "Yalnızca Spring Data JPA arayüzlerinde etkilidir, elle yazılmış JDBC sınıflarında etkisizdir"
+      ],
+      a: [0, 1],
+      why: "<b>@Repository'nin iki somut sonucu: ortak aileye çeviri ve o ailenin unchecked olması.</b> Böylece servis katmanın hangi veri erişim kütüphanesini kullandığını bilmek zorunda kalmaz. En yakın çeldirici 'transaction sınırı yapar': hayır, sınırı <code>@Transactional</code> çizer — @Repository yalnızca exception türünü değiştirir (ve o değişiklik geri alma davranışını dolaylı etkiler). 'Yalnızca Spring Data'da etkili' de yanlış: konudaki örnek zaten elle yazılmış JDBC deposu. <i>Kanca:</i> <b>çeviri + unchecked.</b>"
+    },
+    {
+      topic: "Hangisini ne zaman yazmalı",
+      q: "@WebMvcTest ile yazdığın slice test kontrolcünü bulamıyor ve isteklerin 404 dönüyor; aynı kontrolcü uygulamayı elle çalıştırınca da 404 veriyor. İlk bakacağın şey nedir?",
+      opts: [
+        "Kontrolcünün üstünde @Controller ailesinden bir anotasyon var mı — @Component yazılmış olabilir",
+        "Test sınıfına @SpringBootTest eklemek gerekiyordur",
+        "Kontrolcü metodunun public olup olmadığı",
+        "@WebMvcTest'in bütün @Service bean'lerini de yüklemesi gerektiği"
+      ],
+      a: [0],
+      why: "<b>@WebMvcTest container'a yalnızca @Controller ve @ControllerAdvice sınıflarını alır.</b> Kontrolcüye @Component yazdıysan hem slice test'te yoktur hem de gerçek uygulamada 404 verir — iki belirti aynı sebebe çıkar, bu yüzden ilk bakılacak yer anotasyondur. En yakın çeldirici @SpringBootTest'e geçmek: testi ağırlaştırır ve belirtiyi <i>gizler</i>, sebebi düzeltmez — üstelik uygulamadaki 404'ü hiç açıklamaz. <i>Kanca:</i> <b>araçlar stereotype'a bakar; 'hepsine @Component yazayım' bedelini burada ödersin.</b>"
+    },
+    {
+      topic: "Hangisini ne zaman yazmalı",
+      q: "Elinde bir tarih biçimlendirici yardımcı sınıf var: ne HTTP karşılıyor, ne veritabanına gidiyor, ne @Bean metodu barındırıyor. Hangi anotasyonu yazarsın?",
+      opts: [
+        "@Component",
+        "@Service",
+        "@Configuration",
+        "@Bean"
+      ],
+      a: [0],
+      why: "<b>Hiçbir katmana oturmayan yardımcı, dönüştürücü ve dinleyici sınıflar @Component'tir.</b> Kural: sınıfın rolünü en iyi anlatan anotasyonu yaz. En yakın çeldirici @Service: teknik olarak birebir aynı çalışır, ama okuyan kişiye 'burada iş kuralı var' der ve yanıltır — anotasyonun tek getirisi zaten bu bilgi olduğuna göre yanlış bilgi vermek onu ziyan etmektir. <code>@Bean</code> ise sınıfa değil, @Configuration içindeki <b>metoda</b> yazılır. <i>Kanca:</i> <b>etiketi doğru yapıştır, çünkü etiketten başka bir şey değil.</b>"
+    },
+    {
+      topic: "Component scan nereyi tarıyor",
+      q: "Ana sınıfın tr.loncademy.siparis paketinde. @RestController'lı kontrolcün tr.loncademy.web paketinde ve uç nokta 404 veriyor. Sebep nedir?",
+      opts: [
+        "Kardeş paket taranmıyor; tarama ana sınıfın paketinden aşağı iner",
+        "@RestController üst paketteki sınıflar için çalışmaz, @Controller gerekir",
+        "Uç nokta eşlendi ama dönen String view name sanıldı",
+        "Kontrolcü sınıfı public olmadığı için atlandı"
+      ],
+      a: [0],
+      why: "<b>Tarama @SpringBootApplication sınıfının paketinden başlar ve yalnızca aşağı iner.</b> <code>tr.loncademy.web</code>, <code>tr.loncademy.siparis</code>'in altında değil kardeşidir; sınıfa hiç bakılmaz. En yakın çeldirici 'dönen String view name sanıldı': o da 404 üretir ama yalnızca @Controller'da ve sınıf taranmışken olur — burada sınıf zaten hiç okunmadı, üstelik @RestController'da @ResponseBody hazır geliyor. <i>Kanca:</i> <b>aynı belirti (404), farklı sebep: biri anotasyon, biri paket.</b>"
+    },
+    {
+      topic: "Component scan nereyi tarıyor",
+      q: "Aşağıdakilerden hangi iki sınıf component scan sırasında bean olmaz? (İki tanesini seç.)",
+      opts: [
+        "Ana sınıfın alt paketindeki @Service işaretli abstract sınıf",
+        "Ana sınıfın kardeş paketindeki @Service işaretli sınıf",
+        "Ana sınıfın alt paketindeki @RestController işaretli sınıf",
+        "Ana sınıfın kendi paketindeki @Component işaretli sınıf"
+      ],
+      a: [0, 1],
+      why: "<b>abstract sınıf kurulamaz, kardeş paket taranmaz.</b> İkisi de sessizdir: ne hata ne uyarı çıkar, sınıf yok sayılır. En yakın çeldirici alt paketteki @RestController: doğru paket + doğru stereotype demektir, bean olur ve uç noktası eşlenir. <i>Kanca:</i> taramanın iki şartı var — <b>doğru paketin altında ol ve kurulabilir ol</b> (abstract değil, anotasyonlu, static olmayan iç sınıf değil)."
+    },
+    {
+      topic: "Component scan nereyi tarıyor",
+      q: "Bir projeyi devraldın; ana sınıfta scanBasePackages üç paket sayıyor. Bu satırı gördüğünde ilk yorumun ne olmalı?",
+      opts: [
+        "Muhtemelen paket düzeni bozuk; ana sınıfın nerede durduğuna bak",
+        "Doğru kurulmuş bir proje; büyük projelerde bu satır zorunludur",
+        "Tarama tüm classpath'i kapsasın diye eklenmiş, kaldırılırsa jar'lardaki bean'ler kaybolur",
+        "@ComponentScan ile birlikte yazılmadığı için etkisizdir"
+      ],
+      a: [0],
+      why: "<b>scanBasePackages bir çözüm değil, çoğu zaman belirtidir:</b> ana sınıf yanlış yerde durduğu için tarama kökü de yanlış yerdedir. Doğru düzende ana sınıf en üst pakette olur ve web/servis/depo/yapılandırma alt paketleri kendiliğinden taranır. En yakın çeldirici 'büyük projelerde zorunlu': büyüklükle ilgisi yok, paket ağacının şekliyle ilgisi var. Bağımlılık jar'larındaki bean'ler ise taramayla değil kendi auto-configuration'larıyla gelir (2.3). <i>Kanca:</i> <b>satırı silmeden önce ana sınıfı taşımayı dene.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Kontrolcüne yanlışlıkla @Component yazdın ve uygulamayı çalıştırdın. Açılışta ne gözlemlersin?",
+      opts: [
+        "Uygulama sorunsuz açılır, günlükte uyarı yoktur, yalnızca uç nokta 404 verir",
+        "Açılışta BeanDefinitionParsingException alırsın",
+        "Açılış günlüğünde 'no mapping found for class' uyarısı çıkar",
+        "Uygulama açılır ama sınıf bean olmadığı için injection hatası verir"
+      ],
+      a: [0],
+      why: "<b>Sessiz hatanın tanımı budur:</b> sınıf bean olur (çünkü @Component da bir stereotype'tır), sadece web katmanı @RequestMapping metotlarını yalnızca @Controller ailesinde aradığı için uç nokta hiç eşlenmez. <code>curl -i</code> ile <code>HTTP/1.1 404</code> alırsın. En yakın çeldirici 'uyarı çıkar': Spring böyle bir uyarı basmaz — pratikte 'günlükte uyarı var mı?' kutucuğunun cevabı <b>yok</b>tur, ve bunu bir kere görmek bu hatayı bir daha unutturmaz. <i>Kanca:</i> <b>bean olmak yetmez, doğru türden bean olmak gerekir.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "İki kontrolcü de 404 veriyor: biri @Component işaretli, diğeri @Controller işaretli ve String döndürüyor. Hangi tek hamle ikisini birbirinden ayırt eder?",
+      opts: [
+        "Metoda @ResponseBody ekle: @Controller olan 200 döner, @Component olan hâlâ 404 verir",
+        "Sınıfları aynı pakete taşı: taranan sınıf 200 döner",
+        "Metot adını değiştir: eşlenmiş olan uç noktada 405 alırsın",
+        "@Component olana @RequestMapping ekle: ikisi de 200 döner"
+      ],
+      a: [0],
+      why: "<b>@ResponseBody yalnızca 'dönen String view name sanıldı' sebebini düzeltir.</b> @Controller'lı sınıfta metot zaten bulunmuş ve çalışmıştır; eksik olan tek şey dönen değerin gövde sayılmasıdır — @ResponseBody ekleyince 200 ve gövdede <code>liste</code> gelir. @Component'li sınıfta ise sınıfa hiç bakılmadığı için @ResponseBody de @RequestMapping de hiçbir şeyi değiştirmez. En yakın çeldirici paket taşıma: paket zaten doğruysa ikisinde de bir şey değişmez, yani ayırt etmez. <i>Kanca:</i> <b>@ResponseBody bir teşhis aleti — cevabı değiştiriyorsa sınıf okunuyordu demektir.</b>"
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "@Controller işaretli sınıfta @GetMapping('/siparisler') metodu 'liste' String'i döndürüyor ve 404 alıyorsun. Spring tam olarak ne yaptı?",
+      opts: [
+        "Metodu çalıştırdı, dönen String'i view name saydı ve 'liste' adlı görünümü bulamadı",
+        "Sınıfı hiç incelemedi, çünkü @Controller taranmayan bir stereotype'tır",
+        "Metodu çalıştırdı ama String döndüğü için gövdeyi boş bıraktı ve 404 üretti",
+        "Uç noktayı eşledi ama @ResponseBody olmadığı için isteği hiç kabul etmedi"
+      ],
+      a: [0],
+      why: "<b>@Controller'da dönen String bir view name'dir, gövdenin kendisi değil.</b> Uç nokta eşlendi, metot çalıştı, ardından Spring <code>liste</code> adlı görünümü aradı ve bulamadığı için 404 üretti. En yakın çeldirici 'isteği hiç kabul etmedi': eşleme yapılmıştı — fark burada, çünkü aynı 404 kodunun @Component hâlinde sebebi gerçekten 'böyle bir adres yok'tur. <i>Kanca:</i> <b>@Controller → view name; @RestController → gövde.</b> Kalıp 3'ün çözümü: @RestController yaz ya da metoda @ResponseBody ekle."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.5 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "1.5",
+  code: "Container ve bean'ler · 1.5",
+  title: "Scope ve scoped proxy",
+  back: "1.5-scope.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Dert: singleton bean'e durum yazmak",
+      q: "<code>@Service</code> işaretli <code>SiparisServisi</code>'ne <code>private String suAnkiKullanici</code> alanı eklendi ve metodun başında dolduruluyor. Geliştirmede kusursuz çalışıyor. Üretimde ne olur?",
+      opts: [
+        "Container'dan tek nesne olduğu için Ayşe ile Mehmet aynı alana yazar; Ayşe'nin siparişi Mehmet'in adına kaydedilebilir",
+        "Her HTTP isteği için yeni bir <code>SiparisServisi</code> kurulduğundan sorun çıkmaz",
+        "Uygulama açılışta <code>Scope 'request' is not active</code> hatası verir",
+        "Alan her metot çağrısından sonra container tarafından sıfırlanır"
+      ],
+      a: [0],
+      why: "<b>Doğru: singleton bean'in alanı bütün kullanıcılar arasında paylaşılır.</b> Geliştirmede görünmez çünkü orada tek kullanıcı vardır. En yakın çeldirici \"her istek için yeni nesne\" — bu, sorunun kaynağı olan yanlış varsayımın ta kendisidir; container açılıştan sonra yeni bean kurmaz (1.1). Hata mesajı yok, günlükte iz yok. <b>Kanca:</b> \"testte geçiyor, yük altında bozuluyor\" cümlesi neredeyse her zaman buraya çıkar."
+    },
+    {
+      topic: "Dert: singleton bean'e durum yazmak",
+      q: "Yukarıdaki soruna <code>synchronized</code> eklemek neden yeterli değildir?",
+      opts: [
+        "<code>synchronized</code> veriyi bozulmaktan korur ama karışmaktan korumaz — Ayşe yine Mehmet'in değerini okur, sadece sırayla",
+        "<code>synchronized</code> Spring bean'lerinde çalışmaz; proxy onu yok sayar",
+        "Yeterlidir; kilit sayesinde her kullanıcı kendi değerini görür",
+        "<code>synchronized</code> yalnızca <code>static</code> alanlarda etkilidir"
+      ],
+      a: [0],
+      why: "<b>Doğru: bu bir kilit sorunu değil, paylaşılan durum sorunu.</b> Kilit erişimi sıraya sokar; alanın tek olduğu gerçeğini değiştirmez. En yakın çeldirici \"yeterlidir\" — konuyu \"thread safety\" sanmanın doğal sonucudur ve üretimde aynı arızayı, sadece daha yavaş, üretir. <b>Çözüm kilit değil, alanı hiç kullanmamaktır:</b> durumu parametrede taşı. <b>Kanca:</b> singleton bean'in alanları değişmez olmalı — <code>final</code> bağımlılıklar ve ayarlar, başka bir şey değil."
+    },
+    {
+      topic: "Scope türleri",
+      q: "Bir bean'e hiç <code>@Scope</code> yazmadın. Scope'u ne olur ve bu ne demektir?",
+      opts: [
+        "<code>singleton</code> — container başına bir nesne, uygulama boyunca yaşar",
+        "<code>prototype</code> — her istendiğinde yeni nesne, çünkü Java'da <code>new</code> davranışı budur",
+        "<code>request</code> — web uygulamalarında varsayılan istek başına birdir",
+        "Scope belirtilmemişse container bean'i kaydetmez"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>singleton</code>, ve %95 doğru cevaptır.</b> En yakın çeldirici <code>prototype</code> — Java'da <code>new</code> her seferinde yeni nesne verdiği için sezgi bu yöne çeker, ama Spring'in varsayılanı tam tersidir; bu ters sezgi 1.5'teki bütün hataların kökenidir. <b>Kanca:</b> <code>singleton</code>'ı ezberle, <code>prototype</code> ile <code>request</code>'i tanı, <code>session</code> ile <code>application</code>'a girme."
+    },
+    {
+      topic: "Scope türleri",
+      q: "\"Singleton bean thread-safe'tir\" cümlesi neden yanlıştır?",
+      opts: [
+        "Singleton'lık nesne sayısıyla ilgilidir; güvenliği sağlayan şey bean'in değişebilen alanı olmamasıdır",
+        "Singleton bean'ler her istekte kopyalandığı için aslında güvensizdir",
+        "Doğrudur; container singleton bean'lerin metotlarını otomatik olarak kilitler",
+        "Singleton bean'ler yalnızca tek thread'de çalışır, bu yüzden konu dışıdır"
+      ],
+      a: [0],
+      why: "<b>Doğru: iki ayrı konu.</b> Singleton'lık \"kaç nesne var\" sorusunun cevabıdır; thread safety ise \"paylaşılan değişebilir durum var mı\" sorusunun. Alanı olmayan singleton bir bean güvenlidir; alanı olan singleton bir bean değildir. En yakın çeldirici \"container metotları otomatik kilitler\" — container böyle bir şey yapmaz, yapsaydı da sorunu çözmezdi (bkz. <code>synchronized</code>). <b>Kanca:</b> güvenliği veren singleton'lık değil, alansızlıktır."
+    },
+    {
+      topic: "prototype'ın iki sürprizi",
+      q: "Prototype scope'lu <code>GeciciDosya</code> bean'ine <code>@PreDestroy public void sil()</code> yazdın ama geçici dosyalar birikiyor. Neden ve doğrusu ne?",
+      opts: [
+        "Container prototype nesneye referans tutmaz, öldüğünü bilemez; temizliği kullanan taraf yapar",
+        "<code>@PreDestroy</code> yalnızca <code>@Component</code> sınıflarında çalışır; sınıfı <code>@Service</code> yap",
+        "Metot <code>void</code> döndürdüğü için container onu yok saymıştır",
+        "Prototype bean'lerde <code>@PreDestroy</code> yalnızca uygulama kapanışında toplu olarak çağrılır"
+      ],
+      a: [0],
+      why: "<b>Doğru: container prototype bean'i kurar ve unutur.</b> Referans tutmadığı için ne zaman öldüğünü bilemez, temizlik metodunu da çağıramaz. En yakın çeldirici \"kapanışta toplu çağrılır\" — mantıklı görünür ama container o nesnelerin listesini hiç tutmaz, dolayısıyla çağıracağı bir şey yoktur. Çözüm <code>try-with-resources</code> gibi kullanan tarafta olur. <b>Kanca:</b> prototype = kur ve unut."
+    },
+    {
+      topic: "prototype'ın iki sürprizi",
+      q: "<code>RaporUreticisi</code>'ni <code>@Scope(\"prototype\")</code> yaptın ve singleton <code>RaporServisi</code>'nin constructor'una inject ettin. Üç çağrıda da aynı nesne geliyor. Sebebi nedir?",
+      opts: [
+        "<code>RaporServisi</code> singleton olduğu için bir kere kurulur; o anda aldığı prototype nesneyi ömrü boyunca tutar",
+        "<code>@Scope(\"prototype\")</code> yalnızca <code>@Bean</code> metotlarında geçerlidir",
+        "Prototype bean'ler constructorla değil, yalnızca field injection'la çoğalır",
+        "Container prototype nesneleri önbelleğe alır; ilk kurulandan sonrasını yeniden kullanır"
+      ],
+      a: [0],
+      why: "<b>Doğru: buna scope uyumsuzluğu (scope mismatch) denir.</b> Dar scope'lu bir bean, geniş scope'lu bir bean'in içine sıkıştığında geniş olanın ömrünü devralır — prototype olmasının hiçbir faydası kalmaz. En yakın çeldirici \"container prototype'ları önbelleğe alır\" — almaz; injection <i>bir kere</i> olduğu için tek nesne kalır, container her <code>getBean</code> çağrısında yenisini üretmeye devam eder. <b>Kanca:</b> prototype \"her kullanımda yeni\" değil, \"her <i>istendiğinde</i> yeni\" demektir — singleton onu bir kere ister."
+    },
+    {
+      topic: "prototype'ın iki sürprizi",
+      q: "Pratikte singleton ve prototype bean'lerden üçer kere <code>getBean</code> ile aldın ve <code>hashCode()</code> yazdırdın. Ne görürsün?",
+      opts: [
+        "Singleton için üç kez aynı sayı; prototype için üç farklı sayı ve üç ayrı \"kuruldu\" satırı",
+        "İkisi için de üç farklı sayı; <code>getBean</code> her zaman yeni nesne döner",
+        "İkisi için de aynı sayı; <code>hashCode</code> sınıfa göre hesaplanır",
+        "Singleton için üç farklı sayı; prototype için aynı sayı"
+      ],
+      a: [0],
+      why: "<b>Doğru: singleton aynı, prototype farklı — üstelik prototype'ta constructor üç kez çalıştığı için \"kuruldu\" satırı da üç kez yazılır.</b> En yakın çeldirici \"<code>hashCode</code> sınıfa göre hesaplanır\" — hayır, varsayılan <code>hashCode</code> nesne kimliğine dayanır ve tam da bu yüzden bu ölçüm işe yarar. <b>Kanca:</b> scope'u tartışmak yerine ölç: iki satır <code>hashCode</code> tartışmayı bitirir."
+    },
+    {
+      topic: "Çözüm: scoped proxy",
+      q: "<code>@Scope(\"request\")</code> işaretli <code>IstekBaglami</code>'nı singleton bir servise inject ettin ve şu hatayı aldın: <code>Scope 'request' is not active for the current thread; consider defining a scoped proxy for this bean if you intend to refer to it from a singleton</code>. Tam çözüm nedir?",
+      opts: [
+        "<code>@Scope(value = \"request\", proxyMode = ScopedProxyMode.TARGET_CLASS)</code>",
+        "Singleton servisi de <code>@Scope(\"request\")</code> yap",
+        "<code>IstekBaglami</code>'nı <code>@Lazy</code> işaretle",
+        "Injection'ı <code>Optional&lt;IstekBaglami&gt;</code> ile sarmala"
+      ],
+      a: [0],
+      why: "<b>Doğru: scoped proxy — hata mesajı çözümü zaten söylüyor (<i>consider defining a scoped proxy</i>).</b> Proxy, her metot çağrısında container'a gidip o an için doğru nesneyi bulur. En yakın çeldirici <code>Optional</code> ile sarmalamak — hatayı bastırır ama bağlamı hiç alamazsın; sorun bean'in yokluğu değil, kurulum anında istek bağlamının olmamasıdır. Servisi de <code>request</code> yapmak ise sorunu bütün çağrı zincirine yayar. <b>Kanca:</b> Spring'in hata mesajları çözümü içerir — sonuna kadar oku."
+    },
+    {
+      topic: "Çözüm: scoped proxy",
+      q: "<code>ScopedProxyMode</code> seçenekleri hakkında doğru olan ikisi hangisidir? (İki tanesini seç.)",
+      opts: [
+        "<code>TARGET_CLASS</code> sınıfın alt sınıfını ürettiği için sınıf <code>final</code> olamaz",
+        "<code>INTERFACES</code>, sınıfa yalnızca bir arayüz üzerinden erişiliyorsa kullanılır",
+        "Varsayılan <code>TARGET_CLASS</code>'tır; proxy kendiliğinden devreye girer",
+        "<code>INTERFACES</code> proxy'si sınıfın <code>final</code> olmasını gerektirir"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: <code>TARGET_CLASS</code> alt sınıf üretir (bu yüzden <code>final</code> sınıf olmaz), <code>INTERFACES</code> ise arayüz üzerinden proxy kurar.</b> En yakın çeldirici \"varsayılan <code>TARGET_CLASS</code>\" — varsayılan <code>ScopedProxyMode.NO</code>'dur, yani proxy <i>yoktur</i>; scope uyumsuzluğunu bu yüzden yaşarsın. Proxy istiyorsan açıkça yazacaksın. <b>Kanca:</b> çoğu durumda <code>TARGET_CLASS</code> — ama kendiliğinden gelmez."
+    },
+    {
+      topic: "Çözüm: scoped proxy",
+      q: "Scoped proxy eklendiğinde singleton servise inject edilen şey nedir?",
+      opts: [
+        "Her metot çağrısında container'a gidip o an için doğru nesneyi bulan ince bir sarmalayıcı",
+        "Gerçek nesnenin bir kopyası; container onu her istekte günceller",
+        "Nesnenin kendisi; proxy yalnızca günlük tutar",
+        "<code>null</code>; gerçek nesne ilk metot çağrısında alana atanır"
+      ],
+      a: [0],
+      why: "<b>Doğru: inject edilen şey proxy'dir, gerçek nesne değil.</b> Alan bir kere doldurulur ve hep aynı proxy'si tutar; değişen, proxy'nin her çağrıda arkada bulduğu hedeftir. En yakın çeldirici \"container onu her istekte günceller\" — container singleton bean'in alanına geri dönüp yazmaz; çözümün ince noktası tam olarak budur: alanı sabit tutup <i>çağrıyı</i> yönlendirmek. <b>Kanca:</b> proxy bir posta kutusu değil, her seferinde adres soran bir kurye."
+    },
+    {
+      topic: "Alternatif: ObjectProvider",
+      q: "Aynı scope uyumsuzluğunu <code>@Scope</code>'a dokunmadan, tüketen tarafta ve kodda görünür biçimde çözmek istiyorsun. Ne kullanırsın?",
+      opts: [
+        "<code>ObjectProvider&lt;RaporUreticisi&gt;</code> inject edip her ihtiyaçta <code>saglayici.getObject()</code> çağırırsın",
+        "<code>List&lt;RaporUreticisi&gt;</code> inject edip listeden ilk elemanı alırsın",
+        "<code>ApplicationContext</code> inject edip <code>getBean</code> çağırırsın",
+        "Constructor'u <code>@Lazy</code> ile işaretlersin"
+      ],
+      a: [0],
+      why: "<b>Doğru: <code>ObjectProvider</code> — tüketen tarafta, açık ve görünür.</b> Scoped proxy üreten tarafta ve gizlidir (bakan kişi proxy olduğunu anlamaz); <code>ObjectProvider</code>'da <code>getObject()</code> kodda durur. Ayrıca sınıf <code>final</code> olabilir. En yakın çeldirici <code>ApplicationContext</code> + <code>getBean</code> — teknik olarak çalışır ama service locator kalıbıdır (1.1) ve sınıfı bütün container'a bağlar; <code>ObjectProvider</code> yalnızca <i>tek bir türe</i> bağlar. <b>Kanca:</b> proxy = üretende gizli, <code>ObjectProvider</code> = tüketende açık."
+    },
+    {
+      topic: "Alternatif: ObjectProvider",
+      q: "<code>ObjectProvider</code>'ın scoped proxy'ye göre farkları hangi ikisidir? (İki tanesini seç.)",
+      opts: [
+        "Değişiklik tüketen tarafta olur; üreten sınıfa dokunmazsın",
+        "Sınıfın <code>final</code> olamaması gibi bir kısıt getirmez",
+        "Yalnızca prototype scope'la çalışır, <code>request</code> ile çalışmaz",
+        "Bean yoksa açılışta hata verir; isteğe bağlı bağımlılık için kullanılamaz"
+      ],
+      a: [0, 1],
+      why: "<b>Doğru ikili: değişiklik tüketende, ve sınıf kısıtı yok.</b> Scoped proxy ise üreten tarafta <code>@Scope</code> satırını değiştirir ve <code>TARGET_CLASS</code> kullanınca sınıfı <code>final</code> olmaktan çıkarır. En yakın çeldirici \"isteğe bağlı bağımlılık için kullanılamaz\" — tam tersi: <code>getIfAvailable()</code> ve <code>ifAvailable(x -&gt; ...)</code> tam olarak bunun içindir. <b>Kanca:</b> var olan kodu değiştirmeden çözeceksen proxy, yeni kod yazıp açıklık istiyorsan <code>ObjectProvider</code>."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Destek ekibinden \"kullanıcılar zaman zaman birbirinin verisini görüyor\" bildirimi geldi. Kod tabanında ilk nereye bakarsın?",
+      opts: [
+        "Singleton bean'lerin alanlarına — istekten isteğe değişen bir şey saklanıyor mu",
+        "Veritabanı connection pool boyutuna",
+        "<code>@PreDestroy</code> metotlarına — kapanışta veri karışmış olabilir",
+        "<code>@Bean</code> metotlarının <code>@Configuration</code> içinde olup olmadığına"
+      ],
+      a: [0],
+      why: "<b>Doğru: singleton bean'de paylaşılan durum.</b> Bu, üretimdeki en pahalı sessiz hatanın kaynağıdır ve belirtisi tam olarak budur. En yakın çeldirici <code>@Bean</code>/<code>@Configuration</code> kontrolü — o gerçek bir hatadır (1.2) ama sonucu \"her çağrıda yeni nesne\"dir, yani veri karışması değil, tam tersi. <b>Kanca:</b> \"birbirinin verisini görüyor\" = paylaşılan alan; başka yere bakmadan önce alanları oku."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Singleton bir bean'in alanında ne durabilir?",
+      opts: [
+        "Constructor'da atanan <code>final</code> bağımlılıklar ve değişmeyen ayarlar",
+        "Şu anki kullanıcının kimliği, çünkü her istekte yeniden atanır",
+        "Son işlemin sonucu, sonraki istekte kullanılmak üzere",
+        "İstek başına açılan geçici dosyanın yolu"
+      ],
+      a: [0],
+      why: "<b>Doğru: yalnızca değişmez şeyler.</b> Kural tek cümle: istekten isteğe değişen hiçbir şey alanda durmaz. Diğer üç şıkkın hepsi aynı hatanın farklı kılıklarıdır — \"her istekte yeniden atanır\" en inandırıcı olanı, çünkü kulağa temizlik gibi gelir; oysa iki istek aynı anda geldiğinde ikisi de aynı alana yazar ve biri diğerinin değerini okur. <b>Kanca:</b> durumu alanda değil, parametrede taşı."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

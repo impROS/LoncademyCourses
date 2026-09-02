@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.2 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "5.2",
+  code: "Test temelleri · 5.2",
+  title: "@MockitoBean ve Spring Boot 4 test değişiklikleri",
+  back: "5.2-mockitobean.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "@MockitoBean ne yapıyor",
+      q: "<code>@WebMvcTest(SiparisKontrolcusu.class)</code> testinde <code>@MockitoBean SiparisServisi servis;</code> yazdın. Kontrolcü isteği işlerken hangi nesneyi kullanır?",
+      opts: [
+        "Mock'u — <code>@MockitoBean</code> mock'u container'a bean olarak koyar, injection onu alır",
+        "Gerçek <code>SiparisServisi</code>'ni; mock yalnızca test sınıfının alanına atanır",
+        "Önce gerçeği dener, bulamazsa mock'a düşer",
+        "İkisini birden; Mockito gerçek nesneyi sarar ve çağrıları ikisine de iletir"
+      ],
+      a: [0],
+      why: "<b><code>@MockitoBean</code> Mockito ile bir mock üretir ve onu <b>container'a bean olarak koyar</b>;</b> kontrolcü <code>SiparisServisi</code>'ni inject ettiğinde gerçeği değil bu mock'u alır. En yakın çeldirici ikinci şık: <code>@Mock</code>'un davranışını anlatıyor — o gerçekten yalnızca alana mock atar, container'a dokunmaz. İki anotasyonun ayrımı bu konunun merkezi. Son şık ise <code>@MockitoSpyBean</code>'e ait bir yeteneği tarif ediyor: <b>sarmak</b> spy'ın işidir, <code>@MockitoBean</code> <b>değiştirir</b>. <b>Kanca:</b> <code>Bean</code> son eki \"container'a giriyor\" demektir."
+    },
+    {
+      topic: "@MockitoBean ne yapıyor",
+      q: "Gerçek bir bean'in çoğu metodunu olduğu gibi çalıştırıp yalnızca bir metodunu değiştirmek istiyorsun. Hangi anotasyonu kullanırsın?",
+      opts: [
+        "<code>@MockitoSpyBean</code> — gerçek bean'i sarar; mock'lamadığın metotlar gerçek kodu çalıştırır",
+        "<code>@MockitoBean</code> — mock'lamadığın metotlar zaten gerçek kodu çalıştırır",
+        "<code>@Mock</code> — kısmi mock'lama yalnızca Mockito'nun kendi anotasyonuyla mümkündür",
+        "<code>@MockitoBean</code> ve ardından <code>given(...)</code> yazmamak — bu, metodu gerçek hâlinde bırakır"
+      ],
+      a: [0],
+      why: "<b><code>@MockitoSpyBean</code> gerçek bean'i sarar:</b> yalnızca izlemek ya da değiştirmek istediğin metotlara dokunursun, kalanı gerçek kodu çalıştırır. En yakın çeldirici son iki şıkta tekrarlanan sanı: <code>@MockitoBean</code>'de mock'lanmamış bir metot gerçek kodu <b>çalıştırmaz</b> — varsayılan değer döner: nesnelerde <code>null</code>, <code>int</code>'te <code>0</code>, <code>boolean</code>'da <code>false</code>. Bu ayrımı bilmemek, testin sessizce yanlış şeyi ölçmesinin bir numaralı sebebi. <b>Kanca:</b> <code>MockitoBean</code> yerine geçer, <code>MockitoSpyBean</code> üstüne geçer."
+    },
+    {
+      topic: "Spring Boot 4 geçiş tablosu",
+      q: "Bir Spring Boot 3 test sınıfını 4'e taşıyorsun. <code>@MockBean</code> ve <code>@SpyBean</code> yerine ne yazacaksın ve hangi paketten?",
+      opts: [
+        "<code>@MockitoBean</code> ve <code>@MockitoSpyBean</code> — paket <code>org.springframework.test.context.bean.override.mockito</code>",
+        "<code>@MockitoBean</code> ve <code>@MockitoSpyBean</code> — paket <code>org.springframework.boot.test.mock.mockito</code>",
+        "<code>@Mock</code> ve <code>@Spy</code> — Boot artık Mockito'nun kendi anotasyonlarını kullanıyor",
+        "<code>@MockitoBean</code> ve <code>@SpyBean</code> — yalnızca ilki yeniden adlandırıldı"
+      ],
+      a: [0],
+      why: "<b><code>@MockBean</code> → <code>@MockitoBean</code>, <code>@SpyBean</code> → <code>@MockitoSpyBean</code>; paket <code>org.springframework.test.context.bean.override.mockito</code>.</b> Dikkat: paket artık <code>boot</code> altında değil, Spring Framework'ün test modülünde. En yakın çeldirici ikinci şık: anotasyon adlarını doğru veriyor ama <b>eski Boot paketini</b> koruyor — <code>import</code>'u böyle yazarsan <code>cannot find symbol</code> almaya devam edersin, üstelik adları düzelttiğin için sorunu çözdüğünü sanırsın. Son şık ise geçişi yarım yapıyor; <code>@SpyBean</code> de gitti. <b>Kanca:</b> ikisi de <code>Mockito</code> önekiyle başlar, ikisi de <code>bean.override.mockito</code> paketinde."
+    },
+    {
+      topic: "Spring Boot 4 geçiş tablosu",
+      q: "Boot 4'e taşıdığın bir test sınıfında <code>@Mock</code> ve <code>@Captor</code> alanları <code>null</code> kalıyor ve hata <code>NullPointerException</code> olarak, sebebini göstermeden çıkıyor. Ne oldu?",
+      opts: [
+        "<code>MockitoTestExecutionListener</code> kaldırıldı; <code>@ExtendWith(MockitoExtension.class)</code> eklemen gerekiyor",
+        "<code>@Mock</code> Boot 4'te kaldırıldı; yerine <code>@MockitoBean</code> yazman gerekiyor",
+        "Mockito 5.23.0 <code>@Captor</code>'ı desteklemiyor; argüman yakalamayı elle yazmalısın",
+        "Test sınıfı <code>@SpringBootTest</code> ile işaretli olmadığı için field injection hiç çalışmıyor"
+      ],
+      a: [0],
+      why: "<b>Boot 4'te <code>@Mock</code>'u işleyen <code>MockitoTestExecutionListener</code> kaldırıldı;</b> artık Mockito'nun kendi eklentisini yazacaksın: <code>@ExtendWith(MockitoExtension.class)</code>. Geçiş tablosunun en kolay gözden kaçan satırı budur, çünkü hata <code>NullPointerException</code> olarak çıkar ve asıl sebebi göstermez. En yakın çeldirici ikinci şık: \"<code>@Mock</code> kaldırıldı, <code>@MockitoBean</code> yaz\" — bu düzeltme derlemeyi geçirir ama <b>anlamı değiştirir</b>: <code>@MockitoBean</code> container'a müdahale eder, saf birim testinde işin yoktur. <b>Kanca:</b> Spring'siz mock istiyorsan eklentiyi sen getir."
+    },
+    {
+      topic: "Spring Boot 4 geçiş tablosu",
+      q: "Boot 4'te <code>@SpringBootTest</code> ile ilgili hangi iki değişiklik doğrudur? (İki tanesini seç.)",
+      opts: [
+        "MockMvc artık kendiliğinden gelmiyor; <code>@AutoConfigureMockMvc</code> yazman gerekiyor",
+        "<code>TestRestTemplate</code> artık kendiliğinden gelmiyor; <code>@AutoConfigureTestRestTemplate</code> yazman ve sınıfı <code>org.springframework.boot.resttestclient</code> paketinden almanız gerekiyor",
+        "<code>@SpringBootTest</code> artık yalnızca <code>webEnvironment = RANDOM_PORT</code> ile çalışıyor",
+        "<code>@SpringBootTest</code> container'a <code>@Service</code> sınıflarını almıyor; onları <code>@MockitoBean</code> ile mock'laman gerekiyor"
+      ],
+      a: [0, 1],
+      why: "<b><code>@SpringBootTest</code> artık ne MockMvc ne <code>TestRestTemplate</code> getiriyor;</b> ikisi için de ayrı bir <code>@AutoConfigure...</code> anotasyonu yazacaksın ve <code>TestRestTemplate</code>'in paketi <code>org.springframework.boot.resttestclient</code> oldu. En yakın çeldirici son şık: \"<code>@Service</code> almaz\" ifadesi doğru bir cümledir ama <b>başka bir anotasyona</b> aittir — o <code>@WebMvcTest</code>'in slice davranışıdır ([5.1](5.1-slice-test.md)); <code>@SpringBootTest</code> tam tersine <b>her şeyi</b> alır, ölçümde gerçek servis çalışıp <code>GERCEK-A-1</code> döndürmesinin sebebi de bu. <b>Kanca:</b> Boot 4'te \"hazır gelen\" azaldı, \"yazman gereken\" arttı."
+    },
+    {
+      topic: "Spring Boot 4 geçiş tablosu",
+      q: "Bir Boot 3 projesinde tek bir <code>spring-boot-starter-test</code> bağımlılığı vardı ve <code>@WithMockUser</code> kullanılıyordu. Boot 4'e taşıyınca <code>@WithMockUser</code> bulunamıyor. Sebep nedir?",
+      opts: [
+        "Test starter'ları teknolojiye göre bölündü; <code>@WithMockUser</code> için <code>spring-boot-starter-security-test</code> gerekiyor",
+        "<code>@WithMockUser</code> Boot 4'te kaldırıldı; yerine <code>@MockitoBean</code> ile güvenlik bağlamını mock'lamalısın",
+        "Genel test starter'ı hâlâ her şeyi içeriyor; sorun sınıfın paketinin değişmesinden kaynaklanıyor",
+        "<code>@WithMockUser</code> yalnızca <code>@SpringBootTest</code> ile çalışıyor; slice test'te bulunamaz"
+      ],
+      a: [0],
+      why: "<b>Boot 4'te tek <code>spring-boot-starter-test</code> yerine <code>spring-boot-starter-&lt;teknoloji&gt;-test</code> ailesi var</b> ve <code>@WithMockUser</code> artık <code>spring-boot-starter-security-test</code> ile geliyor. Geçiş tablosundaki iki ayrı satır (starter bölünmesi ve <code>@WithMockUser</code>) aynı sebebi anlatır. En yakın çeldirici üçüncü şık: Boot 4'te gerçekten çok sayıda paket taşındı, bu yüzden \"paket değişti\" refleks bir teşhis — ama burada sınıf <b>classpath'te hiç yok</b>, taşınmış değil; <code>import</code>'u düzeltmek çözmez, bağımlılık eklemek çözer. <b>Kanca:</b> \"bulunamıyor\" iki farklı şey olabilir: taşınmış olabilir, ya da hiç gelmemiş olabilir."
+    },
+    {
+      topic: "MockMvcTester: AssertJ ile okunabilir testler",
+      q: "Eski <code>mockMvc.perform(get(...)).andExpect(status().isOk())</code> yazımından <code>MockMvcTester</code>'a geçmenin somut kazançları nelerdir?",
+      opts: [
+        "Yalnızca <code>assertThat</code> statik <code>import</code>'u yeter, metotlar <code>throws Exception</code> gerektirmez, hata çıktısı AssertJ'nin ayrıntılı karşılaştırmasıdır",
+        "Testler container kurmadan çalışır; <code>MockMvcTester</code> Spring bağlamına ihtiyaç duymaz",
+        "Eski yazım artık derlenmez; <code>MockMvcTester</code> geçişi zorunludur",
+        "İstekler gerçek bir sunucu portuna gider, böylece test gerçeğe daha yakın olur"
+      ],
+      a: [0],
+      why: "<b>Üç somut kazanç: tek statik <code>import</code>, <code>throws Exception</code>'dan kurtulmak, AssertJ'nin ayrıntılı hata çıktısı.</b> Eski yazımda <code>status()</code>, <code>content()</code>, <code>get()</code> gibi uzun bir statik <code>import</code> listesi taşırdın. En yakın çeldirici üçüncü şık: geçiş <b>zorunlu değil</b> — eski <code>MockMvc</code> yazımı hâlâ çalışır, <code>MockMvcTester</code> onun yerini <b>almaya başlıyor</b>. \"Container kurmaz\" ve \"gerçek porta gider\" ise ikisi de yanlış yön: <code>MockMvcTester</code> container'dan inject edilir ve istekleri sunucu portu açmadan işler. <b>Kanca:</b> daha az <code>import</code>, daha iyi hata mesajı."
+    },
+    {
+      topic: "MockMvcTester: AssertJ ile okunabilir testler",
+      q: "Bir JSON yanıtındaki <code>urunKodu</code> alanının <code>ABC-1</code> olduğunu <code>MockMvcTester</code> ile nasıl doğrularsın?",
+      opts: [
+        "<code>assertThat(mvc.get().uri(\"/siparisler/S-1\")).hasStatusOk().bodyJson().extractingPath(\"$.urunKodu\").isEqualTo(\"ABC-1\")</code>",
+        "<code>assertThat(mvc.get().uri(\"/siparisler/S-1\")).hasBodyTextEqualTo(\"ABC-1\")</code>",
+        "<code>mvc.get().uri(\"/siparisler/S-1\").andExpect(jsonPath(\"$.urunKodu\").value(\"ABC-1\"))</code>",
+        "Gövdeyi <code>String</code> olarak alıp <code>contains(\"ABC-1\")</code> ile kontrol etmek — <code>MockMvcTester</code>'ın JSON desteği yoktur"
+      ],
+      a: [0],
+      why: "<b><code>bodyJson().extractingPath(\"$.urunKodu\")</code> JSON gövdesinden tek bir alanı çeker ve AssertJ ile karşılaştırır.</b> En yakın çeldirici ikinci şık: <code>hasBodyTextEqualTo</code> gerçek bir metottur ama gövdenin <b>tamamını</b> metin olarak karşılaştırır — JSON yanıtta bu asla eşleşmez, çünkü gövde <code>{\"no\":\"S-1\",\"urunKodu\":\"ABC-1\",...}</code>'dır. Üçüncü şık eski <code>MockMvc</code> yazımını yeni API'ye karıştırıyor. Son şık ise metin araması öneriyor: geçer ama alanın <b>hangi</b> alan olduğunu ölçmez. <b>Kanca:</b> tam gövde metni <code>hasBodyTextEqualTo</code>, tek alan <code>bodyJson().extractingPath</code>."
+    },
+    {
+      topic: "Mock'lamanın sınırı",
+      q: "Bir <code>@SpringBootTest</code> sınıfında <code>SiparisServisi</code>, <code>StokServisi</code>, <code>OdemeServisi</code> ve <code>BildirimServisi</code> — dördü de <code>@MockitoBean</code>. Bu test ne ölçüyor?",
+      opts: [
+        "Neredeyse hiçbir şey: bütün gerçek davranış mock'landığı için test, kodun değil kendi varsayımlarının doğruluğunu ölçüyor",
+        "Uçtan uca akışı; mock'lar yalnızca yan etkileri engelliyor, mantık hâlâ gerçek",
+        "Bean bağlantılarını; container ayağa kalktığı için injection'ların doğruluğu doğrulanmış oluyor",
+        "Hata yollarını; mock'lar yalnızca exception fırlattığında devreye girer"
+      ],
+      a: [0],
+      why: "<b>Her şey mock ise geriye yalnızca senin mock'lara verdiğin cevapların doğru sırayla döndüğünü doğrulamak kalır</b> — yani testin, kodun değil kendi varsayımlarının testidir. Kural: yalnızca <b>test edilen sınırın dışını</b> mock'la (dış HTTP servisleri, yan etkili işler, yavaş bağımlılıklar). En yakın çeldirici üçüncü şık: container gerçekten ayağa kalkar, bu yüzden inandırıcı — ama mock'lanan her bean o bağlantının <b>gerçek</b> ucunu ortadan kaldırır, üstelik her farklı mock kümesi ayrı bir container demektir ([5.1](5.1-slice-test.md)). <b>Kanca:</b> üçten fazla <code>@MockitoBean</code> gördüysen dur ve katmanı sorgula."
+    },
+    {
+      topic: "Mock'lamanın sınırı",
+      q: "Bir testte beş <code>@MockitoBean</code> gördün. Hangi iki soruyu sormalısın? (İki tanesini seç.)",
+      opts: [
+        "Yanlış katmanda mı test ediyorum — bir slice test bu işi görür müydü?",
+        "Test edilen sınıfın bağımlılıkları fazla mı — constructor uzuyorsa tasarım konuşuyor demektir",
+        "Mockito sürümü bu kadar mock'u destekliyor mu — <code>5.23.0</code>'da bir üst sınır var mı?",
+        "Mock'ları <code>@Mock</code>'a çevirsem test hızlanır mı — <code>@Mock</code> container kurulumu gerektirmez"
+      ],
+      a: [0, 1],
+      why: "<b>İki soru: yanlış katmanda mıyım, ve sınıfın bağımlılıkları fazla mı?</b> Genelde cevap ikisine de evettir — ya slice test yeterdi, ya da sınıf çok şey biliyordur ([1.3](../01-container-ve-bean/1.3-dependency-injection.md)'teki \"constructor uzuyorsa tasarım konuşuyor\" işareti). En yakın çeldirici son şık: hız kaygısı yerinde ve <code>@Mock</code> gerçekten container'a dokunmaz — ama <code>@Mock</code>'a çevirmek testi hızlandırmaz, <b>bozar</b>: container'daki gerçek bean'ler devrede kalır ve test sessizce başka bir şeyi ölçer. Mockito'nun mock sayısı sınırı diye bir konu yok. <b>Kanca:</b> mock sayısı bir performans göstergesi değil, tasarım göstergesi."
+    },
+    {
+      topic: "Ne doğrulanmalı",
+      q: "Bir iç düzenleme (refactor) sonrası davranış hiç değişmediği hâlde 40 test kırıldı. Testlerde her metot çağrısı için <code>verify</code> var. Sorun ve doğru yaklaşım nedir?",
+      opts: [
+        "Testler kodun yapısını dondurmuş; yan etkiyi ve sınırdaki sözleşmeyi doğrula, her çağrıyı tek tek değil",
+        "Refactor davranışı değiştirmiş olmalı; testler doğru çalışıyor, kodu geri al",
+        "<code>verify</code> yerine <code>given</code> kullanmalıydın; <code>verify</code> yalnızca <code>@MockitoSpyBean</code> ile güvenilirdir",
+        "Test sayısı fazla; 40 testi tek bir uçtan uca testle değiştir"
+      ],
+      a: [0],
+      why: "<b>Her çağrıyı <code>verify</code> etmek kodun yapısını dondurur:</b> iç düzenlemeyi değiştirdiğin an, davranış aynı kalsa bile testler kırmızıya döner. Test <b>davranışı</b> korumalı, yazım biçimini değil — doğrulanacak şey yan etkinin gerçekleştiği (<code>verify(stok).dus(\"ABC\", 2)</code>) ve sınırdaki sözleşmedir. En yakın çeldirici ikinci şık: \"test kırıldıysa kod bozulmuştur\" varsayımı normalde sağlıklıdır ve tam bu yüzden tehlikeli — burada testlerin ölçtüğü şey davranış değil, iç uygulama ayrıntısı. <b>Kanca:</b> ne olduğunu doğrula, nasıl yapıldığını değil."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>@MockitoBean SiparisServisi servis;</code> yazdın ama <code>given(servis.durum(\"A-1\")).willReturn(\"MOCK\")</code> satırını yazmayı unuttun. Test <code>hasStatusOk()</code> kontrolüyle geçiyor. Uç nokta ne döndürdü ve bu neden tehlikeli?",
+      opts: [
+        "<code>null</code> — mock'lanmamış metot varsayılan değer döner (<code>null</code>/<code>0</code>/<code>false</code>); test geçer ama yanlış şeyi ölçer",
+        "Gerçek servisin cevabını — mock'lanmamış metotlar gerçek koda düşer",
+        "Bir exception — Mockito mock'lanmamış çağrılarda <code>UnnecessaryStubbingException</code> atar",
+        "Boş metin — Mockito <code>String</code> dönen metotlarda varsayılan olarak <code>\"\"</code> döndürür"
+      ],
+      a: [0],
+      why: "<b>Mock'lanmamış metot varsayılan değer döner: nesnelerde <code>null</code>, <code>int</code>'te <code>0</code>, <code>boolean</code>'da <code>false</code>.</b> Test yalnızca durum kodunu kontrol ettiği için geçer — yeşil bir test, yanlış bir ölçüm. En yakın çeldirici ikinci şık: <code>@MockitoSpyBean</code>'in davranışı ona ait; <code>@MockitoBean</code> gerçek bean'i <b>değiştirdiği</b> için gerçek koda düşecek bir yer kalmaz. <code>UnnecessaryStubbingException</code> gerçek bir Mockito exception'ıdır ama tersi durumda çıkar: <b>yazdığın ama kullanılmayan</b> <code>given</code> için. <code>String</code> için varsayılan da <code>\"\"</code> değil <code>null</code>'dır. <b>Kanca:</b> kullandığın her metoda <code>given</code> yaz."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>@SpringBootTest</code> sınıfında <code>@Mock SiparisServisi servis;</code> yazıp bir davranış mock'ladın, ama uç nokta hâlâ <code>GERCEK-A-1</code> döndürüyor. Ne oldu?",
+      opts: [
+        "<code>@Mock</code> mock üretir ama Spring container'ına dokunmaz; kontrolcü gerçek bean'i almaya devam eder — <code>@MockitoBean</code> yazmalısın",
+        "<code>@Mock</code> doğru anotasyon; sorun <code>given(...)</code> çağrısının <code>@BeforeEach</code> içinde olmamasıdır",
+        "<code>@SpringBootTest</code> mock'lamayı tamamen engeller; mock'lama yalnızca slice test'lerde mümkündür",
+        "<code>@Mock</code> container'a girer ama <code>@Primary</code> olmadığı için gerçek bean kazanır; <code>@Primary</code> eklemelisin"
+      ],
+      a: [0],
+      why: "<b><code>@Mock</code> Mockito'nun anotasyonudur: mock üretir, Spring container'ına dokunmaz.</b> Kontrolcü gerçek servisi almaya devam eder ve testin sessizce yanlış şeyi ölçer — pratikte de ölçüldü, yanıt <code>GERCEK-A-1</code> kaldı. Container'daki bean'i değiştirmek istiyorsan <code>@MockitoBean</code>; Spring'siz saf birim testinde <code>@Mock</code> + <code>@ExtendWith(MockitoExtension.class)</code>. En yakın çeldirici son şık: <code>@Primary</code> gerçek bir bean seçim mekanizmasıdır ve \"container'da iki aday var\" hikâyesi çok inandırıcıdır — ama mock <b>container'a hiç girmediği</b> için ortada seçim bile yok. <b>Kanca:</b> \"mock'ladım ama gerçek kod çalışıyor\" cümlesinin cevabı hep aynı: <code>@Mock</code> yazmışsın."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "Testleri çalıştırdığında çıktıda <code>Mockito is currently self-attaching to enable the inline-mock-maker...</code> satırını görüyorsun. Ne yapmalısın?",
+      opts: [
+        "Bir şey yapmana gerek yok: bu bir uyarıdır, testler geçmeye devam eder; ileride Mockito'yu Java aracısı olarak eklemek gerekecek",
+        "Yapıyı durdur: bu bir hatadır ve testler aslında çalışmamıştır",
+        "Mockito sürümünü düşür; <code>5.23.0</code> bu uyarıyı üreten kırık sürümdür",
+        "<code>@MockitoBean</code> kullanımını azalt; uyarı mock sayısı arttıkça hataya dönüşür"
+      ],
+      a: [0],
+      why: "<b>Bu bir uyarıdır, hata değil — testler geçmeye devam eder.</b> Yeni JDK sürümlerinde Mockito'nun kendini süreç içine iliştirmesi kısıtlanıyor; şimdilik yok sayabilirsin, gelecekte Mockito'yu Java aracısı (agent) olarak eklemen gerekecek. <b>Tanı, yeter — ezberleme.</b> En yakın çeldirici ikinci şık: kırmızı görünen her çıktıyı hata sanmak yaygındır ve burada yanlış bir yapı durdurmaya yol açar; çalışan test <b>sayısı</b> bu satırdan etkilenmez. Bu kursta gördüğün sürümler (JUnit Jupiter 6.0.3, Mockito 5.23.0, AssertJ 3.27.7) kırık değil, Boot 4.1.1 ile gelenler. <b>Kanca:</b> <code>WARNING</code> yazan satırı okuyup geç."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

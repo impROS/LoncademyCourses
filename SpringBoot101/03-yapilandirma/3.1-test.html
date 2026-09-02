@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.1",
+  code: "Yapılandırma · 3.1",
+  title: "Ayar nereden geliyor: öncelik sırası",
+  back: "3.1-oncelik-sirasi.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "Ölçüm: aynı ayar, üç kaynak",
+      q: "<code>application.properties</code> içinde <code>siparis.magaza-adi=dosyadan-gelen</code> yazıyor. Uygulamayı <code>SIPARIS_MAGAZAADI=ortamdan-gelen</code> ortam değişkeniyle ve ayrıca <code>--siparis.magaza-adi=komuttan-gelen</code> argümanıyla başlatıyorsun. Ekrana ne düşer?",
+      opts: [
+        "komuttan-gelen",
+        "ortamdan-gelen",
+        "dosyadan-gelen",
+        "Üç kaynak da aynı anahtarı verdiği için uygulama çakışma hatasıyla açılmaz"
+      ],
+      a: [0],
+      why: "<b>Komut satırı argümanı listenin en üstündedir</b>, dolayısıyla hem ortam değişkenini hem dosyayı ezer — ölçümde alınan çıktı da <code>### DEGER = komuttan-gelen</code>. En yakın çeldirici <i>ortamdan-gelen</i>: ortam değişkeni gerçekten dosyayı ezer, ama komut satırının altındadır. Çakışma hatası diye bir şey yok; Spring aynı anahtarı birçok kaynakta görmeyi normal sayar, sadece en yükseğini seçer. <b>Kanca:</b> dışarıdan gelen, içeride yazılanı ezer — komut satırı en dıştaki kabuktur."
+    },
+    {
+      topic: "Öncelik sırası",
+      q: "Dağıtım betiği <code>SUNUCU_PORT=9090</code> ortam değişkenini veriyor, aynı betik ayrıca <code>java -Dsunucu.port=8081 -jar app.jar</code> ile başlatıyor. Uygulama hangi portu kullanır ve neden?",
+      opts: [
+        "8081 — Java sistem özellikleri, ortam değişkenlerinin üstündedir",
+        "9090 — ortam değişkenleri, sistem özelliklerinin üstündedir",
+        "8081 — <code>-D</code> ile verilen değer komut satırı argümanı sayılır ve listenin en üstündedir",
+        "9090 — işletim sisteminden gelen değer her zaman JVM'den gelene göre önceliklidir"
+      ],
+      a: [0],
+      why: "<b>Sıra: komut satırı → sistem özellikleri → ortam değişkenleri.</b> <code>-D</code> ile verilen değer <code>systemProperties</code> kaynağına girer ve <code>systemEnvironment</code> onun altındadır; ölçülen kaynak listesinde de <code>systemProperties</code> satırı <code>systemEnvironment</code> satırından yukarıdadır. En yakın çeldirici üçüncü şık: sonucu doğru buluyor ama gerekçesi yanlış — <code>-D</code> komut satırı argümanı <b>değildir</b>, komut satırı argümanı <code>--sunucu.port=</code> biçimindedir ve ayrı bir kaynaktır (<code>commandLineArgs</code>). <b>Kanca:</b> iki tire dışarıda, tek tire içeride."
+    },
+    {
+      topic: "Öncelik sırası",
+      q: "<code>application.properties</code>'e yazdığın bir değeri hangi iki kaynak ezer? (İki tanesini seç.)",
+      opts: [
+        "Ortam değişkeni",
+        "Komut satırı argümanı",
+        "<code>@PropertySource</code> ile elle eklenmiş bir dosya",
+        "<code>SpringApplication.setDefaultProperties</code> ile verilen varsayılan"
+      ],
+      a: [0, 1],
+      why: "<b>Ortam değişkeni ve komut satırı argümanı ana dosyanın üstündedir</b>; ikisi de \"dışarıdan\" gelir. <code>@PropertySource</code> ve <code>setDefaultProperties</code> ana dosyanın <b>altındadır</b> — yani <code>application.properties</code> onları ezer, tersi değil. En çok karıştırılan <code>@PropertySource</code>: elle yazdığın için güçlü sanılır, oysa listede altıncı sıradadır. <b>Kanca:</b> kaynak koda ne kadar yakınsa o kadar zayıf."
+    },
+    {
+      topic: "Öncelik sırası",
+      q: "Kaynak listesini yazdırdın ve <code>systemEnvironment</code> satırının <code>Config resource 'class path resource [application.properties]'</code> satırından yukarıda olduğunu gördün. Bu sıralama sana ne söyler?",
+      opts: [
+        "Aynı anahtar iki yerde varsa ortam değişkenindeki değer kullanılır",
+        "Ortam değişkenleri dosyadan önce okunur, ama değeri dosya belirler",
+        "Dosya kaynağı sonradan yüklendiği için dosyadaki değer listeyi günceller",
+        "Sıralama yalnızca yükleme zamanını gösterir, hangi değerin kazandığını göstermez"
+      ],
+      a: [0],
+      why: "<b>Bu liste bir yükleme günlüğü değil, öncelik sırasıdır:</b> Spring bir anahtarı sorduğunda listeyi yukarıdan aşağı tarar ve <b>ilk bulduğu</b> değeri döndürür. En yakın çeldirici son şık: liste gerçekten yükleme sırasında kurulur, ama sıralamanın anlamı okuma önceliğidir — bu yüzden ölçümde ortam değişkeni dosyayı ezdi. <b>Kanca:</b> listenin üstü kazanır; alt satırlar yalnızca üstteki kaynaklar susarsa konuşur."
+    },
+    {
+      topic: "Relaxed binding",
+      q: "<code>siparis.magaza-adi</code> ayarını Kubernetes'te ortam değişkeni olarak vereceksin. Değişkenin adı ne olmalı?",
+      opts: [
+        "<code>SIPARIS_MAGAZAADI</code>",
+        "<code>SIPARIS_MAGAZA_ADI</code>",
+        "<code>SIPARIS.MAGAZA-ADI</code>",
+        "<code>siparis_magaza_adi</code>"
+      ],
+      a: [0],
+      why: "<b>Kural: nokta alt çizgi olur, tire silinir, hepsi büyük harf.</b> <code>siparis.magaza-adi</code> → <code>SIPARIS_MAGAZAADI</code>. En yakın çeldirici <code>SIPARIS_MAGAZA_ADI</code>: mantıklı görünür çünkü tire de bir ayraçtır — ama tire alt çizgiye <b>dönmez</b>, silinir. Nokta ve tire içeren adlara işletim sistemlerinin çoğu zaten izin vermez; küçük harfli yazım da eşleşmez. <b>Kanca:</b> nokta alt çizgiye terfi eder, tire kovulur."
+    },
+    {
+      topic: "Relaxed binding",
+      q: "Docker Compose dosyasına <code>SIPARIS_MAGAZA_ADI=Sube1</code> yazdın ve container'ı başlattın. Ne olur?",
+      opts: [
+        "Uygulama açılır, değer <code>application.properties</code>'teki kalır, hiçbir hata ya da uyarı çıkmaz",
+        "Uygulama açılmaz; tanınmayan ortam değişkeni için bağlama hatası verir",
+        "Uygulama açılır ve günlüğe \"unknown property\" uyarısı yazar",
+        "Değer bağlanır; Spring alt çizgiyi tire olarak da kabul eder"
+      ],
+      a: [0],
+      why: "<b>Eşleşmeyen ortam değişkeni sessizce yok sayılır.</b> Spring o adı bir ayar olarak tanımaz, dolayısıyla ortada \"tanınmayan ayar\" diye bir durum bile yoktur — ne hata, ne uyarı. En yakın çeldirici uyarı seçeneği: insanların en çok umduğu davranış bu, ama ölçümde günlükte tek satır çıkmadı. Son şık doğrudan kuralın tersi. <b>Kanca:</b> bu hatanın sesi yok — yalnızca değeri okutup bakarsan görürsün."
+    },
+    {
+      topic: "Relaxed binding",
+      q: "<code>application.properties</code> içinde yazıldığında <code>siparis.magaza-adi</code> ayarıyla hangi üç yazım eşleşir? (Üç tanesini seç.)",
+      opts: [
+        "<code>siparis.magazaAdi</code>",
+        "<code>siparis.magaza_adi</code>",
+        "<code>siparis.MAGAZA-ADI</code>",
+        "<code>siparis.magaza adi</code>"
+      ],
+      a: [0, 1, 2],
+      why: "<b>Relaxed binding camelCase, alt çizgi ve büyük/küçük harf farkını yutar</b> — üçü de aynı anahtara gider. Eşleşmeyen tek yazım boşluklu olandır: boşluk bir ayraç değil, adın parçası sayılır ve <code>siparis.magaza adi</code> diye bir ayar aranır. En çok karıştırılan <code>siparis.MAGAZA-ADI</code>: büyük harf yazım hatası gibi durur ama dosya içinde sorun çıkarmaz — <b>büyük harf kuralı yalnızca ortam değişkenlerinde zorunludur.</b> <b>Kanca:</b> dosyada relaxed, ortam değişkeninde katı."
+    },
+    {
+      topic: "`properties` mi `yaml` mı",
+      q: "Bir ekip arkadaşın <code>application.yaml</code>'daki <code>siparis.zaman-asimi</code> değerini 5000 yaptı ama uygulama hâlâ 1000 kullanıyor. Aynı klasörde <code>application.properties</code> de var. Teşhis nedir?",
+      opts: [
+        "Aynı klasörde ikisi de varsa <code>.properties</code> kazanır; değer oradan geliyor",
+        "YAML girinti hatası var, dosya sessizce boş okunuyor",
+        "YAML dosyaları yalnızca bir profil etkinken okunur",
+        "<code>.yaml</code> uzantısı desteklenmiyor, <code>.yml</code> olmalıydı"
+      ],
+      a: [0],
+      why: "<b>İkisi birden varsa <code>.properties</code> kazanır</b> — bu yüzden YAML'da yapılan değişiklik hiçbir şeyi değiştirmiyor. En yakın çeldirici girinti hatası: YAML'da gerçek bir risktir ve o da sessizdir, ama burada değer 5000 olmayıp <b>tam olarak .properties'teki 1000</b> — yani YAML okunuyor, sadece eziliyor. <code>.yml</code> de <code>.yaml</code> da desteklenir. <b>Kanca:</b> aynı klasörde iki ayar dosyası tutma, birini sil."
+    },
+    {
+      topic: "`properties` mi `yaml` mı",
+      q: "YAML'da <code>parola: 0123</code> yazdın, uygulama parolayı <code>83</code> olarak okuyor. Sebep ve çözüm hangisidir?",
+      opts: [
+        "YAML değeri sekizlik tabanda sayı saydı; değeri tırnak içine al: <code>parola: \"0123\"</code>",
+        "Baştaki sıfır YAML'da kırpılır; başına ters eğik çizgi koy: <code>parola: \\0123</code>",
+        "Alan tipi <code>int</code> olduğu için dönüştürüldü; alanı <code>String</code> yap",
+        "YAML sayıları onaltılık tabanda okur; <code>0x</code> önekini kaldır"
+      ],
+      a: [0],
+      why: "<b>Baştaki sıfır YAML için sekizlik taban işaretidir</b>; 0123 sekizlik değeri 83 eder. Çözüm tırnak: <code>\"0123\"</code>. En yakın çeldirici alan tipini değiştirmek — makul görünür ama sorun bağlamada değil, <b>YAML'ın değeri daha okurken sayıya çevirmesinde</b>; alanı <code>String</code> yapsan da dosyadan gelen değer yine 83 metnidir. <b>Kanca:</b> metin olmasını istediğin her değeri tırnağa al."
+    },
+    {
+      topic: "`properties` mi `yaml` mı",
+      q: "Dört sunucu adresi ve iki katmanlı iç içe ayarları olan bir yapılandırmayı hangi biçimde tutmak daha az hataya açıktır ve karşılığında hangi riski kabul edersin?",
+      opts: [
+        "YAML — liste ve iç içe yapı doğal yazılır, karşılığında girinti hatası riskini kabul edersin",
+        "<code>.properties</code> — <code>[0]</code>, <code>[1]</code> indisleri okunaklıdır, karşılığında girinti riskini kabul edersin",
+        "YAML — girinti hatası riski yoktur, tek karşılık dosyanın uzaması",
+        "<code>.properties</code> — iç içe yapıyı doğal yazar, karşılığında aynı anahtarın iki kez yazılma riskini kabul edersin"
+      ],
+      a: [0],
+      why: "<b>YAML liste ve iç içe yapıda doğaldır; bedeli girinti hatasıdır</b> ve bu hata da sessizce yanlış okumaya dönüşür. En yakın çeldirici üçüncü şık: YAML'ı doğru seçiyor ama \"girinti riski yoktur\" diyerek asıl bedeli siliyor — <b>mutlak ifadelere dikkat</b>, tabloda risk açıkça \"var\" yazıyor. <code>.properties</code>'te liste <code>sunucular[0]</code>, <code>sunucular[1]</code> ile hantallaşır. <b>Kanca:</b> küçük ayar kümesi .properties, çoğu proje YAML."
+    },
+    {
+      topic: "Değeri okumanın iki yolu",
+      q: "Kodda <code>@Value(\"${siparis.magaza-adi}\")</code> var, ayar hiçbir kaynakta tanımlı değil. Uygulama açılışta ne yapar ve bu neden istenen davranış olabilir?",
+      opts: [
+        "<code>Could not resolve placeholder 'siparis.magaza-adi'</code> ile açılmaz; eksik ayar üretime çıkmadan yakalanır",
+        "Alana <code>null</code> atanır ve açılır; eksiklik ilk kullanımda <code>NullPointerException</code> olarak çıkar",
+        "Alana boş metin atanır ve açılır; günlüğe uyarı yazılır",
+        "Alanın tipine göre varsayılan atanır (metin için boş, sayı için 0) ve açılır"
+      ],
+      a: [0],
+      why: "<b>Varsayılan yazmazsan çözülemeyen placeholder açılışı durdurur.</b> Bu iyi bir hatadır: eksik ayarı ilk isteğin geldiği ana değil, dağıtım anına taşır. En yakın çeldirici <code>null</code> atanması — <code>@Value</code>'nun sessizce boş bırakacağı yaygın bir sanıdır, oysa tersine en gürültülü davranışı gösterir. <b>Kanca:</b> varsayılan koymadan önce sor — makul bir varsayılan mı, yoksa eksikliği gizliyor musun?"
+    },
+    {
+      topic: "Değeri okumanın iki yolu",
+      q: "Bir servis <code>siparis.*</code> ailesinden altı ayarı okuyor. Hangi yaklaşım tercih edilir?",
+      opts: [
+        "<code>@ConfigurationProperties</code> ile hepsini tek bir nesneye bağlamak",
+        "Altı ayrı <code>@Value</code> parametresi, her birine varsayılan yazarak",
+        "Altı ayrı <code>@Value</code> alanı, hepsini tek bir yapılandırma sınıfında toplayarak",
+        "<code>Environment.getProperty</code> ile altısını da elle okumak"
+      ],
+      a: [0],
+      why: "<b>Kural nettir: bir-iki ayar <code>@Value</code>, üç ve üstü <code>@ConfigurationProperties</code>.</b> Altı ayar tek nesnede toplanır; ayar adları metin olmaktan çıkar, grup tek yerde belgelenir. En yakın çeldirici üçüncü şık: <code>@Value</code>'ları tek sınıfta toplamak dağınıklığı azaltır ama <b>ayar adları hâlâ metindir ve doğrulama noktası yoktur</b> — derdin sadece bir tanesini çözer. <b>Kanca:</b> üç ayar gördüğünde nesneye geç."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "\"Ayarı değiştirdim ama hiçbir şey değişmedi\" diyen bir vakada, tahmin etmeden ilerlemek için hangi iki adım doğrudur? (İki tanesini seç.)",
+      opts: [
+        "Actuator açıksa <code>/actuator/env/&lt;anahtar&gt;</code> ile değerin hangi kaynaktan geldiğini sormak",
+        "Aynı klasörde hem <code>application.properties</code> hem <code>application.yaml</code> var mı diye bakmak",
+        "<code>application.properties</code>'i silip ayarı yalnızca YAML'da tutarak dosyayı zorla okutmak",
+        "Uygulamayı yeniden derleyip önbelleği temizlemek; ayar dosyaları jar içinde önbelleklenir"
+      ],
+      a: [0, 1],
+      why: "<b>İkisi de ölçümdür, tahmin değil:</b> Actuator uç noktası değerin <b>hangi kaynaktan</b> geldiğini söyler; ikinci dosya kontrolü ise en sık görülen sessiz ezmeyi ortaya çıkarır. Üçüncü şık en yakın çeldirici — dosyayı silmek gerçekten sonucu değiştirir ama <b>neden</b> olduğunu öğrenmeden değiştirir; üstelik doğru düzeltme \"birini seç\", rastgele olanı silmek değil. Ayar dosyalarının önbelleklenmesi diye bir mekanizma yok. ⚠️ <code>/actuator/env</code> ayar değerlerini gösterir, üretimde herkese açma. <b>Kanca:</b> sor, tahmin etme."
+    },
+    {
+      topic: "Öncelik sırası",
+      q: "Bir ekip \"aynı jar'ı hem test hem üretim ortamında hiç değiştirmeden çalıştırmak\" istiyor. Öncelik sırasının bu isteğe katkısı nedir?",
+      opts: [
+        "Ayarlar dışarıdan verilebildiği için aynı yapı çıktısı ortama göre farklı davranır; sıra bir özelliktir",
+        "Sıra bir tuzaktır; bu istek için ortam başına ayrı jar üretmek gerekir",
+        "Sıra yalnızca geliştirme makinesinde işler; üretimde ayarlar jar'ın içinden okunur",
+        "Sıra bu isteği çözmez; çözüm ayarları koda gömüp derleme profilleriyle ayırmaktır"
+      ],
+      a: [0],
+      why: "<b>Sıra, dışarıdan verilen ayarın içerideki yazılanı ezmesini garanti eder</b> — tek bir yapı çıktısını ortam değişkeni ya da komut satırıyla üç ortamda farklı davrandırmanın yolu budur. En yakın çeldirici son şık: derleme profilleri gerçekten var olan bir teknik, ama ortam bilgisini <b>yapı zamanına</b> gömer; o zaman ortam başına ayrı çıktı üretirsin ve istek karşılanmaz. <b>Kanca:</b> \"beklemediğim değer geldi\"nin sebebi olan mekanizma, aynı zamanda tek jar'ı mümkün kılan mekanizmadır."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

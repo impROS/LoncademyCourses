@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Genel Deneme Sınavı 2 — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  "id": "genel-2",
+  "code": "Spring Boot 101 · Genel deneme",
+  "title": "Genel Deneme Sınavı 2",
+  "mode": "exam",
+  "time": 4050,
+  "pass": 80,
+  "passNote": "201 kursuna geçiş şartı: %80",
+  "questions": [
+    {
+      "topic": "00.1 Genel bakış",
+      "q": "Bir toplu iş (batch) uygulaması yazacaksın ve <code>pom.xml</code>'den <code>spring-boot-starter-webmvc</code> bağımlılığını çıkardın. Uygulama artık 8080 portunu dinlemiyor ve günlükte Tomcat satırları yok. Bunun sebebi nedir?",
+      "opts": [
+        "Auto-configuration kararlarını <b>classpath'e</b> bakarak verir: Tomcat sınıfları artık orada olmadığı için 'bu bir web uygulaması' kararı hiç alınmadı",
+        "Bağımlılığı çıkarmak <code>@SpringBootApplication</code> anotasyonunu da devre dışı bırakır; container artık hiç kurulmaz",
+        "Sunucu varsayılan olarak kapalıdır; web starter'ı yalnızca <code>server.port</code> ayarını 8080'e çeker",
+        "Tomcat <code>spring-boot-starter-parent</code> ile gelir; asıl sebep üst projenin <code>pom.xml</code>'den kaldırılmış olmasıdır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Auto-configuration sihir değildir; bir dizi <code>if</code> cümlesidir ve o <code>if</code>'lerin çoğu 'şu sınıf classpath'te var mı?' diye sorar.</b> Tomcat sınıfları classpath'teyken Spring Boot 'demek ki web uygulaması yazıyor' der ve sunucuyu kurar; çıkarınca o karar hiç alınmaz. En yakın çeldirici 'sunucu varsayılan olarak kapalıdır': ortada bir açma/kapama ayarı yok — kurulan bir <b>bean</b> var ya da yok. Kararı görmek istersen <code>--debug</code> ile koşul raporunu bas ve <b>Negative matches</b> bölümüne bak. <code>@SpringBootApplication</code> ise bağımlılıktan bağımsız çalışmaya devam eder; container kurulur, yalnızca web sunucusu kurulmaz. <b>Kanca:</b> 'Bu nereden geldi?' sorusunun cevabı çoğu zaman <b>classpath'tedir</b>."
+    },
+    {
+      "topic": "00.1 Genel bakış",
+      "q": "Spring Boot 3.x'ten 4.x'e geçişi ekibe anlatacaksın. Aşağıdakilerden hangi ikisi Spring Boot 4 ile gelen gerçek değişikliktir? (İki tanesini seç.)",
+      "opts": [
+        "JSON kütüphanesi Jackson 3'e geçti: paket <code>com.fasterxml.jackson</code> yerine <code>tools.jackson</code>",
+        "Undertow sunucusu desteği kaldırıldı",
+        "En düşük Java sürümü 17'den 21'e yükseltildi",
+        "Embedded Tomcat desteği kaldırıldı; yerine yalnızca Jetty kaldı",
+        "<code>@SpringBootApplication</code> artık component scan yapmıyor; <code>@ComponentScan</code> elle yazılmalı"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Spring Boot 4 ile Jackson 2 yerine Jackson 3 geldi (<code>tools.jackson</code>) ve Undertow desteği kaldırıldı.</b> En yakın çeldirici Java sürümü: en düşük Java hâlâ <b>17</b>'dir — Java 25 birinci sınıf desteklidir ve bu kurs 21 kullanır, ama alt sınır yükselmedi. Tomcat kaldırılmadı; aksine varsayılan embedded server olmaya devam ediyor (açılış günlüğünde <code>Apache Tomcat/11.0.24</code> görürsün). <code>@SpringBootApplication</code> da hâlâ <code>@Configuration</code> + <code>@ComponentScan</code> + <code>@EnableAutoConfiguration</code> kısaltmasıdır. <b>Kanca:</b> Boot 4'te kaldırılan sunucu <b>Undertow</b>, değişen kütüphane <b>Jackson</b>."
+    },
+    {
+      "topic": "00.2 Kurulum",
+      "q": "Uygulama çalışırken ikinci bir terminalde aynı komutu verdin ve şu kutuyu gördün: <code>APPLICATION FAILED TO START ... Description: Web server failed to start. Port 8080 was already in use. Action: Identify and stop the process that's listening on port 8080...</code> Bu kutu hakkında doğru olan nedir?",
+      "opts": [
+        "Bu Spring Boot'un <b>failure analyzer'ıdır</b>: stack trace yerine ne yapman gerektiğini yazar; portu kimin tuttuğunu <code>lsof -i :8080</code> ile bulursun",
+        "Bu bir JVM hatasıdır; Spring Boot yalnızca stack trace'i biçimlendirmiştir, <code>Action</code> satırı genel bir şablondur",
+        "Bu kutu her Spring Boot hatasında çıkar; kutunun çıkmaması uygulamanın açıldığı anlamına gelir",
+        "Kutu yalnızca <code>--debug</code> bayrağıyla çalıştırıldığında görünür; normalde stack trace basılır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Failure analyzer, tanıdığı hataları stack trace yerine 'Description / Action' biçiminde sunar — Spring Boot'ta bir hata aldığında önce bu kutuya bakarsın, çünkü çözüm çoğu zaman orada yazılıdır.</b> En yakın çeldirici 'her hatada çıkar': çıkmaz — örneğin <code>@Configuration class '...' may not be final</code> hatası kutusuz, düz bir stack trace olarak gelir. Kutu yoksa stack trace'in <b>en üstteki</b> <code>Caused by</code> satırını oku. Kutunun <code>--debug</code> ile ilgisi yoktur; o bayrak koşul raporunu bastırır. <b>Kanca:</b> Önce kutuya bak — <b>ama kutunun her zaman olmayacağını bil.</b>"
+    },
+    {
+      "topic": "00.2 Kurulum",
+      "q": "Projede hem <code>mvn</code> hem <code>./mvnw</code> var. Yeni gelen bir geliştiricinin makinesinde Maven 3.6 kurulu, seninkinde 3.9. Ekip komutları neden <code>./mvnw</code> ile yazıyor?",
+      "opts": [
+        "Wrapper projeye gömülü bir betiktir ve Maven'ı <b>projenin belirlediği sürümle</b> kendisi indirir; böylece makineden makineye aynı derleme çıkar",
+        "<code>./mvnw</code> bağımlılıkları yerel önbellek yerine doğrudan Maven Central'dan çeker; sürüm farkları böyle giderilir",
+        "<code>./mvnw</code>, <code>spring-boot-maven-plugin</code>'in zorunlu kıldığı tek çalıştırma yoludur; <code>mvn</code> ile <code>spring-boot:run</code> çalışmaz",
+        "<code>./mvnw</code> Java sürümünü de sabitler; <code>JAVA_HOME</code> ayarlamaya gerek kalmaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Maven wrapper'ı, projeye gömülü küçük bir betiktir; Maven'ı doğru sürümüyle kendisi indirir ve derleme sonucunu makineden bağımsız hâle getirir.</b> En yakın çeldirici Java sürümü iddiası: wrapper <b>Maven</b> sürümünü sabitler, <b>Java</b> sürümünü değil — terminal ile IDE'nin Java'sını hizalamak hâlâ senin işin (<code>java -version</code> ve <i>Project SDK</i>). Bağımlılıkların nereden indiğiyle de ilgisi yoktur. <code>spring-boot:run</code> pekâlâ <code>mvn</code> ile de çalışır; wrapper bir zorunluluk değil, tekrarlanabilirlik aracıdır. <b>Kanca:</b> Wrapper = <b>derleme aracının sürümünü projeye kilitlemek</b>."
+    },
+    {
+      "topic": "1.1 Container",
+      "q": "<code>getBeanDefinitionCount()</code> 180 döndürüyor. Uygulama çalışırken prototype scope'lu <code>RaporUreticisi</code>'nden onlarca nesne kuruluyor ama sayı hep 180 kalıyor. Bu neyi gösterir?",
+      "opts": [
+        "O metot <b>bean definition'larını</b> (tarifleri) sayar, kurulmuş nesneleri değil; bir tariften kaç nesne çıkacağı scope ayarına bağlıdır",
+        "Prototype bean'ler container'da sayılmaz; yalnızca <code>singleton</code> scope'lu nesneler bean definition olarak kaydedilir",
+        "Sayı sabit kalıyorsa prototype scope'u çalışmıyordur; <code>@Scope</code> yazımı yanlıştır",
+        "Container açılıştan sonra hiç nesne kurmaz; onlarca nesne aslında <code>new</code> ile kurulmuştur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bean definition <u>tariftir</u>, bean <u>tabaktaki yemektir</u>. <code>getBeanDefinitionCount()</code> tarif sayar; scope ayarına göre bir tariften bir ya da çok nesne çıkar.</b> En yakın çeldirici 'prototype bean'ler container'da sayılmaz': sayılırlar — prototype bean'in de bir bean definition'ı vardır, container yalnızca kurduğu nesneye referans <b>tutmaz</b> (bu yüzden onlarda <code>@PreDestroy</code> da çağrılmaz). Scope'un çalışmadığı sonucu da yanlıştır; sayı zaten değişmemeliydi. Container açılıştan sonra singleton bean kurmaz, ama prototype ve <code>@Lazy</code> bean'ler istendikleri anda kurulur. <b>Kanca:</b> <code>getBeanDefinitionCount()</code> = 'kaç <b>tarif</b> var', 'kaç nesne var' değil."
+    },
+    {
+      "topic": "1.1 Container",
+      "q": "İki uygulamanın ortak kullandığı <code>tr.loncademy.ortak</code> paketinde <code>@Service</code> işaretli sınıflar var. Ana sınıfın <code>tr.loncademy.siparis</code> paketinde ve bu servisler bulunamıyor. Doğru açıklama ve çözüm nedir?",
+      "opts": [
+        "<code>@ComponentScan</code> ana sınıfın paketinden <b>aşağı</b> iner; <code>ortak</code> kardeş pakettir ve taranmaz. <code>@SpringBootApplication(scanBasePackages = {\"tr.loncademy.siparis\", \"tr.loncademy.ortak\"})</code> yazılır",
+        "Component scan bütün classpath'i tarar; sınıflar bulunamıyorsa anotasyonları eksiktir",
+        "Ortak paket ayrı bir jar'da olduğu için <code>@Service</code> anotasyonları çalışma zamanında silinir; sınıfları <code>@Bean</code> metoduyla kaydetmelisin",
+        "Ana sınıfı <code>tr.loncademy</code> paketine taşımak işe yaramaz; tarama yalnızca ana sınıfın <b>kendi</b> paketini tarar, alt paketlere inmez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Tarama, <code>@SpringBootApplication</code> sınıfının bulunduğu paketten başlar ve <u>aşağı</u> iner; kardeş paket taranmaz.</b> Burada iki çözüm var: ana sınıfı <code>tr.loncademy</code>'ye taşımak (o zaman <code>siparis</code> ve <code>ortak</code> ikisi de altında kalır) ya da <code>scanBasePackages</code> ile ikinci paketi eklemek. En yakın çeldirici son şık: tarama ana sınıfın paketini <b>ve altındakileri</b> kapsar — bu yüzden yukarı taşımak gerçekten işe yarar. 'Bütün classpath taranır' yanlıştır; öyle olsaydı bağımlılık jar'larındaki her <code>@Service</code> da bean olurdu. Anotasyonlar da çalışma zamanında silinmez. ⚠️ Ama önce şunu sor: <code>scanBasePackages</code> ihtiyacı genelde <b>paket düzeninin bozuk olduğunun işaretidir</b>. <b>Kanca:</b> Tarama bir <b>ağaç</b>tır ve kökü ana sınıftır."
+    },
+    {
+      "topic": "1.2 Bean tanımlama",
+      "q": "<code>@Configuration public class HttpAyarlari</code> sınıfında <code>@Bean public RestClient odemeIstemcisi() { ... }</code> metodu var. Bu bean'in adı ve türü nedir, tüketen tarafta nasıl seçilir?",
+      "opts": [
+        "Ad <code>odemeIstemcisi</code> (metot adı), tür <code>RestClient</code> (dönüş türü); tüketen tarafta <code>@Qualifier(\"odemeIstemcisi\")</code> ile seçilir",
+        "Ad <code>httpAyarlari</code> (sınıf adı), tür <code>RestClient</code>; tüketen tarafta <code>@Qualifier(\"httpAyarlari\")</code> ile seçilir",
+        "Ad <code>restClient</code> (dönüş türünün adı), tür <code>RestClient</code>; birden çok olursa yalnızca <code>@Primary</code> ile ayrılabilir",
+        "Ad <code>odemeIstemcisi</code>, tür <code>HttpAyarlari</code>; <code>@Bean</code> metotları bulundukları sınıfın türünde bean üretir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>@Bean</code> metodunda bean adı <u>metot adıdır</u>, bean türü <u>dönüş türüdür</u>.</b> <code>@Component</code> ailesinde ise ad sınıf adının ilk harfi küçültülerek üretilir — iki yolun en sık karıştırılan farkı budur. En yakın çeldirici 'ad dönüş türünün adıdır': dönüş türü bean'in <b>türünü</b> belirler, <b>adını</b> değil; nitekim aynı sınıfta iki <code>RestClient</code> bean'i olabilmesinin sebebi tam olarak budur. Sınıf adının bean adı olması ise <code>@Component</code> davranışıdır. Aynı türden iki bean varken tüketen tarafta <code>@Qualifier</code> yazılır; <code>@Primary</code> alternatiftir ama üretende yazılır. <b>Kanca:</b> <code>@Bean</code> metodunun <b>adı</b> = bean'in adı; <b>dönüşü</b> = bean'in türü."
+    },
+    {
+      "topic": "1.2 Bean tanımlama",
+      "q": "<code>@Service public class SiparisServisi</code> içinde <code>private final StokIstemcisi stok = new StokIstemcisi();</code> yazıyor. Aylar sonra <code>StokIstemcisi</code>'ne eklenen bir Spring anotasyonu (yeniden deneme, önbellek, transaction) hiç çalışmıyor. Sebep nedir?",
+      "opts": [
+        "<code>new</code> ile kurulan nesne bean değildir; container onu tanımaz, ona injection yapmaz, ayar okumaz ve anotasyonlarını işlemez. Doğrusu bağımlılığı constructor'dan almaktır",
+        "<code>final</code> alanlara Spring anotasyonları uygulanmaz; alanı <code>final</code> olmaktan çıkarmak yeterlidir",
+        "<code>SiparisServisi</code> singleton olduğu için içindeki nesneler de singleton'dır ve singleton nesnelerde anotasyon işlenmez",
+        "Anotasyonlar yalnızca <code>@Configuration</code> sınıflarından üretilen bean'lerde çalışır; <code>StokIstemcisi</code>'ni <code>@Bean</code> metoduyla kurmak zorunludur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>SiparisServisi</code> bir bean, içindeki <code>StokIstemcisi</code> değil. Container'ın işleyebilmesi için nesneyi container'ın kurmuş olması gerekir.</b> Doğrusu: bağımlılığı constructor parametresi olarak almak. En yakın çeldirici <code>final</code> iddiası: constructor injection'ın en büyük kazançlarından biri zaten alanı <code>final</code> yapabilmektir — <code>final</code> olması hiçbir şeyi engellemez, <code>new</code> engeller. Singleton olmak da anotasyon işlenmesiyle ilgili değildir. <code>@Bean</code> metodu bir yoldur ama tek yol değildir; <code>StokIstemcisi</code> senin sınıfınsa <code>@Component</code> ailesi daha doğrudur. <b>Kanca:</b> Kursun tekrar eden cümlesi: <b>bean olmak, var olmak değildir.</b>"
+    },
+    {
+      "topic": "1.3 Dependency injection",
+      "q": "Açılış <code>Parameter 0 of constructor in tr.loncademy.siparis.web.SiparisKontrolcusu required a bean of type 'tr.loncademy.siparis.servis.SiparisServisi' that could not be found</code> ile patlıyor. Sınıf projede duruyor ve derleniyor. Hangi iki sebep bunu açıklar? (İki tanesini seç.)",
+      "opts": [
+        "Sınıfta hiç stereotype anotasyonu yoktur (<code>@Service</code>/<code>@Component</code> vb.)",
+        "Sınıf, ana sınıfın paketinin altında olmayan bir pakettedir; tarama oraya hiç inmiyordur",
+        "Aynı türden birden çok bean vardır ve container seçim yapamamıştır",
+        "Bean adı başka bir bean'le çakışmıştır ve tanım kaydedilememiştir",
+        "Bağımlılık <code>Optional&lt;SiparisServisi&gt;</code> olarak yazılmıştır"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Bu mesaj <u>sıfır aday</u> demektir ve iki klasik sebebi vardır: sınıf hiç anotasyonlu değildir, ya da taranmayan bir pakettedir.</b> En yakın çeldirici 'birden çok bean': o durumun mesajı farklıdır — <code>required a single bean, but N were found</code> — ve çözümü de zıttır (bean eklemek değil, seçim yapmak). Ad çakışması ayrı bir mesaj üretir: <code>A bean with that name has already been defined</code>, üstelik açılış daha erken bir adımda durur. <code>Optional&lt;T&gt;</code> ise tam tersini yapar: bean yoksa açılışın <b>patlamamasını</b> sağlar. 📌 Mesajdaki paket adına dikkat et — <code>...siparis.servis</code> ile ana sınıfın paketini karşılaştırmak sorunu çoğu zaman tek bakışta çözer. <b>Kanca:</b> Önce <b>anotasyona</b>, sonra <b>pakete</b> bak."
+    },
+    {
+      "topic": "1.3 Dependency injection",
+      "q": "Bir servis field injection kullanıyor. Uygulama sorunsuz açıldı, ama ilk gerçek istekte <code>NullPointerException</code> geldi. Constructor injection kullanılsaydı ne değişirdi?",
+      "opts": [
+        "Eksik bağımlılık <b>açılışta</b> yakalanır, uygulama hiç ayağa kalkmazdı — hata üretimde değil dağıtım anında görünürdü",
+        "Hiçbir şey değişmezdi; iki yöntem de aynı anda ve aynı biçimde başarısız olur",
+        "Field injection daha güvenlidir; constructor kullanılsaydı hata daha geç, ilk istekte çıkardı",
+        "Constructor injection eksik bağımlılığı <code>null</code> ile doldurur ve uygulama sessizce çalışmaya devam ederdi"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Constructor injection'ın asıl kazancı budur: eksik bağımlılık açılışta patlar, field injection'da ise uygulama kalkar ve kullanınca <code>NullPointerException</code> verir.</b> Yani hatayı saat 3'te üretimde değil, dağıtım anında görürsün. Yanında gelen üç kazanç daha var: alanı <code>final</code> yapabilirsin, testte <code>new SiparisServisi(mockStok)</code> ile Spring'siz kurabilirsin, ve constructor uzadıkça sınıfın çok iş yaptığını sana kod gözden geçirmeden söyler. En yakın çeldirici 'hiçbir şey değişmezdi': bu, tartışmanın estetik olduğu inancıdır — oysa dayanağın <b>hatanın ne zaman çıktığıdır</b>. Constructor injection ayrıca döngüsel bağımlılığı da açılışta yakalar. <b>Kanca:</b> <b>Erken patlamak bir özelliktir.</b>"
+    },
+    {
+      "topic": "1.3 Dependency injection",
+      "q": "Bir geliştirici, açılışta <code>could not be found</code> hatası almamak için zorunlu bir bağımlılığı <code>Optional&lt;OdemeIstemcisi&gt;</code> olarak yazdı. Uygulama artık sorunsuz açılıyor. Bu karar hakkında ne dersin?",
+      "opts": [
+        "<code>Optional</code> bir <b>tasarım kararıdır</b> — 'bu parça gerçekten olmayabilir' demektir. Zorunlu bir bağımlılıkta kullanılırsa eksik yapılandırmayı açılışta yakalama şansı kaybedilir",
+        "Doğru bir hamledir; <code>Optional</code> eksik bean'i güvenli biçimde ele almanın standart yoludur ve her bağımlılıkta tercih edilmelidir",
+        "İşe yaramaz; <code>Optional</code> ile sarılan bir bağımlılık bulunamazsa açılış yine aynı hatayla patlar",
+        "<code>Optional</code> yerine <code>@Lazy</code> yazılmalıydı; ikisi de aynı işi yapar ama <code>@Lazy</code> daha okunabilirdir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>Optional&lt;T&gt;</code> gerçekten bean yokken açılışın patlamasını engeller — ama bu bir hata bastırma aracı değil, bir <u>tasarım beyanıdır</u>: 'bu parça bazı ortamlarda olmayabilir'.</b> Zorunlu bir bağımlılığa uygulandığında, eksik yapılandırmayı dağıtım anında yakalama güvencesini kaybedersin ve hata ilk kullanıma ertelenir. En yakın çeldirici 'işe yaramaz, yine patlar': patlamaz — <code>Optional</code> gerçekten çalışır, sorun tam da bu. <code>@Lazy</code> ise bambaşka bir şeydir: bean vardır, yalnızca kurulumu ertelenir. <b>Kanca:</b> <code>Optional</code> sorusu şudur: <b>'bu bean gerçekten olmayabilir mi?'</b> Cevap 'hayır' ise <code>Optional</code> yanlış araçtır."
+    },
+    {
+      "topic": "1.3 Dependency injection",
+      "q": "İki farklı projede iki farklı hata var: (A) <code>required a bean of type 'OdemeIstemcisi' that could not be found</code>, (B) <code>required a single bean, but 3 were found</code>. Bir stajyer ikisine de tüketen tarafa <code>@Qualifier</code> ekledi. Sonuç ne olur?",
+      "opts": [
+        "B düzelir, A düzelmez — A'da <b>sıfır</b> aday vardır, seçilecek bir şey yoktur; orada sınıfı bean yapmak ya da taranan pakete taşımak gerekir",
+        "İkisi de düzelir — <code>@Qualifier</code> hem eksik bean'i adıyla arar hem fazla adaylar arasından seçer",
+        "A düzelir, B düzelmez — <code>@Qualifier</code> yalnızca bean bulunamadığında devreye giren bir arama mekanizmasıdır",
+        "İkisi de düzelmez — her iki hatanın da tek çözümü <code>spring.main.allow-bean-definition-overriding=true</code> ayarını açmaktır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>İki mesaj, iki zıt durum: A'da aday sayısı <u>sıfır</u>, B'de <u>üç</u>. Çözümleri de taban tabana zıttır — biri bean <b>eklemeyi</b>, diğeri adaylar arasından <b>seçmeyi</b> ister.</b> <code>@Qualifier</code> yalnızca ikinci işi yapar: var olan adaylardan birini adıyla ister. A'da ortada hiç aday olmadığı için <code>@Qualifier</code> hiçbir şeyi değiştirmez; orada bakılacak yer sınıfın anotasyonu (bean mi?) ve paketi (taranıyor mu?) olur. En yakın çeldirici üçüncü şık: rolleri tam ters çevirir — <code>@Qualifier</code> bir arama değil, bir <b>seçim</b> aracıdır. <code>allow-bean-definition-overriding</code> ise bambaşka bir soruna (aynı <b>adda</b> iki bean) aittir ve zaten açılmamalıdır. <b>Kanca:</b> Mesajdaki <b>sayıyı</b> oku — <b>0 mı, N mi?</b> Çözüm o sayıya göre değişir."
+    },
+    {
+      "topic": "1.4 Bean lifecycle",
+      "q": "Açılış 40 saniyeye çıktı. Ekip <code>application.properties</code>'e <code>spring.main.lazy-initialization=true</code> ekleyip bunu <b>üretime</b> de taşımayı öneriyor. Ne dersin?",
+      "opts": [
+        "Bu ayar geliştirme sırasında açılışı hızlandırmak içindir, üretim için değil: tembelleştirme bir <b>takastır</b> — açılış hızını, hataları dağıtım anında görme güvencesiyle değişirsin ve hatalar ilk kullanıma, yani üretime kayar",
+        "Doğru hamledir; tembel kurulum bean'lerin doğruluğunu değiştirmez, yalnızca kurulma anını erteler — üretimde de kazançtır",
+        "Ayar işe yaramaz; yalnızca <code>@Lazy</code> işaretli bean'leri etkiler, geri kalanı yine açılışta kurulur",
+        "Ayar tehlikelidir çünkü tembelleştirilen bean'lerin <code>@PostConstruct</code> metotları hiç çalışmaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Varsayılan <u>erken</u> kurulum bir özelliktir: eksik bağımlılık, bozuk yapılandırma ve döngü açılışta patlar — yani hatayı üretimde saat 3'te değil, dağıtım anında görürsün. Tembelleştirme bu güvenceyi satar.</b> Global <code>lazy-initialization</code> ayarı geliştirme döngüsünü hızlandırmak için kullanılır; üretimde değil. En yakın çeldirici 'doğruluğu değiştirmez': doğruluğu değil, <b>hatanın ne zaman görüneceğini</b> değiştirir — ve asıl mesele budur. Ayar yalnızca <code>@Lazy</code> işaretlileri değil, tersine <b>hepsini</b> tembelleştirir. <code>@PostConstruct</code> da iptal olmaz; bean kurulduğunda çalışır — sadece o an daha geç gelir. 📌 Açılış yavaşsa önce <b>neden</b> yavaş olduğuna bak; tembelleştirme sebebi gizler. <b>Kanca:</b> <code>@Lazy</code> bir <b>iyileştirme değil, takastır</b>."
+    },
+    {
+      "topic": "1.4 Bean lifecycle",
+      "q": "Bir ekip, sıraya alınmış kayıtları <code>@PreDestroy</code> metodunda veritabanına yazıyor. Kubernetes bir düğümü zorla geri aldığı gece kayıtların bir kısmı kayboldu. Doğru değerlendirme nedir?",
+      "opts": [
+        "<code>@PreDestroy</code>, <code>kill -9</code>/<code>SIGKILL</code> ve prototype scope'ta hiç çağrılmaz; veri bütünlüğü ona emanet edilmez — veri geldiği anda kalıcı hâle getirilir, <code>@PreDestroy</code>'da yalnızca kaynak bırakılır",
+        "<code>@PreDestroy</code> her kapanışta çağrılır; kayıp, <code>spring.lifecycle.timeout-per-shutdown-phase</code> değerinin kısa olmasından kaynaklanmıştır",
+        "Sorun <code>@PreDestroy</code>'da değil <code>@PostConstruct</code>'tadır; kuyruk açılışta doğru kurulmamıştır",
+        "<code>@PreDestroy</code> yerine <code>@Scope(\"prototype\")</code> kullanılırsa temizlik garanti altına alınır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>@PreDestroy</code> normal kapanışta (<code>Ctrl+C</code>, <code>SIGTERM</code>, <code>System.exit()</code>) çağrılır; <code>kill -9</code>/<code>SIGKILL</code>'de ve prototype scope'lu bean'lerde <u>çağrılmaz</u>.</b> Bu yüzden 'kapanırken kaydederim' fikri, süreç zorla öldürüldüğü gün veri kaybına dönüşür. <code>@PreDestroy</code> kaynak bırakmak içindir: bağlantı kapatma, dosya kapatma. En yakın çeldirici timeout değeri: graceful shutdown süresi <code>SIGTERM</code> senaryosunu uzatır, ama <code>SIGKILL</code>'de beklenecek süre yoktur — süreç anında ölür. Prototype scope ise durumu <b>kötüleştirir</b>: orada temizlik metodu hiç çağrılmaz, çünkü container prototype nesneye referans tutmaz. <b>Kanca:</b> <code>@PreDestroy</code> = <b>kaynak</b>, veri değil."
+    },
+    {
+      "topic": "1.5 Scope",
+      "q": "Prototype scope'lu bir bean üçüncü parti bir kütüphaneden geliyor; <code>@Scope</code> anotasyonuna erişemiyorsun, dolayısıyla scoped proxy ekleyemiyorsun. Singleton servisin her çağrıda taze bir nesne alması için ne yaparsın?",
+      "opts": [
+        "Tüketen tarafta <code>ObjectProvider&lt;T&gt;</code> inject edip her ihtiyaçta <code>getObject()</code> çağırmak",
+        "Singleton servisi de prototype yapmak; böylece her istekte hem servis hem bağımlılığı yeniden kurulur",
+        "Servise <code>ApplicationContext</code> inject edip her çağrıda <code>container.getBean(T.class)</code> çağırmak",
+        "Bağımlılığı <code>@Lazy</code> ile işaretlemek; tembel bean her istendiğinde yeniden kurulur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Scoped proxy <u>üreten</u> tarafta yazılır; kaynağa erişemiyorsan tüketen taraftaki araç <code>ObjectProvider&lt;T&gt;</code>'dir — <code>getObject()</code> her çağrıda container'dan taze nesne ister ve bu, kodda açıkça görünür.</b> En yakın çeldirici <code>ApplicationContext</code> + <code>getBean</code>: aynı sonucu verir ama <b>servis bulucu</b> kalıbıdır — sınıfı container'ın kendisine bağlar ve testte Spring'siz kuramazsın; <code>ObjectProvider</code> bunun tipe bağlı, test edilebilir hâlidir. Servisi prototype yapmak, singleton olması gereken bir bileşeni çoğaltır ve sorunu bir katman yukarı taşır. <code>@Lazy</code> ise kurulumu erteler, tekrarlamaz — <b>bir kere</b> kurulur. <b>Kanca:</b> Kaynağa dokunabiliyorsan <b>proxy</b>, dokunamıyorsan <b><code>ObjectProvider</code></b>."
+    },
+    {
+      "topic": "1.5 Scope",
+      "q": "Kod incelemesinde singleton bir servisin üç alanını görüyorsun: <code>private final RestClient istemci;</code>, <code>private final SiparisAyarlari ayarlar;</code> ve <code>private final Map&lt;String,String&gt; istekBaglami = new ConcurrentHashMap&lt;&gt;();</code> — sonuncusuna her istekte kullanıcı adı yazılıyor. Değerlendirmen nedir?",
+      "opts": [
+        "Üçüncü alan sorunludur: <code>ConcurrentHashMap</code> veriyi bozulmaktan korur ama isteklerin birbirinin verisini görmesini engellemez; istek verisi alanda değil, <b>metot parametresinde</b> taşınmalı",
+        "Üçüncüsü sorunsuzdur: <code>ConcurrentHashMap</code> thread güvenlidir, dolayısıyla singleton bean'de istek verisi tutmak güvenlidir",
+        "İlk iki alan sorunludur: singleton bean'de <code>final</code> alan tutmak scope uyumsuzluğu yaratır",
+        "Üçüncü alan sorunludur ve çözümü onu <code>volatile</code> yapmaktır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Singleton bir bean'den container'da tek nesne vardır; alanları bütün istekler arasında paylaşılır. İş parçacığı güvenli bir koleksiyon kullanmak bu gerçeği değiştirmez</b> — <code>ConcurrentHashMap</code> eşzamanlı yazmada haritanın bozulmasını engeller, ama Ayşe'nin isteğinin Mehmet'in yazdığı değeri okumasını engellemez. Aynı sebeple <code>synchronized</code> de yetmez: veriyi bozulmaktan korur, <b>karışmaktan</b> korumaz. Çözüm kilit ya da özel koleksiyon değil, <b>alanı hiç kullanmamaktır</b>: değeri metot parametresinde taşı. En yakın çeldirici <code>volatile</code>: görünürlük sorununu çözer, paylaşım sorununu değil. İlk iki alan tam da olması gerektiği gibidir — singleton bean'in alanları değişmez olmalıdır: constructor'da atanan <code>final</code> bağımlılıklar ve ayarlar. <b>Kanca:</b> Singleton bean'in alanına <b>istekten isteğe değişen hiçbir şey</b> yazma."
+    },
+    {
+      "topic": "2.1 Stereotype'lar",
+      "q": "Bir geliştirici 'nasıl olsa hepsi <code>@Component</code>' diyerek projedeki bütün <code>@Service</code> anotasyonlarını <code>@Component</code> ile değiştirmeyi öneriyor. Bu değişiklik çalışma zamanında ne değiştirir ve neden yine de yapılmaz?",
+      "opts": [
+        "Çalışma zamanında hiçbir şey değişmez — <code>@Service</code>'in teknik etkisi yoktur. Yine de yapılmaz: katman bilgisi okunabilirliği taşır ve bazı araçlar stereotype'lara bakar",
+        "Bean adları değişir; <code>@Component</code> sınıf adını olduğu gibi kullanır, <code>@Service</code> ise ilk harfi küçültür",
+        "Servis katmanı exception translation'ı kaybeder; ham <code>SQLException</code> yukarı çıkmaya başlar",
+        "Sınıflar taranmaz hâle gelir; <code>@Component</code> yalnızca ana sınıfın kendi paketinde çalışır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bütün stereotype'lar meta-annotation olarak <code>@Component</code> taşır; tarama açısından aynıdırlar ve <code>@Service</code>'in ek bir teknik etkisi <u>yoktur</u> — yalnızca okuyan insana bilgi verir.</b> Yine de yapılmaz: yüz sınıflık bir projede katmanı anotasyondan anlarsın ve araçlar stereotype'lara bakar — örneğin <code>@WebMvcTest</code> slice test container'a yalnızca <code>@Controller</code> ve <code>@ControllerAdvice</code> sınıflarını alır. En yakın çeldirici exception translation: o gerçekten teknik bir etkidir ama <b><code>@Repository</code>'ye</b> aittir — <code>@Service</code>'i değiştirmek onu etkilemez. Bean adı kuralı ikisinde de aynıdır (ilk harf küçültülür; ilk iki harf büyükse küçültülmez). <b>Kanca:</b> <code>@Service</code> = insan için, <code>@Repository</code> = makine için."
+    },
+    {
+      "topic": "2.1 Stereotype'lar",
+      "q": "Bir <code>@Configuration</code> sınıfına ayrıca <code>@Component</code> yazılmamış olmasına rağmen sınıf bean oluyor ve <code>@Bean</code> metotları işleniyor. Bunu ne açıklar?",
+      "opts": [
+        "<code>@Configuration</code> üzerinde <b>meta-annotation</b> olarak <code>@Component</code> taşır; Spring, üzerinde <code>@Component</code> olan her anotasyonu taramada bulur",
+        "<code>@Configuration</code> özel bir durumdur; tarama dışında, classpath taranarak ayrı bir mekanizmayla toplanır",
+        "<code>@SpringBootApplication</code> içindeki <code>@EnableAutoConfiguration</code>, projedeki bütün <code>@Configuration</code> sınıflarını kaydeder",
+        "<code>@Bean</code> anotasyonu bulunduğu sınıfı kendiliğinden bean yapar; sınıf düzeyindeki anotasyon gereksizdir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>@Service</code>, <code>@Repository</code>, <code>@Controller</code> ve <code>@Configuration</code> — hepsi üzerinde <code>@Component</code> taşıyan anotasyonlardır. Tarama açısından beşi de aynıdır; farkları Spring'in onlara <u>ayrıca</u> bakıp bakmamasından gelir.</b> <code>@RestController</code> ise iki katmanlıdır: <code>@Controller</code> + <code>@ResponseBody</code>. En yakın çeldirici <code>@EnableAutoConfiguration</code>: o, <b>kütüphanelerin</b> getirdiği auto-configuration'ları devreye sokar — senin yazdığın <code>@Configuration</code> sınıflarını bulan şey <code>@ComponentScan</code>'dir. Dördüncü şık da yanlıştır: sınıf düzeyinde anotasyon yoksa sınıf hiç taranmaz ve <code>@Bean</code> metotları görülmez. <b>Kanca:</b> Stereotype ağacının kökü <b>tek</b>: <code>@Component</code>."
+    },
+    {
+      "topic": "2.1 Stereotype'lar",
+      "q": "Şirket içi bir yardımcı kütüphaneyi (ayrı bir jar) projene bağımlılık olarak ekledin. Jar'ın içinde <code>@Service</code> işaretli sınıflar var ama hiçbiri bean olmuyor ve açılışta uyarı da yok. Neden?",
+      "opts": [
+        "Component scan yalnızca ana sınıfın paketi ve altını tarar; bağımlılık jar'ının içindeki sınıflar (kendi auto-configuration'ını getirmiyorsa) taranmaz",
+        "Jar içindeki anotasyonlar çalışma zamanında görünmez; kütüphanenin <code>RetentionPolicy.RUNTIME</code> ile derlenmesi gerekir",
+        "Bağımlılık jar'larındaki bean'ler yalnızca <code>@Lazy</code> olarak kaydedilir; ilk kullanımda kurulurlar",
+        "Jar <code>provided</code> scope'undadır; scope <code>compile</code> yapılırsa sınıflar kendiliğinden bean olur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Tarama, <code>@SpringBootApplication</code> sınıfının paketinden aşağı iner ve bağımlılık jar'larının içine bakmaz — o jar kendi auto-configuration'ını getirmiyorsa sınıfları bean olmaz.</b> Kütüphane yazarının yolu, kendi auto-configuration'ını sunmaktır; senin tarafındaki hızlı çözüm ise o paketi <code>scanBasePackages</code> ya da <code>@ComponentScan</code> ile taratmaktır. En yakın çeldirici <code>@Lazy</code> iddiası: <code>@Lazy</code> kurulumu erteler ama bean <b>kaydedilmiş</b> olur ve <code>getBeanDefinitionNames()</code> listesinde görünür; burada hiç kayıt yok. Anotasyon saklama (retention) da Spring stereotype'larında zaten <code>RUNTIME</code>'dır. Bağımlılık scope'u sınıfın görünürlüğünü etkiler, taranmasını değil. <b>Kanca:</b> Tarama <b>senin ağacını</b> tarar, classpath'in tamamını değil."
+    },
+    {
+      "topic": "2.2 @Configuration",
+      "q": "Şu sınıf container'da: <code>@Configuration class FullMode { @Bean Kaynak kaynak() { return new Kaynak(); } @Bean String tuketici() { return kaynak().no + \",\" + kaynak().no; } }</code> — <code>Kaynak</code> her kurulduğunda artan bir numara alıyor. <code>tuketici</code> bean'i ne yazar?",
+      "opts": [
+        "İki sayı da <b>aynı</b> olur (ölçülen: <code>1,1</code>) — proxy ikinci çağrıda gövdeyi çalıştırmaz, nesneyi container'dan alır",
+        "İki <b>ardışık</b> sayı olur (<code>6,7</code>) — sıradan Java'da olduğu gibi her çağrı yeni nesne kurar",
+        "İlki dolu, ikincisi <code>null</code> olur — proxy ikinci çağrıyı engeller",
+        "Açılış patlar — <code>@Bean</code> metotları birbirini çağıramaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Full mode'da (<code>@Configuration</code>) Spring sınıfın CGLIB alt sınıfını üretir ve <code>@Bean</code> metotlarını ezer: 'container'da zaten varsa container'dan al'. Ölçülen çıktı <code>full:1,1</code>.</b> En yakın çeldirici <code>6,7</code>: o <b>proxysiz mod'un</b> (<code>proxyBeanMethods = false</code>) sonucudur; <code>@Component</code> + <code>@Bean</code> lite mode'unde ise <code>3,4</code> ölçülmüştür. Yani üç sayı üç modu birbirinden ayırır. <code>@Bean</code> metotları birbirini pekâlâ çağırabilir — proxy'nin var oluş sebebi tam olarak bunu güvenli kılmaktır: iki <code>RestClient</code> kurarken aynı <code>HttpAyarlari</code> nesnesini paylaşırsın. Proxy'nin kanıtı sınıf adındadır: <code>...$$SpringCGLIB$$0</code>. <b>Kanca:</b> <b>1,1 = tek nesne = proxy var.</b>"
+    },
+    {
+      "topic": "2.2 @Configuration",
+      "q": "Geçen ay açılış süresini kısaltmak için bir yapılandırma sınıfına <code>proxyBeanMethods = false</code> eklendi. Bugün fark ettiniz ki iki <code>RestClient</code> bean'inin timeout ayarları farklı: birinin değerini değiştirmek diğerini etkilemiyor. İki <code>@Bean</code> metodu da ortak <code>ayarlar()</code> metodunu çağırıyor. Ne oldu?",
+      "opts": [
+        "Proxy kapatıldığı için <code>ayarlar()</code> her çağrıldığında yeni bir <code>HttpAyarlari</code> nesnesi kuruluyor; iki istemci artık ayrı nesneler kullanıyor. Metotlar birbirini çağırdığı için o ayar geri alınmalı",
+        "Ayar doğrudur; sorun <code>HttpAyarlari</code> sınıfının değişmez (immutable) olmamasıdır",
+        "<code>proxyBeanMethods = false</code> yalnızca açılış süresini etkiler; iki farklı nesne çıkması ayar dosyasındaki iki ayrı anahtardan gelir",
+        "Proxy kapatıldığında <code>ayarlar()</code> ikinci çağrıda <code>null</code> döner; nesnelerden biri varsayılan değerlerle kurulmuştur"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>proxyBeanMethods = false</code> proxy'si kapatır; proxy yokken <code>@Bean</code> metodunu çağırmak container'dan almaz, gerçekten <u>yeni nesne kurar</u> (ölçülen: <code>proxysiz:6,7</code>).</b> Bu ayar yalnızca iki şart birden doğruyken güvenlidir: (1) o sınıftaki <code>@Bean</code> metotları birbirini çağırmıyor, (2) açılış süresi ölçülebilir biçimde önemli. Burada birinci şart ihlal edilmiş, dolayısıyla ayar geri alınmalıdır. En yakın çeldirici 'sorun değişmezlikte': değişmezlik iyi bir tasarımdır ama burada iki <u>ayrı</u> nesne var — sorun nesnenin içeriği değil, <b>sayısı</b>. Ayar açılış süresinden başka bir şeyi etkilemez de değildir; tam olarak bunu etkiler. İkinci çağrı <code>null</code> da dönmez, yeni nesne döner. <b>Kanca:</b> Metotlar birbirini çağırıyorsa <b>proxy'si kapatma</b>."
+    },
+    {
+      "topic": "2.2 @Configuration",
+      "q": "Kod incelemesinde bir geliştirici şunu yazdı: '<code>@Bean</code> anotasyonu tek başına yeterlidir; metodu hangi sınıfa koyduğun önemli değil — <code>@Service</code>, <code>@Component</code>, hepsi bean üretir.' Ne cevap verirsin?",
+      "opts": [
+        "Bean gerçekten üretilir ve hata da alınmaz — ama <code>@Configuration</code> dışında proxy yoktur: metodu çağıran her yer yeni nesne alır ve singleton <b>sessizce</b> kaybolur. <code>@Bean</code> metotları <code>@Configuration</code> sınıflarında durur",
+        "Haklı; Spring <code>@Bean</code> metotlarını hangi sınıfta olurlarsa olsunlar aynı biçimde işler",
+        "Haksız; <code>@Configuration</code> dışındaki <code>@Bean</code> metotları açılışta <code>BeanDefinitionParsingException</code> ile hata verir",
+        "Haksız; <code>@Configuration</code> dışındaki <code>@Bean</code> metotları hiç bean üretmez, sessizce yok sayılır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Metot gerçekten bir bean üretir ve uygulama açılır — tehlikeli olan da bu. <code>@Configuration</code> dışındaki <code>@Bean</code> metotları 'lite mode'te çalışır: proxy yoktur, metodu çağıran yeni bir nesne alır, singleton garantisi kaybolur (ölçülen: <code>lite:3,4</code>).</b> <code>ObjectMapper</code> gibi kurulumu pahalı bir nesnede bu, sessiz bir bellek ve başarım sorunudur. En yakın çeldiriciler 'hata verir' ve 'hiç bean üretmez': ikisi de gürültülü bir dünyanın cevaplarıdır — burada ne hata var ne uyarı, kursun sessiz hatalar tablosundasın. Kural istisnasızdır: <b><code>@Bean</code> metotları <code>@Configuration</code> sınıflarında durur.</b> <b>Kanca:</b> 'Çalışıyor' demek 'doğru çalışıyor' demek değildir — ölçmeden bilemezsin."
+    },
+    {
+      "topic": "2.3 Auto-configuration",
+      "q": "Bir özelliğin neden devreye girmediğini araştırıyorsun ve <code>--debug</code> bayrağı olmadan aynı bilgiye ulaşmaya çalışıyorsun. Doğru değerlendirme ve doğru iş akışı nedir?",
+      "opts": [
+        "<b>CONDITIONS EVALUATION REPORT</b> yalnızca <code>--debug</code> ile basılır; raporu dosyaya alıp (<code>... --debug &gt; acilis.log 2&gt;&amp;1</code>) içinde <b>arama</b> yaparsın",
+        "Aynı bilgi <code>/actuator/env</code> uç noktasında bulunur; <code>--debug</code> yalnızca günlük seviyesini değiştirir",
+        "Rapor her açılışta basılır; <code>--debug</code> yalnızca satırları renklendirir. Günlüğü yukarı kaydırman yeterlidir",
+        "Bilgi <code>@ConditionalOnMissingBean</code> anotasyonunun kaynak kodunda durur; kütüphaneyi açıp okumak gerekir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Koşul raporu yalnızca <code>--debug</code> bayrağıyla basılır; bayrak günlük seviyesini de değiştirir ama asıl işi raporu bastırmaktır.</b> Rapor uzundur (boş bir uygulamada bile onlarca koşul), bu yüzden taranmaz — dosyaya alınır ve aranır: <code>sed -n '/Negative matches:/,/Exclusions:/p' acilis.log</code> ya da <code>grep -A 4 \"DataSourceAutoConfiguration\" acilis.log</code>. En yakın çeldirici <code>/actuator/env</code>: o gerçek ve faydalı bir uç noktadır ama <b>ayar değerlerini ve kaynaklarını</b> gösterir — hangi auto-configuration'ın neden devreye girmediğini söylemez. Raporun dört bölümü: Positive matches, <b>Negative matches</b>, Exclusions, Unconditional classes. <b>Kanca:</b> 'Neden yok?' → <code>--debug</code> → <b>Negative matches</b>."
+    },
+    {
+      "topic": "2.3 Auto-configuration",
+      "q": "Bir hafta önce JPA'yı denemek için <code>pom.xml</code>'e bir veri starter'ı eklendi, sonra fikirden vazgeçildi ama bağımlılık kaldı. Şimdi açılış <code>Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured</code> ile patlıyor. En doğru çözüm nedir?",
+      "opts": [
+        "Kullanılmayan bağımlılığı <code>pom.xml</code>'den kaldırmak — auto-configuration kararını tetikleyen şey classpath'teki JDBC'dir",
+        "<code>spring.autoconfigure.exclude</code> ile <code>DataSourceAutoConfiguration</code>'ı dışlamak ve bağımlılığı bırakmak",
+        "Gerçekte kullanılmayacak bir <code>spring.datasource.url</code> değeri uydurup ayar dosyasına yazmak",
+        "Gömülü bir H2 veritabanını classpath'e eklemek, böylece açılışta bir <code>DataSource</code> kurulabilsin"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Mesaj tam olarak ne olduğunu söylüyor: bir <code>DataSource</code> kurulmaya çalışıldı (çünkü JDBC classpath'te) ve adres ya da sürücü bulunamadı. Sen veritabanı kullanmıyorsan asıl düzeltme, o kararı tetikleyen bağımlılığı kaldırmaktır.</b> Diğer üç şık teknik olarak açılışı kurtarır ama hepsi kullanmadığın bir teknolojiyi projede tutar: dışlama <b>kaba bir alettir</b> (bir yapılandırma sınıfı birden çok bean kurar, hepsini birden kaybedersin) ve <code>exclude</code> listesi büyüyorsa asıl sorunun bağımlılıklarda olduğunun işaretidir; uydurma bir <code>url</code> yazmak sorunu üretime taşır; H2 eklemek ise classpath'e bir veritabanı daha koyar. <b>Kanca:</b> Auto-configurationyı <b>classpath</b> tetikler — istemediğin kararı, tetiği kaldırarak sustur."
+    },
+    {
+      "topic": "2.4 Starter'lar",
+      "q": "Bir güvenlik incelemesinde 'bu <code>spring-boot-starter-webmvc</code> jar'ının içinde hangi sınıflar var?' diye soruluyor. Doğru cevap nedir?",
+      "opts": [
+        "Hiç sınıf yoktur; starter jar'ının içinde yalnızca başka bağımlılıkları listeleyen bir <code>pom.xml</code> vardır",
+        "Spring MVC'nin bütün sınıfları oradadır; starter, <code>spring-webmvc</code>'nin yeniden paketlenmiş hâlidir",
+        "Yalnızca auto-configuration sınıfları vardır; asıl işi yapan sınıflar <code>spring-boot-autoconfigure</code>'dadır",
+        "Embedded Tomcat'in sınıfları oradadır; diğer bağımlılıklar çalışma zamanında indirilir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Starter kod içermez: içinde yalnızca 'bu işi yapmak için şunlar lazım' listesini tutan bir <code>pom.xml</code> vardır.</b> <code>spring-boot-starter-webmvc</code> yazdığında gelenler <code>spring-boot-starter</code>, <code>spring-boot-starter-json</code> (Jackson 3), <code>spring-boot-starter-tomcat</code>, <code>spring-web</code> ve <code>spring-webmvc</code>'dir. Starter'ın ikinci işi de sürümleri birbiriyle uyumlu tutmaktır. En yakın çeldirici 'auto-configuration sınıfları vardır': auto-configuration gerçekten ayrı jar'lardadır — üstelik Spring Boot 4'te devasa <code>spring-boot-autoconfigure</code> teknoloji başına modüllere bölündü (<code>spring-boot-jdbc</code> gibi) — ama hiçbiri starter'ın <b>içinde</b> değildir. Hiçbir şey çalışma zamanında indirilmez. <b>Kanca:</b> Starter bir <b>alışveriş listesidir</b>, market değil."
+    },
+    {
+      "topic": "2.4 Starter'lar",
+      "q": "Spring Boot 3 projesini 4'e taşırken bağımlılık adlarını güncelliyorsun. Aşağıdaki ifadelerden hangi ikisi doğrudur? (İki tanesini seç.)",
+      "opts": [
+        "<code>spring-boot-starter-web</code>'in yeni adı <code>spring-boot-starter-webmvc</code>'dir; eskisi kaldırılmadı, kullanımdan kaldırıldı ve çalışmaya devam ediyor",
+        "<code>spring-boot-starter-aop</code>'un yeni adı <code>spring-boot-starter-aspectj</code>'dir",
+        "<code>spring-boot-starter-web</code>'in yeni adı <code>spring-boot-starter-webflux</code>'tur",
+        "<code>spring-boot-starter-classic</code>, yeni projelerde önerilen varsayılan starter'dır",
+        "Eski starter adları Spring Boot 4'te tamamen kaldırıldığı için derleme hatası verirler"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Spring Boot 4'ün iki en görünür starter adı değişikliği: <code>-web</code> → <code>-webmvc</code> ve <code>-aop</code> → <code>-aspectj</code>.</b> Eskiler kaldırılmadı, 'kullanımdan kaldırıldı' (deprecated) olarak işaretlendi — <code>spring-boot-starter-web</code>'in kendi tanımında <i>deprecated in favor of spring-boot-starter-webmvc</i> yazar. Tuzak tam olarak budur: hiçbir şey kırılmadığı için ad değişikliğini fark etmezsin. En yakın çeldirici <code>webflux</code>: gerçek bir starter'dır ama <b>reaktif</b> yığındır, bloklayan MVC'nin yeni adı değil — karıştırırsan bambaşka bir programlama modeline geçmiş olursun. <code>classic</code> starter'ları eski toplu davranışı geri getiren <b>geçiş aletleridir</b>, varış noktası değil. <b>Kanca:</b> Bir <code>pom.xml</code>'de <code>-web</code> ve tek bir <code>-test</code> görürsen, o dosya 3.x dünyasından gelmiştir."
+    },
+    {
+      "topic": "3.1 Öncelik sırası",
+      "q": "Bir ayarın beklediğin değerde olmadığını fark ettin ve tahmin etmemek için çalışan uygulamaya <code>curl -s http://localhost:8080/actuator/env/siparis.magaza-adi</code> attın. Bu uç nokta hakkında bilmen gereken nedir?",
+      "opts": [
+        "Değerin <b>hangi kaynaktan</b> geldiğini söyler — tahmin yerine kanıt verir; ⚠️ ama ayar değerlerini gösterdiği için <b>üretimde herkese açık bırakılmaz</b>",
+        "Yalnızca ayarın son değerini söyler, kaynağını söylemez; güvenlik açısından sakıncası yoktur çünkü bütün değerleri maskeler",
+        "Yalnızca <code>@ConfigurationProperties</code> ile bağlanmış ayarları listeler; <code>@Value</code> ile okunanları hiç göstermez",
+        "Ayarı çalışma zamanında <b>değiştirmeni</b> de sağlar; bu yüzden yeniden dağıtım gerekmez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>'Ayarı değiştirdim ama hiçbir şey değişmedi' vakasında doğru refleks tahmin etmek değil <u>sormaktır</u>: <code>/actuator/env/&lt;anahtar&gt;</code> değerin hangi kaynaktan geldiğini söyler — komut satırı mı, ortam değişkeni mi, profil dosyası mı, ana dosya mı.</b> Ama aynı özellik onu riskli yapar: uç nokta ayarların değerlerini gösterir, dolayısıyla üretimde herkese açılmaz (Actuator güvenliği <b>401</b>'in konusu). En yakın çeldirici ikinci şık: 'kaynağını söylemez' iddiası uç noktanın en değerli tarafını yok sayar — zaten değeri biliyorsun, öğrenmek istediğin <u>nereden geldiği</u>. Uç nokta okumak içindir, ayar <b>değiştirmek</b> için değil. Gösterdiği şey ortamın kendisidir; o değeri kimin <code>@Value</code> ile mi <code>@ConfigurationProperties</code> ile mi okuduğu fark etmez. <b>Kanca:</b> <b>Sor, tahmin etme</b> — ama sorduğun uç noktayı üretimde kilitli tut."
+    },
+    {
+      "topic": "3.1 Öncelik sırası",
+      "q": "<code>@Value(\"${siparis.magaza-adi}\")</code> yazdın, ayar hiçbir kaynakta tanımlı değil ve uygulama <code>Could not resolve placeholder 'siparis.magaza-adi'</code> ile açılmıyor. Bir arkadaşın hemen <code>${siparis.magaza-adi:Merkez}</code> yazmayı öneriyor. Doğru değerlendirme nedir?",
+      "opts": [
+        "Bu iyi bir hatadır: eksik ayarı açılışta yakalar. Varsayılan koymadan önce sorulacak soru şudur — gerçekten makul bir varsayılanı var mı, yoksa eksikliği mi gizliyorum?",
+        "Varsayılan koymak her zaman doğrudur; açılışın ayar yüzünden durması kabul edilemez bir kırılganlıktır",
+        "Hata <code>@Value</code>'nun yanlış kullanımından gelir; doğru yazım <code>@Value(\"siparis.magaza-adi\")</code> biçimindedir",
+        "Varsayılan koymak işe yaramaz; <code>@Value</code> varsayılan değer sözdizimini desteklemez, <code>@ConfigurationProperties</code> kullanılmalıdır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>Could not resolve placeholder</code> iyi bir hatadır — eksik ayarı üretimde değil açılışta yakalar.</b> Varsayılan yazmak (<code>${anahtar:Merkez}</code>) geçerli bir seçenektir, ama bilinçli olmalıdır: gerçekten makul bir varsayılan mı koyuyorsun, yoksa dağıtım betiğindeki bir eksikliği mi gizliyorsun? Yanlış varsayılanla sessizce çalışan bir uygulama, açılmayan bir uygulamadan pahalıdır. En yakın çeldirici 'varsayılan koymak her zaman doğrudur': bu, kursun tam tersini savunduğu refleks — sessiz hatalar tablosunun tamamı bu düşünceden doğar. Sözdizimi de doğrudur: <code>@Value</code> hem <code>${...}</code> placeholder'ını hem <code>:</code> ile varsayılanı destekler. <b>Kanca:</b> <b>Hata vermeyen yanlış, hata verenden pahalıdır.</b>"
+    },
+    {
+      "topic": "3.1 Öncelik sırası",
+      "q": "Ekip ayar dosyasını <code>.properties</code>'ten <code>.yaml</code>'a taşımayı tartışıyor. YAML'a geçmenin getirdiği <b>iki gerçek risk</b> hangisidir? (İki tanesini seç.)",
+      "opts": [
+        "Girinti hatası hata vermeden <b>sessiz yanlış okumaya</b> yol açabilir",
+        "Sayı gibi görünen metinler yanlış yorumlanabilir: <code>parola: 0123</code> sekizlik tabanda bir sayı sanılabilir",
+        "YAML'da liste ve iç içe yapı yazmak <code>[0]</code>, <code>[1]</code> indeksleri gerektirdiği için hantaldır",
+        "YAML dosyalarında ayar adları birebir yazılmak zorundadır; esnek yazım biçimleri tanınmaz",
+        "YAML'da profil bloğu tanımlanamaz; her profil için ayrı dosya açmak zorunlu hâle gelir"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>YAML liste ve iç içe yapıda okunaklıdır ve çoğu proje onu tercih eder — ama iki gerçek riski vardır: girinti hatası bir hata değil <u>sessiz yanlış okuma</u> üretir, ve sayı gibi görünen değerler tip olarak yanlış yorumlanabilir.</b> İkincisinin çözümü basit: metin olmasını istediğin her değeri tırnağa al (<code>parola: \"0123\"</code>). En yakın çeldirici üçüncü şık: indeksli yazım (<code>siparis.sunucular[0]</code>) <b><code>.properties</code></b> tarafının hantallığıdır — YAML'da liste doğal olarak yazılır; şık doğru gerçeği yanlış tarafa yapıştırıyor. Relaxed binding biçimden bağımsız çalışır, profil bloğu da YAML'da <code>---</code> ve <code>spring.config.activate.on-profile</code> ile pekâlâ tanımlanır. ⚠️ Ve en önemlisi: <b>ikisini birden tutma</b> — aynı klasörde ikisi varsa <code>.properties</code> kazanır ve kimse fark etmez. <b>Kanca:</b> YAML okunaklıdır ama <b>boşluk sayar</b>."
+    },
+    {
+      "topic": "3.2 @ConfigurationProperties",
+      "q": "<code>@ConfigurationProperties(prefix = \"siparis\")</code> işaretli <code>record SiparisAyarlari(String magazaAdi, int zamanAsimi, Duration bekleme, List&lt;String&gt; sunucular)</code> var. Ayar dosyasında <code>siparis.magaza-adi=Merkez</code>, <code>siparis.bekleme=45s</code>, <code>siparis.sunucular[0]=a.sirket.com</code> yazıyor. Nesne yazdırıldığında ne görürsün ve bunu kim yaptı?",
+      "opts": [
+        "<code>magazaAdi=Merkez</code>, <code>bekleme=PT45S</code>, <code>sunucular=[a.sirket.com]</code> — relaxed binding adı eşledi, tip dönüşümü <code>45s</code> metnini <code>Duration</code>'a çevirdi, liste kendiliğinden kuruldu",
+        "<code>magazaAdi=null</code> — <code>magaza-adi</code> ile <code>magazaAdi</code> eşleşmez; ayar adının bileşen adıyla birebir aynı yazılması gerekir",
+        "<code>bekleme</code> alanı <code>null</code> gelir — <code>Duration</code> dönüşümü için ayrıca bir <code>Converter</code> bean'i yazılmalıdır",
+        "<code>sunucular</code> alanı <code>null</code> gelir — listeler yalnızca YAML biçiminde bağlanabilir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bağlama üç işi birden yapar: relaxed binding (<code>magaza-adi</code> → <code>magazaAdi</code>), tip dönüşümü (<code>45s</code> → <code>PT45S</code>) ve indeksli anahtarlardan liste kurma (<code>sunucular[0]</code> → <code>List&lt;String&gt;</code>).</b> Sen ayrıştırma kodu yazmazsın. <code>record</code> kullanmanın hediyesi de alanların <code>final</code> olması: ayarlar açılışta bir kere okunur, sonradan değiştirilemez. En yakın çeldirici <code>Converter</code> ihtiyacı: <code>Duration</code> için gerekmez — <code>45s</code>, <code>PT45S</code>, <code>30m</code> gibi yazımlar kutudan çıkar. Listeler <code>.properties</code> biçiminde de bağlanır; YAML yalnızca yazımı okunaklı kılar. <b>Kanca:</b> Ayarı <b>nesneye bağla</b>; metinden çevirmeyi Spring'e bırak."
+    },
+    {
+      "topic": "3.2 @ConfigurationProperties",
+      "q": "Ayar sınıfına <code>@Validated</code> ve birkaç kısıt ekledin. Bu kısıtların gerçekten çalıştığını birleştirmeden önce nasıl <b>kanıtlarsın</b>?",
+      "opts": [
+        "Ayar dosyasına bilerek geçersiz bir değer yazıp uygulamanın <u>açılmadığını</u> ve çıktıda <code>Reason:</code> ile <code>Origin:</code> satırlarının geldiğini görerek",
+        "Uygulamayı normal ayarlarla açıp günlükte bir doğrulama satırı arayarak; kısıtlar çalışıyorsa açılışta rapor edilirler",
+        "<code>./mvnw dependency:tree</code> ile <code>spring-boot-starter-validation</code>'ın geldiğini doğrulayarak; bağımlılık varsa kısıtlar çalışıyordur",
+        "IDE'nin ayar dosyasında uyarı gösterip göstermediğine bakarak; <code>spring-boot-configuration-processor</code> kısıtları da denetler"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Bu kursun sessiz hatalar ailesinde doğrulama iki kere geçiyor (<code>@Validated</code> unutmak, iç içe <code>@Valid</code> unutmak) ve ikisinin de ortak yanı şu: kısıt orada durur, hiç çalışmaz ve kimse haber vermez.</b> Bu yüzden tek güvenilir kanıt, kısıtı <b>bilerek bozmak</b> ve açılışın gerçekten patladığını görmektir; doğru kurulmuşsa çıktı <code>Reason: must be greater than or equal to 100</code> gibi okunabilir bir sebep ve <code>Origin: ... - 2:21</code> ile dosya:satır:sütun verir. En yakın çeldirici günlükte satır aramak: doğrulama <b>başarılı</b> olduğunda hiçbir şey yazmaz — sessizliği kanıt sanmak tam da bu tuzağın kendisidir. Bağımlılığın gelmiş olması kısıtların tetiklendiğini göstermez (<code>@Validated</code> hâlâ eksik olabilir), <code>configuration-processor</code> ise ayar <b>adlarını</b> tamamlar, değerleri denetlemez. <b>Kanca:</b> Doğrulamaya güvenmeden önce <b>bir kere kırmızıya boya</b>."
+    },
+    {
+      "topic": "3.2 @ConfigurationProperties",
+      "q": "Bir dağıtım denemesinde ayar dosyası bozuk olduğu için uygulama hiç açılmadı ve çıktı iki hatayı birden listeledi. Ekipten biri 'doğrulama bizi durduruyor' diye şikâyet ediyor. Bu davranışın dağıtım sürecine kazancı nedir?",
+      "opts": [
+        "Yanlış ayar üretime hiç çıkmaz, ve iki hata birden listelendiği için düzelt-yeniden çalıştır döngüsüne girmezsin",
+        "Kazancı yoktur; doğrulama yalnızca geliştirme kolaylığıdır ve dağıtımda kapatılması beklenir",
+        "Kazancı, hatalı ayarların çalışma zamanında varsayılan değerlerle değiştirilmesidir",
+        "Kazancı, uygulamanın açılıp yalnızca hatalı ayarı kullanan uç noktaları devre dışı bırakmasıdır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Ayar doğrulamasının asıl işi, hatayı sessiz olmaktan çıkarıp gürültülü yapmaktır: yanlış ayarla <u>açılmamak</u>, yanlış ayarla <u>çalışmaktan</u> iyidir.</b> İkinci kazanç çıktının kendisindedir: hataları tek tek değil hepsini birden listeler, üstelik her biri için <code>Origin:</code> satırıyla dosya, satır ve sütunu verir — büyük bir projede ayarın nereden geldiğini bulmanın en hızlı yolu budur. En yakın çeldirici 'dağıtımda kapatılmalı': tam tersi — doğrulamanın en değerli olduğu an dağıtım anıdır; kapatırsan yanlış ayar üretimde, gecenin bir yarısı, sebebi görünmeyen bir davranış olarak ortaya çıkar. Spring hatalı ayarı sessizce varsayılanla değiştirmez ve uç nokta devre dışı bırakma diye bir mekanizma yoktur. <b>Kanca:</b> <b>Hata vermeyen yanlış, hata verenden pahalıdır.</b>"
+    },
+    {
+      "topic": "3.3 Profiller",
+      "q": "Bir bean yalnızca <code>uretim</code> ve <code>izleme</code> profillerinin <b>ikisi de</b> açıkken kurulsun istiyorsun. Başka bir bean ise <code>test</code> ya da <code>yerel</code> profillerinden <b>herhangi biri</b> açıkken kurulsun. Doğru yazım hangisidir?",
+      "opts": [
+        "<code>@Profile(\"uretim & izleme\")</code> ve <code>@Profile({\"test\", \"yerel\"})</code>",
+        "<code>@Profile({\"uretim\", \"izleme\"})</code> ve <code>@Profile(\"test & yerel\")</code>",
+        "<code>@Profile(\"uretim,izleme\")</code> ve <code>@Profile(\"test|yerel\")</code>",
+        "<code>@Profile(\"uretim\") @Profile(\"izleme\")</code> ve <code>@Profile(\"!uretim\")</code>"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>@Profile</code> ifadelerinde <code>&amp;</code> 'ikisi de' demektir; dizi yazımı (<code>{\"a\", \"b\"}</code>) ise 'herhangi biri' demektir. Üçüncü bir yazım da <code>!</code> ile olumsuzlamadır: <code>@Profile(\"!uretim\")</code> = 'uretim açık değilse'.</b> En yakın çeldirici ikinci şık: iki yazımı tam olarak yer değiştirir — en sık yapılan karıştırma budur; dizi 've' değil <b>'veya'</b> anlamına gelir. Virgüllü metin (<code>\"uretim,izleme\"</code>) tek bir profil adı gibi ele alınır; virgül profilleri <b>etkinleştirirken</b> kullanılır (<code>--spring.profiles.active=uretim,izleme</code>), <code>@Profile</code> ifadesinde değil. Aynı anotasyonu bir sınıfa iki kere yazamazsın. ⚠️ Ve unutma: <code>@Profile</code> bir bean seçim aracıdır, <b>güvenlik aracı değildir</b> — yanlış profil ayarı korumayı kaldırır. <b>Kanca:</b> <code>&amp;</code> = <b>ve</b>, dizi = <b>veya</b>, <code>!</code> = <b>değil</b>."
+    },
+    {
+      "topic": "3.3 Profiller",
+      "q": "Bir geliştirici, dağıtımda unutulmasın diye <code>src/main/resources/application.properties</code> dosyasına <code>spring.profiles.active=uretim</code> satırını ekledi. Ne dersin?",
+      "opts": [
+        "Profil <b>dışarıdan</b> verilir; kaynak koda ortam adı yazmak dağıtımı koda kilitler ve dışarıdan ezmek isteyen herkesin bu satırın varlığını bilmesi gerekir",
+        "Doğru bir hamledir; varsayılan profili kaynak kodda sabitlemek dağıtım betiğini basitleştirir ve unutmayı engeller",
+        "İşe yaramaz; <code>spring.profiles.active</code> yalnızca komut satırından ya da ortam değişkeninden okunur, ayar dosyasından okunmaz",
+        "Zararsızdır çünkü ayar dosyasındaki profil, profil dosyalarının hepsini birden etkinleştirir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Profillerin var oluş sebebi, ortam bilgisinin kaynak koddan çıkmasıdır. <code>application.properties</code>'e <code>spring.profiles.active=uretim</code> yazmak, tam da kaçtığın şeyi geri getirir:</b> uygulamayı varsayılan olarak üretim profiline kilitlemiş olursun ve dışarıdan ezmek isteyen herkesin bu satırın varlığını bilmesi gerekir. Kural şudur: kaynak kodda bir ortam adı görüyorsan durup düşün. Doğru yol dışarıdan vermektir — <code>--spring.profiles.active=uretim</code> ya da <code>SPRING_PROFILES_ACTIVE=uretim</code> (Docker ve Kubernetes'te bu). En yakın çeldirici 'işe yaramaz': ne yazık ki <b>işe yarar</b> — okunur ve uygulanır; tehlikeli olan da budur. Ayar dosyasındaki profil bütün profilleri açmaz, yalnızca yazdığını açar. 📌 Yalnızca geliştirme varsayılanı için (<code>yerel</code> gibi) savunulabilir bir kullanımdır. <b>Kanca:</b> Profil bir <b>dağıtım kararıdır</b>, kaynak kod kararı değil."
+    },
+    {
+      "topic": "4.1 Request mapping",
+      "q": "Bir istemci geliştiricisi <code>curl -X POST localhost:8080/siparisler -d '{\"urunKodu\":\"ABC-1\",\"adet\":2}'</code> çalıştırıyor ve <code>415</code> alıyor. Sunucu kodunda hata olmadığını nasıl anlatırsın?",
+      "opts": [
+        "<code>curl</code>, <code>-H</code> verilmezse <code>application/x-www-form-urlencoded</code> gönderir; 415 <code>Content-Type</code>'ın desteklenmediğini söyler ve gövdeye <b>hiç bakılmamıştır</b>. Çözüm: <code>-H 'Content-Type: application/json'</code>",
+        "415 gövdenin doğrulamadan geçmediğini söyler; <code>adet</code> alanı sunucudaki kısıtı ihlal etmiştir",
+        "415 adresin bulunamadığını söyler; istemci yolu yanlış yazmıştır",
+        "415 HTTP metodunun desteklenmediğini söyler; istemcinin <code>PUT</code> kullanması gerekir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>415 Unsupported Media Type, isteğin <code>Content-Type</code> başlığının desteklenmediğini söyler — ve önemli ayrıntı şu: gövdeye <u>hiç bakılmamıştır</u>.</b> <code>curl</code> başlık verilmediğinde form biçimi gönderir, sunucu ise JSON bekler. Sunucu kodunda hata yoktur; eksik olan istemcinin başlığıdır. En yakın çeldirici 400: o, gövdenin okunup <b>doğrulamadan geçmemesi</b>dir — ikisini ayıran şey gövdeye bakılıp bakılmadığıdır. 404 adresin hiç eşleşmemesi, 405 ise metodun yanlış olması (+ <code>Allow:</code> başlığı) demektir. <b>Kanca:</b> <b>415 = zarf yanlış · 400 = içerik yanlış.</b>"
+    },
+    {
+      "topic": "4.1 Request mapping",
+      "q": "Kod incelemesinde şunu gördün: <code>@RequestParam(required = false, defaultValue = \"1\") int sayfa</code>. Kod çalışıyor. Ne dersin?",
+      "opts": [
+        "<code>defaultValue</code> yazdığın anda <code>required</code> zaten <code>false</code> sayılır; ikisini birlikte yazmak gereksizdir ve okuyanı 'parametre gelmezse ne oluyor?' diye tereddüde düşürür — <code>required</code>'ı sil",
+        "Hatalıdır: <code>required = false</code> ile <code>int</code> yan yana olduğu için parametre gelmediğinde <code>null</code> atanmaya çalışılır ve istek 500 verir",
+        "Hatalıdır: <code>defaultValue</code> yalnızca <code>required = true</code> iken uygulanır; bu hâliyle varsayılan hiç devreye girmez",
+        "Doğrudur ve gereklidir: <code>defaultValue</code> tek başına yazılırsa parametre eksik olduğunda istek 400 alır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>defaultValue</code> verdiğin anda parametre zaten isteğe bağlı hâle gelir; <code>required = false</code> yazmak fazladan gürültüdür.</b> En yakın çeldirici ikinci şık: <code>required = false</code> + ilkel tür gerçekten klasik bir hatadır — parametre gelmediğinde <code>null</code> ilkel türe atanamaz ve istek patlar — <b>ama</b> burada <code>defaultValue</code> var, yani parametre hiç gelmese bile alan <code>\"1\"</code> ile dolar ve <code>int</code> sorunsuz atanır. İki durumu ayıran şey tam olarak budur: <b>varsayılan varsa</b> ilkel tür güvenlidir, <b>yoksa</b> sarmalayıcı (<code>Integer</code>) kullanmalısın. Üçüncü ve dördüncü şıklar da <code>defaultValue</code>'nun ne yaptığını ters çevirir. <b>Kanca:</b> <code>required = false</code> + <code>int</code> = tehlike; <code>defaultValue</code> + <code>int</code> = güvenli."
+    },
+    {
+      "topic": "4.1 Request mapping",
+      "q": "API'ye yeni bir sütun eklediniz ve haberi olmayan istemci uygulamaları bozuldu. İncelemede kontrolcünün JPA varlık sınıfı <code>SiparisVarligi</code>'nı doğrudan döndürdüğü görüldü. Doğru düzeltme ve gerekçesi nedir?",
+      "opts": [
+        "Ayrı bir DTO <code>record</code>'una çevirip onu döndürmek: aksi hâlde veritabanı şeman API sözleşmesine dönüşür, alan eklemek istemcileri etkiler ve tembel yüklenen alanlar beklenmedik sorgular tetikler",
+        "Varlık sınıfının yeni alanına <code>@JsonIgnore</code> eklemek; her yeni alanda bu adım tekrarlanır",
+        "API'yi sürümlemek (<code>/v2/siparisler</code>) ve varlık sınıfını döndürmeye devam etmek",
+        "Kontrolcünün dönüş türünü <code>ResponseEntity&lt;SiparisVarligi&gt;</code> yapmak; wrapper şema değişikliklerini yalıtır"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Varlık sınıfını doğrudan döndürmenin üç zararı vardır: veritabanı şeman dış dünyaya sızar, bir alan eklediğinde istemcilere haber vermeden API'yi değiştirmiş olursun, ve JPA kullanıyorsan tembel yüklenen alanlar beklenmedik sorgular tetikler (201).</b> Çözüm bir DTO'dur — kursta gördüğün <code>Siparis</code> ve <code>YeniSiparis</code> <code>record</code>'ları tam olarak bunlar. En yakın çeldirici <code>@JsonIgnore</code>: bu tek tek yamadır, kök sebebi (API'nin veritabanı şemasına bağlı olması) bırakır ve bir sonraki alanda aynı kaza tekrarlanır. Sürümleme gerçek bir araçtır ama burada sorunu değil <b>sonucunu</b> yönetir. <code>ResponseEntity</code> yalnızca durum kodu ve başlık taşır; gövdedeki sınıfı değiştirmez. <b>Kanca:</b> API sözleşmesi <b>senin seçtiğin</b> bir sınıf olmalı, veritabanının dayattığı değil."
+    },
+    {
+      "topic": "4.2 Exception handling",
+      "q": "Hata işleyicini <code>@ControllerAdvice</code> ile yazdın ve <code>ProblemDetail</code> döndürüyorsun; istemci beklediği gövdeyi alamıyor. Sorun nedir?",
+      "opts": [
+        "<code>@ControllerAdvice</code>'ta <code>@ResponseBody</code> yoktur; dönen nesne view name gibi ele alınır. Doğrusu <code>@RestControllerAdvice</code>",
+        "<code>@ControllerAdvice</code> yalnızca aynı pakette bulunan kontrolcüler için çalışır; paketi taşımak gerekir",
+        "<code>ProblemDetail</code> yalnızca <code>spring.mvc.problemdetails.enabled=true</code> iken döndürülebilir; ayar eksiktir",
+        "<code>@ExceptionHandler</code> metotları <code>ResponseEntity</code> döndürmek zorundadır; <code>ProblemDetail</code> desteklenmez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>@RestControllerAdvice</code> = <code>@ControllerAdvice</code> + <code>@ResponseBody</code>. İkincisini yazmazsan dönen nesne gövde değil <u>view name</u> sayılır — bu, <code>@Controller</code>/<code>@RestController</code> tuzağının hata işleyici sürümüdür.</b> En yakın çeldirici <code>problemdetails.enabled</code>: o ayar <b>yerleşik</b> hataların (405, 415, bozuk JSON) biçimini standarda çevirir; senin kendi <code>@ExceptionHandler</code> metodundan döndürdüğün <code>ProblemDetail</code> için gerekli değildir. <code>@ControllerAdvice</code> paket sınırlı değildir (istersen sınırlandırılır, ama varsayılan tüm kontrolcülerdir) ve <code>@ExceptionHandler</code> metotları <code>ProblemDetail</code> döndürebilir. <b>Kanca:</b> Adında <b>Rest</b> geçmiyorsa, dönen nesne gövde sayılmaz."
+    },
+    {
+      "topic": "4.2 Exception handling",
+      "q": "Bir kullanıcı '500 aldım' diyor. Ekip, teşhisi kolaylaştırmak için stack trace'i yanıt gövdesine eklemeyi öneriyor. Doğru tasarımı anlatan hangi iki ifadedir? (İki tanesini seç.)",
+      "opts": [
+        "Ayrıntı günlüğe, istemciye genel bir mesaj, yanıta ise ikisini bağlayan bir <b>izleme numarası</b> konur",
+        "Yığın izi istemciye hiç gönderilmez; <code>server.error.include-stacktrace</code> varsayılanı <code>never</code>'dır ve değiştirilmez",
+        "Yığın izini yalnızca 5xx yanıtlarında döndürmek güvenlidir; 4xx'te gizli tutulur",
+        "Yığın izi yerine istisna sınıfının tam adını döndürmek yeterlidir; sınıf adları hassas bilgi taşımaz",
+        "Ayrıntıyı istemciye vermezsen sorunu bulman imkânsızlaşır; bu yüzden gövdeye en azından <code>Caused by</code> satırı eklenmelidir"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Kural üç parçalıdır: ayrıntı günlüğe, genel mesaj istemciye, ikisini bağlayan izleme numarası yanıta.</b> Kullanıcı sana 'izleme numaram <code>abc-123</code>' der, sen günlükte tam yığın izini bulursun (<code>p.setProperty(\"izlemeNo\", MDC.get(\"traceId\"))</code>) — teşhis kolaylığını güvenlikten ödün vermeden alırsın. Yığın izi sınıf adlarını, kütüphane sürümlerini ve dosya yollarını açığa çıkarır; saldırgana harita çizer. Bu yüzden <code>server.error.include-stacktrace</code> varsayılanı <code>never</code>'dır ve değiştirilmez. En yakın çeldirici istisna sınıfının adını döndürmek: aynı sızıntının küçük hâlidir, üstelik istemcinin o ada göre kod yazmasına yol açar — makine okuması gereken alan <code>type</code>'tır. 'Ayrıntı olmadan bulunamaz' iddiası da izleme numarası kalıbını görmezden gelir. <b>Kanca:</b> İstemciye <b>numara</b> ver, iç yapını değil."
+    },
+    {
+      "topic": "4.3 RestClient",
+      "q": "Ürün kodunda <code>/</code> karakteri geçen isteklerde dış servisten 404 alıyorsunuz. Kodda <code>.uri(\"/stoklar/\" + urunKodu)</code> yazıyor. Ne oldu ve doğrusu nedir?",
+      "opts": [
+        "Adres metin birleştirmeyle kurulduğu için <code>/</code> ve <code>?</code> gibi karakterler adresi bozdu; <code>.uri(\"/stoklar/{kod}\", urunKodu)</code> placeholder'ı kullanılmalı — kaçış (URL encoding) işini <code>RestClient</code> yapar",
+        "Dış servis o ürünü gerçekten tanımıyor; kodda sorun yoktur, veri tarafına bakılmalıdır",
+        "<code>baseUrl</code> ile göreli adres birleştirilemez; tam adres yazılmalıdır",
+        "<code>retrieve()</code> yerine <code>toEntity()</code> kullanılmalı; <code>retrieve()</code> özel karakterleri desteklemez"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Adresi <code>+</code> ile birleştirirsen değerin içindeki <code>/</code>, <code>?</code> gibi karakterler adres yapısına karışır ve istek bambaşka bir yola gider. Placeholder kullandığında (<code>{kod}</code>) kaçış işini <code>RestClient</code> kendisi yapar.</b> En yakın çeldirici 'veri tarafına bakın': belirti gerçekten 404'tür ama <b>yalnızca özel karakter içeren kodlarda</b> çıkıyorsa sebep neredeyse her zaman adres kurulumudur — bu ayrımı yapmak teşhis alışkanlığının kendisidir. <code>baseUrl</code> ile göreli adres pekâlâ birleşir. <code>.retrieve()</code> ile <code>.toEntity()</code> arasındaki fark ise ne döndürdükleridir (gövde / gövde + durum + başlıklar), karakter işleme değil. <b>Kanca:</b> Adres <b>şablondur</b>, metin değil."
+    },
+    {
+      "topic": "4.3 RestClient",
+      "q": "Yeni bir dış servis entegrasyonu yazıyorsun. <code>RestClient</code> ve kardeşleri hakkında doğru olan iki ifade hangisidir? (İki tanesini seç.)",
+      "opts": [
+        "Durum kodunu ve başlıkları da okuman gerekiyorsa <code>.body(T.class)</code> yerine <code>.toEntity(T.class)</code> kullanılır",
+        "<code>RestTemplate</code> şu an hâlâ <code>@Deprecated</code> işaretli <b>değildir</b>; buna rağmen yeni kodda <code>RestClient</code> seçilir",
+        "<code>WebClient</code> kullanımdan kaldırılmıştır; reaktif işler de artık <code>RestClient</code> ile yazılır",
+        "<code>retrieve()</code> başarısız durum kodlarını sessizce yutar; hata yakalamak için <code>onStatus</code> yazmak zorunludur",
+        "Her çağrıda <code>RestClient.create()</code> ile yeni istemci kurmak, connection pool'u taze tuttuğu için önerilir"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b><code>.body()</code> yalnızca gövdeyi verir; durum kodu ve başlıklar lazımsa <code>.toEntity()</code> (gövdesiz yanıt için <code>.toBodilessEntity()</code>) kullanılır. Ve <code>RestTemplate</code> bugün hâlâ <code>@Deprecated</code> değildir — resmî plan 7.1'de işaretlemek, 8.0'da kaldırmaktır; yine de yeni kodda <code>RestClient</code> seçilir.</b> En yakın çeldirici <code>WebClient</code>: kaldırılmıyor, reaktif ve akış işleri için önerilmeye devam ediyor. <code>retrieve()</code> hataları yutmaz, tam tersine <b>exception'a çevirir</b> (4xx → <code>HttpClientErrorException</code>, 5xx → <code>HttpServerErrorException</code>); <code>onStatus</code> isteğe bağlı bir özelleştirmedir. Her çağrıda yeni istemci kurmak ise her seferinde yeni connection pool açar — <code>RestClient</code> bir <b>bean</b> olmalıdır. <b>Kanca:</b> Bloklayan iş → <code>RestClient</code>; reaktif iş → <code>WebClient</code>."
+    },
+    {
+      "topic": "5.1 Slice test",
+      "q": "<code>@WebMvcTest(SiparisKontrolcusu.class)</code> testin <code>required a bean of type 'SiparisServisi' that could not be found</code> ile açılmıyor. Servis sınıfı <code>@Service</code> işaretli ve doğru pakette. Ne yaparsın?",
+      "opts": [
+        "Test sınıfına <code>@MockitoBean SiparisServisi servis;</code> ekleyip davranışını <code>given(...)</code> ile tanımlarım — slice test <code>@Service</code> sınıflarını container'a almaz, bağımlılıkları ben mock'larım",
+        "<code>@WebMvcTest</code> yanına <code>@DataJpaTest</code> eklerim; iki slice'ı birleştirince servis de container'a girer",
+        "Servis sınıfına <code>@Component</code> yazarım; slice test'ler yalnızca <code>@Component</code> işaretli sınıfları alır",
+        "Testi <code>@SpringBootTest</code>'e çeviririm — slice test bu senaryoda kullanılamaz"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b><code>@WebMvcTest</code> container'a yalnızca web katmanını koyar: kontrolcüler, <code>@ControllerAdvice</code>, dönüştürücüler, filtreler. <code>@Service</code> ve <code>@Repository</code> sınıfları <u>alınmaz</u> — bu bir eksiklik değil, tasarımdır: test yalnızca web katmanını ölçsün diye bağımlılıkları sen mock'larsın.</b> En yakın çeldirici <code>@SpringBootTest</code>'e geçmek: testi çalıştırır ama ölçtüğü şeyi değiştirir ve ölçülen farkla yavaşlatır (0,174 sn → 1,083 sn, yaklaşık 6,5 kat). Slice anotasyonları <b>birleştirilemez</b>; iki slice'a ihtiyacın varsa muhtemelen iki teste ihtiyacın vardır. Servise <code>@Component</code> yazmak da hiçbir şeyi değiştirmez; slice <code>@Controller</code> ailesini alır. <b>Kanca:</b> Slice test'te eksik bean bir hata değil, <b>davet</b>tir: onu mock'la."
+    },
+    {
+      "topic": "5.1 Slice test",
+      "q": "Test paketi 11 dakika sürüyor ve kimse çalıştırmıyor. İnceleyince testler arası sızıntıların <code>@DirtiesContext</code> ile çözülmüş olduğunu ve neredeyse her sınıfın kendi <code>@TestPropertySource</code> ayarını taşıdığını görüyorsun. Doğru teşhis nedir?",
+      "opts": [
+        "Yapılandırmayı değiştiren her şey <b>yeni bir container</b> demektir; <code>@DirtiesContext</code> ve farklı ayar kümeleri context cache'i kırar. Asıl sorun genelde paylaşılan durumdur — onu düzeltip bu anotasyonları kaldırmak gerekir",
+        "Context cache yoktur; her test sınıfı zaten kendi container'ını kurar. Süreyi düşürmenin tek yolu test sayısını azaltmaktır",
+        "<code>@DirtiesContext</code> ücretsizdir; asıl yavaşlık <code>@WebMvcTest</code> slice test'lerinden gelir, hepsini <code>@SpringBootTest</code>'e çevirmek gerekir",
+        "Sorun Mockito'nun <code>self-attaching</code> uyarısıdır; Mockito'yu Java aracısı olarak eklemek süreyi normale döndürür"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Spring aynı yapılandırmaya sahip testler için container'ı bir kere kurar ve yeniden kullanır — 50 <code>@SpringBootTest</code> sınıfı 50 container kurmaz. Ama <code>@ActiveProfiles</code>, <code>@TestPropertySource</code>, farklı <code>@MockitoBean</code> kümesi ve <code>@DirtiesContext</code> yeni container demektir.</b> <code>@DirtiesContext</code> ile sızıntı çözmek, kök sebebi (genelde singleton bean'de paylaşılan durum) bırakıp her kullanımda bir container kurulumu satın almaktır. En yakın çeldirici slice test'leri suçlamak: slice test'ler <b>hızlı</b> olandır (0,174 sn); yönü tersine çevirmek paketi daha da yavaşlatır. Mockito'nun <code>self-attaching</code> çıktısı ise bir <b>uyarıdır</b>, başarım sorunu değil. <b>Kanca:</b> Aynı yapılandırma = <b>aynı container</b> = hızlı."
+    },
+    {
+      "topic": "5.2 @MockitoBean",
+      "q": "<code>@SpringBootTest</code> sınıfında dört farklı bağımlılık <code>@MockitoBean</code> ile mock'lanmış ve test 'sipariş akışını' doğruluyor. Bu test hakkında hangi iki değerlendirme doğrudur? (İki tanesini seç.)",
+      "opts": [
+        "Bütün gerçek davranış mock'landığı için test büyük ölçüde kendi varsayımlarını ölçüyor; mock'lama yalnızca test edilen sınırın <b>dışına</b> uygulanmalı",
+        "Üçten fazla <code>@MockitoBean</code>, yanlış katmanda test edildiğinin ya da sınıfın çok fazla bağımlılığı olduğunun işaretidir",
+        "Mock'lama bedavadır; <code>@MockitoBean</code> sayısı test süresini etkilemez",
+        "Mock'lanan bir bean'in stub'lanmamış metodu çağrıldığında Mockito test başarısız olur, bu yüzden sessiz hata riski yoktur",
+        "<code>@MockitoBean</code> yerine <code>@Mock</code> yazılsaydı aynı test daha güvenilir olurdu"
+      ],
+      "a": [
+        0,
+        1
+      ],
+      "why": "<b>Her şeyi mock'lanmış bir test hiçbir şey ölçmez: geriye yalnızca mock'lara verdiğin cevapların doğru sırayla döndüğünü doğrulamak kalır. Kural — dış HTTP servislerini, yan etkili servisleri, yavaş bağımlılıkları mock'la; test ettiğin sınıfın kendisini ve saf hesaplamaları mock'lama.</b> Üçten fazla <code>@MockitoBean</code> gördüğünde dur ve sor: yanlış katmanda mı test ediyorum, yoksa sınıfın çok mu bağımlılığı var? En yakın çeldirici 'mock'lama bedavadır': her farklı mock kümesi <b>ayrı bir container</b> demektir, yani mock'lama test paketini de yavaşlatır. Stub'lanmamış metot patlamaz, <code>null</code>/<code>0</code>/<code>false</code> döner. <code>@Mock</code> ise container'a hiç dokunmaz, testi güvenilir değil <b>anlamsız</b> yapardı. <b>Kanca:</b> Mock sayısı arttıkça testin <b>ölçtüğü şey azalır</b>."
+    },
+    {
+      "topic": "5.2 @MockitoBean",
+      "q": "Spring Boot 3 için yazılmış bir test sınıfını 4.1.1'e taşıyorsun. Aşağıdaki geçişlerden hangisi <b>tamamen</b> doğrudur?",
+      "opts": [
+        "<code>@MockBean</code> → <code>@MockitoBean</code>, <code>@SpyBean</code> → <code>@MockitoSpyBean</code>, ve <code>@Mock</code>/<code>@Captor</code> kullanılıyorsa <code>@ExtendWith(MockitoExtension.class)</code> eklenir",
+        "<code>@MockBean</code> → <code>@MockitoMock</code>, <code>@SpyBean</code> → <code>@MockitoSpy</code>, ve <code>@ExtendWith(SpringExtension.class)</code> eklenir",
+        "<code>@MockBean</code> → <code>@MockitoBean</code>, <code>@SpyBean</code> kaldırıldı ve karşılığı yoktur; spy davranışı artık desteklenmez",
+        "<code>@MockBean</code> ve <code>@SpyBean</code> aynı kalır; yalnızca paket adları <code>org.springframework.boot.webmvc.test.autoconfigure</code> olarak değişir"
+      ],
+      "a": [
+        0
+      ],
+      "why": "<b>Geçiş tablosunun test tarafı: <code>@MockBean</code> → <code>@MockitoBean</code>, <code>@SpyBean</code> → <code>@MockitoSpyBean</code>. Ve kolay gözden kaçan satır: <code>MockitoTestExecutionListener</code> kaldırıldığı için <code>@Mock</code>/<code>@Captor</code> kullanan sınıflara artık <code>@ExtendWith(MockitoExtension.class)</code> yazman gerekiyor</b> — yazmazsan alanlar <code>null</code> kalır ve hata asıl sebebi göstermeyen bir <code>NullPointerException</code> olarak çıkar. En yakın çeldirici üçüncü şık: <code>@SpyBean</code> kaldırılmadı, <b>yeniden adlandırıldı</b> — <code>@MockitoSpyBean</code> gerçek bean'i sarar ve mock'lamadığın metotlar gerçek kodu çalıştırmaya devam eder. Anotasyon adlarının aynı kalması da yanlıştır: <code>@MockitoBean</code>'in paketi <code>org.springframework.test.context.bean.override.mockito</code>'dur. <b>Kanca:</b> Boot 4'te mock'lama anotasyonlarının adı <b>Mockito ile başlar</b>."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

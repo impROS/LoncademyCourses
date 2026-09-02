@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.2 Testi — SpringBoot101</title>
+<link rel="stylesheet" href="../assets/quiz.css">
+</head>
+<body>
+<script>
+window.QUIZ = {
+  id: "3.2",
+  code: "Yapılandırma · 3.2",
+  title: "@ConfigurationProperties ve doğrulama",
+  back: "3.2-configuration-properties.md",
+  backLabel: "Konuya dön",
+  mode: "practice",
+  pass: 80,
+  questions: [
+    {
+      topic: "En sade hâl: `record` ile bağlama",
+      q: "<code>siparis.bekleme=45s</code> satırı, <code>Duration bekleme</code> bileşenine bağlanıyor. Uygulama nesneyi yazdırdığında bu alan ne görünür ve bunu kim yaptı?",
+      opts: [
+        "<code>PT45S</code> — metni <code>Duration</code>'a Spring'in tip dönüşümü çevirdi",
+        "<code>45s</code> — değer metin olarak taşınır, çevrimi kullanan kod yapar",
+        "<code>45000</code> — süre alanları milisaniye olarak saklanır",
+        "<code>PT45S</code> — <code>record</code>'un sıkıştırılmış constructor'u çevirmeyi yapar"
+      ],
+      a: [0],
+      why: "<b>Ölçülen çıktı <code>bekleme=PT45S</code></b>: <code>45s</code> metni bağlama sırasında <code>Duration</code> nesnesine çevrildi, sen ayrıştırma kodu yazmadın (<code>PT45S</code> zaten <code>Duration.toString()</code> biçimidir). En yakın çeldirici son şık: sonucu doğru, faili yanlış — sıkıştırılmış constructor varsayılan atamak için kullanılır, tip dönüşümünü <b>bağlama katmanı</b> yapar ve o constructor hiç yazılmasa da <code>PT45S</code> çıkardı. <b>Kanca:</b> <code>@ConfigurationProperties</code> yalnızca kopyalamaz, çevirir."
+    },
+    {
+      topic: "En sade hâl: `record` ile bağlama",
+      q: "<code>record SiparisAyarlari(String magazaAdi, ...)</code> tanımladın. Ayar dosyasında anahtarı hangi biçimde yazmak tercih edilir ve bileşen adıyla nasıl eşleşir?",
+      opts: [
+        "<code>siparis.magaza-adi</code> — relaxed binding kebab-case yazımı <code>magazaAdi</code> bileşenine götürür",
+        "<code>siparis.magazaAdi</code> — dosyadaki anahtar bileşen adıyla birebir aynı yazılmak zorundadır",
+        "<code>siparis.magaza-adi</code> — ancak bileşen adını da <code>magaza_adi</code> yapman gerekir",
+        "<code>siparis.MagazaAdi</code> — bağlama büyük harfle başlayan anahtar bekler"
+      ],
+      a: [0],
+      why: "<b>Ayar dosyasında tercih edilen yazım kebab-case'tir</b> ve relaxed binding onu camelCase bileşene götürür — 3.1'deki kural burada da çalışıyor. En yakın çeldirici ikinci şık: <code>siparis.magazaAdi</code> gerçekten <b>çalışır</b>, ama \"birebir aynı olmak zorunda\" kısmı yanlış; zorunluluk yok, tercih var. Mutlak ifadeli şıklarda ölçülen şey genelde budur. <b>Kanca:</b> dosyada tire, Java'da büyük harf."
+    },
+    {
+      topic: "Bean'i devreye almanın iki yolu",
+      q: "<code>record</code> ayar sınıfını <code>@Component</code> ile işaretledin ve uygulamayı başlattın. Sonuç ne olur ve doğrusu nedir?",
+      opts: [
+        "Bağlama çalışmaz; <code>record</code> constructor bağlaması ister, <code>@EnableConfigurationProperties</code> ya da <code>@ConfigurationPropertiesScan</code> kullanmalısın",
+        "Çalışır; <code>@Component</code> hem sınıf hem <code>record</code> için geçerli bir devreye alma yoludur",
+        "Bağlama çalışır ama nesne her istekte yeniden kurulur; scope'unu <code>singleton</code> yapmalısın",
+        "Çalışmaz; <code>record</code> hiçbir yolla ayar sınıfı olamaz, normal sınıfa çevirmelisin"
+      ],
+      a: [0],
+      why: "<b><code>record</code> + <code>@Component</code> çalışmaz</b> — <code>record</code> için Spring constructor bağlaması yapar ve bu <code>@Component</code> yoluyla devreye girmez. En yakın çeldirici ikinci şık: <code>@Component</code> <b>normal sınıflarda</b> gerçekten çalışır, bu yüzden \"bende işe yaramıştı\" hissi doğurur — ayrım tam olarak <code>record</code> olup olmamasıdır. Son şık aşırıya kaçıyor: <code>record</code> pekâlâ ayar sınıfı olur, sadece doğru yoldan devreye alınır. <b>Kanca:</b> <code>record</code> gördüğünde Yol A ya da Yol B."
+    },
+    {
+      topic: "Bean'i devreye almanın iki yolu",
+      q: "Projede on iki ayrı <code>@ConfigurationProperties</code> sınıfı var ve her yeni sınıf ekleyen kişi ana sınıfa kayıt yazmayı unutuyor. Hangi yaklaşım bu unutmayı ortadan kaldırır?",
+      opts: [
+        "Ana sınıfa <code>@ConfigurationPropertiesScan</code> koymak; işaretli tüm sınıfları tarar",
+        "Ana sınıfa <code>@EnableConfigurationProperties</code> koyup on iki sınıfı tek tek listelemek",
+        "Ayar sınıflarını <code>@Configuration</code> ile işaretlemek",
+        "Component scan'in kök paketini genişletmek"
+      ],
+      a: [0],
+      why: "<b><code>@ConfigurationPropertiesScan</code> işaretli tüm sınıfları bulur</b>, tek tek listeleme derdi biter. En yakın çeldirici <code>@EnableConfigurationProperties</code>: aynı işi yapan geçerli bir yoldur ama <b>sınıfları elle listelemeni ister</b> — yani sorunun tam olarak kendisini korur. Component scan ayar sınıflarını bu şekilde devreye almaz; <code>record</code> ile zaten çalışmaz. <b>Kanca:</b> az sınıf varsa <code>Enable...</code>, çok sınıf varsa <code>...Scan</code>."
+    },
+    {
+      topic: "Doğrulama: ayarı açılışta denetle",
+      q: "Ayar sınıfında <code>@Min(100) int zamanAsimi</code> yazılı, dosyada <code>siparis.zaman-asimi=5</code> var ve uygulama sorunsuz açılıyor. En olası iki sebep hangisidir? (İki tanesini seç.)",
+      opts: [
+        "Sınıfın başında <code>@Validated</code> yok",
+        "<code>spring-boot-starter-validation</code> bağımlılığı projede yok",
+        "<code>@Min</code> yalnızca <code>long</code> alanlarda çalışır, <code>int</code> alanda yok sayılır",
+        "Doğrulama yalnızca <code>uretim</code> profili açıkken devreye girer"
+      ],
+      a: [0, 1],
+      why: "<b>Kısıt yazmak doğrulama açmaz.</b> <code>@Validated</code> yoksa kısıtlar sessizce yok sayılır; doğrulama bağımlılığı yoksa denetleyecek altyapı da yoktur. Her ikisi de aynı aileden: \"doğrulama koyduğunu sanmak, ama koymamış olmak\". En yakın çeldirici üçüncü şık — tip kısıtı uyduruyor; <code>@Min</code> tam sayı alanlarında çalışır. Doğrulamanın profile bağlanması da yok. <b>Kanca:</b> bir kısıt eklediğinde onu bilerek boz ve gerçekten patladığını gör."
+    },
+    {
+      topic: "Doğrulama: ayarı açılışta denetle",
+      q: "<code>magaza-adi</code> boş ve <code>zaman-asimi=5</code> iken <code>@Validated</code> açık. Açılış çıktısı hakkında hangisi doğrudur?",
+      opts: [
+        "<code>Binding to target ... failed:</code> başlığı altında iki hatayı da birden listeler",
+        "İlk hatada durur; <code>magazaAdi</code> düzeltilmeden ikinci hatayı göremezsin",
+        "Uygulama açılır, iki hatayı da <code>WARN</code> seviyesinde günlüğe yazar",
+        "Yalnızca sayısal kısıtı raporlar; <code>@NotBlank</code> ihlalleri açılışı durdurmaz"
+      ],
+      a: [0],
+      why: "<b>Ölçülen çıktı iki hatayı da tek seferde veriyor:</b> <code>Property: siparis.magazaAdi / Reason: must not be blank</code> ve <code>Property: siparis.zamanAsimi / Reason: must be greater than or equal to 100</code>. En yakın çeldirici ikinci şık: derleyici hatalarına benzeterek \"ilkinde durur\" sanmak yaygındır — oysa kazancın önemli bir kısmı tek tek düzeltip yeniden çalıştırmaktan kurtulmandır. <b>Kanca:</b> bir çalıştırma, tüm bozuk ayarlar."
+    },
+    {
+      topic: "Doğrulama: ayarı açılışta denetle",
+      q: "Doğrulama çıktısındaki <code>Origin: class path resource [application.properties] - 2:21</code> satırı sana ne verir?",
+      opts: [
+        "Bozuk değerin hangi dosyanın hangi satır ve sütununda yazdığını",
+        "Kısıtın Java kaynak dosyasındaki satır ve sütununu",
+        "Ayarın kaynak listesindeki sıra numarasını ve önceliğini",
+        "Bağlamanın kaç milisaniyede başarısız olduğunu"
+      ],
+      a: [0],
+      why: "<b><code>Origin:</code> değerin geldiği yeri gösterir: dosya adı, satır ve sütun (<code>2:21</code>).</b> Büyük bir projede \"bu ayar nereden geliyor\" sorusunu en hızlı çözen satır budur. En yakın çeldirici ikinci şık: kısıtın yerini göstermesi de yararlı olurdu, ama onu zaten sınıfta biliyorsun — bilmediğin şey <b>değerin</b> nereden geldiğidir. <b>Kanca:</b> <code>Property:</code> hangi ayar, <code>Value:</code> ne yazıyor, <code>Origin:</code> nerede yazıyor, <code>Reason:</code> neden olmaz."
+    },
+    {
+      topic: "Doğrulama: ayarı açılışta denetle",
+      q: "Bir ekip \"doğrulama koyunca uygulama açılmıyor, bu bizi durduruyor\" diyerek <code>@Validated</code>'ı kaldırmayı öneriyor. En doğru karşı argüman hangisidir?",
+      opts: [
+        "Açılmama istenen sonuçtur: yanlış ayarla açılmak, hatayı üretime taşır ve sessizleştirir",
+        "Kaldırmak sorunu çözer; ayar hataları zaten ilk istekte ortaya çıkar",
+        "Kısıtları gevşetmek gerekir; doğrulama yalnızca kütüphane projelerinde anlamlıdır",
+        "Doğrulama açık kalmalı ama kısıtlar <code>WARN</code> üretecek biçimde yapılandırılmalıdır"
+      ],
+      a: [0],
+      why: "<b>Yanlış ayarla açılmak, yanlış ayarla çalışmaktan kötüdür.</b> Doğrulamanın işi, 3.1'deki sessiz hatayı gürültülü yapmaktır; açılışta patlamak o gürültünün ta kendisidir. En yakın çeldirici son şık: uzlaşmacı ve makul durur, ama uyarıyı kimse okumaz ve bozuk değer üretimde çalışmaya devam eder — sessiz hataya geri dönmüş olursun. <b>Kanca:</b> hatayı erkene çek, aşağı değil."
+    },
+    {
+      topic: "İç içe yapı",
+      q: "<code>SiparisAyarlari</code> sınıfında <code>@Validated</code> var, dış alanlardaki kısıtlar çalışıyor; ama iç içe <code>Yeniden</code> kaydındaki <code>@Min(1)</code> hiç denetlenmiyor. Eksik olan nedir?",
+      opts: [
+        "Dış bileşene <code>@Valid</code> yazılmamış",
+        "İç <code>record</code>'a ayrıca <code>@Validated</code> yazılmamış",
+        "İç <code>record</code>'a ayrıca <code>@ConfigurationProperties</code> yazılmamış",
+        "İç <code>record</code> statik iç tip olduğu için kısıtları taşımıyor"
+      ],
+      a: [0],
+      why: "<b>İç içe nesnenin kısıtları ancak dış alanda <code>@Valid</code> varsa denetlenir</b> — <code>@Valid Yeniden yenidenDeneme</code>. En yakın çeldirici ikinci şık: <code>@Validated</code> sınıf seviyesinde doğrulamayı <b>açar</b>, ama iç nesneye inmeyi sağlayan şey <code>@Valid</code>'dir; ikisini karıştırmak bu konudaki en yaygın hatadır. İç tipe <code>@ConfigurationProperties</code> yazılmaz, bağlama dış sınıftan iner. <b>Kanca:</b> <code>@Validated</code> denetimi açar, <code>@Valid</code> içeri girer."
+    },
+    {
+      topic: "İç içe yapı",
+      q: "İç içe <code>@Valid</code> unutmanın, <code>@Validated</code> unutmakla ortak yanı nedir?",
+      opts: [
+        "İkisinde de kısıt kodda görünür durur ama hiç denetlenmez; hata sessizdir",
+        "İkisi de açılışta ayrı bir yapılandırma uyarısı üretir",
+        "İkisi de yalnızca <code>record</code> kullanıldığında ortaya çıkar",
+        "İkisi de bağlamayı tamamen durdurur; alanlar <code>null</code> gelir"
+      ],
+      a: [0],
+      why: "<b>Aynı aile: doğrulama koyduğunu sanmak, ama koymamış olmak.</b> Kısıt orada durur, kimse denetlemez, hiçbir uyarı çıkmaz. En yakın çeldirici ikinci şık: bir uyarı çıksaydı sorun zaten sorun olmazdı — sessizlik bu iki hatanın tanımıdır. Bağlama her iki durumda da normal çalışır, alanlar dolu gelir. <b>Kanca:</b> kısıtı bilerek boz; patlamıyorsa doğrulama açık değildir."
+    },
+    {
+      topic: "Varsayılan değerler",
+      q: "<code>record</code> bileşenine doğrudan varsayılan yazamıyorsun. Kütüphane değil, normal bir uygulama yazıyorsun. Hangi yol tercih edilir?",
+      opts: [
+        "Varsayılanı <code>application.properties</code>'e yazmak",
+        "Sıkıştırılmış constructor'da <code>null</code> kontrolüyle atamak",
+        "<code>record</code>'u sınıfa çevirip alana doğrudan varsayılan atamak",
+        "Alana <code>@Value(\"${siparis.bekleme:30s}\")</code> eklemek"
+      ],
+      a: [0],
+      why: "<b>Uygulama yazıyorsan en basiti değeri ayar dosyasına koymaktır</b> — varsayılan görünür olur, kimse kaynak koda bakmak zorunda kalmaz. En yakın çeldirici sıkıştırılmış constructor: geçerli bir yoldur ve konu dosyasında Yol B olarak duruyor, ama varsayılanı koda gömer; kütüphane yazarken anlamlıdır. Sınıfa çevirmek değişmezliği kaybettirir. <b>Kanca:</b> varsayılan da bir ayardır, ayar dosyasında dursun."
+    },
+    {
+      topic: "IDE ipuçları: `application.properties`'te otomatik tamamlama",
+      q: "Ekipte kimsenin IDE'si <code>siparis.*</code> ayar adlarını tamamlamıyor ve yazım hataları ancak çalıştırınca fark ediliyor. Eksik olan nedir?",
+      opts: [
+        "<code>spring-boot-configuration-processor</code> bağımlılığı",
+        "<code>spring-boot-starter-validation</code> bağımlılığı",
+        "Ana sınıftaki <code>@ConfigurationPropertiesScan</code>",
+        "Ayar sınıfındaki <code>@Validated</code>"
+      ],
+      a: [0],
+      why: "<b><code>spring-boot-configuration-processor</code> derleme sırasında <code>META-INF/spring-configuration-metadata.json</code> üretir</b>, IDE de tamamlamayı o dosyadan yapar. En yakın çeldirici <code>...Scan</code>: sınıfı bean yapar, yani <b>çalışma zamanını</b> etkiler — IDE'nin yazarken gösterdiği tamamlama derleme çıktısına bağlıdır. Doğrulama bağımlılığı ise ayrı iş yapar: yanlış <b>değeri</b> yakalar, yanlış <b>adı</b> değil. <b>Kanca:</b> processor yazarken, validation çalışırken korur."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>@ConfigurationProperties(prefix = \"siparisAyarlari\")</code> yazdın ve alanlar <code>null</code> geliyor. Sorun ve doğrusu nedir?",
+      opts: [
+        "Önek kebab-case olmalı: <code>siparis-ayarlari</code>",
+        "Önek sınıf adıyla birebir aynı olmalı, sorun başka yerde",
+        "Önek boş bırakılmalı; Spring öneki sınıf adından türetir",
+        "Öneği <code>SIPARIS_AYARLARI</code> yapmalısın; önekler büyük harf yazılır"
+      ],
+      a: [0],
+      why: "<b>Önek kebab-case yazılır</b>; camelCase ya da büyük harfli önek çalışmaz ve — yine sessizce — hiçbir anahtar eşleşmez, alanlar <code>null</code> kalır. En yakın çeldirici son şık: büyük harf kuralı <b>ortam değişkenlerine</b> aittir (3.1), önek yazımına değil; iki kuralı karıştırmak yaygındır. <b>Kanca:</b> önek de ayar dosyasındaki gibi yazılır — küçük harf ve tire."
+    },
+    {
+      topic: "Yanlış hâlleri",
+      q: "<code>@ConfigurationProperties</code>'in <code>@Value</code>'ya göre sağladığı hangi iki kazanç, sekiz ayarlı bir servis örneğinde doğrudan görülür? (İki tanesini seç.)",
+      opts: [
+        "Ayar adları metin olmaktan çıkıp tek bir tipin bileşenleri hâline gelir",
+        "Kısıt anotasyonlarıyla tek bir doğrulama noktası kurulabilir",
+        "Ayarlar uygulama çalışırken dosya değiştikçe kendiliğinden yenilenir",
+        "Ayar okuma, öncelik sırasını atlayarak doğrudan dosyadan yapılır"
+      ],
+      a: [0, 1],
+      why: "<b>İki dert doğrudan çözülür:</b> ayar adları metin olmaktan çıkar (yazım hatası artık tek bir tipin sorunudur) ve grup tek doğrulama noktası kazanır. Üçüncü şık en yakın çeldirici — canlı yenileme cazip görünür ama <code>record</code> ile bağlanan ayar açılışta bir kere okunur ve <b>değişmezdir</b>; zaten kazanç olarak sayılan şey de budur. Öncelik sırası her iki yolda da aynıdır, atlanmaz. <b>Kanca:</b> tek nesne = tek doğru, tek belge, tek doğrulama noktası."
+    }
+  ]
+};
+</script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
