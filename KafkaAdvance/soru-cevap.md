@@ -24,6 +24,8 @@
 | [S6](#s6--isr-nedir) | ISR nedir? | [1.2](01-broker-depolama/1.2-replikasyon-isr-hw.md) |
 | [S7](#s7--rf-ne-demek) | RF ne demek? (ve neden artık sette RF yok) | [1.2](01-broker-depolama/1.2-replikasyon-isr-hw.md) |
 | [S8](#s8--iki-poll-arası-derken-bu-polllar-ne-oluyor) | "İki poll arası" derken bu poll'lar ne oluyor? | [3.1](03-consumer/3.1-fetch-ve-poll-dongusu.md) |
+| [S9](#s9--tombstoneda-valuenull-nasıl-oluyor-dolu-bir-kayıt-sonradan-nasıl-nulla-çevriliyor) | Tombstone'da `value=null` nasıl oluyor? Dolu bir kayıt sonradan nasıl null'a çevriliyor? | [1.4](01-broker-depolama/1.4-retention-ve-compaction.md) |
+| [S10](#s10--isolationlevel-ne-işe-yarar-kayıtlar-neden-abort-ediliyor-okumanın-farkı-ne) | `isolation.level` ne işe yarar? Kayıtlar neden abort ediliyor, okumanın farkı ne? | [4.1](04-eos-transaction/4.1-transactions-internals.md) |
 
 ---
 
@@ -1021,3 +1023,224 @@ sonra yükselir. En az bilinen ama en faydalı tüketici metriğidir — uygulam
 > **Yeni soru sorduğunda** bu dosyanın sonuna eklenir ve içindekiler tablosu güncellenir.
 > Sorunu kısaltmadan, **sorduğun hâliyle** yazıyorum — altı ay sonra "ne sormuştum" diye
 > baktığında bağlam kaybolmasın.
+
+---
+
+## S9 — Tombstone'da `value=null` nasıl oluyor? Dolu bir kayıt sonradan nasıl null'a çevriliyor?
+
+> **Soru (2026-09-01, 00.2 kavram sözlüğü · tombstone maddesi üzerine):**
+> *"Burada value=null nasıl oluyor? Yani öncesinde içinde bir mesaj varken sonra bu nasıl
+> null set edilip ardından siliniyor, bunun yaşam döngüsünü çizip anlatır mısın tek tek."*
+
+### Kısa cevap
+
+**Hiçbir kayıt null'a çevrilmiyor.** Kafka'nın log dosyası yalnızca sona eklenir; yazılmış bir
+kaydın değeri sonradan değiştirilemez. Olan şey şu: **senin uygulaman, aynı key ile değeri boş
+olan yepyeni bir kayıt yazar.** Eski kayıt yerinde durur; onu sonradan temizleyici siler.
+
+Yani `value=null` bir *dönüşüm* değil, bir *yazma işlemidir*.
+
+### Yaşam döngüsü — beş aşama
+
+**Aşama 1 — Normal kayıt**
+
+```java
+producer.send(new ProducerRecord<>("profiller", "kullanici-42", "{ad:Ali, sehir:Bursa}"));
+```
+
+```
+offset:      100
+          ┌──────────────────────────┐
+          │ key   : kullanici-42     │
+          │ value : {ad:Ali, Bursa}  │
+          └──────────────────────────┘
+```
+
+**Aşama 2 — Güncelleme (yine yeni kayıt)**
+
+100. offset düzenlenmez; sona yeni kayıt eklenir.
+
+```
+offset:      100                340
+          ┌────────────┐     ┌────────────┐
+          │kullanici-42│     │kullanici-42│
+          │{Ali, Bursa}│     │{Ali, İzmir}│
+          └────────────┘     └────────────┘
+            eski sürüm         güncel sürüm
+```
+
+Artık log'da aynı key'in iki sürümü var. Compaction'ın işi eskiyi atmaktır.
+
+**Aşama 3 — Silme isteği: tombstone'u sen yazarsın**
+
+Kafka'da "sil" komutu yoktur. Silmeyi ifade etmenin tek yolu aynı key'e boş değer yazmaktır:
+
+```java
+producer.send(new ProducerRecord<>("profiller", "kullanici-42", null));
+//                                                              ↑ tombstone budur
+```
+
+```
+offset:      100              340              812
+          ┌────────────┐   ┌────────────┐   ┌────────────┐
+          │kullanici-42│   │kullanici-42│   │kullanici-42│
+          │{Ali, Bursa}│   │{Ali, İzmir}│   │ value: null│  ⬅ TOMBSTONE
+          └────────────┘   └────────────┘   └────────────┘
+```
+
+Bu **sıradan bir kayıttır**: offset alır, replikalara gider. Özel anlamını yalnızca
+`cleanup.policy=compact` olan bir topic'te kazanır. Sıkıştırma kapalıysa sadece "değeri boş
+bir mesaj"dır, silme anlamına gelmez.
+
+**Aşama 4 — Temizleyici geçer: eski sürümler gider**
+
+Log cleaner (arka planda çalışan temizleyici iş parçacığı) devreye girer. Şartlar: kirli kısım
+`min.cleanable.dirty.ratio` (varsayılan 0.5) eşiğini geçmiş olmalı ve kayıtlar **aktif
+segmentte olmamalı** — aktif segmente asla dokunulmaz.
+
+```
+ÖNCE:   [100: {Bursa}]  [340: {İzmir}]  [812: null]
+                ✗              ✗              ✓
+SONRA:                                  [812: null]
+                                    tombstone hâlâ duruyor
+```
+
+Fiziksel olarak: temizleyici segment dosyasını **yeniden yazar** — tutulacak kayıtlarla yeni
+bir dosya oluşturur, eskisini siler. Kayıtlar tek tek silinmez, dosya baştan yazılır.
+
+**Aşama 5 — Tombstone da silinir**
+
+```
+[812: null]  ──── delete.retention.ms (24 saat) ────►  (hiçbir şey)
+```
+
+Tombstone, süresi dolduktan sonraki temizleme turunda atılır. Bu noktada key log'dan
+tamamen gitmiştir.
+
+Sürenin başlangıcı, tombstone'un **yazıldığı an değil**, temizleyicinin o kaydı **ilk kez
+işlediği** andır. Kafka bunu kayıt grubunun (batch) başlığındaki "silme ufku" (delete horizon)
+alanında taşır. Eski sürümlerde segmentin dosya değiştirilme tarihinden hesaplanırdı ve hatalıydı.
+
+### Tombstone neden hemen silinmiyor?
+
+Geride kalmış bir tüketici düşün: 6 saattir kapalı, sonra açıldı. Belleğinde `kullanici-42`
+duruyor. Silme haberini alabilmesinin tek yolu tombstone'u okumaktır.
+
+```
+Tombstone eski sürümlerle birlikte anında silinseydi:
+  Tüketici log'u okur → kullanici-42 diye bir kayıt hiç görmez
+                      → ama belleğinde eski kopyası duruyor
+                      → hayalet kayıt: sonsuza kadar yanlış veri taşır
+```
+
+Bu yüzden `delete.retention.ms`, **tüketicinin olabilecek en uzun gecikmesinden büyük
+olmalıdır.** Haftada bir çalışan bir toplu iş varsa 24 saatlik varsayılan silmeleri kaçırtır.
+
+### Tüketici tarafında ne oluyor
+
+| Kim okuyor | `value == null` görünce |
+|---|---|
+| Kendi yazdığın tüketici | **Sen yorumlarsın:** `if (kayit.value() == null) cache.remove(key)` — Kafka senin yerine yapmaz |
+| Kafka Streams `KTable` | Otomatik: key'i durum deposundan (state store) siler |
+| Kafka Connect sink | Bağlayıcıya bağlı; çoğu hedef tabloda `DELETE` çalıştırır |
+
+### Kim ne yapar — özet
+
+| Aşama | Kim yapar | Sonuç |
+|---|---|---|
+| Tombstone yazılır | **Senin uygulaman** | Log'a normal kayıt olarak eklenir |
+| Temizleyici geçer | Broker | O key'in tüm eski sürümleri gider, tombstone kalır |
+| `delete.retention.ms` dolar | Broker | Sonraki turda tombstone da gider |
+
+> 📌 **Sık yapılan üç hata**
+> 1. *"Kafka kaydı null'a çeviriyor."* Hayır — log değişmez, sen yeni kayıt yazarsın.
+> 2. *"Tombstone yazdım, kayıt anında gitti."* Hayır — temizleyici turunu bekler;
+>    `min.cleanable.dirty.ratio` tutmazsa saatlerce beklenebilir.
+> 3. *"Sıkıştırma kapalı topic'e null yazınca siler."* Hayır — orada sadece boş değerli bir mesajdır.
+
+Ayrıca bir kural: **sıkıştırılan topic'te key `null` olamaz.** Sıkıştırma key'e göre gruplar;
+key'siz kaydı gruplayamaz.
+
+🔗 Konu: [1.4 Retention, compaction ve tombstone](01-broker-depolama/1.4-retention-ve-compaction.md) ·
+[Kavram sözlüğü — tombstone](00-baslangic/02-kavram-sozlugu.md#tombstone-mezar-taşı)
+
+---
+
+## S10 — `isolation.level` ne işe yarar? Kayıtlar neden abort ediliyor, okumanın farkı ne?
+
+> **Soru (2026-09-03, 4.1 konusu üzerine):**
+> *"isolation.level ne işe yarar ve hangi parametreleri alır… görüp görmemek, verip vermemek
+> derken neyi kastediyorsun… neden abort ediliyor bu kayıtlar? Okumanın ve okumamanın ne gibi
+> farkı var?"*
+
+### Kısa cevap
+
+`isolation.level` bir **tüketici** ayarıdır: transaction'lı bir topic'ten okurken abort edilmiş
+(iptal edilmiş) kayıtların sana **verilip verilmeyeceğini** belirler.
+
+| Değer | Ne yapar |
+|---|---|
+| `read_uncommitted` | **Varsayılan.** Her şeyi verir — commit edilmemiş ve abort edilmiş kayıtlar dahil |
+| `read_committed` | Yalnızca commit edilmiş kayıtları verir; abort edilenleri atlar, **LSO'ya kadar** okur |
+
+LSO (Last Stable Offset — son kararlı offset), henüz sonuçlanmamış ilk transaction'ın başladığı
+yerdir. `read_committed` bunun ötesine geçemez; açık bir transaction varsa tüketici **bekler**.
+
+### "Görmek" / "vermek" ne demek
+
+Abort edilen kayıtlar **diskte her hâlükârda duruyor** — `read_committed` onları silmez.
+Değişen şey log'un içeriği değil, **senin uygulamana ulaşan kısmı**:
+
+- **Vermek** = broker'ın `poll()` çağrına döndürdüğü listeye o kaydı koyup koymaması.
+- **Görmek** = senin `for (kayit : kayitlar)` döngünün o kayıtla karşılaşıp karşılaşmaması.
+
+Broker, kayıtları yollamadan önce transaction sonuç işaretlerine (commit/abort control record)
+bakıp abort edilenleri **süzer**.
+
+### Neden abort ediliyor?
+
+Çünkü **Kafka transaction'lı kayıtları commit'i beklemeden log'a yazar.** Producer `send()`
+dediği anda kayıt diske gider; sonucun ne olacağı henüz belli değildir. İş ters giderse kayıtlar
+zaten yazılmıştır, geri alınamaz — Kafka sona bir **abort işareti** ekleyip "yukarıdakileri
+saymayın" der.
+
+| Sebep | Örnek |
+|---|---|
+| Uygulama kendisi iptal eder | `catch (Exception e) { producer.abortTransaction(); }` — doğrulama hatası, iş kuralı ihlali |
+| Uygulama çöker | Transaction açıkken pod ölür; `transaction.timeout.ms` dolunca broker otomatik abort eder |
+| Zombi üretici kovulur | Yeni örnek aynı `transactional.id` ile başlar, eskisi `ProducerFencedException` alır; yarım işi abort edilir |
+
+### Okumanın farkı — somut örnek
+
+Para transferi: `hesaptan-çek` ve `hesaba-yatır` kayıtlarını yazdın, sonra ikinci hesap kapalı
+çıktı ve transaction'ı abort ettin.
+
+```
+read_uncommitted → tüketicin "hesaptan-çek" kaydını görür ve işler
+                   → para uçtu, kimseye gitmedi                      ❌
+read_committed   → o kaydı hiç görmez
+                   → transfer hiç olmamış gibi davranır              ✅
+```
+
+Fark **doğruluk**: `read_uncommitted` ile resmen iptal edilmiş işleri gerçekmiş gibi işlersin —
+çift sayım, hayalet sipariş, yanlış bakiye. Exactly-once zinciri tam burada kırılır.
+
+Bedeli: `read_committed` açık bir transaction'ın ötesini okuyamaz, LSO'da bekler.
+**Gecikme karşılığında doğruluk** alıyorsun.
+
+### Lab kanıtı
+
+3 commit + 3 abort + 1 commit yazıldığında:
+
+```
+read_uncommitted →  7 kayıt   (ABORT-0,1,2 dahil)
+read_committed   →  4 kayıt   (abort edilenler atlandı)
+her iki durumda da log sonu offset=10
+```
+
+> 📌 **Sık yapılan hata:** Bu ayar yalnızca **transaction'lı yazımlar** için anlamlıdır.
+> Normal producer'la yazılmış bir topic'te iki değer de aynı sonucu verir — `read_committed`
+> yazmak oraya bir şey katmaz.
+
+🔗 Konu: [4.1 Transactions internals](04-eos-transaction/4.1-transactions-internals.md) ·
+[Ayar rehberi](00-baslangic/03-ayar-rehberi.md)
